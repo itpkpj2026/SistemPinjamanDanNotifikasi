@@ -1,0 +1,1450 @@
+<!doctype html>
+<html lang="ms">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#06111f" />
+  <title>Sistem ICT | Langganan & Pinjaman</title>
+  <style>
+    :root{
+      --bg:#050b14;
+      --bg2:#081422;
+      --panel:#0b1726;
+      --panel2:#0e1d2e;
+      --line:#1c3045;
+      --text:#ecf7ff;
+      --muted:#88a0b8;
+      --cyan:#21d4fd;
+      --green:#21e6a1;
+      --yellow:#ffcc55;
+      --red:#ff5d7d;
+      --blue:#55a7ff;
+      --purple:#ab7cff;
+      --shadow:0 18px 50px rgba(0,0,0,.28);
+      --radius:18px;
+      --sidebar:238px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 75% -10%,rgba(33,212,253,.12),transparent 28rem),
+        radial-gradient(circle at 3% 93%,rgba(33,230,161,.07),transparent 24rem),
+        var(--bg);
+    }
+    button,input,select,textarea{font:inherit}
+    button{cursor:pointer}
+    a{color:inherit}
+
+    .app{min-height:100vh}
+    .sidebar{
+      width:var(--sidebar);
+      position:fixed;
+      inset:0 auto 0 0;
+      background:rgba(7,18,31,.92);
+      border-right:1px solid var(--line);
+      backdrop-filter:blur(18px);
+      z-index:20;
+      display:flex;
+      flex-direction:column;
+      padding:20px 14px;
+    }
+    .brand{
+      display:flex;
+      gap:11px;
+      align-items:center;
+      padding:4px 8px 22px;
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+    .brand-mark{
+      width:42px;height:42px;border-radius:13px;
+      display:grid;place-items:center;
+      background:linear-gradient(145deg,rgba(33,212,253,.2),rgba(33,230,161,.12));
+      border:1px solid rgba(33,212,253,.45);
+      box-shadow:0 0 30px rgba(33,212,253,.12);
+      font-size:21px;
+    }
+    .brand strong{display:block;font-size:15px}
+    .brand span{display:block;color:var(--muted);font-size:11px;margin-top:2px}
+    .nav{padding-top:18px;display:grid;gap:6px}
+    .nav-btn{
+      width:100%;
+      border:0;
+      color:#9bb0c5;
+      background:transparent;
+      display:flex;
+      align-items:center;
+      gap:11px;
+      padding:11px 12px;
+      border-radius:11px;
+      text-align:left;
+      transition:.18s ease;
+    }
+    .nav-btn:hover{background:rgba(255,255,255,.035);color:#fff}
+    .nav-btn.active{
+      color:#79eaff;
+      background:linear-gradient(90deg,rgba(33,212,253,.16),rgba(33,212,253,.04));
+      box-shadow:inset 3px 0 0 var(--cyan);
+    }
+    .nav-ico{width:22px;text-align:center;font-size:16px}
+    .sidebar-bottom{margin-top:auto;padding:12px 5px}
+    .connection-mini{
+      padding:12px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:rgba(255,255,255,.025);
+    }
+    .connection-row{display:flex;align-items:center;gap:8px;font-size:12px}
+    .dot{width:8px;height:8px;border-radius:50%;background:#64748b;box-shadow:0 0 0 4px rgba(100,116,139,.1)}
+    .dot.ok{background:var(--green);box-shadow:0 0 13px rgba(33,230,161,.65)}
+    .dot.err{background:var(--red);box-shadow:0 0 13px rgba(255,93,125,.55)}
+    .mini-muted{color:var(--muted);font-size:10px;margin-top:7px;word-break:break-word}
+
+    .main{margin-left:var(--sidebar);min-height:100vh;padding:20px 24px 50px}
+    .topbar{
+      min-height:62px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      margin-bottom:18px;
+    }
+    .page-title h1{margin:0;font-size:25px;letter-spacing:-.02em}
+    .page-title p{margin:6px 0 0;color:var(--muted);font-size:12px}
+    .top-actions{display:flex;align-items:center;gap:10px}
+    .btn{
+      border:1px solid var(--line);
+      color:#d9e9f7;
+      background:#0c1b2b;
+      border-radius:10px;
+      padding:9px 12px;
+      transition:.16s ease;
+    }
+    .btn:hover{transform:translateY(-1px);border-color:#33506c}
+    .btn-primary{
+      background:linear-gradient(135deg,#067aad,#12a7c6);
+      border-color:#21d4fd;
+      color:white;
+      box-shadow:0 10px 28px rgba(33,212,253,.16);
+    }
+    .btn-green{
+      background:linear-gradient(135deg,#0c8a65,#14aa7a);
+      border-color:#21e6a1;
+      color:white;
+    }
+    .btn-danger{background:rgba(255,93,125,.10);border-color:rgba(255,93,125,.45);color:#ff9bb0}
+    .btn-sm{padding:6px 9px;font-size:11px;border-radius:8px}
+    .mobile-menu{display:none}
+
+    .view{display:none}
+    .view.active{display:block}
+
+    .kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin-bottom:14px}
+    .card{
+      background:linear-gradient(160deg,rgba(16,34,52,.93),rgba(8,20,34,.95));
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+    }
+    .kpi{padding:16px;position:relative;overflow:hidden;min-height:118px}
+    .kpi::after{
+      content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--accent,var(--cyan));
+      box-shadow:0 -4px 22px var(--accent,var(--cyan));
+      opacity:.8;
+    }
+    .kpi-head{display:flex;align-items:center;justify-content:space-between;gap:10px;color:#a7bacd;font-size:10px;font-weight:800;letter-spacing:.06em}
+    .kpi-icon{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:color-mix(in srgb,var(--accent) 13%,transparent);border:1px solid color-mix(in srgb,var(--accent) 32%,transparent)}
+    .kpi-value{font-size:30px;font-weight:800;margin-top:8px;line-height:1}
+    .kpi-foot{margin-top:7px;color:var(--muted);font-size:10px}
+    .pill{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:4px 8px;font-weight:800;font-size:9px;letter-spacing:.02em;white-space:nowrap}
+    .pill.green{color:#72f4c4;background:rgba(33,230,161,.12);border:1px solid rgba(33,230,161,.22)}
+    .pill.yellow{color:#ffe08a;background:rgba(255,204,85,.11);border:1px solid rgba(255,204,85,.25)}
+    .pill.red{color:#ff9cb1;background:rgba(255,93,125,.11);border:1px solid rgba(255,93,125,.26)}
+    .pill.blue{color:#9acbff;background:rgba(85,167,255,.11);border:1px solid rgba(85,167,255,.25)}
+    .pill.purple{color:#c9adff;background:rgba(171,124,255,.11);border:1px solid rgba(171,124,255,.25)}
+    .pill.gray{color:#b2c1d0;background:rgba(148,163,184,.08);border:1px solid rgba(148,163,184,.18)}
+
+    .grid-main{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(290px,.9fr);gap:14px;margin-bottom:14px}
+    .panel{padding:16px}
+    .panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:13px}
+    .panel-title{font-size:11px;font-weight:900;letter-spacing:.07em;color:#bcd0e1}
+    .panel-sub{font-size:10px;color:var(--muted);margin-top:4px}
+    .chart-wrap{height:275px;position:relative}
+    #trendSvg{width:100%;height:100%;display:block}
+    .status-stack{display:grid;gap:10px}
+    .status-box{
+      display:grid;grid-template-columns:70px 1fr;gap:12px;align-items:center;
+      min-height:73px;padding:11px;
+      border-radius:14px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.055)
+    }
+    .status-number{text-align:center}
+    .status-number strong{display:block;font-size:25px}
+    .status-number span{font-size:9px;font-weight:800;letter-spacing:.05em}
+    .equipment-mini{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}
+    .equipment-mini span{font-size:9px;color:#9eb1c3;padding:3px 6px;border-radius:6px;background:#0a1420}
+
+    .grid-bottom{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(280px,.75fr);gap:14px}
+    .table-wrap{overflow:auto;border-radius:12px}
+    table{width:100%;border-collapse:collapse;min-width:700px}
+    th{
+      text-align:left;font-size:9px;letter-spacing:.045em;color:#7990a7;
+      padding:10px;border-bottom:1px solid var(--line);white-space:nowrap
+    }
+    td{padding:10px;border-bottom:1px solid rgba(255,255,255,.045);font-size:11px;color:#c5d5e4;vertical-align:middle}
+    tbody tr:hover{background:rgba(33,212,253,.025)}
+    .strong{font-weight:700;color:#edf7ff}
+    .muted{color:var(--muted)}
+    .tiny{font-size:9px}
+    .money{font-variant-numeric:tabular-nums}
+    .inventory-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .inv-card{padding:12px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.055);border-radius:13px;min-height:92px}
+    .inv-card .ico{font-size:20px}
+    .inv-card strong{font-size:21px;display:block;margin-top:6px}
+    .inv-card label{font-size:9px;color:#a8bbcd;text-transform:uppercase;font-weight:800;letter-spacing:.05em}
+    .inv-foot{font-size:9px;color:var(--muted);margin-top:4px}
+
+    .toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:13px}
+    .search{
+      flex:1;min-width:220px;display:flex;align-items:center;gap:8px;
+      padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:#081522
+    }
+    .search input{width:100%;border:0;outline:0;background:transparent;color:#fff}
+    .field{
+      width:100%;padding:9px 10px;border-radius:9px;border:1px solid #274058;
+      background:#071521;color:#e8f5ff;outline:none
+    }
+    .field:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(33,212,253,.08)}
+    select.field option{background:#071521}
+    textarea.field{min-height:80px;resize:vertical}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+    .form-group label{display:block;font-size:10px;font-weight:800;color:#91a7bb;margin:0 0 5px}
+    .form-group.full{grid-column:1/-1}
+    .empty{padding:28px;text-align:center;color:var(--muted);font-size:12px}
+    .loading{position:relative;overflow:hidden}
+    .loading::after{
+      content:"";position:absolute;inset:0;
+      background:linear-gradient(100deg,transparent 20%,rgba(255,255,255,.045) 45%,transparent 70%);
+      animation:shimmer 1.3s infinite
+    }
+    @keyframes shimmer{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+
+    .modal-backdrop{
+      display:none;position:fixed;inset:0;background:rgba(0,0,0,.66);backdrop-filter:blur(7px);
+      z-index:100;align-items:center;justify-content:center;padding:20px
+    }
+    .modal-backdrop.show{display:flex}
+    .modal{width:min(760px,100%);max-height:90vh;overflow:auto;background:#081522;border:1px solid #294157;border-radius:20px;box-shadow:0 30px 90px rgba(0,0,0,.55)}
+    .modal-head{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--line);position:sticky;top:0;background:#081522;z-index:2}
+    .modal-head h3{margin:0;font-size:15px}
+    .modal-body{padding:18px}
+    .modal-foot{display:flex;justify-content:flex-end;gap:8px;padding:14px 18px;border-top:1px solid var(--line)}
+
+    .toast-wrap{position:fixed;right:18px;bottom:18px;z-index:150;display:grid;gap:8px}
+    .toast{
+      width:min(390px,calc(100vw - 36px));padding:12px 14px;border-radius:12px;
+      background:#0c1d2c;border:1px solid #2b465e;box-shadow:var(--shadow);font-size:11px
+    }
+    .toast.ok{border-color:rgba(33,230,161,.45)}
+    .toast.err{border-color:rgba(255,93,125,.5)}
+    .toast strong{display:block;margin-bottom:3px}
+
+    .settings-box{max-width:850px}
+    .help{
+      padding:12px 14px;border-radius:12px;background:rgba(33,212,253,.055);
+      border:1px solid rgba(33,212,253,.18);color:#a9c7db;font-size:11px;line-height:1.55
+    }
+    code.inline{padding:2px 5px;border-radius:5px;background:#06101a;color:#67e8f9}
+    .connection-status{margin-top:10px;font-size:11px}
+    .section-gap{margin-top:14px}
+    .right{text-align:right}
+    .nowrap{white-space:nowrap}
+
+    @media(max-width:1050px){
+      .kpis{grid-template-columns:1fr 1fr}
+      .grid-main,.grid-bottom{grid-template-columns:1fr}
+    }
+    @media(max-width:760px){
+      :root{--sidebar:0px}
+      .sidebar{transform:translateX(-100%);width:240px;transition:.2s}
+      .sidebar.open{transform:translateX(0)}
+      .main{margin-left:0;padding:14px}
+      .mobile-menu{display:inline-flex}
+      .top-actions .desktop-only{display:none}
+      .kpis{grid-template-columns:1fr 1fr;gap:9px}
+      .kpi{min-height:105px}
+      .form-grid{grid-template-columns:1fr}
+      .form-group.full{grid-column:auto}
+    }
+    @media(max-width:480px){
+      .kpis{grid-template-columns:1fr}
+      .inventory-grid{grid-template-columns:1fr 1fr}
+    }
+  </style>
+</head>
+
+<body>
+<div class="app">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-mark">🖥️</div>
+      <div>
+        <strong>Sistem ICT</strong>
+        <span>Langganan & Pinjaman</span>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <button class="nav-btn active" data-view="dashboard"><span class="nav-ico">⌂</span>Dashboard</button>
+      <button class="nav-btn" data-view="subscriptions"><span class="nav-ico">▤</span>Langganan</button>
+      <button class="nav-btn" data-view="assets"><span class="nav-ico">▣</span>Inventori ICT</button>
+      <button class="nav-btn" data-view="loans"><span class="nav-ico">⇄</span>Pinjaman</button>
+      <button class="nav-btn" data-view="notifications"><span class="nav-ico">◉</span>Notifikasi</button>
+      <button class="nav-btn" data-view="reports"><span class="nav-ico">▥</span>Laporan</button>
+      <button class="nav-btn" data-view="settings"><span class="nav-ico">⚙</span>Tetapan</button>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <div class="connection-mini">
+        <div class="connection-row">
+          <span class="dot" id="sideDot"></span>
+          <strong id="sideStatus">Belum disambung</strong>
+        </div>
+        <div class="mini-muted" id="sideHint">Tetapkan Apps Script API di Tetapan.</div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div style="display:flex;align-items:center;gap:10px">
+        <button class="btn mobile-menu" id="mobileMenu">☰</button>
+        <div class="page-title">
+          <h1 id="pageHeading">Dashboard</h1>
+          <p id="pageSubtitle">Ringkasan keseluruhan langganan dan pinjaman sistem.</p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <button class="btn desktop-only" id="refreshBtn">↻ Refresh</button>
+        <button class="btn btn-primary" id="quickAddBtn">＋ Tambah Rekod</button>
+      </div>
+    </header>
+
+    <!-- DASHBOARD -->
+    <section class="view active" id="view-dashboard">
+      <div class="kpis">
+        <div class="card kpi" style="--accent:var(--green)">
+          <div class="kpi-head"><span>LANGGANAN AKTIF</span><span class="kpi-icon">▤</span></div>
+          <div class="kpi-value" id="kpiSubscriptions">—</div>
+          <div class="kpi-foot"><span class="pill green">AKTIF</span> rekod langganan semasa</div>
+        </div>
+        <div class="card kpi" style="--accent:var(--yellow)">
+          <div class="kpi-head"><span>RENEW SOON</span><span class="kpi-icon">◷</span></div>
+          <div class="kpi-value" id="kpiRenewal">—</div>
+          <div class="kpi-foot"><span class="pill yellow">TINDAKAN</span> pembaharuan hampir tamat</div>
+        </div>
+        <div class="card kpi" style="--accent:var(--blue)">
+          <div class="kpi-head"><span>PINJAMAN AKTIF</span><span class="kpi-icon">⇄</span></div>
+          <div class="kpi-value" id="kpiLoans">—</div>
+          <div class="kpi-foot"><span class="pill blue">DIPINJAM</span> transaksi sedang aktif</div>
+        </div>
+        <div class="card kpi" style="--accent:var(--red)">
+          <div class="kpi-head"><span>PINJAMAN LEWAT</span><span class="kpi-icon">!</span></div>
+          <div class="kpi-value" id="kpiOverdue">—</div>
+          <div class="kpi-foot"><span class="pill red">LEWAT</span> perlu tindakan segera</div>
+        </div>
+      </div>
+
+      <div class="grid-main">
+        <div class="card panel">
+          <div class="panel-head">
+            <div>
+              <div class="panel-title">TREND PEMBAHARUAN LANGGANAN</div>
+              <div class="panel-sub">12 bulan terkini berdasarkan sejarah renewal.</div>
+            </div>
+            <span class="pill blue">12 BULAN</span>
+          </div>
+          <div class="chart-wrap">
+            <svg id="trendSvg" viewBox="0 0 900 270" preserveAspectRatio="none"></svg>
+          </div>
+        </div>
+
+        <div class="card panel">
+          <div class="panel-head">
+            <div>
+              <div class="panel-title">STATUS PINJAMAN PERALATAN ICT</div>
+              <div class="panel-sub">Ringkasan status aset semasa.</div>
+            </div>
+          </div>
+          <div class="status-stack">
+            <div class="status-box">
+              <div class="status-number"><strong style="color:var(--green)" id="statusAvailable">—</strong><span style="color:var(--green)">TERSEDIA</span></div>
+              <div><div class="tiny muted">Contoh Peralatan</div><div class="equipment-mini"><span>💻 Laptop</span><span>📶 WiFi</span><span>🔌 Extension</span><span>📽️ Projector</span></div></div>
+            </div>
+            <div class="status-box">
+              <div class="status-number"><strong style="color:var(--blue)" id="statusBorrowed">—</strong><span style="color:var(--blue)">DIPINJAM</span></div>
+              <div><div class="tiny muted">Aset sedang berada dengan peminjam</div><div class="equipment-mini"><span>Check-out aktif</span><span>Due date dipantau</span></div></div>
+            </div>
+            <div class="status-box">
+              <div class="status-number"><strong style="color:var(--red)" id="statusOverdue">—</strong><span style="color:var(--red)">PINJAMAN LEWAT</span></div>
+              <div><div class="tiny muted">Transaksi perlu tindakan segera</div><div class="equipment-mini"><span>Email reminder</span><span>Follow-up peminjam</span></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-bottom">
+        <div class="card panel">
+          <div class="panel-head">
+            <div>
+              <div class="panel-title">PEMBAHARUAN AKAN DATANG</div>
+              <div class="panel-sub">Langganan disusun mengikut tarikh tamat terdekat.</div>
+            </div>
+            <button class="btn btn-sm" data-go="subscriptions">Lihat Semua</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr>
+                <th>LANGGANAN</th><th>VENDOR</th><th>TARIKH TAMAT</th><th>BAKI HARI</th><th>KOS (RM)</th><th>STATUS</th>
+              </tr></thead>
+              <tbody id="renewalRows"><tr><td colspan="6" class="empty">Belum ada data.</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card panel">
+          <div class="panel-head">
+            <div>
+              <div class="panel-title">INVENTORI ICT — RINGKASAN</div>
+              <div class="panel-sub">Mengikut kategori aset.</div>
+            </div>
+            <button class="btn btn-sm" data-go="assets">Lihat Semua</button>
+          </div>
+          <div class="inventory-grid" id="inventoryGrid">
+            <div class="empty" style="grid-column:1/-1">Belum ada data aset.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SUBSCRIPTIONS -->
+    <section class="view" id="view-subscriptions">
+      <div class="card panel">
+        <div class="toolbar">
+          <div class="search">⌕ <input id="subSearch" placeholder="Cari nama, vendor, PIC..." /></div>
+          <select class="field" id="subStatusFilter" style="width:auto"><option value="">Semua status</option><option>AKTIF</option><option>RENEW_SOON</option><option>TAMAT</option><option>DALAM_PROSES</option></select>
+          <button class="btn btn-primary" id="addSubscriptionBtn">＋ Langganan</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>ID</th><th>NAMA</th><th>KATEGORI</th><th>VENDOR</th><th>PIC</th><th>TAMAT</th><th>KOS (RM)</th><th>STATUS</th>
+            </tr></thead>
+            <tbody id="subscriptionsRows"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ASSETS -->
+    <section class="view" id="view-assets">
+      <div class="card panel">
+        <div class="toolbar">
+          <div class="search">⌕ <input id="assetSearch" placeholder="Cari tag aset, nama, model..." /></div>
+          <select class="field" id="assetStatusFilter" style="width:auto"><option value="">Semua status</option><option>TERSEDIA</option><option>DIPINJAM</option><option>RESERVED</option><option>DALAM_SERVIS</option><option>ROSAK</option></select>
+          <button class="btn btn-primary" id="addAssetBtn">＋ Aset ICT</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>ID</th><th>TAG ASET</th><th>NAMA ASET</th><th>KATEGORI</th><th>MODEL</th><th>LOKASI</th><th>KEADAAN</th><th>STATUS</th>
+            </tr></thead>
+            <tbody id="assetsRows"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- LOANS -->
+    <section class="view" id="view-loans">
+      <div class="card panel">
+        <div class="toolbar">
+          <div class="search">⌕ <input id="loanSearch" placeholder="Cari ID pinjaman, tujuan..." /></div>
+          <select class="field" id="loanStatusFilter" style="width:auto"><option value="">Semua status</option><option>MENUNGGU_KELULUSAN</option><option>DILULUSKAN</option><option>DIPINJAM</option><option>HAMPIR_DUE</option><option>LEWAT</option><option>DIPULANGKAN</option></select>
+          <button class="btn btn-green" id="addLoanBtn">＋ Daftar Pinjaman</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>ID PINJAMAN</th><th>PEMINJAM</th><th>PERMOHONAN</th><th>PINJAM</th><th>DUE</th><th>TUJUAN</th><th>STATUS</th>
+            </tr></thead>
+            <tbody id="loansRows"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- NOTIFICATIONS -->
+    <section class="view" id="view-notifications">
+      <div class="card panel">
+        <div class="toolbar">
+          <div class="search">⌕ <input id="notifSearch" placeholder="Cari notifikasi..." /></div>
+          <select class="field" id="notifStatusFilter" style="width:auto"><option value="">Semua status</option><option>PENDING</option><option>SENT</option><option>FAILED</option></select>
+          <button class="btn" id="runNotifBtn">▶ Jalankan Notifikasi</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>ID</th><th>SUMBER</th><th>EVENT</th><th>PENERIMA</th><th>MESEJ</th><th>STATUS</th><th>DIHANTAR</th>
+            </tr></thead>
+            <tbody id="notificationsRows"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- REPORTS -->
+    <section class="view" id="view-reports">
+      <div class="kpis">
+        <div class="card kpi" style="--accent:var(--cyan)"><div class="kpi-head">ASET TERSEDIA</div><div class="kpi-value" id="reportAvailable">—</div><div class="kpi-foot">Inventori sedia dipinjam</div></div>
+        <div class="card kpi" style="--accent:var(--blue)"><div class="kpi-head">ASET DIPINJAM</div><div class="kpi-value" id="reportBorrowed">—</div><div class="kpi-foot">Inventori sedang digunakan</div></div>
+        <div class="card kpi" style="--accent:var(--yellow)"><div class="kpi-head">RENEW SOON</div><div class="kpi-value" id="reportRenewal">—</div><div class="kpi-foot">Langganan perlukan tindakan</div></div>
+        <div class="card kpi" style="--accent:var(--red)"><div class="kpi-head">OVERDUE</div><div class="kpi-value" id="reportOverdue">—</div><div class="kpi-foot">Pinjaman lewat</div></div>
+      </div>
+      <div class="card panel">
+        <div class="panel-title">EKSPORT RINGKAS</div>
+        <div class="panel-sub">Eksport data yang sedang dimuat dalam browser sebagai CSV.</div>
+        <div class="toolbar section-gap">
+          <button class="btn" onclick="exportCSV('subscriptions')">Export Langganan CSV</button>
+          <button class="btn" onclick="exportCSV('assets')">Export Inventori CSV</button>
+          <button class="btn" onclick="exportCSV('loans')">Export Pinjaman CSV</button>
+          <button class="btn" onclick="exportCSV('notifications')">Export Notifikasi CSV</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section class="view" id="view-settings">
+      <div class="card panel settings-box">
+        <div class="panel-head">
+          <div>
+            <div class="panel-title">SAMBUNGAN GOOGLE APPS SCRIPT</div>
+            <div class="panel-sub">Maklumat ini disimpan di localStorage browser ini sahaja.</div>
+          </div>
+        </div>
+
+        <div class="help">
+          Deploy Apps Script sebagai <b>Web app</b>, kemudian paste URL yang berakhir dengan <code class="inline">/exec</code>.
+          API token diperoleh daripada Execution Log selepas anda run <code class="inline">setupSystem()</code>.
+          Untuk GitHub Pages, GET menggunakan JSONP; operasi simpan dihantar sebagai POST dan data akan di-refresh selepas penghantaran.
+        </div>
+
+        <div class="form-grid section-gap">
+          <div class="form-group full">
+            <label>Apps Script Web App URL</label>
+            <input class="field" id="settingsApiUrl" placeholder="https://script.google.com/macros/s/...../exec" />
+          </div>
+          <div class="form-group full">
+            <label>API Token</label>
+            <input class="field" id="settingsToken" placeholder="API TOKEN daripada setupSystem()" />
+          </div>
+          <div class="form-group">
+            <label>Email Admin / Actor</label>
+            <input class="field" id="settingsActorEmail" placeholder="nama@organisasi.gov.my" />
+          </div>
+          <div class="form-group">
+            <label>Nama Paparan</label>
+            <input class="field" id="settingsDisplayName" placeholder="Admin ICT" />
+          </div>
+        </div>
+
+        <div class="toolbar section-gap">
+          <button class="btn btn-primary" id="saveSettingsBtn">Simpan Tetapan</button>
+          <button class="btn" id="testConnectionBtn">Test Connection</button>
+          <button class="btn btn-danger" id="clearSettingsBtn">Kosongkan</button>
+        </div>
+
+        <div class="connection-status" id="connectionStatus"></div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- MODAL -->
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="modalTitle">Tambah Rekod</h3>
+      <button class="btn btn-sm" id="modalClose">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-foot">
+      <button class="btn" id="modalCancel">Batal</button>
+      <button class="btn btn-primary" id="modalSubmit">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+/* =========================================================
+   SISTEM ICT FRONTEND - GITHUB PAGES
+   Pure HTML + CSS + JavaScript
+========================================================= */
+
+const state = {
+  view: 'dashboard',
+  dashboard: null,
+  subscriptions: [],
+  assets: [],
+  loans: [],
+  users: [],
+  notifications: [],
+  modalType: null,
+  connected: false
+};
+
+const cfg = {
+  get apiUrl(){ return localStorage.getItem('ict_api_url') || ''; },
+  get token(){ return localStorage.getItem('ict_api_token') || ''; },
+  get actorEmail(){ return localStorage.getItem('ict_actor_email') || ''; },
+  get displayName(){ return localStorage.getItem('ict_display_name') || 'Admin ICT'; }
+};
+
+const $ = (s, root=document) => root.querySelector(s);
+const $$ = (s, root=document) => [...root.querySelectorAll(s)];
+
+document.addEventListener('DOMContentLoaded', init);
+
+function init(){
+  bindNavigation();
+  bindActions();
+  loadSettingsForm();
+  updateConnectionUI();
+
+  if(cfg.apiUrl){
+    loadDashboard();
+  }else{
+    showView('settings');
+    toast('Setup diperlukan','Masukkan URL Apps Script dan API token dahulu.');
+  }
+}
+
+function bindNavigation(){
+  $$('.nav-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      showView(btn.dataset.view);
+      $('#sidebar').classList.remove('open');
+    });
+  });
+
+  $$('[data-go]').forEach(btn=>{
+    btn.addEventListener('click',()=>showView(btn.dataset.go));
+  });
+
+  $('#mobileMenu').onclick=()=>$('#sidebar').classList.toggle('open');
+}
+
+function bindActions(){
+  $('#refreshBtn').onclick=()=>refreshCurrent();
+  $('#quickAddBtn').onclick=()=>quickAdd();
+
+  $('#addSubscriptionBtn').onclick=()=>openSubscriptionModal();
+  $('#addAssetBtn').onclick=()=>openAssetModal();
+  $('#addLoanBtn').onclick=()=>openLoanModal();
+
+  $('#subSearch').addEventListener('input',renderSubscriptions);
+  $('#subStatusFilter').addEventListener('change',renderSubscriptions);
+  $('#assetSearch').addEventListener('input',renderAssets);
+  $('#assetStatusFilter').addEventListener('change',renderAssets);
+  $('#loanSearch').addEventListener('input',renderLoans);
+  $('#loanStatusFilter').addEventListener('change',renderLoans);
+  $('#notifSearch').addEventListener('input',renderNotifications);
+  $('#notifStatusFilter').addEventListener('change',renderNotifications);
+
+  $('#runNotifBtn').onclick=async()=>{
+    if(!requireConfig()) return;
+    await postApi('notifications.run',{actor_email:cfg.actorEmail});
+    toast('Arahan dihantar','Sistem sedang menjana/menghantar notifikasi. Refresh selepas beberapa saat.','ok');
+    setTimeout(()=>loadNotifications(),1800);
+  };
+
+  $('#saveSettingsBtn').onclick=saveSettings;
+  $('#testConnectionBtn').onclick=testConnection;
+  $('#clearSettingsBtn').onclick=clearSettings;
+
+  $('#modalClose').onclick=closeModal;
+  $('#modalCancel').onclick=closeModal;
+  $('#modalBackdrop').addEventListener('click',e=>{
+    if(e.target.id==='modalBackdrop') closeModal();
+  });
+  $('#modalSubmit').onclick=submitModal;
+}
+
+function showView(name){
+  state.view=name;
+  $$('.view').forEach(v=>v.classList.remove('active'));
+  $$('.nav-btn').forEach(v=>v.classList.toggle('active',v.dataset.view===name));
+  $('#view-'+name).classList.add('active');
+
+  const meta={
+    dashboard:['Dashboard','Ringkasan keseluruhan langganan dan pinjaman sistem.'],
+    subscriptions:['Langganan','Urus perkhidmatan, lesen, vendor dan tarikh pembaharuan.'],
+    assets:['Inventori ICT','Urus laptop, WiFi, extension, projektor dan peralatan ICT.'],
+    loans:['Pinjaman','Permohonan, check-out, due date dan pemulangan aset.'],
+    notifications:['Notifikasi','Peringatan renewal dan pinjaman yang perlu tindakan.'],
+    reports:['Laporan','Ringkasan dan eksport data pengurusan ICT.'],
+    settings:['Tetapan','Konfigurasi sambungan Google Apps Script API.']
+  };
+  $('#pageHeading').textContent=meta[name][0];
+  $('#pageSubtitle').textContent=meta[name][1];
+
+  if(name==='dashboard') loadDashboard();
+  if(name==='subscriptions') loadSubscriptions();
+  if(name==='assets') loadAssets();
+  if(name==='loans') loadLoans();
+  if(name==='notifications') loadNotifications();
+  if(name==='reports') loadDashboard();
+  if(name==='settings') loadSettingsForm();
+}
+
+function refreshCurrent(){
+  const map={
+    dashboard:loadDashboard,
+    subscriptions:loadSubscriptions,
+    assets:loadAssets,
+    loans:loadLoans,
+    notifications:loadNotifications,
+    reports:loadDashboard,
+    settings:testConnection
+  };
+  (map[state.view]||loadDashboard)();
+}
+
+function quickAdd(){
+  if(state.view==='assets') return openAssetModal();
+  if(state.view==='loans') return openLoanModal();
+  return openSubscriptionModal();
+}
+
+/* =========================================================
+   API: GET = JSONP
+   Backend Code.gs supports callback=
+========================================================= */
+function jsonp(action, params={}){
+  return new Promise((resolve,reject)=>{
+    if(!cfg.apiUrl) return reject(new Error('API URL belum ditetapkan.'));
+
+    const cb='__ictcb_'+Date.now()+'_'+Math.floor(Math.random()*100000);
+    const query=new URLSearchParams({
+      action,
+      token:cfg.token,
+      callback:cb,
+      ...Object.fromEntries(Object.entries(params).filter(([,v])=>v!==undefined&&v!==null&&v!==''))
+    });
+
+    const script=document.createElement('script');
+    const timer=setTimeout(()=>{
+      cleanup();
+      reject(new Error('API timeout. Semak URL deployment / akses Web App.'));
+    },18000);
+
+    function cleanup(){
+      clearTimeout(timer);
+      delete window[cb];
+      script.remove();
+    }
+
+    window[cb]=(payload)=>{
+      cleanup();
+      if(payload && payload.ok){
+        state.connected=true;
+        updateConnectionUI();
+        resolve(payload.data);
+      }else{
+        state.connected=false;
+        updateConnectionUI();
+        reject(new Error(payload?.error?.message || 'API error'));
+      }
+    };
+
+    script.onerror=()=>{
+      cleanup();
+      state.connected=false;
+      updateConnectionUI();
+      reject(new Error('Gagal memuatkan API. Semak deployment Apps Script.'));
+    };
+
+    script.src=cfg.apiUrl+'?'+query.toString();
+    document.head.appendChild(script);
+  });
+}
+
+/* =========================================================
+   API: POST
+   mode:no-cors = browser hantar request tanpa perlu baca response.
+   Selepas POST, UI reload data melalui JSONP.
+========================================================= */
+async function postApi(action, data={}){
+  if(!cfg.apiUrl) throw new Error('API URL belum ditetapkan.');
+
+  const body=new URLSearchParams();
+  body.set('action',action);
+  body.set('token',cfg.token);
+  body.set('data',JSON.stringify({
+    ...data,
+    actor_email:data.actor_email || cfg.actorEmail
+  }));
+
+  await fetch(cfg.apiUrl,{
+    method:'POST',
+    mode:'no-cors',
+    body
+  });
+
+  return true;
+}
+
+function requireConfig(){
+  if(!cfg.apiUrl || !cfg.token){
+    toast('Belum disambung','Pergi ke Tetapan dan masukkan URL API + token.','err');
+    showView('settings');
+    return false;
+  }
+  return true;
+}
+
+/* =========================================================
+   DASHBOARD
+========================================================= */
+async function loadDashboard(){
+  if(!requireConfig()) return;
+  setDashboardLoading(true);
+
+  try{
+    const data=await jsonp('dashboard');
+    state.dashboard=data;
+    renderDashboard(data);
+    renderReports(data);
+  }catch(err){
+    handleError(err);
+  }finally{
+    setDashboardLoading(false);
+  }
+}
+
+function setDashboardLoading(on){
+  $$('#view-dashboard .card').forEach(x=>x.classList.toggle('loading',on));
+}
+
+function renderDashboard(data){
+  const k=data?.kpi||{};
+  $('#kpiSubscriptions').textContent=n(k.active_subscriptions);
+  $('#kpiRenewal').textContent=n(k.renewal_soon);
+  $('#kpiLoans').textContent=n(k.active_loans);
+  $('#kpiOverdue').textContent=n(k.overdue_loans);
+  $('#statusAvailable').textContent=n(k.available_assets);
+  $('#statusBorrowed').textContent=n(k.borrowed_assets);
+  $('#statusOverdue').textContent=n(k.overdue_loans);
+
+  renderTrend(data?.renewal_trend||[]);
+  renderUpcoming(data?.upcoming_renewals||[]);
+  renderInventory(data?.inventory_summary||[]);
+}
+
+function renderUpcoming(items){
+  const body=$('#renewalRows');
+  if(!items.length){
+    body.innerHTML='<tr><td colspan="6" class="empty">Belum ada langganan akan datang.</td></tr>';
+    return;
+  }
+
+  body.innerHTML=items.map(x=>`
+    <tr>
+      <td><div class="strong">${esc(x.name)}</div><div class="tiny muted">${esc(x.subscription_id)}</div></td>
+      <td>${esc(x.vendor)}</td>
+      <td class="nowrap">${fmtDate(x.end_date)}</td>
+      <td>${n(x.days_remaining)} hari</td>
+      <td class="money">${fmtMoney(x.cost_rm)}</td>
+      <td>${statusPill(x.status)}</td>
+    </tr>
+  `).join('');
+}
+
+function renderInventory(items){
+  const box=$('#inventoryGrid');
+  if(!items.length){
+    box.innerHTML='<div class="empty" style="grid-column:1/-1">Belum ada data aset.</div>';
+    return;
+  }
+
+  const icons={
+    'Laptop':'💻','WiFi/MiFi':'📶','Extension':'🔌','Projector':'📽️',
+    'Monitor':'🖥️','Printer':'🖨️','Charger/Adapter':'🔋','Camera':'📷',
+    'Audio':'🎧','Network Device':'🌐'
+  };
+
+  box.innerHTML=items.slice(0,8).map(x=>`
+    <div class="inv-card">
+      <div class="ico">${icons[x.category]||'▣'}</div>
+      <label>${esc(x.category)}</label>
+      <strong>${n(x.total)}</strong>
+      <div class="inv-foot">${n(x.borrowed)} dipinjam • ${n(x.available)} tersedia</div>
+    </div>
+  `).join('');
+}
+
+function renderTrend(items){
+  const svg=$('#trendSvg');
+  const w=900,h=270,p={l:42,r:18,t:25,b:46};
+
+  const vals=items.length?items.map(x=>Number(x.value)||0):[0,0,0,0,0,0,0,0,0,0,0,0];
+  const labels=items.length?items.map(x=>x.label):['','','','','','','','','','','',''];
+  const max=Math.max(5,...vals);
+  const innerW=w-p.l-p.r, innerH=h-p.t-p.b;
+
+  const point=(i,v)=>{
+    const x=p.l+(i/(Math.max(1,vals.length-1)))*innerW;
+    const y=p.t+innerH-(v/max)*innerH;
+    return [x,y];
+  };
+
+  let grid='';
+  for(let i=0;i<=4;i++){
+    const y=p.t+(i/4)*innerH;
+    const val=Math.round(max-(i/4)*max);
+    grid+=`<line x1="${p.l}" y1="${y}" x2="${w-p.r}" y2="${y}" stroke="#173047" stroke-width="1"/>
+           <text x="${p.l-9}" y="${y+4}" text-anchor="end" fill="#617c96" font-size="10">${val}</text>`;
+  }
+
+  const pts=vals.map((v,i)=>point(i,v));
+  const line=pts.map(p=>p.join(',')).join(' ');
+  const area=`${p.l},${p.t+innerH} ${line} ${w-p.r},${p.t+innerH}`;
+
+  let dots=pts.map((pt,i)=>`
+    <circle cx="${pt[0]}" cy="${pt[1]}" r="4" fill="#20d6d2" stroke="#9ffaf3" stroke-width="2"/>
+    <text x="${pt[0]}" y="${pt[1]-12}" text-anchor="middle" fill="#9ffaf3" font-size="10" font-weight="700">${vals[i]}</text>
+  `).join('');
+
+  let labs=labels.map((lab,i)=>{
+    const x=point(i,0)[0];
+    const short=(lab||'').replace(/(\w+)\s(\d{4})/,'$1');
+    return `<text x="${x}" y="${h-16}" text-anchor="middle" fill="#617c96" font-size="9">${esc(short)}</text>`;
+  }).join('');
+
+  svg.innerHTML=`
+    <defs>
+      <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#20d6d2" stop-opacity=".28"/>
+        <stop offset="100%" stop-color="#20d6d2" stop-opacity="0"/>
+      </linearGradient>
+      <filter id="glow"><feGaussianBlur stdDeviation="3.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    </defs>
+    ${grid}
+    <polygon points="${area}" fill="url(#areaGrad)"/>
+    <polyline points="${line}" fill="none" stroke="#20d6d2" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)"/>
+    ${dots}${labs}
+  `;
+}
+
+/* =========================================================
+   SUBSCRIPTIONS
+========================================================= */
+async function loadSubscriptions(){
+  if(!requireConfig()) return;
+  try{
+    const res=await jsonp('subscriptions',{pageSize:200,sort:'end_date',order:'asc'});
+    state.subscriptions=res?.items||[];
+    renderSubscriptions();
+  }catch(err){handleError(err)}
+}
+
+function renderSubscriptions(){
+  const q=($('#subSearch').value||'').toLowerCase();
+  const st=$('#subStatusFilter').value;
+
+  const rows=state.subscriptions.filter(x=>{
+    const hay=[x.subscription_id,x.name,x.vendor,x.pic_name,x.category].join(' ').toLowerCase();
+    return (!q||hay.includes(q)) && (!st||x.status===st);
+  });
+
+  $('#subscriptionsRows').innerHTML=rows.length?rows.map(x=>`
+    <tr>
+      <td class="tiny">${esc(x.subscription_id)}</td>
+      <td><div class="strong">${esc(x.name)}</div><div class="tiny muted">${esc(x.plan_name||'')}</div></td>
+      <td>${esc(x.category)}</td>
+      <td>${esc(x.vendor)}</td>
+      <td>${esc(x.pic_name||'—')}</td>
+      <td class="nowrap">${fmtDate(x.end_date)}</td>
+      <td class="money">${fmtMoney(x.cost_rm)}</td>
+      <td>${statusPill(x.status)}</td>
+    </tr>
+  `).join(''):'<tr><td colspan="8" class="empty">Tiada rekod.</td></tr>';
+}
+
+/* =========================================================
+   ASSETS
+========================================================= */
+async function loadAssets(){
+  if(!requireConfig()) return;
+  try{
+    const res=await jsonp('assets',{pageSize:200,sort:'asset_name',order:'asc'});
+    state.assets=res?.items||[];
+    renderAssets();
+  }catch(err){handleError(err)}
+}
+
+function renderAssets(){
+  const q=($('#assetSearch').value||'').toLowerCase();
+  const st=$('#assetStatusFilter').value;
+
+  const rows=state.assets.filter(x=>{
+    const hay=[x.asset_id,x.asset_tag,x.asset_name,x.category,x.brand,x.model,x.serial_no,x.location].join(' ').toLowerCase();
+    return (!q||hay.includes(q)) && (!st||x.status===st);
+  });
+
+  $('#assetsRows').innerHTML=rows.length?rows.map(x=>`
+    <tr>
+      <td class="tiny">${esc(x.asset_id)}</td>
+      <td class="strong">${esc(x.asset_tag)}</td>
+      <td>${esc(x.asset_name)}</td>
+      <td>${esc(x.category)}</td>
+      <td>${esc([x.brand,x.model].filter(Boolean).join(' ')||'—')}</td>
+      <td>${esc(x.location||'—')}</td>
+      <td>${esc(x.condition||'—')}</td>
+      <td>${statusPill(x.status)}</td>
+    </tr>
+  `).join(''):'<tr><td colspan="8" class="empty">Tiada rekod.</td></tr>';
+}
+
+/* =========================================================
+   LOANS
+========================================================= */
+async function loadLoans(){
+  if(!requireConfig()) return;
+  try{
+    const [loanRes,userRes]=await Promise.all([
+      jsonp('loans',{pageSize:200,sort:'request_date',order:'desc'}),
+      state.users.length?Promise.resolve({items:state.users}):jsonp('users',{pageSize:200})
+    ]);
+    state.loans=loanRes?.items||[];
+    state.users=userRes?.items||state.users||[];
+    renderLoans();
+  }catch(err){handleError(err)}
+}
+
+function userName(id){
+  return state.users.find(x=>String(x.user_id)===String(id))?.name || id || '—';
+}
+
+function renderLoans(){
+  const q=($('#loanSearch').value||'').toLowerCase();
+  const st=$('#loanStatusFilter').value;
+
+  const rows=state.loans.filter(x=>{
+    const hay=[x.loan_id,userName(x.borrower_user_id),x.purpose,x.status].join(' ').toLowerCase();
+    return (!q||hay.includes(q)) && (!st||x.status===st);
+  });
+
+  $('#loansRows').innerHTML=rows.length?rows.map(x=>`
+    <tr>
+      <td class="strong">${esc(x.loan_id)}</td>
+      <td>${esc(userName(x.borrower_user_id))}</td>
+      <td>${fmtDate(x.request_date)}</td>
+      <td>${fmtDate(x.loan_date)}</td>
+      <td>${fmtDate(x.due_date)}</td>
+      <td>${esc(x.purpose||'—')}</td>
+      <td>${statusPill(x.status)}</td>
+    </tr>
+  `).join(''):'<tr><td colspan="7" class="empty">Tiada rekod.</td></tr>';
+}
+
+/* =========================================================
+   NOTIFICATIONS
+========================================================= */
+async function loadNotifications(){
+  if(!requireConfig()) return;
+  try{
+    const res=await jsonp('notifications',{pageSize:200,sort:'created_at',order:'desc'});
+    state.notifications=res?.items||[];
+    renderNotifications();
+  }catch(err){handleError(err)}
+}
+
+function renderNotifications(){
+  const q=($('#notifSearch').value||'').toLowerCase();
+  const st=$('#notifStatusFilter').value;
+
+  const rows=state.notifications.filter(x=>{
+    const hay=[x.notification_id,x.source_type,x.source_id,x.event_type,x.recipient_name,x.recipient_email,x.message].join(' ').toLowerCase();
+    return (!q||hay.includes(q)) && (!st||x.status===st);
+  });
+
+  $('#notificationsRows').innerHTML=rows.length?rows.map(x=>`
+    <tr>
+      <td class="tiny">${esc(x.notification_id)}</td>
+      <td>${esc(x.source_type)}<div class="tiny muted">${esc(x.source_id)}</div></td>
+      <td class="tiny">${esc(x.event_type)}</td>
+      <td>${esc(x.recipient_name||'—')}<div class="tiny muted">${esc(x.recipient_email||'')}</div></td>
+      <td>${esc(x.message||'—')}</td>
+      <td>${statusPill(x.status)}</td>
+      <td>${fmtDateTime(x.sent_at)}</td>
+    </tr>
+  `).join(''):'<tr><td colspan="7" class="empty">Tiada notifikasi.</td></tr>';
+}
+
+/* =========================================================
+   MODALS / CREATE RECORD
+========================================================= */
+function openModal(type,title,html){
+  state.modalType=type;
+  $('#modalTitle').textContent=title;
+  $('#modalBody').innerHTML=html;
+  $('#modalBackdrop').classList.add('show');
+}
+
+function closeModal(){
+  state.modalType=null;
+  $('#modalBackdrop').classList.remove('show');
+}
+
+function openSubscriptionModal(){
+  openModal('subscription','Tambah Langganan',`
+    <div class="form-grid">
+      ${field('sub_name','Nama Langganan *')}
+      ${field('sub_vendor','Vendor / Pembekal *')}
+      ${selectField('sub_category','Kategori *',['Software','Cloud/SaaS','Domain','Hosting','Internet','Antivirus/Security','License','Support/Maintenance','Data/Storage','Other'])}
+      ${field('sub_plan','Pelan / Edisi')}
+      ${field('sub_department','Jabatan / Unit')}
+      ${field('sub_pic','Nama PIC')}
+      ${field('sub_email','Email PIC','email')}
+      ${field('sub_cost','Kos (RM)','number')}
+      ${field('sub_start','Tarikh Mula','date')}
+      ${field('sub_end','Tarikh Tamat *','date')}
+      ${selectField('sub_cycle','Kitaran Renewal',['12','24','36'], '12')}
+      ${selectField('sub_auto','Auto Renew',['Tidak','Ya'],'Tidak')}
+      <div class="form-group full"><label>Catatan</label><textarea class="field" id="sub_notes"></textarea></div>
+    </div>
+  `);
+}
+
+function openAssetModal(){
+  openModal('asset','Tambah Aset ICT',`
+    <div class="form-grid">
+      ${field('asset_tag','Tag Aset *')}
+      ${field('asset_name','Nama Aset *')}
+      ${selectField('asset_category','Kategori *',['Laptop','Desktop','Monitor','WiFi/MiFi','Projector','Extension','Charger/Adapter','Printer','Camera','Audio','Network Device','Storage Device','Accessory','Other'])}
+      ${field('asset_brand','Brand')}
+      ${field('asset_model','Model')}
+      ${field('asset_serial','Serial Number')}
+      ${field('asset_department','Jabatan')}
+      ${field('asset_location','Lokasi')}
+      ${selectField('asset_condition','Keadaan',['BARU','BAIK','MEMUASKAN','PERLU_SERVIS','ROSAK_RINGAN','ROSAK_TERUK'],'BAIK')}
+      ${field('asset_warranty','Warranty Tamat','date')}
+      <div class="form-group full"><label>Catatan</label><textarea class="field" id="asset_notes"></textarea></div>
+    </div>
+  `);
+}
+
+async function openLoanModal(){
+  if(!requireConfig()) return;
+  try{
+    const [usersRes,assetsRes]=await Promise.all([
+      jsonp('users',{pageSize:200,active:'Ya'}),
+      jsonp('assets',{pageSize:200,status:'TERSEDIA'})
+    ]);
+    state.users=usersRes?.items||[];
+    const available=assetsRes?.items||[];
+
+    const userOptions=state.users.map(x=>`<option value="${attr(x.user_id)}">${esc(x.name)} — ${esc(x.department||'')}</option>`).join('');
+    const assetOptions=available.map(x=>`<option value="${attr(x.asset_id)}">${esc(x.asset_tag)} — ${esc(x.asset_name)}</option>`).join('');
+
+    openModal('loan','Daftar Pinjaman',`
+      <div class="form-grid">
+        <div class="form-group full"><label>Peminjam *</label><select class="field" id="loan_user"><option value="">Pilih peminjam</option>${userOptions}</select></div>
+        ${field('loan_due','Tarikh Perlu Pulang *','date')}
+        ${field('loan_purpose','Tujuan Pinjaman')}
+        <div class="form-group full">
+          <label>Aset Dipinjam * (Ctrl/Cmd untuk pilih lebih satu)</label>
+          <select class="field" id="loan_assets" multiple style="min-height:145px">${assetOptions}</select>
+        </div>
+        <div class="form-group full"><label>Catatan</label><textarea class="field" id="loan_remarks"></textarea></div>
+      </div>
+    `);
+  }catch(err){handleError(err)}
+}
+
+async function submitModal(){
+  if(!requireConfig()) return;
+  const btn=$('#modalSubmit');
+  btn.disabled=true;
+  btn.textContent='Menghantar...';
+
+  try{
+    if(state.modalType==='subscription'){
+      const data={
+        name:v('sub_name'),
+        vendor:v('sub_vendor'),
+        category:v('sub_category'),
+        plan_name:v('sub_plan'),
+        department:v('sub_department'),
+        pic_name:v('sub_pic'),
+        pic_email:v('sub_email'),
+        cost_rm:v('sub_cost'),
+        start_date:v('sub_start'),
+        end_date:v('sub_end'),
+        renewal_cycle_months:v('sub_cycle'),
+        auto_renew:v('sub_auto'),
+        notes:v('sub_notes')
+      };
+      if(!data.name||!data.vendor||!data.category||!data.end_date) throw new Error('Lengkapkan field bertanda *.');
+      await postApi('subscription.create',data);
+      closeModal();
+      toast('Langganan dihantar','Rekod sedang disimpan ke Google Sheets.','ok');
+      setTimeout(()=>{loadSubscriptions();loadDashboard()},1600);
+    }
+
+    if(state.modalType==='asset'){
+      const data={
+        asset_tag:v('asset_tag'),
+        asset_name:v('asset_name'),
+        category:v('asset_category'),
+        brand:v('asset_brand'),
+        model:v('asset_model'),
+        serial_no:v('asset_serial'),
+        department:v('asset_department'),
+        location:v('asset_location'),
+        condition:v('asset_condition'),
+        warranty_end_date:v('asset_warranty'),
+        notes:v('asset_notes')
+      };
+      if(!data.asset_tag||!data.asset_name||!data.category) throw new Error('Lengkapkan field bertanda *.');
+      await postApi('asset.create',data);
+      closeModal();
+      toast('Aset dihantar','Rekod sedang disimpan ke Google Sheets.','ok');
+      setTimeout(()=>{loadAssets();loadDashboard()},1600);
+    }
+
+    if(state.modalType==='loan'){
+      const selected=[...$('#loan_assets').selectedOptions].map(o=>o.value);
+      const data={
+        borrower_user_id:v('loan_user'),
+        due_date:v('loan_due'),
+        purpose:v('loan_purpose'),
+        remarks:v('loan_remarks'),
+        items:selected.map(asset_id=>({asset_id,condition_out:'BAIK'}))
+      };
+      if(!data.borrower_user_id||!data.due_date||!selected.length) throw new Error('Pilih peminjam, due date dan sekurang-kurangnya satu aset.');
+      await postApi('loan.create',data);
+      closeModal();
+      toast('Permohonan dihantar','Pinjaman sedang direkod dan aset akan di-reserve.','ok');
+      setTimeout(()=>{loadLoans();loadDashboard()},1700);
+    }
+  }catch(err){
+    handleError(err);
+  }finally{
+    btn.disabled=false;
+    btn.textContent='Simpan';
+  }
+}
+
+function field(id,label,type='text'){
+  return `<div class="form-group"><label>${esc(label)}</label><input class="field" id="${id}" type="${type}"></div>`;
+}
+function selectField(id,label,items,selected=''){
+  return `<div class="form-group"><label>${esc(label)}</label><select class="field" id="${id}">${items.map(x=>`<option value="${attr(x)}" ${String(x)===String(selected)?'selected':''}>${esc(x)}</option>`).join('')}</select></div>`;
+}
+function v(id){return $('#'+id)?.value?.trim()||''}
+
+/* =========================================================
+   SETTINGS
+========================================================= */
+function loadSettingsForm(){
+  $('#settingsApiUrl').value=cfg.apiUrl;
+  $('#settingsToken').value=cfg.token;
+  $('#settingsActorEmail').value=cfg.actorEmail;
+  $('#settingsDisplayName').value=cfg.displayName;
+}
+
+function saveSettings(){
+  const url=$('#settingsApiUrl').value.trim().replace(/\/+$/,'');
+  const token=$('#settingsToken').value.trim();
+  const actor=$('#settingsActorEmail').value.trim();
+  const name=$('#settingsDisplayName').value.trim();
+
+  if(url && !url.endsWith('/exec')){
+    toast('Semak URL','Gunakan URL deployment Web App yang berakhir dengan /exec.','err');
+    return;
+  }
+
+  localStorage.setItem('ict_api_url',url);
+  localStorage.setItem('ict_api_token',token);
+  localStorage.setItem('ict_actor_email',actor);
+  localStorage.setItem('ict_display_name',name||'Admin ICT');
+
+  updateConnectionUI();
+  toast('Tetapan disimpan','Sekarang tekan Test Connection.','ok');
+}
+
+async function testConnection(){
+  saveSettings();
+  $('#connectionStatus').textContent='Menguji sambungan...';
+
+  try{
+    const ping=await jsonp('ping');
+    let msg=`✓ ${ping.app} ${ping.version} — ${ping.status}`;
+
+    if(cfg.token){
+      const dash=await jsonp('dashboard');
+      msg+=` | API token sah`;
+      state.dashboard=dash;
+      renderDashboard(dash);
+      renderReports(dash);
+    }
+
+    $('#connectionStatus').innerHTML=`<span style="color:var(--green)">${esc(msg)}</span>`;
+    state.connected=true;
+    updateConnectionUI();
+    toast('Connection berjaya','GitHub frontend boleh membaca Google Sheets API.','ok');
+  }catch(err){
+    state.connected=false;
+    updateConnectionUI();
+    $('#connectionStatus').innerHTML=`<span style="color:var(--red)">✕ ${esc(err.message)}</span>`;
+    toast('Connection gagal',err.message,'err');
+  }
+}
+
+function clearSettings(){
+  ['ict_api_url','ict_api_token','ict_actor_email','ict_display_name'].forEach(k=>localStorage.removeItem(k));
+  state.connected=false;
+  loadSettingsForm();
+  updateConnectionUI();
+  $('#connectionStatus').textContent='';
+}
+
+function updateConnectionUI(){
+  const dot=$('#sideDot');
+  if(state.connected){
+    dot.className='dot ok';
+    $('#sideStatus').textContent='API Connected';
+    $('#sideHint').textContent=cfg.displayName || 'Admin ICT';
+  }else if(cfg.apiUrl){
+    dot.className='dot';
+    $('#sideStatus').textContent='API Configured';
+    $('#sideHint').textContent='Tekan Test Connection.';
+  }else{
+    dot.className='dot';
+    $('#sideStatus').textContent='Belum disambung';
+    $('#sideHint').textContent='Tetapkan Apps Script API di Tetapan.';
+  }
+}
+
+/* =========================================================
+   REPORTS / EXPORT
+========================================================= */
+function renderReports(data){
+  const k=data?.kpi||{};
+  $('#reportAvailable').textContent=n(k.available_assets);
+  $('#reportBorrowed').textContent=n(k.borrowed_assets);
+  $('#reportRenewal').textContent=n(k.renewal_soon);
+  $('#reportOverdue').textContent=n(k.overdue_loans);
+}
+
+async function exportCSV(type){
+  try{
+    let arr=state[type]||[];
+
+    if(!arr.length){
+      const action=type;
+      const res=await jsonp(action,{pageSize:200});
+      arr=res?.items||[];
+      state[type]=arr;
+    }
+
+    if(!arr.length) return toast('Tiada data','Tiada rekod untuk dieksport.');
+
+    const headers=[...new Set(arr.flatMap(Object.keys))];
+    const csv=[
+      headers.join(','),
+      ...arr.map(row=>headers.map(h=>csvCell(row[h])).join(','))
+    ].join('\n');
+
+    const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;
+    a.download=`${type}_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }catch(err){handleError(err)}
+}
+
+function csvCell(v){
+  const s=String(v??'').replace(/"/g,'""');
+  return `"${s}"`;
+}
+
+/* =========================================================
+   UTILS
+========================================================= */
+function n(v){return Number(v||0).toLocaleString('ms-MY')}
+function fmtMoney(v){return Number(v||0).toLocaleString('ms-MY',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function fmtDate(v){
+  if(!v) return '—';
+  const d=new Date(String(v).length===10?v+'T12:00:00':v);
+  return isNaN(d)?esc(v):new Intl.DateTimeFormat('ms-MY',{day:'2-digit',month:'short',year:'numeric'}).format(d);
+}
+function fmtDateTime(v){
+  if(!v) return '—';
+  const d=new Date(v);
+  return isNaN(d)?esc(v):new Intl.DateTimeFormat('ms-MY',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}).format(d);
+}
+
+function statusPill(status){
+  const s=String(status||'—');
+  let c='gray';
+  if(['AKTIF','TERSEDIA','SENT','SELESAI_RENEW','DIPULANGKAN','DILULUSKAN'].includes(s)) c='green';
+  if(['RENEW_SOON','HAMPIR_DUE','PENDING','MENUNGGU_KELULUSAN'].includes(s)) c='yellow';
+  if(['LEWAT','TAMAT','FAILED','ROSAK','DITOLAK'].includes(s)) c='red';
+  if(['DIPINJAM','DALAM_PROSES'].includes(s)) c='blue';
+  if(['RESERVED','PERMOHONAN_BARU'].includes(s)) c='purple';
+  return `<span class="pill ${c}">${esc(s)}</span>`;
+}
+
+function esc(v){
+  return String(v??'')
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#039;');
+}
+function attr(v){return esc(v)}
+
+function toast(title,msg='',type=''){
+  const el=document.createElement('div');
+  el.className='toast '+type;
+  el.innerHTML=`<strong>${esc(title)}</strong><div class="muted">${esc(msg)}</div>`;
+  $('#toastWrap').appendChild(el);
+  setTimeout(()=>el.remove(),4300);
+}
+
+function handleError(err){
+  console.error(err);
+  toast('Ralat',err?.message||String(err),'err');
+
+  if(/token|API URL|deployment|memuatkan API/i.test(err?.message||'')){
+    state.connected=false;
+    updateConnectionUI();
+  }
+}
+</script>
+</body>
+</html>
