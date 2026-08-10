@@ -81,6 +81,130 @@ body{font-size:16px}
   .hero{height:215px;min-height:215px}.hero-copy{max-width:92%}.hero-copy h2{font-size:21px}.hero-shade{background:linear-gradient(90deg,rgba(246,251,255,.99) 0%,rgba(243,249,255,.94) 64%,rgba(238,247,255,.45) 100%)}
 }
 
+
+/* =========================================================
+   V6.2 - HERO BOX ASAL + VIDEO ZOOM-OUT + CLEAN TOP HEADER
+   - Kekalkan saiz kotak dashboard seperti V6 asal
+   - Kecilkan PAPARAN video sahaja (object-fit: contain)
+   - Hide butang global Muat Semula / Tambah Rekod
+   - Naikkan banner/tajuk modul ke bahagian atas
+   ========================================================= */
+
+/* Buang header global yang menyebabkan tajuk berganda.
+   Fungsi JS dikekalkan; hanya paparan disembunyikan. */
+.topbar{
+  min-height:0 !important;
+  height:0 !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:0 !important;
+  overflow:visible !important;
+}
+.topbar .page-title,
+.topbar .top-actions{
+  display:none !important;
+}
+
+/* Kembalikan kotak Dashboard kepada saiz V6 asal */
+#view-dashboard .hero{
+  height:218px !important;
+  min-height:218px !important;
+  margin-bottom:14px !important;
+  border-radius:18px !important;
+}
+
+/* Yang dikecilkan ialah VIDEO, bukan kotak.
+   "contain" menunjukkan lebih banyak kandungan video
+   dan mengelakkan laptop/router nampak terlalu zoom. */
+#view-dashboard .hero-media{
+  background:
+    radial-gradient(circle at 82% 50%, rgba(109,177,255,.20), transparent 30%),
+    linear-gradient(90deg,#eef7ff 0%,#e4f2ff 48%,#d8ebff 100%) !important;
+}
+#view-dashboard .hero-video{
+  width:100% !important;
+  height:100% !important;
+  object-fit:contain !important;
+  object-position:right center !important;
+  transform:none !important;
+}
+
+/* Copy kekal selesa atas video */
+#view-dashboard .hero-copy{
+  padding:23px 30px !important;
+  max-width:565px !important;
+}
+#view-dashboard .hero-copy h2{
+  font-size:27px !important;
+  line-height:1.12 !important;
+  margin:0 0 9px !important;
+}
+#view-dashboard .hero-copy p{
+  font-size:14px !important;
+  line-height:1.52 !important;
+  margin:0 0 15px !important;
+}
+
+/* Modul lain terus bermula hampir di bahagian atas */
+.view:not(#view-dashboard) > .mini-hero{
+  margin-top:0 !important;
+}
+
+/* Mobile: hamburger kekal boleh digunakan walaupun topbar disembunyikan */
+@media(max-width:760px){
+  .topbar{
+    display:block !important;
+    height:0 !important;
+    min-height:0 !important;
+  }
+  .topbar .mobile-menu{
+    display:inline-flex !important;
+    position:fixed !important;
+    top:12px !important;
+    left:12px !important;
+    z-index:80 !important;
+    width:42px !important;
+    height:42px !important;
+    align-items:center !important;
+    justify-content:center !important;
+    padding:0 !important;
+    border-radius:12px !important;
+    box-shadow:0 8px 24px rgba(30,64,175,.16) !important;
+  }
+
+  #view-dashboard .hero{
+    height:245px !important;
+    min-height:245px !important;
+  }
+  #view-dashboard .hero-video{
+    object-fit:contain !important;
+    object-position:center bottom !important;
+  }
+  #view-dashboard .hero-copy{
+    max-width:78% !important;
+    padding:22px 18px !important;
+  }
+  #view-dashboard .hero-copy h2{
+    font-size:23px !important;
+  }
+  #view-dashboard .hero-copy p{
+    font-size:12.5px !important;
+  }
+}
+
+@media(max-width:500px){
+  #view-dashboard .hero{
+    height:270px !important;
+    min-height:270px !important;
+  }
+  #view-dashboard .hero-copy{
+    max-width:90% !important;
+  }
+  #view-dashboard .hero-copy h2{
+    font-size:22px !important;
+  }
+}
+
 </style></head>
 <body><div class="app">
 <aside class="sidebar" id="sidebar"><div class="sidebar-media" aria-hidden="true"><video id="sidebarVideo" class="sidebar-bg-video" muted loop playsinline autoplay preload="none" poster="sidebar-celcom-poster.jpg" data-src="sidebar-celcom.mp4"></video></div><div class="sidebar-overlay" aria-hidden="true"></div><div class="brand"><div class="brand-mark">🖥</div><div><strong>Sistem ICT</strong><span>Langganan & Pinjaman</span></div></div><nav class="nav">
