@@ -457,11 +457,23 @@ const state = {
   inFlight: {}
 };
 
+const SYSTEM_CONFIG = {
+  API_URL: 'https://script.google.com/macros/s/AKfycbx9xy1bd7Japfna3fpSVcLr7ujLe8xPMm_nc3TS1Gz2aO6fvAb71kt3wVpDn_-JT6e5/exec',
+  API_TOKEN: '5EEE19516B1E491DA2E14695F95BA2BC',
+  ACTOR_EMAIL: 'it.pkpj2026@gmail.com',
+  DISPLAY_NAME: 'Sistem ICT'
+};
+
+/*
+  AUTO API:
+  - PC baru terus guna config di atas
+  - localStorage masih boleh override melalui Tetapan jika perlu
+*/
 const cfg = {
-  get apiUrl(){ return localStorage.getItem('ict_api_url') || ''; },
-  get token(){ return localStorage.getItem('ict_api_token') || ''; },
-  get actorEmail(){ return localStorage.getItem('ict_actor_email') || ''; },
-  get displayName(){ return localStorage.getItem('ict_display_name') || 'Sistem ICT'; }
+  get apiUrl(){ return localStorage.getItem('ict_api_url') || SYSTEM_CONFIG.API_URL; },
+  get token(){ return localStorage.getItem('ict_api_token') || SYSTEM_CONFIG.API_TOKEN; },
+  get actorEmail(){ return localStorage.getItem('ict_actor_email') || SYSTEM_CONFIG.ACTOR_EMAIL; },
+  get displayName(){ return localStorage.getItem('ict_display_name') || SYSTEM_CONFIG.DISPLAY_NAME; }
 };
 
 const $ = (s, root=document) => root.querySelector(s);
@@ -1681,14 +1693,19 @@ function clearSettings(){
 
 function updateConnectionUI(){
   const dot=$('#sideDot');
+
   if(state.connected){
     dot.className='dot ok';
     $('#sideStatus').textContent='API Connected';
     $('#sideHint').textContent='Sistem sedia digunakan';
+  }else if(cfg.apiUrl && cfg.token){
+    dot.className='dot';
+    $('#sideStatus').textContent='API Ready';
+    $('#sideHint').textContent='Menyambung ke sistem...';
   }else if(cfg.apiUrl){
     dot.className='dot';
     $('#sideStatus').textContent='API Configured';
-    $('#sideHint').textContent='Tekan Test Connection.';
+    $('#sideHint').textContent='Token API diperlukan.';
   }else{
     dot.className='dot';
     $('#sideStatus').textContent='Belum disambung';
