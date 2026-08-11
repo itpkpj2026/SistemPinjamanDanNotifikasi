@@ -1,0 +1,709 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f5f9ff">
+<title>Portal Pemohon | Sistem ICT</title>
+<style>
+:root{
+  --bg:#f4f8fc;--panel:#fff;--panel2:#f8fbff;--line:#dce7f1;
+  --text:#17324d;--muted:#71869a;--blue:#1479d1;--blue2:#4aa3ec;
+  --cyan:#1db6ca;--green:#18a779;--yellow:#e1a623;--red:#df5571;
+  --purple:#7958d6;--shadow:0 14px 38px rgba(31,74,117,.10);
+  --radius:20px;--sidebar:242px
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;min-height:100vh;color:var(--text);
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:
+    radial-gradient(circle at 90% 0%,rgba(74,163,236,.12),transparent 29rem),
+    linear-gradient(180deg,#f8fbff,#f2f7fb 45%,#f7fafc);
+}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
+.muted{color:var(--muted)} .tiny{font-size:11px} .strong{font-weight:800;color:#15324c}
+.app{min-height:100vh}
+.sidebar{
+  position:fixed;inset:0 auto 0 0;width:var(--sidebar);z-index:30;
+  padding:20px 14px;display:flex;flex-direction:column;
+  background:linear-gradient(180deg,#0b5fa8 0%,#087aaf 52%,#086d91 100%);
+  color:#fff;box-shadow:15px 0 45px rgba(20,71,119,.13)
+}
+.brand{display:flex;gap:11px;align-items:center;padding:5px 8px 20px;border-bottom:1px solid rgba(255,255,255,.17)}
+.brand-mark{width:44px;height:44px;border-radius:14px;background:rgba(255,255,255,.16);display:grid;place-items:center;font-size:22px;border:1px solid rgba(255,255,255,.25)}
+.brand strong{display:block;font-size:16px} .brand span{display:block;font-size:11px;opacity:.74;margin-top:2px}
+.profile{margin:15px 4px 4px;padding:13px;border-radius:15px;background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.18)}
+.profile-name{font-weight:800;font-size:13px} .profile-meta{font-size:10px;opacity:.72;margin-top:4px;line-height:1.45}
+.nav{display:grid;gap:6px;margin-top:14px}
+.nav-btn{border:0;background:transparent;color:rgba(255,255,255,.76);border-radius:11px;padding:11px 12px;display:flex;gap:11px;align-items:center;text-align:left;width:100%;font-weight:700;font-size:12px}
+.nav-btn:hover{background:rgba(255,255,255,.09);color:#fff}
+.nav-btn.active{background:#fff;color:#126daf;box-shadow:0 9px 20px rgba(1,61,101,.18)}
+.nav-ico{width:22px;text-align:center;font-size:16px}
+.sidebar-foot{margin-top:auto}
+.api-chip{padding:10px 11px;border-radius:12px;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.15);font-size:10px;display:flex;align-items:center;gap:7px}
+.dot{width:8px;height:8px;border-radius:50%;background:#ffd76b} .dot.ok{background:#57f1b6;box-shadow:0 0 11px rgba(87,241,182,.8)} .dot.err{background:#ff8ca5}
+.logout{margin-top:8px;width:100%;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:white;padding:9px;border-radius:10px}
+.main{margin-left:var(--sidebar);padding:22px 25px 45px;min-height:100vh}
+.mobile-menu{display:none}
+.view{display:none} .view.active{display:block}
+.page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:15px}
+.page-head h1{font-size:27px;margin:0;letter-spacing:-.035em} .page-head p{font-size:12px;color:var(--muted);margin:6px 0 0}
+.btn{border:1px solid var(--line);background:#fff;color:#35526c;padding:10px 13px;border-radius:10px;font-weight:800;font-size:12px;transition:.15s;box-shadow:0 5px 14px rgba(45,84,122,.05)}
+.btn:hover{transform:translateY(-1px);border-color:#bfd3e4}
+.btn-primary{background:linear-gradient(135deg,#0d76cc,#229adb);color:#fff;border-color:#167fcb}
+.btn-green{background:linear-gradient(135deg,#138c68,#19aa7e);color:#fff;border-color:#16956f}
+.btn-danger{color:#c83f5b;border-color:#f0bec9;background:#fff7f9}
+.btn-sm{padding:7px 9px;font-size:10px}
+.hero{min-height:235px;border-radius:25px;overflow:hidden;position:relative;margin-bottom:14px;background:linear-gradient(115deg,#dff1ff 0%,#ebf7ff 44%,#cceaff 100%);border:1px solid #d4e7f7;box-shadow:var(--shadow);display:flex;align-items:center}
+.hero:after{content:"";position:absolute;width:340px;height:340px;border-radius:50%;right:-75px;top:-95px;background:radial-gradient(circle,#6ec5f4,rgba(110,197,244,.07) 60%,transparent 70%)}
+.hero-copy{position:relative;z-index:3;padding:30px 36px;max-width:650px}
+.eyebrow{display:inline-flex;padding:5px 9px;border-radius:999px;background:#fff;color:#1479d1;border:1px solid #cce1f2;font-size:10px;font-weight:900;letter-spacing:.06em;margin-bottom:12px}
+.hero h2{font-size:32px;line-height:1.08;letter-spacing:-.04em;margin:0 0 10px;max-width:620px}
+.hero p{font-size:14px;line-height:1.55;color:#54718b;max-width:560px;margin:0 0 18px}
+.hero-art{position:absolute;right:45px;bottom:17px;z-index:2;width:335px;height:190px}
+.device-laptop{position:absolute;right:20px;bottom:20px;width:195px;height:118px;background:#eaf4fc;border:8px solid #253a4d;border-radius:9px;box-shadow:0 17px 28px rgba(24,65,104,.18)}
+.device-laptop:before{content:"";position:absolute;inset:9px;background:linear-gradient(145deg,#4fb6e9,#0d6dad 75%);border-radius:2px}
+.device-laptop:after{content:"";position:absolute;left:-21px;right:-21px;bottom:-19px;height:13px;background:#8298aa;border-radius:3px 3px 10px 10px}
+.device-router{position:absolute;left:16px;bottom:22px;width:88px;height:54px;background:#fff;border-radius:12px;box-shadow:0 14px 24px rgba(33,74,109,.15);border:1px solid #d3e1ed}
+.device-router:before,.device-router:after{content:"";position:absolute;width:5px;height:58px;background:#3f596d;bottom:39px;border-radius:3px}
+.device-router:before{left:16px;transform:rotate(-8deg)} .device-router:after{right:16px;transform:rotate(8deg)}
+.wifi{position:absolute;left:43px;bottom:41px;color:#1689c6;font-size:20px;z-index:3}
+.card{background:rgba(255,255,255,.94);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:14px}
+.kpi{padding:16px;min-height:112px;position:relative;overflow:hidden}
+.kpi-top{display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:10px;color:#7a90a3;font-weight:900;letter-spacing:.05em}
+.kpi-icon{width:34px;height:34px;display:grid;place-items:center;border-radius:11px;background:#edf7ff;color:var(--accent,#1479d1);font-size:17px}
+.kpi-value{font-size:30px;font-weight:900;margin-top:8px;line-height:1}
+.kpi-foot{font-size:10px;color:var(--muted);margin-top:7px}
+.grid2{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(300px,.7fr);gap:14px}
+.panel{padding:16px}
+.panel-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+.panel-title{font-size:12px;font-weight:900;letter-spacing:.035em} .panel-sub{font-size:10px;color:var(--muted);margin-top:3px}
+.table-wrap{overflow:auto;border-radius:12px}
+table{width:100%;border-collapse:collapse;min-width:690px}
+th{text-align:left;padding:10px;font-size:9px;color:#7c92a5;border-bottom:1px solid var(--line);letter-spacing:.05em}
+td{padding:11px 10px;border-bottom:1px solid #edf2f6;font-size:11px;vertical-align:middle;color:#405d75}
+tbody tr:hover{background:#f8fbfe}
+.pill{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;font-size:9px;font-weight:900;white-space:nowrap}
+.pill.green{background:#eaf9f3;color:#11845f} .pill.yellow{background:#fff7df;color:#a87506} .pill.red{background:#fff0f3;color:#c83f5b} .pill.blue{background:#eaf5ff;color:#1772b6} .pill.purple{background:#f1edff;color:#6849bd} .pill.gray{background:#f0f4f7;color:#698095}
+.category-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.cat-card{padding:13px;border:1px solid #e2ebf3;border-radius:14px;background:#fbfdff}
+.cat-icon{font-size:20px} .cat-card strong{font-size:19px;display:block;margin-top:5px} .cat-card label{font-size:9px;color:#7a90a3;font-weight:900}
+.toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:13px}
+.search{flex:1;min-width:220px;padding:9px 11px;border-radius:11px;background:#fff;border:1px solid var(--line);display:flex;gap:7px;align-items:center}
+.search input{width:100%;border:0;outline:0;background:transparent;color:var(--text)}
+.field{width:100%;padding:10px 11px;border:1px solid #cbdbe8;border-radius:10px;outline:0;background:#fff;color:var(--text)}
+.field:focus{border-color:#238dcc;box-shadow:0 0 0 3px rgba(35,141,204,.10)}
+textarea.field{min-height:90px;resize:vertical}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-group label{display:block;margin-bottom:5px;font-size:10px;color:#637b91;font-weight:900}
+.form-group.full{grid-column:1/-1}
+.asset-select-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.asset-choice{position:relative;border:1px solid #dfe9f1;border-radius:16px;padding:13px;background:#fff;transition:.15s}
+.asset-choice:hover{transform:translateY(-1px);box-shadow:0 10px 23px rgba(44,87,126,.08)}
+.asset-choice.selected{border-color:#2693d6;background:#f0f9ff;box-shadow:0 0 0 3px rgba(38,147,214,.08)}
+.asset-choice input{position:absolute;right:11px;top:11px}
+.asset-photo{height:92px;border-radius:11px;background:linear-gradient(145deg,#e8f4fb,#d6ebf7);display:grid;place-items:center;overflow:hidden;margin-bottom:9px;font-size:30px}
+.asset-photo img{width:100%;height:100%;object-fit:cover}
+.asset-choice h4{margin:0;font-size:12px} .asset-choice p{font-size:10px;color:var(--muted);margin:4px 0 0;line-height:1.45}
+.asset-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.asset-card{overflow:hidden} .asset-card .photo{height:135px;background:linear-gradient(145deg,#e8f3fb,#d7ebf7);display:grid;place-items:center;font-size:40px}
+.asset-card .photo img{width:100%;height:100%;object-fit:cover} .asset-card .body{padding:13px}
+.asset-card h3{font-size:13px;margin:0 0 4px} .asset-card p{font-size:10px;color:var(--muted);line-height:1.5;margin:0}
+.step-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.step{padding:17px;text-align:center} .step-no{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#e8f5ff;color:#1176bd;font-weight:900;margin:0 auto 9px} .step h3{font-size:12px;margin:0 0 5px} .step p{font-size:10px;color:var(--muted);line-height:1.5;margin:0}
+.login-overlay{position:fixed;inset:0;z-index:100;background:linear-gradient(135deg,#e7f4ff,#f8fbff 55%,#d9effa);display:flex;align-items:center;justify-content:center;padding:20px}
+.login-box{width:min(470px,100%);padding:25px;border-radius:25px;background:rgba(255,255,255,.94);border:1px solid #d7e5f0;box-shadow:0 30px 80px rgba(29,78,119,.18)}
+.login-logo{width:58px;height:58px;border-radius:18px;display:grid;place-items:center;background:linear-gradient(145deg,#0f76ca,#23a2d7);color:#fff;font-size:27px;margin-bottom:15px}
+.login-box h2{font-size:25px;margin:0 0 7px;letter-spacing:-.035em} .login-box p{font-size:12px;color:var(--muted);line-height:1.55;margin:0 0 17px}
+.login-note{font-size:10px;color:#668098;padding:10px 11px;border-radius:10px;background:#f3f8fc;border:1px solid #e1eaf1;margin-top:11px;line-height:1.45}
+.empty{padding:28px;text-align:center;color:var(--muted);font-size:11px}
+.toast-wrap{position:fixed;right:18px;bottom:18px;z-index:150;display:grid;gap:8px}
+.toast{width:min(390px,calc(100vw - 36px));padding:12px 14px;border-radius:12px;background:#fff;border:1px solid #dbe7f0;box-shadow:var(--shadow);font-size:11px} .toast.ok{border-color:#9cdbc5} .toast.err{border-color:#efb2c0}
+.upload-box{border:1px dashed #b8d1e2;background:#f8fcff;border-radius:12px;padding:12px;text-align:center}
+.upload-box input{max-width:100%}
+@media(max-width:1120px){.kpis{grid-template-columns:1fr 1fr}.asset-grid{grid-template-columns:1fr 1fr}.asset-select-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:850px){.grid2{grid-template-columns:1fr}.hero-art{opacity:.32;right:0}.hero-copy{max-width:80%}.step-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:720px){
+  :root{--sidebar:0px} .sidebar{width:245px;transform:translateX(-100%);transition:.2s} .sidebar.open{transform:translateX(0)} .main{margin-left:0;padding:15px} .mobile-menu{display:inline-flex;position:fixed;left:12px;top:12px;z-index:70;width:42px;height:42px;align-items:center;justify-content:center} .page-head{padding-left:52px} .form-grid{grid-template-columns:1fr} .form-group.full{grid-column:auto} .asset-select-grid,.asset-grid{grid-template-columns:1fr 1fr} .hero{min-height:270px} .hero-copy{padding:25px 20px;max-width:94%} .hero h2{font-size:27px} .hero-art{right:-80px;opacity:.23}
+}
+@media(max-width:470px){.kpis,.asset-grid,.asset-select-grid,.step-grid{grid-template-columns:1fr}.page-head h1{font-size:24px}}
+
+/* PEMOHON V2 - Name autocomplete + ICT visual */
+.login-overlay{background:
+  radial-gradient(circle at 12% 15%,rgba(44,169,227,.22),transparent 30rem),
+  radial-gradient(circle at 88% 78%,rgba(37,185,137,.14),transparent 30rem),
+  linear-gradient(135deg,#e8f5ff,#f8fbff 52%,#e4f3fa)}
+.login-shell{width:min(980px,100%);display:grid;grid-template-columns:1.15fr .85fr;background:rgba(255,255,255,.93);border:1px solid #d6e5ef;border-radius:30px;overflow:hidden;box-shadow:0 36px 95px rgba(22,74,117,.20)}
+.login-visual{position:relative;min-height:520px;padding:28px;overflow:hidden;background:linear-gradient(145deg,#dff3ff 0%,#eef9ff 55%,#d8f3ef 100%)}
+.visual-glow{position:absolute;width:420px;height:420px;border-radius:50%;right:-150px;top:-160px;background:radial-gradient(circle,rgba(25,149,211,.28),transparent 67%)}
+.ict-scene{position:absolute;width:95%;max-width:600px;left:1%;top:18px;filter:drop-shadow(0 24px 30px rgba(30,79,117,.12))}
+.visual-copy{position:absolute;left:34px;right:34px;bottom:28px;z-index:2}
+.visual-badge{display:inline-flex;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.78);border:1px solid #cce3ef;color:#1376ae;font-weight:900;font-size:9px;letter-spacing:.09em}
+.visual-copy h3{font-size:24px;letter-spacing:-.035em;margin:10px 0 6px;max-width:390px}
+.visual-copy p{font-size:11px;color:#58758b;line-height:1.55;max-width:390px;margin:0}
+.login-box{width:auto;box-shadow:none;border:0;border-radius:0;background:transparent;padding:50px 36px;display:flex;flex-direction:column;justify-content:center}
+.login-box h2{font-size:29px;line-height:1.08}
+.login-sub{margin-bottom:20px!important}
+.autocomplete-wrap{position:relative}
+.name-search{position:relative}
+.name-search>span{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#6e879b;z-index:2}
+.name-search .field{padding-left:34px}
+.suggestions{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:15;background:#fff;border:1px solid #d6e4ee;border-radius:13px;box-shadow:0 18px 45px rgba(28,73,110,.18);max-height:245px;overflow:auto;padding:5px}
+.suggestion{width:100%;display:block;text-align:left;border:0;background:#fff;padding:10px 11px;border-radius:9px;color:#284962}
+.suggestion:hover,.suggestion.active{background:#edf8ff}
+.suggestion b{display:block;font-size:12px}
+.suggestion small{display:block;color:#7b91a3;margin-top:2px;font-size:9px}
+.hero-ict-icons{position:absolute;right:35px;bottom:20px;width:355px;height:195px;z-index:2}
+.hero-laptop{position:absolute;right:120px;bottom:19px;width:190px;height:115px;border:8px solid #21364c;border-radius:9px;background:linear-gradient(145deg,#54c1ee,#0870b5)}
+.hero-laptop:after{content:"";position:absolute;left:-25px;right:-25px;bottom:-19px;height:12px;border-radius:3px 3px 10px 10px;background:#a5b5c2}
+.hero-router{position:absolute;right:10px;bottom:20px;width:88px;height:53px;border:1px solid #cce0eb;border-radius:13px;background:#fff;box-shadow:0 12px 24px rgba(34,76,111,.14)}
+.hero-router:before,.hero-router:after{content:"";position:absolute;bottom:40px;width:5px;height:54px;border-radius:3px;background:#36526b}
+.hero-router:before{left:17px}.hero-router:after{right:17px}
+.hero-printer{position:absolute;right:5px;bottom:85px;width:96px;height:68px;border-radius:12px;background:#edf4f8;border:1px solid #cbdde8;box-shadow:0 12px 24px rgba(34,76,111,.11)}
+.hero-printer:before{content:"";position:absolute;left:17px;right:17px;top:-28px;height:42px;background:#fff;border:1px solid #cbdde8;border-radius:4px}
+.hero-printer:after{content:"";position:absolute;left:17px;right:17px;bottom:-20px;height:43px;background:#fff;border:1px solid #cbdde8;border-radius:4px}
+@media(max-width:820px){.login-shell{grid-template-columns:1fr;max-width:520px}.login-visual{min-height:260px}.ict-scene{width:78%;left:11%;top:-12px}.visual-copy{display:none}.login-box{padding:28px}.hero-ict-icons{opacity:.25;right:-45px}}
+@media(max-width:520px){.login-visual{min-height:210px}.login-box h2{font-size:25px}.ict-scene{width:92%;left:4%;top:-15px}}
+
+</style>
+</head>
+<body>
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-shell">
+    <div class="login-visual">
+      <div class="visual-glow"></div>
+      <svg class="ict-scene" viewBox="0 0 620 390" aria-hidden="true">
+        <defs>
+          <linearGradient id="screenG" x1="0" x2="1">
+            <stop offset="0" stop-color="#42b9ef"/>
+            <stop offset="1" stop-color="#0a6db5"/>
+          </linearGradient>
+          <linearGradient id="routerG" x1="0" x2="1">
+            <stop offset="0" stop-color="#ffffff"/>
+            <stop offset="1" stop-color="#dfeef8"/>
+          </linearGradient>
+        </defs>
+        <!-- WiFi rings -->
+        <path d="M373 60c53-44 130-44 184 0" fill="none" stroke="#68c8f2" stroke-width="12" stroke-linecap="round" opacity=".55"/>
+        <path d="M397 87c39-31 94-31 135 0" fill="none" stroke="#53bce9" stroke-width="11" stroke-linecap="round" opacity=".7"/>
+        <path d="M424 115c24-19 56-19 82 0" fill="none" stroke="#2aa8dd" stroke-width="10" stroke-linecap="round"/>
+        <circle cx="465" cy="140" r="8" fill="#168fca"/>
+        <!-- Laptop -->
+        <g transform="translate(42,92)">
+          <rect x="0" y="0" width="290" height="184" rx="17" fill="#1d3045"/>
+          <rect x="14" y="14" width="262" height="153" rx="8" fill="url(#screenG)"/>
+          <rect x="41" y="38" width="114" height="13" rx="6" fill="#dff5ff" opacity=".9"/>
+          <rect x="41" y="65" width="170" height="10" rx="5" fill="#dff5ff" opacity=".62"/>
+          <rect x="41" y="88" width="142" height="10" rx="5" fill="#dff5ff" opacity=".5"/>
+          <path d="M-30 184h350l42 30H-69z" fill="#b9c8d4"/>
+          <rect x="100" y="191" width="92" height="7" rx="4" fill="#8ca0b2"/>
+        </g>
+        <!-- Router -->
+        <g transform="translate(356,199)">
+          <path d="M27 35V0M142 35V0" stroke="#314a61" stroke-width="8" stroke-linecap="round"/>
+          <rect x="0" y="31" width="170" height="92" rx="22" fill="url(#routerG)" stroke="#c5dce9" stroke-width="3"/>
+          <circle cx="42" cy="84" r="6" fill="#25b989"/>
+          <circle cx="66" cy="84" r="6" fill="#25b989"/>
+          <circle cx="90" cy="84" r="6" fill="#7bc8e9"/>
+          <path d="M117 73c13-11 31-11 44 0M126 84c8-7 18-7 27 0" fill="none" stroke="#168fca" stroke-width="5" stroke-linecap="round"/>
+        </g>
+        <!-- Printer -->
+        <g transform="translate(415,276)">
+          <rect x="26" y="0" width="105" height="57" rx="5" fill="#fff" stroke="#cddde8" stroke-width="3"/>
+          <rect x="0" y="39" width="158" height="91" rx="16" fill="#eef5f9" stroke="#c7dae7" stroke-width="3"/>
+          <rect x="25" y="83" width="108" height="65" rx="6" fill="#fff" stroke="#c7dae7" stroke-width="3"/>
+          <rect x="118" y="54" width="16" height="8" rx="4" fill="#25b989"/>
+          <path d="M43 101h73M43 116h61M43 131h68" stroke="#bfd1dd" stroke-width="5" stroke-linecap="round"/>
+        </g>
+      </svg>
+      <div class="visual-copy">
+        <div class="visual-badge">INVENTORI • PINJAMAN • STATUS</div>
+        <h3>Akses peralatan ICT dengan lebih mudah.</h3>
+        <p>Pilih nama, semak aset tersedia dan hantar permohonan dalam beberapa langkah sahaja.</p>
+      </div>
+    </div>
+
+    <div class="login-box">
+      <div class="login-logo">🖥️</div>
+      <h2>Selamat Datang ke Portal Permohonan Inventori ICT</h2>
+      <p class="login-sub">Pilih nama anda daripada senarai staff untuk masuk.</p>
+
+      <div class="form-group autocomplete-wrap">
+        <label>Nama Pemohon</label>
+        <div class="name-search">
+          <span>⌕</span>
+          <input class="field" id="loginName" autocomplete="off" placeholder="Taip huruf awal nama...">
+        </div>
+        <div class="suggestions hidden" id="staffSuggestions"></div>
+      </div>
+
+      <button class="btn btn-primary" id="loginBtn" style="width:100%;margin-top:14px">Masuk Portal Pemohon</button>
+    </div>
+  </div>
+</div>
+
+<div class="app">
+<aside class="sidebar" id="sidebar">
+  <div class="brand"><div class="brand-mark">🖥️</div><div><strong>Portal Pemohon</strong><span>Sistem Pinjaman ICT</span></div></div>
+  <div class="profile"><div class="profile-name" id="sideName">Pemohon</div><div class="profile-meta" id="sideMeta">—</div></div>
+  <nav class="nav">
+    <button class="nav-btn active" data-view="home"><span class="nav-ico">⌂</span>Utama</button>
+    <button class="nav-btn" data-view="apply"><span class="nav-ico">＋</span>Mohon Pinjaman</button>
+    <button class="nav-btn" data-view="myloans"><span class="nav-ico">▤</span>Permohonan Saya</button>
+    <button class="nav-btn" data-view="assets"><span class="nav-ico">▣</span>Peralatan Tersedia</button>
+    <button class="nav-btn" data-view="guide"><span class="nav-ico">?</span>Panduan</button>
+  </nav>
+  <div class="sidebar-foot">
+    <div class="api-chip"><span class="dot" id="apiDot"></span><span id="apiText">API Ready</span></div>
+    <button class="logout" id="logoutBtn">Log Keluar / Tukar Pemohon</button>
+  </div>
+</aside>
+
+<main class="main">
+<button class="btn mobile-menu" id="mobileMenu">☰</button>
+
+<section class="view active" id="view-home">
+  <div class="page-head"><div><h1>Selamat datang, <span id="welcomeName">Pemohon</span></h1><p>Urus permohonan pinjaman ICT anda dari satu tempat.</p></div></div>
+  <div class="hero">
+    <div class="hero-copy"><div class="eyebrow">PORTAL PEMOHON ICT</div><h2>Peralatan ICT bila diperlukan, proses lebih mudah dan tersusun.</h2><p>Semak peralatan yang tersedia, hantar permohonan dan pantau status kelulusan serta tarikh pemulangan anda.</p><button class="btn btn-primary" data-go="apply">Mohon Peralatan →</button></div>
+    <div class="hero-ict-icons"><div class="hero-laptop"></div><div class="hero-router"></div><div class="hero-printer"></div></div></div>
+  </div>
+  <div class="kpis">
+    <div class="card kpi" style="--accent:var(--yellow)"><div class="kpi-top">MENUNGGU KELULUSAN <span class="kpi-icon">◷</span></div><div class="kpi-value" id="kpiPending">—</div><div class="kpi-foot">Permohonan sedang diproses</div></div>
+    <div class="card kpi" style="--accent:var(--blue)"><div class="kpi-top">PINJAMAN AKTIF <span class="kpi-icon">⇄</span></div><div class="kpi-value" id="kpiActive">—</div><div class="kpi-foot">Diluluskan / sedang dipinjam</div></div>
+    <div class="card kpi" style="--accent:var(--red)"><div class="kpi-top">LEWAT PULANG <span class="kpi-icon">!</span></div><div class="kpi-value" id="kpiOverdue">—</div><div class="kpi-foot">Perlu tindakan segera</div></div>
+    <div class="card kpi" style="--accent:var(--green)"><div class="kpi-top">PERALATAN TERSEDIA <span class="kpi-icon">▣</span></div><div class="kpi-value" id="kpiAvailable">—</div><div class="kpi-foot">Boleh dipilih untuk permohonan</div></div>
+  </div>
+  <div class="grid2">
+    <div class="card panel"><div class="panel-head"><div><div class="panel-title">PERMOHONAN TERKINI</div><div class="panel-sub">Status pinjaman anda sahaja.</div></div><button class="btn btn-sm" data-go="myloans">Lihat Semua</button></div><div class="table-wrap"><table><thead><tr><th>ID</th><th>TARIKH</th><th>PERALATAN</th><th>DUE</th><th>STATUS</th></tr></thead><tbody id="recentLoanRows"></tbody></table></div></div>
+    <div class="card panel"><div class="panel-head"><div><div class="panel-title">PERALATAN TERSEDIA</div><div class="panel-sub">Ringkasan mengikut kategori.</div></div></div><div class="category-grid" id="categoryGrid"></div></div>
+  </div>
+</section>
+
+<section class="view" id="view-apply">
+  <div class="page-head"><div><h1>Mohon Pinjaman ICT</h1><p>Pilih peralatan yang masih tersedia dan lengkapkan maklumat penggunaan.</p></div></div>
+  <div class="card panel">
+    <div class="form-grid">
+      <div class="form-group"><label>Tarikh Perlu Pulang *</label><input class="field" type="date" id="applyDue"></div>
+      <div class="form-group"><label>Tujuan Pinjaman *</label><input class="field" id="applyPurpose" placeholder="Contoh: Program / Mesyuarat / Kerja luar"></div>
+      <div class="form-group full"><label>Catatan</label><textarea class="field" id="applyRemarks" placeholder="Maklumat tambahan jika ada"></textarea></div>
+      <div class="form-group full"><label>Gambar / Dokumen Sokongan</label><div class="upload-box"><input id="applyImage" type="file" accept="image/*" capture="environment"><div class="tiny muted" id="imageHint" style="margin-top:6px">Boleh pilih dari laptop atau kamera telefon. Gambar akan dikecilkan sebelum dihantar.</div></div></div>
+    </div>
+    <div class="panel-head" style="margin-top:18px"><div><div class="panel-title">PILIH PERALATAN *</div><div class="panel-sub"><span id="selectedCount">0</span> item dipilih.</div></div></div>
+    <div class="asset-select-grid" id="applyAssetGrid"></div>
+    <div style="display:flex;justify-content:flex-end;margin-top:16px"><button class="btn btn-primary" id="submitApplicationBtn">Hantar Permohonan</button></div>
+  </div>
+</section>
+
+<section class="view" id="view-myloans">
+  <div class="page-head"><div><h1>Permohonan Saya</h1><p>Hanya rekod pinjaman milik akaun pemohon ini dipaparkan.</p></div></div>
+  <div class="card panel">
+    <div class="toolbar"><div class="search">⌕ <input id="loanSearch" placeholder="Cari ID, tujuan atau peralatan..."></div><select class="field" id="loanFilter" style="width:auto"><option value="">Semua status</option><option>MENUNGGU_KELULUSAN</option><option>DILULUSKAN</option><option>DIPINJAM</option><option>HAMPIR_DUE</option><option>LEWAT</option><option>DIPULANGKAN</option><option>DIBATALKAN</option></select></div>
+    <div class="table-wrap"><table><thead><tr><th>ID</th><th>PERMOHONAN</th><th>PERALATAN</th><th>TUJUAN</th><th>DUE</th><th>STATUS</th><th>TINDAKAN</th></tr></thead><tbody id="myLoanRows"></tbody></table></div>
+  </div>
+</section>
+
+<section class="view" id="view-assets">
+  <div class="page-head"><div><h1>Peralatan Tersedia</h1><p>Inventori yang berstatus TERSEDIA sahaja dipaparkan kepada pemohon.</p></div></div>
+  <div class="toolbar"><div class="search">⌕ <input id="assetSearch" placeholder="Cari laptop, WiFi, projector, model..."></div><select class="field" id="assetCategory" style="width:auto"><option value="">Semua kategori</option></select></div>
+  <div class="asset-grid" id="availableAssetGrid"></div>
+</section>
+
+<section class="view" id="view-guide">
+  <div class="page-head"><div><h1>Panduan Pinjaman</h1><p>Aliran ringkas permohonan sehingga pemulangan aset.</p></div></div>
+  <div class="step-grid">
+    <div class="card step"><div class="step-no">1</div><h3>Pilih Peralatan</h3><p>Pilih aset yang berstatus tersedia mengikut keperluan.</p></div>
+    <div class="card step"><div class="step-no">2</div><h3>Hantar Permohonan</h3><p>Isi due date, tujuan dan dokumen sokongan jika perlu.</p></div>
+    <div class="card step"><div class="step-no">3</div><h3>Tunggu Kelulusan ICT</h3><p>Status akan berubah selepas pihak ICT memproses permohonan.</p></div>
+    <div class="card step"><div class="step-no">4</div><h3>Ambil & Pulangkan</h3><p>Ambil peralatan selepas checkout dan pulangkan sebelum due date.</p></div>
+  </div>
+</section>
+</main>
+</div>
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+const SYSTEM_CONFIG={
+  API_URL:'https://script.google.com/macros/s/AKfycbx9xy1bd7Japfna3fpSVcLr7ujLe8xPMm_nc3TS1Gz2aO6fvAb71kt3wVpDn_-JT6e5/exec',
+  APPLICANT_TOKEN:'4E52A3842E482E9B56766B10FDE318AD'
+};
+
+const state={profile:null,kpi:{},assets:[],loans:[],staffList:[],selectedUserId:'',connected:false,currentView:'home',imagePayload:null};
+const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>[...r.querySelectorAll(s)];
+
+document.addEventListener('DOMContentLoaded',init);
+
+function init(){
+  bindUI();
+  loadStaffNames();
+
+  const savedId=localStorage.getItem('ict_applicant_user_id')||'';
+  const savedName=localStorage.getItem('ict_applicant_name')||'';
+
+  if(savedId && savedName){
+    state.selectedUserId=savedId;
+    $('#loginName').value=savedName;
+    loginApplicant(true);
+  }
+}
+
+function bindUI(){
+  $$('.nav-btn[data-view]').forEach(btn=>btn.onclick=()=>showView(btn.dataset.view));
+  $$('[data-go]').forEach(btn=>btn.onclick=()=>showView(btn.dataset.go));
+  $('#mobileMenu').onclick=()=>$('#sidebar').classList.toggle('open');
+  $('#loginBtn').onclick=()=>loginApplicant(false);
+  $('#logoutBtn').onclick=logoutApplicant;
+  $('#submitApplicationBtn').onclick=submitApplication;
+  $('#loanSearch').addEventListener('input',renderMyLoans);
+  $('#loanFilter').addEventListener('change',renderMyLoans);
+  $('#assetSearch').addEventListener('input',renderAvailableAssets);
+  $('#assetCategory').addEventListener('change',renderAvailableAssets);
+  $('#applyImage').addEventListener('change',handleImage);
+
+  $('#loginName').addEventListener('input',handleNameSearch);
+  $('#loginName').addEventListener('focus',handleNameSearch);
+  document.addEventListener('click',e=>{
+    if(!e.target.closest('.autocomplete-wrap')) hideSuggestions();
+  });
+}
+
+function showView(name){
+  state.currentView=name;
+  $$('.view').forEach(v=>v.classList.remove('active'));
+  $$('.nav-btn').forEach(v=>v.classList.toggle('active',v.dataset.view===name));
+  $('#view-'+name)?.classList.add('active');
+  $('#sidebar').classList.remove('open');
+  if(name==='apply') renderApplyAssets();
+  if(name==='myloans') renderMyLoans();
+  if(name==='assets') renderAvailableAssets();
+}
+
+async function loadStaffNames(){
+  try{
+    const list=await jsonp('applicant.staff_list',{_t:Date.now()});
+    state.staffList=Array.isArray(list)?list:[];
+  }catch(err){
+    setConnected(false);
+    toast('Senarai staff belum dapat dimuatkan',err.message,'err');
+  }
+}
+
+function handleNameSearch(){
+  const input=$('#loginName');
+  const q=(input.value||'').trim().toLowerCase();
+
+  state.selectedUserId='';
+
+  if(!q){
+    hideSuggestions();
+    return;
+  }
+
+  const matches=state.staffList
+    .filter(x=>String(x.name||'').toLowerCase().startsWith(q))
+    .slice(0,12);
+
+  const box=$('#staffSuggestions');
+
+  if(!matches.length){
+    box.innerHTML='<div class="empty" style="padding:12px">Tiada nama bermula dengan huruf tersebut.</div>';
+    box.classList.remove('hidden');
+    return;
+  }
+
+  box.innerHTML=matches.map(x=>`
+    <button class="suggestion" type="button" onclick="selectStaff('${attr(x.user_id)}')">
+      <b>${esc(x.name)}</b>
+      <small>${esc([x.unit,x.department].filter(Boolean).join(' • ')||'Staff')}</small>
+    </button>
+  `).join('');
+
+  box.classList.remove('hidden');
+}
+
+function selectStaff(userId){
+  const user=state.staffList.find(x=>String(x.user_id)===String(userId));
+  if(!user) return;
+
+  state.selectedUserId=String(user.user_id);
+  $('#loginName').value=user.name;
+  hideSuggestions();
+}
+
+function hideSuggestions(){
+  $('#staffSuggestions')?.classList.add('hidden');
+}
+
+function identity(){
+  return {
+    user_id:String(state.profile?.user_id||state.selectedUserId||localStorage.getItem('ict_applicant_user_id')||''),
+    name:String(state.profile?.name||$('#loginName')?.value||localStorage.getItem('ict_applicant_name')||'').trim()
+  };
+}
+
+async function loginApplicant(silent=false){
+  const name=($('#loginName').value||'').trim();
+
+  if(!state.selectedUserId){
+    const exact=state.staffList.find(x=>String(x.name||'').trim().toLowerCase()===name.toLowerCase());
+    if(exact) state.selectedUserId=String(exact.user_id);
+  }
+
+  if(!state.selectedUserId){
+    return toast('Pilih nama','Taip huruf awal dan pilih nama daripada senarai.','err');
+  }
+
+  const btn=$('#loginBtn');
+  btn.disabled=true;
+  btn.textContent='Membuka portal...';
+
+  try{
+    const data=await jsonp('applicant.bootstrap',{
+      user_id:state.selectedUserId,
+      name:name
+    });
+
+    localStorage.setItem('ict_applicant_user_id',state.selectedUserId);
+    localStorage.setItem('ict_applicant_name',name);
+
+    applyBootstrap(data);
+    $('#loginOverlay').classList.add('hidden');
+
+    if(!silent){
+      toast('Selamat datang',data.profile?.name||'Pemohon','ok');
+    }
+  }catch(err){
+    setConnected(false);
+    toast('Tak dapat masuk',err.message,'err');
+  }finally{
+    btn.disabled=false;
+    btn.textContent='Masuk Portal Pemohon';
+  }
+}
+
+function logoutApplicant(){
+  localStorage.removeItem('ict_applicant_user_id');
+  localStorage.removeItem('ict_applicant_name');
+  state.profile=null;
+  state.assets=[];
+  state.loans=[];
+  state.selectedUserId='';
+  $('#loginOverlay').classList.remove('hidden');
+  $('#sidebar').classList.remove('open');
+  $('#loginName').value='';
+  hideSuggestions();
+}
+
+function applyBootstrap(data){
+  state.profile=data.profile||null;
+  state.kpi=data.kpi||{};
+  state.assets=data.available_assets||[];
+  state.loans=data.loans||[];
+  setConnected(true);
+  renderAll();
+}
+
+function renderAll(){
+  const p=state.profile||{};
+  $('#sideName').textContent=p.name||'Pemohon';
+  $('#sideMeta').textContent=[p.department,p.unit].filter(Boolean).join(' • ')||'Pemohon ICT';
+  $('#welcomeName').textContent=(p.name||'Pemohon').split(' ')[0];
+  $('#kpiPending').textContent=n(state.kpi.pending);
+  $('#kpiActive').textContent=n(state.kpi.active);
+  $('#kpiOverdue').textContent=n(state.kpi.overdue);
+  $('#kpiAvailable').textContent=n(state.kpi.available_assets);
+  renderRecent();
+  renderCategories();
+  renderApplyAssets();
+  renderMyLoans();
+  renderAssetCategoryOptions();
+  renderAvailableAssets();
+}
+
+function renderRecent(){
+  const rows=state.loans.slice(0,5);
+  $('#recentLoanRows').innerHTML=rows.length?rows.map(x=>`
+    <tr><td class="strong">${esc(x.loan_id)}</td><td>${fmtDate(x.request_date)}</td><td>${esc(itemNames(x))}</td><td>${fmtDate(x.due_date)}</td><td>${statusPill(x.status)}</td></tr>
+  `).join(''):'<tr><td colspan="5" class="empty">Belum ada permohonan.</td></tr>';
+}
+
+function renderCategories(){
+  const map={};
+  state.assets.forEach(a=>map[a.category||'Lain-lain']=(map[a.category||'Lain-lain']||0)+1);
+  const icon={'Laptop':'💻','WiFi/MiFi':'📶','Projector':'📽️','Extension':'🔌','Monitor':'🖥️','Printer':'🖨️'};
+  const entries=Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  $('#categoryGrid').innerHTML=entries.length?entries.map(([cat,count])=>`<div class="cat-card"><div class="cat-icon">${icon[cat]||'▣'}</div><label>${esc(cat)}</label><strong>${count}</strong></div>`).join(''):'<div class="empty" style="grid-column:1/-1">Tiada aset tersedia.</div>';
+}
+
+function renderApplyAssets(){
+  const box=$('#applyAssetGrid');
+  box.innerHTML=state.assets.length?state.assets.map(a=>`
+    <label class="asset-choice" data-choice="${attr(a.asset_id)}">
+      <input type="checkbox" class="asset-check" value="${attr(a.asset_id)}" onchange="updateSelectedAssets()">
+      <div class="asset-photo">${a.image_url?`<img src="${attr(a.image_url)}" alt="">`:assetIcon(a.category)}</div>
+      <h4>${esc(a.asset_name)}</h4>
+      <p>${esc(a.asset_tag)} • ${esc([a.brand,a.model].filter(Boolean).join(' ')||a.category)}<br>${esc(a.location||'')}</p>
+    </label>
+  `).join(''):'<div class="empty" style="grid-column:1/-1">Tiada peralatan berstatus TERSEDIA.</div>';
+  updateSelectedAssets();
+}
+
+function updateSelectedAssets(){
+  $$('.asset-choice').forEach(card=>card.classList.toggle('selected',!!card.querySelector('.asset-check')?.checked));
+  $('#selectedCount').textContent=$$('.asset-check:checked').length;
+}
+
+function renderMyLoans(){
+  const q=($('#loanSearch').value||'').toLowerCase();
+  const st=$('#loanFilter').value;
+  const rows=state.loans.filter(x=>{
+    const hay=[x.loan_id,x.purpose,itemNames(x),x.status].join(' ').toLowerCase();
+    return (!q||hay.includes(q))&&(!st||x.status===st);
+  });
+  $('#myLoanRows').innerHTML=rows.length?rows.map(x=>`
+    <tr>
+      <td class="strong">${esc(x.loan_id)}</td>
+      <td>${fmtDate(x.request_date)}</td>
+      <td>${esc(itemNames(x))}<div class="tiny muted">${x.item_count||0} item</div></td>
+      <td>${esc(x.purpose||'—')}</td>
+      <td>${fmtDate(x.due_date)}</td>
+      <td>${statusPill(x.status)}</td>
+      <td>${cancelButton(x)}</td>
+    </tr>
+  `).join(''):'<tr><td colspan="7" class="empty">Tiada rekod.</td></tr>';
+}
+
+function cancelButton(x){
+  if(['PERMOHONAN_BARU','MENUNGGU_KELULUSAN','DILULUSKAN'].includes(String(x.status))){
+    return `<button class="btn btn-sm btn-danger" onclick="cancelApplication('${attr(x.loan_id)}')">Batal</button>`;
+  }
+  return '<span class="tiny muted">—</span>';
+}
+
+async function cancelApplication(id){
+  if(!confirm('Pasti mahu batalkan permohonan '+id+'?')) return;
+  try{
+    const who=identity();
+    await postApi('applicant.loan.cancel',{loan_id:id,identity_user_id:who.user_id,identity_name:who.name});
+    toast('Permohonan dihantar','Pembatalan sedang diproses.','ok');
+    setTimeout(refreshPortal,850);
+  }catch(err){toast('Ralat',err.message,'err')}
+}
+
+function renderAssetCategoryOptions(){
+  const sel=$('#assetCategory');
+  const current=sel.value;
+  const cats=[...new Set(state.assets.map(a=>a.category).filter(Boolean))].sort();
+  sel.innerHTML='<option value="">Semua kategori</option>'+cats.map(x=>`<option>${esc(x)}</option>`).join('');
+  if(cats.includes(current)) sel.value=current;
+}
+
+function renderAvailableAssets(){
+  const q=($('#assetSearch').value||'').toLowerCase();
+  const cat=$('#assetCategory').value;
+  const rows=state.assets.filter(a=>{
+    const hay=[a.asset_tag,a.asset_name,a.category,a.brand,a.model,a.location].join(' ').toLowerCase();
+    return (!q||hay.includes(q))&&(!cat||a.category===cat);
+  });
+  $('#availableAssetGrid').innerHTML=rows.length?rows.map(a=>`
+    <div class="card asset-card">
+      <div class="photo">${a.image_url?`<img src="${attr(a.image_url)}" alt="">`:assetIcon(a.category)}</div>
+      <div class="body"><span class="pill green">TERSEDIA</span><h3>${esc(a.asset_name)}</h3><p>${esc(a.asset_tag)}<br>${esc([a.brand,a.model].filter(Boolean).join(' ')||a.category)}<br>${esc(a.location||'')}</p><button class="btn btn-primary btn-sm" style="margin-top:9px" onclick="chooseAsset('${attr(a.asset_id)}')">Pilih untuk Pinjam</button></div>
+    </div>
+  `).join(''):'<div class="empty" style="grid-column:1/-1">Tiada peralatan sepadan.</div>';
+}
+
+function chooseAsset(id){
+  showView('apply');
+  setTimeout(()=>{
+    const cb=$(`.asset-check[value="${cssEscape(id)}"]`);
+    if(cb){cb.checked=true;updateSelectedAssets();cb.closest('.asset-choice')?.scrollIntoView({behavior:'smooth',block:'center'});}
+  },60);
+}
+
+async function submitApplication(){
+  const due=$('#applyDue').value;
+  const purpose=$('#applyPurpose').value.trim();
+  const remarks=$('#applyRemarks').value.trim();
+  const selected=$$('.asset-check:checked').map(x=>x.value);
+  if(!due||!purpose||!selected.length) return toast('Maklumat belum lengkap','Isi due date, tujuan dan pilih sekurang-kurangnya satu aset.','err');
+  const btn=$('#submitApplicationBtn');btn.disabled=true;btn.textContent='Menghantar...';
+  try{
+    const who=identity();
+    const payload={
+      identity_user_id:who.user_id,identity_name:who.name,
+      due_date:due,purpose,remarks,
+      items:selected.map(asset_id=>({asset_id,condition_out:'BAIK'}))
+    };
+    if(state.imagePayload){
+      payload.image_data_url=state.imagePayload.dataUrl;
+      payload.image_original_name=state.imagePayload.name;
+    }
+    await postApi('applicant.loan.create',payload);
+    toast('Permohonan dihantar','Aset dipilih akan menjadi RESERVED sementara menunggu kelulusan ICT.','ok');
+    $('#applyDue').value='';$('#applyPurpose').value='';$('#applyRemarks').value='';$('#applyImage').value='';state.imagePayload=null;$('#imageHint').textContent='Boleh pilih dari laptop atau kamera telefon. Gambar akan dikecilkan sebelum dihantar.';
+    setTimeout(async()=>{await refreshPortal();showView('myloans');},900);
+  }catch(err){toast('Ralat',err.message,'err')}
+  finally{btn.disabled=false;btn.textContent='Hantar Permohonan'}
+}
+
+async function refreshPortal(){
+  const who=identity();
+  if(!who.user_id) return;
+  try{const data=await jsonp('applicant.bootstrap',{user_id:who.user_id,name:who.name,_t:Date.now()});applyBootstrap(data);}
+  catch(err){setConnected(false);toast('Sambungan gagal',err.message,'err')}
+}
+
+function jsonp(action,params={}){
+  return new Promise((resolve,reject)=>{
+    const cb='__pemohon_'+Date.now()+'_'+Math.floor(Math.random()*99999);
+    const q=new URLSearchParams({action,token:SYSTEM_CONFIG.APPLICANT_TOKEN,callback:cb,...Object.fromEntries(Object.entries(params).filter(([,v])=>v!==undefined&&v!==null&&v!==''))});
+    const s=document.createElement('script');
+    const timer=setTimeout(()=>{clean();reject(new Error('API timeout. Cuba semula.'));},12000);
+    function clean(){clearTimeout(timer);delete window[cb];s.remove();}
+    window[cb]=(payload)=>{clean();if(payload?.ok){setConnected(true);resolve(payload.data)}else{setConnected(false);reject(new Error(payload?.error?.message||'API error'))}};
+    s.onerror=()=>{clean();setConnected(false);reject(new Error('Gagal sambung Apps Script.'))};
+    s.src=SYSTEM_CONFIG.API_URL+'?'+q.toString();document.head.appendChild(s);
+  });
+}
+
+async function postApi(action,data){
+  const body=new URLSearchParams();
+  body.set('action',action);body.set('token',SYSTEM_CONFIG.APPLICANT_TOKEN);body.set('data',JSON.stringify(data));
+  await fetch(SYSTEM_CONFIG.API_URL,{method:'POST',mode:'no-cors',body});
+  return true;
+}
+
+function setConnected(ok){state.connected=ok;$('#apiDot').className='dot '+(ok?'ok':'err');$('#apiText').textContent=ok?'API Connected':'API Offline'}
+
+async function handleImage(e){
+  const file=e.target.files?.[0];if(!file){state.imagePayload=null;return}
+  try{state.imagePayload=await compressImage(file,1280,.78);$('#imageHint').textContent=`Siap: ${file.name} • ${Math.round(state.imagePayload.bytes/1024)} KB`;}
+  catch(err){state.imagePayload=null;toast('Gambar gagal diproses',err.message,'err')}
+}
+
+function compressImage(file,maxSide=1280,quality=.78){
+  return new Promise((resolve,reject)=>{
+    if(!file.type.startsWith('image/')) return reject(new Error('Pilih fail gambar.'));
+    const reader=new FileReader();
+    reader.onload=()=>{const img=new Image();img.onload=()=>{let w=img.width,h=img.height;const scale=Math.min(1,maxSide/Math.max(w,h));w=Math.round(w*scale);h=Math.round(h*scale);const c=document.createElement('canvas');c.width=w;c.height=h;const ctx=c.getContext('2d');ctx.drawImage(img,0,0,w,h);const dataUrl=c.toDataURL('image/jpeg',quality);resolve({dataUrl,name:(file.name.replace(/\.[^.]+$/,'')||'gambar')+'.jpg',bytes:Math.round((dataUrl.length*3)/4)})};img.onerror=()=>reject(new Error('Gambar tidak dapat dibaca.'));img.src=reader.result};reader.onerror=()=>reject(new Error('Fail tidak dapat dibaca.'));reader.readAsDataURL(file);
+  });
+}
+
+function itemNames(x){return (x.items||[]).map(i=>i.asset_name||i.asset_tag||i.asset_id).join(', ')||'—'}
+function assetIcon(cat){return ({'Laptop':'💻','WiFi/MiFi':'📶','Projector':'📽️','Extension':'🔌','Monitor':'🖥️','Printer':'🖨️','Camera':'📷','Audio':'🎧'})[cat]||'▣'}
+function n(v){return Number(v||0).toLocaleString('ms-MY')}
+function fmtDate(v){if(!v)return'—';const d=new Date(String(v).length===10?v+'T12:00:00':v);return isNaN(d)?esc(v):new Intl.DateTimeFormat('ms-MY',{day:'2-digit',month:'short',year:'numeric'}).format(d)}
+function statusPill(s){s=String(s||'—');let c='gray';if(['DIPULANGKAN'].includes(s))c='green';if(['PERMOHONAN_BARU','MENUNGGU_KELULUSAN'].includes(s))c='yellow';if(['LEWAT','DITOLAK'].includes(s))c='red';if(['DILULUSKAN','DIPINJAM','HAMPIR_DUE'].includes(s))c='blue';if(['DIBATALKAN'].includes(s))c='gray';return `<span class="pill ${c}">${esc(s)}</span>`}
+function esc(v){return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;')}
+function attr(v){return esc(v)} function cssEscape(v){return String(v).replace(/["\\]/g,'\\$&')}
+function toast(title,msg='',type=''){const el=document.createElement('div');el.className='toast '+type;el.innerHTML=`<div class="strong">${esc(title)}</div><div class="muted" style="margin-top:3px">${esc(msg)}</div>`;$('#toastWrap').appendChild(el);setTimeout(()=>el.remove(),4300)}
+</script>
+</body>
+</html>
