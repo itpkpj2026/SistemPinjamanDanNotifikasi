@@ -422,7 +422,7 @@ body{font-size:16px}
 .sidebar-video,.hero-video{will-change:auto}
 
 
-/* V6.7 - Tetapan Staff sahaja. API kekal fixed dalam code. */
+/* V6.8 - Tetapan Staff batch + verification. API kekal fixed dalam code. */
 .settings-staff-grid{display:grid;grid-template-columns:minmax(310px,.75fr) minmax(0,1.45fr);gap:14px}
 .staff-bulk{min-height:175px;resize:vertical;line-height:1.65}
 .staff-status{display:inline-flex;padding:4px 8px;border-radius:999px;font-size:10px;font-weight:900}
@@ -477,7 +477,7 @@ body{font-size:16px}
       <div class="panel-head">
         <div>
           <div class="panel-title">TAMBAH SENARAI STAFF</div>
-          <div class="panel-sub">Masukkan satu nama setiap baris. Email dan no. staf tidak diperlukan.</div>
+          <div class="panel-sub">Masukkan satu nama setiap baris. Senarai besar seperti 100–300 nama akan disimpan secara batch.</div>
         </div>
       </div>
       <textarea class="field staff-bulk" id="staffBulkInput" placeholder="Contoh:&#10;Ahmad Zaki&#10;Aina Farhana&#10;Mohd Firdaus"></textarea>
@@ -1791,33 +1791,125 @@ function renderStaffSettings(){
 
 async function addStaffBulk(){
   const box=$('#staffBulkInput');
-  const names=(box.value||'')
-    .split(/\n|,/)
-    .map(x=>x.trim())
-    .filter(Boolean);
+
+  // Support satu nama setiap baris atau dipisahkan koma.
+  const names=[...new Map(
+    (box.value||'')
+      .split(/\n|,/)
+      .map(x=>x.trim())
+      .filter(Boolean)
+      .map(x=>[x.toLowerCase(),x])
+  ).values()];
 
   if(!names.length){
-    return toast('Tiada nama','Masukkan sekurang-kurangnya satu nama staff.','err');
+    return toast(
+      'Tiada nama',
+      'Masukkan sekurang-kurangnya satu nama staff.',
+      'err'
+    );
   }
 
   const btn=$('#addStaffBulkBtn');
+  const originalText=btn.textContent;
+
   btn.disabled=true;
-  btn.textContent='Menyimpan...';
+  btn.textContent=`Menyimpan ${names.length} nama...`;
 
   try{
+    // POST Apps Script dihantar tanpa tunggu body response.
     await postApi('staff.bulk_add',{
       names,
       actor_email:cfg.actorEmail
     });
-    box.value='';
-    toast('Senarai dihantar',`${names.length} nama sedang disimpan. Nama berulang akan dilangkau.`,'ok');
-    setTimeout(()=>loadStaffSettings(true),900);
+
+    toast(
+      'Sedang menyimpan',
+      `${names.length} nama dihantar ke Google Sheets. Sistem sedang mengesahkan rekod...`,
+      'ok'
+    );
+
+    const result=await waitForStaffBatch(names,20000);
+
+    if(result.savedCount>0){
+      box.value='';
+      toast(
+        'Staff berjaya disimpan',
+        `${result.savedCount} daripada ${names.length} nama telah dikesan dalam senarai staff.`,
+        'ok'
+      );
+    }else{
+      toast(
+        'Nama belum muncul',
+        'Apps Script belum menyiapkan simpanan. Pastikan Code.gs V5.1 telah deploy sebagai New version.',
+        'err'
+      );
+    }
+
   }catch(err){
     handleError(err);
   }finally{
     btn.disabled=false;
-    btn.textContent='＋ Tambah Nama Staff';
+    btn.textContent=originalText;
   }
+}
+
+async function waitForStaffBatch(names,timeoutMs=20000){
+  const wanted=new Set(
+    names.map(x=>String(x).trim().toLowerCase())
+  );
+
+  const started=Date.now();
+  let lastCount=0;
+
+  while(Date.now()-started < timeoutMs){
+    try{
+      const res=await jsonp('users',{
+        pageSize:200,
+        sort:'name',
+        order:'asc',
+        _t:Date.now()
+      });
+
+      state.users=res?.items||[];
+      state.loadedAt.users=Date.now();
+
+      const current=new Set(
+        state.users
+          .map(x=>String(x.name||'').trim().toLowerCase())
+          .filter(Boolean)
+      );
+
+      lastCount=0;
+      wanted.forEach(name=>{
+        if(current.has(name)) lastCount++;
+      });
+
+      renderStaffSettings();
+
+      // Semua nama sama ada baru atau sudah sedia ada sudah kelihatan.
+      if(lastCount===wanted.size){
+        return {
+          savedCount:lastCount,
+          complete:true
+        };
+      }
+
+    }catch(err){
+      console.warn('Staff verification retry:',err);
+    }
+
+    await new Promise(resolve=>setTimeout(resolve,1200));
+  }
+
+  // Refresh terakhir.
+  try{
+    await loadStaffSettings(true);
+  }catch(err){}
+
+  return {
+    savedCount:lastCount,
+    complete:false
+  };
 }
 
 async function toggleStaff(userId,newStatus){
