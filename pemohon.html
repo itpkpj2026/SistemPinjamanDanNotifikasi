@@ -1389,6 +1389,109 @@ textarea.field{min-height:90px;resize:vertical}
   display:block !important;
 }
 
+
+/* =========================================================
+   PEMOHON V5 - FIT + COMPLETE LOAN FLOW
+   ========================================================= */
+html,body{max-width:100%;overflow-x:hidden}
+body{font-size:14px}
+:root{--sidebar:224px}
+.sidebar{
+  width:var(--sidebar) !important;
+  padding:16px 10px !important;
+  overflow-y:auto;
+}
+.sidebar .brand{padding:2px 5px 16px !important;gap:10px !important}
+.pkpj-sidebar-logo{
+  width:48px !important;
+  height:58px !important;
+  min-width:48px !important;
+  padding:2px 3px !important;
+  border-radius:14px !important;
+}
+.pkpj-sidebar-logo img{width:100% !important;height:100% !important;object-fit:contain !important}
+.brand strong{font-size:15px !important}.brand span{font-size:10px !important}
+.profile{margin:12px 2px 3px !important;padding:11px !important}
+.profile-name{font-size:12px !important}.profile-meta{font-size:9px !important}
+.nav{margin-top:11px !important;gap:4px !important}
+.nav-btn{padding:10px 11px !important;font-size:11px !important;border-radius:10px !important}
+.nav-ico{font-size:14px !important}
+.sidebar-foot{margin-top:auto;padding-top:10px}
+.api-chip{padding:9px !important}
+.logout{font-size:11px !important;padding:9px !important}
+.main{
+  margin-left:var(--sidebar) !important;
+  width:calc(100% - var(--sidebar)) !important;
+  max-width:calc(100% - var(--sidebar)) !important;
+  padding:18px 22px 38px !important;
+  min-width:0 !important;
+}
+.view,.card,.panel,.table-wrap{min-width:0;max-width:100%}
+.page-head{margin-bottom:12px !important}.page-head h1{font-size:23px !important}.page-head p{font-size:11px !important}
+#view-home .hero{
+  min-height:165px !important;
+  height:auto !important;
+  border-radius:19px !important;
+  margin-bottom:12px !important;
+}
+#view-home .hero-copy{padding:23px 26px !important;max-width:760px !important}
+#view-home .hero h2{font-size:25px !important;margin-bottom:7px !important}
+#view-home .hero p{font-size:12px !important;margin-bottom:13px !important}
+#view-home .hero-ict-icons{display:none !important}
+.kpis{gap:10px !important}.kpi{padding:13px !important;min-height:96px !important}.kpi-value{font-size:25px !important}
+.grid2{gap:11px !important}.panel{padding:14px !important}
+.table-wrap{overflow:auto !important;width:100% !important}
+table{max-width:none}
+.loan-flow-strip{
+  display:flex;align-items:center;gap:8px;
+  padding:11px 14px;margin-bottom:11px;
+  border:1px solid #dce8f1;border-radius:15px;background:#fff;
+  box-shadow:0 8px 24px rgba(32,76,113,.06);
+}
+.flow-step{display:flex;align-items:center;gap:7px;white-space:nowrap;color:#71869a;font-size:10px;font-weight:800}
+.flow-step b{width:25px;height:25px;border-radius:50%;display:grid;place-items:center;background:#edf4fa;color:#66829a}
+.flow-step.active{color:#1676bd}.flow-step.active b{background:#e3f3ff;color:#1479c3}
+.flow-line{height:1px;flex:1;min-width:15px;background:#dce7ef}
+.apply-panel{padding:16px !important}
+.form-grid{gap:10px !important}.form-group label{font-size:10px !important}.field{font-size:12px !important;padding:9px 10px !important}
+.asset-select-grid{grid-template-columns:repeat(3,minmax(0,1fr)) !important;gap:9px !important}
+.asset-choice{padding:10px !important;border-radius:13px !important}.asset-photo{height:86px !important}.asset-choice h4{font-size:11px !important}.asset-choice p{font-size:9px !important}
+.selected-loan-summary{margin-top:11px;padding:10px 12px;border-radius:11px;background:#f5f8fb;border:1px solid #e0e8ef;color:#788b9c;font-size:10px}
+.selected-loan-summary.has-items{background:#eef9f6;border-color:#c9ebdf;color:#28765e}
+.apply-submit-row{display:flex;justify-content:flex-end;margin-top:12px}.apply-submit-row .btn{min-width:180px}
+.loan-progress-mini{display:flex;align-items:center;gap:3px;flex-wrap:wrap;margin-top:5px;max-width:145px}
+.loan-progress-mini i{display:block;width:22px;height:4px;border-radius:999px;background:#dce6ee}.loan-progress-mini i.done{background:#31aa83}.loan-progress-mini small{width:100%;font-size:8px;color:#8395a5;margin-top:2px}.loan-progress-mini.stopped i{background:#efc2cb}.loan-progress-mini.stopped small{color:#ba5368}
+.asset-grid{grid-template-columns:repeat(4,minmax(0,1fr)) !important;gap:10px !important}
+
+@media(max-width:1100px){
+  :root{--sidebar:210px}
+  .main{padding:16px 17px 34px !important}
+  .asset-select-grid{grid-template-columns:repeat(2,minmax(0,1fr)) !important}
+  .asset-grid{grid-template-columns:repeat(3,minmax(0,1fr)) !important}
+  .kpis{grid-template-columns:repeat(2,minmax(0,1fr)) !important}
+}
+@media(max-width:820px){
+  :root{--sidebar:0px}
+  .sidebar{width:230px !important;transform:translateX(-100%);transition:.2s;z-index:80}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0 !important;width:100% !important;max-width:100% !important;padding:14px 13px 30px !important}
+  .mobile-menu{display:inline-flex !important;position:fixed;top:10px;left:10px;z-index:90;width:40px;height:40px;align-items:center;justify-content:center}
+  .page-head{padding-left:48px !important;min-height:42px}
+  .grid2{grid-template-columns:1fr !important}
+  .asset-grid{grid-template-columns:repeat(2,minmax(0,1fr)) !important}
+  .loan-flow-strip{overflow:auto;justify-content:flex-start}.flow-line{min-width:28px;flex:0 0 28px}
+}
+@media(max-width:520px){
+  .main{padding:12px 10px 24px !important}
+  .page-head h1{font-size:20px !important}
+  .kpis,.asset-grid,.asset-select-grid,.step-grid{grid-template-columns:1fr !important}
+  #view-home .hero{min-height:175px !important}
+  #view-home .hero-copy{padding:20px 17px !important}
+  #view-home .hero h2{font-size:22px !important}
+  .form-grid{grid-template-columns:1fr !important}
+  .apply-submit-row .btn{width:100%}
+}
+
 </style>
 </head>
 <body>
@@ -1477,8 +1580,7 @@ textarea.field{min-height:90px;resize:vertical}
 <section class="view active" id="view-home">
   <div class="page-head"><div><h1>Selamat datang, <span id="welcomeName">Pemohon</span></h1><p>Urus permohonan pinjaman ICT anda dari satu tempat.</p></div></div>
   <div class="hero">
-    <div class="hero-copy"><div class="eyebrow">PORTAL PEMOHON ICT</div><h2>Peralatan ICT bila diperlukan, proses lebih mudah dan tersusun.</h2><p>Semak peralatan yang tersedia, hantar permohonan dan pantau status kelulusan serta tarikh pemulangan anda.</p><button class="btn btn-primary" data-go="apply">Mohon Peralatan →</button></div>
-    <div class="hero-ict-icons"><div class="hero-laptop"></div><div class="hero-router"></div><div class="hero-printer"></div></div></div>
+    <div class="hero-copy"><div class="eyebrow">PORTAL PEMOHON ICT</div><h2>Pinjaman ICT lebih mudah dan teratur.</h2><p>Semak peralatan tersedia, hantar permohonan dan pantau status sehingga selesai.</p><button class="btn btn-primary" data-go="apply">Mohon Peralatan →</button></div>
   </div>
   <div class="kpis">
     <div class="card kpi" style="--accent:var(--yellow)"><div class="kpi-top">MENUNGGU KELULUSAN <span class="kpi-icon">◷</span></div><div class="kpi-value" id="kpiPending">—</div><div class="kpi-foot">Permohonan sedang diproses</div></div>
@@ -1494,7 +1596,18 @@ textarea.field{min-height:90px;resize:vertical}
 
 <section class="view" id="view-apply">
   <div class="page-head"><div><h1>Mohon Pinjaman ICT</h1><p>Pilih peralatan yang masih tersedia dan lengkapkan maklumat penggunaan.</p></div></div>
-  <div class="card panel">
+
+  <div class="loan-flow-strip" aria-label="Aliran pinjaman">
+    <div class="flow-step active"><b>1</b><span>Pilih Aset</span></div>
+    <div class="flow-line"></div>
+    <div class="flow-step"><b>2</b><span>Hantar</span></div>
+    <div class="flow-line"></div>
+    <div class="flow-step"><b>3</b><span>Kelulusan ICT</span></div>
+    <div class="flow-line"></div>
+    <div class="flow-step"><b>4</b><span>Ambil & Pulang</span></div>
+  </div>
+
+  <div class="card panel apply-panel">
     <div class="form-grid">
       <div class="form-group"><label>Tarikh Perlu Pulang *</label><input class="field" type="date" id="applyDue"></div>
       <div class="form-group"><label>Tujuan Pinjaman *</label><input class="field" id="applyPurpose" placeholder="Contoh: Program / Mesyuarat / Kerja luar"></div>
@@ -1503,7 +1616,8 @@ textarea.field{min-height:90px;resize:vertical}
     </div>
     <div class="panel-head" style="margin-top:18px"><div><div class="panel-title">PILIH PERALATAN *</div><div class="panel-sub"><span id="selectedCount">0</span> item dipilih.</div></div></div>
     <div class="asset-select-grid" id="applyAssetGrid"></div>
-    <div style="display:flex;justify-content:flex-end;margin-top:16px"><button class="btn btn-primary" id="submitApplicationBtn">Hantar Permohonan</button></div>
+    <div class="selected-loan-summary" id="selectedLoanSummary">Belum ada peralatan dipilih.</div>
+    <div class="apply-submit-row"><button class="btn btn-primary" id="submitApplicationBtn">Hantar Permohonan →</button></div>
   </div>
 </section>
 
@@ -1540,7 +1654,7 @@ const SYSTEM_CONFIG={
   APPLICANT_TOKEN:'4E52A3842E482E9B56766B10FDE318AD'
 };
 
-const state={profile:null,kpi:{},assets:[],loans:[],staffList:[],selectedUserId:'',connected:false,currentView:'home',imagePayload:null};
+const state={profile:null,kpi:{},assets:[],loans:[],staffList:[],selectedUserId:'',connected:false,currentView:'home',imagePayload:null,lastSync:0,syncTimer:null};
 const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>[...r.querySelectorAll(s)];
 
@@ -1612,9 +1726,19 @@ function showView(name){
   $$('.nav-btn').forEach(v=>v.classList.toggle('active',v.dataset.view===name));
   $('#view-'+name)?.classList.add('active');
   $('#sidebar').classList.remove('open');
+
   if(name==='apply') renderApplyAssets();
   if(name==='myloans') renderMyLoans();
   if(name==='assets') renderAvailableAssets();
+
+  // Refresh quietly when data is older than 15 seconds.
+  if(
+    state.profile &&
+    ['home','apply','myloans','assets'].includes(name) &&
+    Date.now()-(state.lastSync||0)>15000
+  ){
+    refreshPortal(true);
+  }
 }
 
 async function loadStaffNames(){
@@ -1740,6 +1864,7 @@ function logoutApplicant(){
   state.assets=[];
   state.loans=[];
   state.selectedUserId='';
+  if(state.syncTimer){clearInterval(state.syncTimer);state.syncTimer=null;}
   $('#loginOverlay').classList.remove('hidden');
   $('#sidebar').classList.remove('open');
   $('#loginName').value='';
@@ -1751,8 +1876,10 @@ function applyBootstrap(data){
   state.kpi=data.kpi||{};
   state.assets=data.available_assets||[];
   state.loans=data.loans||[];
+  state.lastSync=Date.now();
   setConnected(true);
   renderAll();
+  startPortalSync();
 }
 
 function renderAll(){
@@ -1802,7 +1929,23 @@ function renderApplyAssets(){
 
 function updateSelectedAssets(){
   $$('.asset-choice').forEach(card=>card.classList.toggle('selected',!!card.querySelector('.asset-check')?.checked));
-  $('#selectedCount').textContent=$$('.asset-check:checked').length;
+  const selected=$$('.asset-check:checked').map(x=>x.value);
+  $('#selectedCount').textContent=selected.length;
+
+  const summary=$('#selectedLoanSummary');
+  if(summary){
+    if(!selected.length){
+      summary.textContent='Belum ada peralatan dipilih.';
+      summary.classList.remove('has-items');
+    }else{
+      const names=selected.map(id=>{
+        const a=state.assets.find(x=>String(x.asset_id)===String(id));
+        return a?.asset_name||a?.asset_tag||id;
+      });
+      summary.textContent=`Dipilih (${selected.length}): ${names.join(', ')}`;
+      summary.classList.add('has-items');
+    }
+  }
 }
 
 function renderMyLoans(){
@@ -1819,7 +1962,7 @@ function renderMyLoans(){
       <td>${esc(itemNames(x))}<div class="tiny muted">${x.item_count||0} item</div></td>
       <td>${esc(x.purpose||'—')}</td>
       <td>${fmtDate(x.due_date)}</td>
-      <td>${statusPill(x.status)}</td>
+      <td>${statusPill(x.status)}${loanProgress(x.status)}</td>
       <td>${cancelButton(x)}</td>
     </tr>
   `).join(''):'<tr><td colspan="7" class="empty">Tiada rekod.</td></tr>';
@@ -1837,8 +1980,13 @@ async function cancelApplication(id){
   try{
     const who=identity();
     await postApi('applicant.loan.cancel',{loan_id:id,identity_user_id:who.user_id,identity_name:who.name});
-    toast('Permohonan dihantar','Pembatalan sedang diproses.','ok');
-    setTimeout(refreshPortal,850);
+    toast('Sedang membatalkan','Sistem sedang mengesahkan perubahan status.','ok');
+    const result=await waitForApplicantLoanStatus(id,['DIBATALKAN'],18000);
+    if(result){
+      toast('Permohonan dibatalkan','Aset tempahan telah dilepaskan semula.','ok');
+    }else{
+      toast('Arahan telah dihantar','Status akan dikemaskini sebaik pemprosesan selesai.','ok');
+    }
   }catch(err){toast('Ralat',err.message,'err')}
 }
 
@@ -1878,32 +2026,128 @@ async function submitApplication(){
   const purpose=$('#applyPurpose').value.trim();
   const remarks=$('#applyRemarks').value.trim();
   const selected=$$('.asset-check:checked').map(x=>x.value);
-  if(!due||!purpose||!selected.length) return toast('Maklumat belum lengkap','Isi due date, tujuan dan pilih sekurang-kurangnya satu aset.','err');
-  const btn=$('#submitApplicationBtn');btn.disabled=true;btn.textContent='Menghantar...';
+
+  if(!due||!purpose||!selected.length){
+    return toast('Maklumat belum lengkap','Isi tarikh pulang, tujuan dan pilih sekurang-kurangnya satu aset.','err');
+  }
+
+  const dueDate=new Date(due+'T23:59:59');
+  if(dueDate < new Date()){
+    return toast('Tarikh tidak sah','Tarikh perlu pulang tidak boleh sebelum hari ini.','err');
+  }
+
+  const beforeIds=new Set((state.loans||[]).map(x=>String(x.loan_id)));
+  const btn=$('#submitApplicationBtn');
+  btn.disabled=true;
+  btn.textContent='Menghantar permohonan...';
+
   try{
     const who=identity();
     const payload={
-      identity_user_id:who.user_id,identity_name:who.name,
-      due_date:due,purpose,remarks,
+      identity_user_id:who.user_id,
+      identity_name:who.name,
+      due_date:due,
+      purpose,
+      remarks,
       items:selected.map(asset_id=>({asset_id,condition_out:'BAIK'}))
     };
+
     if(state.imagePayload){
       payload.image_data_url=state.imagePayload.dataUrl;
       payload.image_original_name=state.imagePayload.name;
     }
+
     await postApi('applicant.loan.create',payload);
-    toast('Permohonan dihantar','Aset dipilih akan menjadi RESERVED sementara menunggu kelulusan ICT.','ok');
-    $('#applyDue').value='';$('#applyPurpose').value='';$('#applyRemarks').value='';$('#applyImage').value='';state.imagePayload=null;$('#imageHint').textContent='Boleh pilih dari laptop atau kamera telefon. Gambar akan dikecilkan sebelum dihantar.';
-    setTimeout(async()=>{await refreshPortal();showView('myloans');},900);
-  }catch(err){toast('Ralat',err.message,'err')}
-  finally{btn.disabled=false;btn.textContent='Hantar Permohonan'}
+
+    toast('Permohonan dihantar','Sistem sedang mengesahkan rekod dan tempahan aset.','ok');
+    btn.textContent='Mengesahkan rekod...';
+
+    const created=await waitForNewApplicantLoan(beforeIds,22000);
+
+    if(created){
+      $('#applyDue').value='';
+      $('#applyPurpose').value='';
+      $('#applyRemarks').value='';
+      $('#applyImage').value='';
+      state.imagePayload=null;
+      $('#imageHint').textContent='Boleh pilih dari laptop atau kamera telefon. Gambar akan dikecilkan sebelum dihantar.';
+      toast('Permohonan berjaya',`${created.loan_id} kini menunggu kelulusan ICT.`,'ok');
+      showView('myloans');
+    }else{
+      toast('Permohonan sedang diproses','Jika rekod belum muncul, buka Permohonan Saya sebentar lagi.','ok');
+      await refreshPortal(true);
+      showView('myloans');
+    }
+
+  }catch(err){
+    toast('Ralat',err.message,'err');
+  }finally{
+    btn.disabled=false;
+    btn.textContent='Hantar Permohonan →';
+  }
 }
 
-async function refreshPortal(){
+async function refreshPortal(silent=false){
   const who=identity();
-  if(!who.user_id) return;
-  try{const data=await jsonp('applicant.bootstrap',{user_id:who.user_id,name:who.name,_t:Date.now()});applyBootstrap(data);}
-  catch(err){setConnected(false);toast('Sambungan gagal',err.message,'err')}
+  if(!who.user_id) return null;
+  try{
+    const data=await jsonp('applicant.bootstrap',{user_id:who.user_id,name:who.name,_t:Date.now()});
+    applyBootstrap(data);
+    return data;
+  }catch(err){
+    setConnected(false);
+    if(!silent) toast('Sambungan gagal',err.message,'err');
+    return null;
+  }
+}
+
+function startPortalSync(){
+  if(state.syncTimer) return;
+  state.syncTimer=setInterval(()=>{
+    if(document.visibilityState==='visible' && state.profile){
+      refreshPortal(true);
+    }
+  },45000);
+}
+
+async function waitForNewApplicantLoan(beforeIds,timeoutMs=22000){
+  const started=Date.now();
+  while(Date.now()-started<timeoutMs){
+    const data=await refreshPortal(true);
+    if(data){
+      const created=(state.loans||[]).find(x=>!beforeIds.has(String(x.loan_id)));
+      if(created) return created;
+    }
+    await new Promise(resolve=>setTimeout(resolve,1100));
+  }
+  return null;
+}
+
+async function waitForApplicantLoanStatus(loanId,statuses,timeoutMs=18000){
+  const started=Date.now();
+  while(Date.now()-started<timeoutMs){
+    await refreshPortal(true);
+    const loan=(state.loans||[]).find(x=>String(x.loan_id)===String(loanId));
+    if(loan && statuses.includes(String(loan.status))) return loan;
+    await new Promise(resolve=>setTimeout(resolve,1100));
+  }
+  return null;
+}
+
+function loanProgress(status){
+  const s=String(status||'');
+  const terminal=['DITOLAK','DIBATALKAN'];
+  if(terminal.includes(s)){
+    return `<div class="loan-progress-mini stopped"><i></i><i></i><i></i><i></i><small>${s==='DITOLAK'?'Tidak diluluskan':'Dibatalkan'}</small></div>`;
+  }
+
+  const steps=['MENUNGGU_KELULUSAN','DILULUSKAN','DIPINJAM','DIPULANGKAN'];
+  let index=steps.indexOf(s);
+  if(['PERMOHONAN_BARU'].includes(s)) index=0;
+  if(['HAMPIR_DUE','LEWAT'].includes(s)) index=2;
+  if(index<0) index=0;
+
+  return `<div class="loan-progress-mini">${steps.map((_,i)=>`<i class="${i<=index?'done':''}"></i>`).join('')}<small>${index===0?'Menunggu ICT':index===1?'Sedia untuk diambil':index===2?'Sedang dipinjam':'Selesai'}</small></div>`;
 }
 
 function jsonp(action,params={}){
