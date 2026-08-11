@@ -1492,6 +1492,45 @@ table{max-width:none}
   .apply-submit-row .btn{width:100%}
 }
 
+
+/* PEMOHON V6 - FAST CATEGORY + POPUP */
+.loan-category-intro{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:16px 18px;margin-bottom:14px;border:1px solid #dbe8f2;border-radius:18px;background:linear-gradient(120deg,#fff,#f5fbff);box-shadow:0 10px 26px rgba(30,75,113,.06)}
+.loan-category-intro strong{display:block;font-size:15px;color:#173654}.loan-category-intro span{display:block;margin-top:4px;font-size:11px;color:#73899c}
+.loan-category-total{min-width:96px;padding:10px 13px;border-radius:14px;text-align:center;background:#eaf7ff;color:#126fae}.loan-category-total b{display:block;font-size:23px;line-height:1}.loan-category-total small{font-size:9px;font-weight:800}
+.loan-category-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:13px}
+.loan-category-card{position:relative;min-height:170px;border:1px solid #dce7f0;border-radius:20px;padding:18px;background:#fff;text-align:left;cursor:pointer;transition:.15s;overflow:hidden}
+.loan-category-card:before{content:"";position:absolute;width:110px;height:110px;border-radius:50%;right:-38px;top:-40px;background:var(--cat-glow,#e8f6ff);opacity:.9}
+.loan-category-card:hover{transform:translateY(-2px);border-color:#b8d9ee;box-shadow:0 16px 34px rgba(31,79,119,.10)}.loan-category-card.disabled{opacity:.58}
+.loan-category-icon{position:relative;width:52px;height:52px;display:grid;place-items:center;border-radius:16px;background:var(--cat-bg,#eaf6ff);color:var(--cat-color,#147ac0);font-size:28px;margin-bottom:20px}
+.loan-category-card h3{position:relative;margin:0 0 5px;font-size:14px;color:#173654}.loan-category-card p{position:relative;margin:0;font-size:10px;line-height:1.45;color:#7c90a2}
+.loan-category-stock{position:absolute;right:14px;bottom:13px;padding:5px 8px;border-radius:999px;background:#f2f8fc;color:#4a718f;font-size:9px;font-weight:900}.loan-category-stock.available{background:#e9f8f2;color:#17825f}
+.loan-category-note{margin-top:14px;padding:12px 15px;border-radius:13px;border:1px solid #dce8f1;background:#f8fbfe;color:#6f8497;font-size:10.5px;line-height:1.55}.loan-category-note b{color:#315773}
+
+.loan-request-modal{position:fixed;inset:0;z-index:220;display:flex;align-items:center;justify-content:center;padding:18px}.loan-request-modal.hidden{display:none!important}
+.loan-modal-backdrop{position:absolute;inset:0;background:rgba(12,35,58,.48);backdrop-filter:blur(4px)}
+.loan-modal-card{position:relative;z-index:2;width:min(820px,96vw);max-height:min(880px,94vh);display:flex;flex-direction:column;overflow:hidden;border-radius:24px;background:#fff;border:1px solid rgba(215,228,238,.9);box-shadow:0 30px 85px rgba(10,42,72,.28)}
+.loan-modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;padding:18px 20px;border-bottom:1px solid #e5edf3;background:linear-gradient(120deg,#f8fcff,#eef8ff)}
+.loan-modal-title-wrap{display:flex;gap:13px;align-items:center}.loan-modal-icon{width:50px;height:50px;min-width:50px;display:grid;place-items:center;border-radius:15px;background:#e8f6ff;color:#1377b9;font-size:25px}
+.loan-modal-eyebrow{font-size:8px;font-weight:950;letter-spacing:.10em;color:#6e8da5;margin-bottom:3px}.loan-modal-head h2{margin:0;font-size:20px;color:#183856}.loan-modal-head p{margin:3px 0 0;font-size:10px;color:#7890a3}
+.loan-modal-close{width:36px;height:36px;border:0;border-radius:10px;background:#fff;color:#6e8497;font-size:24px;line-height:1}.loan-modal-close:hover{background:#edf5fa}
+.loan-modal-body{overflow:auto;padding:18px 20px 10px}.loan-modal-section{margin-bottom:19px}.loan-modal-section-title{display:flex;align-items:center;gap:9px;margin-bottom:10px}
+.loan-modal-section-title>span{width:28px;height:28px;display:grid;place-items:center;border-radius:9px;background:#e9f6ff;color:#1478bc;font-size:11px;font-weight:950}
+.loan-modal-section-title strong{display:block;font-size:12px;color:#264862}.loan-modal-section-title small{display:block;margin-top:2px;font-size:9px;color:#8295a5}
+.loan-modal-assets{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.loan-modal-asset{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid #e0e9f0;border-radius:13px;background:#fff;cursor:pointer}.loan-modal-asset:hover{background:#f8fcff}
+.loan-modal-asset.selected{border-color:#2f96d5;background:#eef9ff;box-shadow:0 0 0 3px rgba(47,150,213,.07)}.loan-modal-asset input{width:16px;height:16px;accent-color:#1986cc}
+.loan-modal-asset-icon{width:35px;height:35px;display:grid;place-items:center;border-radius:10px;background:#edf6fc;font-size:18px}
+.loan-modal-asset strong{display:block;font-size:10.5px;color:#24445f}.loan-modal-asset small{display:block;margin-top:2px;font-size:8.5px;color:#8295a5;line-height:1.35}
+.loan-modal-empty{grid-column:1/-1;padding:23px;text-align:center;border:1px dashed #cfdde7;border-radius:13px;color:#8295a5;font-size:10px;background:#fafcfe}
+.loan-modal-form{gap:10px 12px}.loan-modal-form .field{font-size:12px}.loan-modal-form textarea.field{min-height:72px}
+.loan-declaration{display:flex;align-items:flex-start;gap:9px;padding:12px 13px;margin-bottom:10px;border-radius:13px;border:1px solid #d8e8f1;background:#f6fbff;color:#4d6b83;font-size:10px;line-height:1.5;cursor:pointer}
+.loan-declaration input{width:17px;height:17px;min-width:17px;margin-top:1px;accent-color:#1685ca}
+.loan-modal-foot{display:flex;justify-content:flex-end;gap:8px;padding:13px 20px 16px;border-top:1px solid #e5edf3;background:#fff}.loan-modal-foot .btn{min-width:115px}
+.asset-card .photo img,.asset-photo img{content-visibility:auto}
+@media(max-width:1100px){.loan-category-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:720px){.loan-category-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.loan-category-card{min-height:145px;padding:14px}.loan-category-icon{margin-bottom:14px}.loan-modal-assets{grid-template-columns:1fr}.loan-modal-card{max-height:95vh;border-radius:18px}}
+@media(max-width:430px){.loan-category-grid{grid-template-columns:1fr 1fr;gap:9px}.loan-category-card{min-height:132px}.loan-category-intro{padding:13px}.loan-category-total{min-width:76px}.loan-request-modal{padding:7px}.loan-modal-head{padding:14px}.loan-modal-body{padding:14px 14px 7px}.loan-modal-foot{padding:10px 14px 13px}.loan-modal-title-wrap{gap:9px}.loan-modal-icon{width:43px;height:43px;min-width:43px}.loan-modal-head h2{font-size:17px}}
+
 </style>
 </head>
 <body>
@@ -1595,29 +1634,30 @@ table{max-width:none}
 </section>
 
 <section class="view" id="view-apply">
-  <div class="page-head"><div><h1>Mohon Pinjaman ICT</h1><p>Pilih peralatan yang masih tersedia dan lengkapkan maklumat penggunaan.</p></div></div>
-
-  <div class="loan-flow-strip" aria-label="Aliran pinjaman">
-    <div class="flow-step active"><b>1</b><span>Pilih Aset</span></div>
-    <div class="flow-line"></div>
-    <div class="flow-step"><b>2</b><span>Hantar</span></div>
-    <div class="flow-line"></div>
-    <div class="flow-step"><b>3</b><span>Kelulusan ICT</span></div>
-    <div class="flow-line"></div>
-    <div class="flow-step"><b>4</b><span>Ambil & Pulang</span></div>
+  <div class="page-head">
+    <div>
+      <h1>Mohon Pinjaman ICT</h1>
+      <p>Pilih kategori peralatan. Borang permohonan akan dibuka secara popup.</p>
+    </div>
   </div>
 
-  <div class="card panel apply-panel">
-    <div class="form-grid">
-      <div class="form-group"><label>Tarikh Perlu Pulang *</label><input class="field" type="date" id="applyDue"></div>
-      <div class="form-group"><label>Tujuan Pinjaman *</label><input class="field" id="applyPurpose" placeholder="Contoh: Program / Mesyuarat / Kerja luar"></div>
-      <div class="form-group full"><label>Catatan</label><textarea class="field" id="applyRemarks" placeholder="Maklumat tambahan jika ada"></textarea></div>
-      <div class="form-group full"><label>Gambar / Dokumen Sokongan</label><div class="upload-box"><input id="applyImage" type="file" accept="image/*" capture="environment"><div class="tiny muted" id="imageHint" style="margin-top:6px">Boleh pilih dari laptop atau kamera telefon. Gambar akan dikecilkan sebelum dihantar.</div></div></div>
+  <div class="loan-category-intro">
+    <div>
+      <strong>Pilih jenis peralatan yang diperlukan</strong>
+      <span>Hanya aset berstatus TERSEDIA boleh dipohon.</span>
     </div>
-    <div class="panel-head" style="margin-top:18px"><div><div class="panel-title">PILIH PERALATAN *</div><div class="panel-sub"><span id="selectedCount">0</span> item dipilih.</div></div></div>
-    <div class="asset-select-grid" id="applyAssetGrid"></div>
-    <div class="selected-loan-summary" id="selectedLoanSummary">Belum ada peralatan dipilih.</div>
-    <div class="apply-submit-row"><button class="btn btn-primary" id="submitApplicationBtn">Hantar Permohonan →</button></div>
+    <div class="loan-category-total">
+      <b id="applyAvailableCount">0</b>
+      <small>aset tersedia</small>
+    </div>
+  </div>
+
+  <div class="loan-category-grid" id="loanCategoryGrid"></div>
+
+  <div class="loan-category-note">
+    <b>Aliran permohonan:</b>
+    Pilih kategori → lengkapkan popup → hantar → tunggu kelulusan ICT →
+    ambil peralatan → pulangkan sebelum tarikh ditetapkan.
   </div>
 </section>
 
@@ -1646,6 +1686,111 @@ table{max-width:none}
 </section>
 </main>
 </div>
+
+<div class="loan-request-modal hidden" id="loanRequestModal" aria-hidden="true">
+  <div class="loan-modal-backdrop" data-close-loan-modal></div>
+
+  <div class="loan-modal-card" role="dialog" aria-modal="true" aria-labelledby="loanModalTitle">
+    <div class="loan-modal-head">
+      <div class="loan-modal-title-wrap">
+        <div class="loan-modal-icon" id="loanModalIcon">▣</div>
+        <div>
+          <div class="loan-modal-eyebrow">PERMOHONAN PINJAMAN ICT</div>
+          <h2 id="loanModalTitle">Peralatan ICT</h2>
+          <p id="loanModalSubtitle">Pilih aset dan lengkapkan maklumat permohonan.</p>
+        </div>
+      </div>
+      <button class="loan-modal-close" type="button" id="loanModalClose" aria-label="Tutup">×</button>
+    </div>
+
+    <div class="loan-modal-body">
+      <div class="loan-modal-section">
+        <div class="loan-modal-section-title">
+          <span>1</span>
+          <div>
+            <strong>Pilih Peralatan</strong>
+            <small id="loanModalStockText">0 aset tersedia</small>
+          </div>
+        </div>
+        <div class="loan-modal-assets" id="loanModalAssets"></div>
+      </div>
+
+      <div class="loan-modal-section">
+        <div class="loan-modal-section-title">
+          <span>2</span>
+          <div>
+            <strong>Maklumat Permohonan</strong>
+            <small>Lengkapkan ruangan yang berkaitan.</small>
+          </div>
+        </div>
+
+        <div class="form-grid loan-modal-form">
+          <div class="form-group">
+            <label>Tarikh Perlu Pulang *</label>
+            <input class="field" type="date" id="loanModalDue">
+          </div>
+
+          <div class="form-group">
+            <label>Tujuan Pinjaman *</label>
+            <input class="field" id="loanModalPurpose" placeholder="Contoh: Program / Mesyuarat / Kerja luar">
+          </div>
+
+          <div class="form-group full hidden" id="laptopTypeGroup">
+            <label>Jenis Laptop *</label>
+            <input class="field" id="loanLaptopType" placeholder="Contoh: Dell Latitude / HP ProBook / Laptop Standard">
+          </div>
+
+          <div class="form-group full hidden" id="wifiNoGroup">
+            <label>No. WiFi *</label>
+            <input class="field" id="loanWifiNo" placeholder="Contoh: WIFI-01 / MiFi 01">
+          </div>
+
+          <div class="form-group full hidden" id="extensionNoGroup">
+            <label>No. Extension *</label>
+            <input class="field" id="loanExtensionNo" placeholder="Contoh: EXT-01">
+          </div>
+
+          <div class="form-group full hidden" id="otherEquipmentGroup">
+            <label>Peralatan Lain (Nyatakan) *</label>
+            <input class="field" id="loanOtherEquipment" placeholder="Contoh: Projector / Monitor / Kamera / Charger">
+          </div>
+
+          <div class="form-group full">
+            <label>Catatan</label>
+            <textarea class="field" id="loanModalRemarks" placeholder="Maklumat tambahan jika ada"></textarea>
+          </div>
+
+          <div class="form-group full">
+            <label>Gambar / Dokumen Sokongan</label>
+            <div class="upload-box">
+              <input id="loanModalImage" type="file" accept="image/*" capture="environment">
+              <div class="tiny muted" id="loanModalImageHint" style="margin-top:6px">
+                Pilihan. Gambar akan dikecilkan sebelum dihantar.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <label class="loan-declaration">
+        <input type="checkbox" id="loanDeclaration">
+        <span>
+          Dengan ini saya mengesahkan bahawa saya akan menjaga peralatan yang dipinjam
+          dengan baik, menggunakannya bagi tujuan yang dinyatakan dan memulangkannya
+          pada atau sebelum tarikh yang ditetapkan dalam keadaan baik.
+        </span>
+      </label>
+    </div>
+
+    <div class="loan-modal-foot">
+      <button class="btn" type="button" id="loanModalCancel">Batal</button>
+      <button class="btn btn-primary" type="button" id="submitApplicationBtn">
+        Hantar Permohonan →
+      </button>
+    </div>
+  </div>
+</div>
+
 <div class="toast-wrap" id="toastWrap"></div>
 
 <script>
@@ -1654,7 +1799,7 @@ const SYSTEM_CONFIG={
   APPLICANT_TOKEN:'4E52A3842E482E9B56766B10FDE318AD'
 };
 
-const state={profile:null,kpi:{},assets:[],loans:[],staffList:[],selectedUserId:'',connected:false,currentView:'home',imagePayload:null,lastSync:0,syncTimer:null};
+const state={profile:null,kpi:{},assets:[],loans:[],staffList:[],selectedUserId:'',connected:false,currentView:'home',imagePayload:null,lastSync:0,syncTimer:null,refreshPromise:null,loanCategory:'',loanCategoryLabel:''};
 const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>[...r.querySelectorAll(s)];
 
@@ -1678,21 +1823,60 @@ function init(){
 function bindUI(){
   $$('.nav-btn[data-view]').forEach(btn=>btn.onclick=()=>showView(btn.dataset.view));
   $$('[data-go]').forEach(btn=>btn.onclick=()=>showView(btn.dataset.go));
+
   $('#mobileMenu').onclick=()=>$('#sidebar').classList.toggle('open');
   $('#loginBtn').onclick=()=>loginApplicant(false);
   $('#logoutBtn').onclick=logoutApplicant;
-  $('#submitApplicationBtn').onclick=submitApplication;
+
   $('#loanSearch').addEventListener('input',renderMyLoans);
   $('#loanFilter').addEventListener('change',renderMyLoans);
   $('#assetSearch').addEventListener('input',renderAvailableAssets);
   $('#assetCategory').addEventListener('change',renderAvailableAssets);
-  $('#applyImage').addEventListener('change',handleImage);
 
   $('#loginName').addEventListener('input',handleNameSearch);
   $('#loginName').addEventListener('focus',handleNameSearch);
+
+  $('#loanModalClose').onclick=closeLoanRequestModal;
+  $('#loanModalCancel').onclick=closeLoanRequestModal;
+  $('[data-close-loan-modal]').onclick=closeLoanRequestModal;
+  $('#submitApplicationBtn').onclick=submitApplication;
+  $('#loanModalImage').addEventListener('change',handleImage);
+
   document.addEventListener('click',e=>{
     if(!e.target.closest('.autocomplete-wrap')) hideSuggestions();
   });
+
+  document.addEventListener('keydown',e=>{
+    if(e.key==='Escape' && !$('#loanRequestModal').classList.contains('hidden')){
+      closeLoanRequestModal();
+    }
+  });
+
+  document.addEventListener('visibilitychange',()=>{
+    if(
+      document.visibilityState==='visible' &&
+      state.profile &&
+      Date.now()-(state.lastSync||0)>30000
+    ){
+      refreshPortal(true);
+    }
+  });
+}
+
+
+function setPemohonVideoActive(active){
+  const video=$('#pemohonHeroVideo');
+  if(!video) return;
+
+  if(!active){
+    video.pause();
+    return;
+  }
+
+  if(document.visibilityState!=='visible') return;
+
+  const p=video.play();
+  if(p && typeof p.catch==='function') p.catch(()=>{});
 }
 
 
@@ -1700,42 +1884,42 @@ function initPemohonHeroVideo(){
   const video=$('#pemohonHeroVideo');
   if(!video) return;
 
-  const tryPlay=()=>{
-    const p=video.play();
-    if(p && typeof p.catch==='function'){
-      p.catch(()=>{});
-    }
-  };
-
-  if(document.visibilityState==='visible'){
-    tryPlay();
-  }
+  setPemohonVideoActive(true);
 
   document.addEventListener('visibilitychange',()=>{
+    const loginVisible=!$('#loginOverlay')?.classList.contains('hidden');
+
     if(document.visibilityState==='hidden'){
       video.pause();
-    }else{
-      tryPlay();
+    }else if(loginVisible){
+      setPemohonVideoActive(true);
     }
   });
 }
 
+
 function showView(name){
   state.currentView=name;
+
   $$('.view').forEach(v=>v.classList.remove('active'));
   $$('.nav-btn').forEach(v=>v.classList.toggle('active',v.dataset.view===name));
+
   $('#view-'+name)?.classList.add('active');
   $('#sidebar').classList.remove('open');
 
-  if(name==='apply') renderApplyAssets();
+  if(name==='home') renderHomeView();
+  if(name==='apply') renderApplyCategories();
   if(name==='myloans') renderMyLoans();
-  if(name==='assets') renderAvailableAssets();
 
-  // Refresh quietly when data is older than 15 seconds.
+  if(name==='assets'){
+    renderAssetCategoryOptions();
+    renderAvailableAssets();
+  }
+
   if(
     state.profile &&
     ['home','apply','myloans','assets'].includes(name) &&
-    Date.now()-(state.lastSync||0)>15000
+    Date.now()-(state.lastSync||0)>45000
   ){
     refreshPortal(true);
   }
@@ -1844,6 +2028,7 @@ async function loginApplicant(silent=false){
 
     applyBootstrap(data);
     $('#loginOverlay').classList.add('hidden');
+    setPemohonVideoActive(false);
 
     if(!silent){
       toast('Selamat datang',data.profile?.name||'Pemohon','ok');
@@ -1865,10 +2050,12 @@ function logoutApplicant(){
   state.loans=[];
   state.selectedUserId='';
   if(state.syncTimer){clearInterval(state.syncTimer);state.syncTimer=null;}
+  closeLoanRequestModal();
   $('#loginOverlay').classList.remove('hidden');
   $('#sidebar').classList.remove('open');
   $('#loginName').value='';
   hideSuggestions();
+  setPemohonVideoActive(true);
 }
 
 function applyBootstrap(data){
@@ -1877,27 +2064,44 @@ function applyBootstrap(data){
   state.assets=data.available_assets||[];
   state.loans=data.loans||[];
   state.lastSync=Date.now();
+
   setConnected(true);
-  renderAll();
+  renderShell();
+
+  if(state.currentView==='home') renderHomeView();
+  if(state.currentView==='apply') renderApplyCategories();
+  if(state.currentView==='myloans') renderMyLoans();
+
+  if(state.currentView==='assets'){
+    renderAssetCategoryOptions();
+    renderAvailableAssets();
+  }
+
   startPortalSync();
 }
 
-function renderAll(){
+
+function renderShell(){
   const p=state.profile||{};
+
   $('#sideName').textContent=p.name||'Pemohon';
-  $('#sideMeta').textContent=[p.department,p.unit].filter(Boolean).join(' • ')||'Pemohon ICT';
+  $('#sideMeta').textContent=
+    [p.department,p.unit].filter(Boolean).join(' • ')||
+    'Pemohon ICT';
+
   $('#welcomeName').textContent=(p.name||'Pemohon').split(' ')[0];
   $('#kpiPending').textContent=n(state.kpi.pending);
   $('#kpiActive').textContent=n(state.kpi.active);
   $('#kpiOverdue').textContent=n(state.kpi.overdue);
   $('#kpiAvailable').textContent=n(state.kpi.available_assets);
+}
+
+
+function renderHomeView(){
   renderRecent();
   renderCategories();
-  renderApplyAssets();
-  renderMyLoans();
-  renderAssetCategoryOptions();
-  renderAvailableAssets();
 }
+
 
 function renderRecent(){
   const rows=state.loans.slice(0,5);
@@ -1914,39 +2118,227 @@ function renderCategories(){
   $('#categoryGrid').innerHTML=entries.length?entries.map(([cat,count])=>`<div class="cat-card"><div class="cat-icon">${icon[cat]||'▣'}</div><label>${esc(cat)}</label><strong>${count}</strong></div>`).join(''):'<div class="empty" style="grid-column:1/-1">Tiada aset tersedia.</div>';
 }
 
-function renderApplyAssets(){
-  const box=$('#applyAssetGrid');
-  box.innerHTML=state.assets.length?state.assets.map(a=>`
-    <label class="asset-choice" data-choice="${attr(a.asset_id)}">
-      <input type="checkbox" class="asset-check" value="${attr(a.asset_id)}" onchange="updateSelectedAssets()">
-      <div class="asset-photo">${a.image_url?`<img src="${attr(a.image_url)}" alt="">`:assetIcon(a.category)}</div>
-      <h4>${esc(a.asset_name)}</h4>
-      <p>${esc(a.asset_tag)} • ${esc([a.brand,a.model].filter(Boolean).join(' ')||a.category)}<br>${esc(a.location||'')}</p>
-    </label>
-  `).join(''):'<div class="empty" style="grid-column:1/-1">Tiada peralatan berstatus TERSEDIA.</div>';
-  updateSelectedAssets();
+function normalizeLoanCategory(category){
+  const s=String(category||'').toLowerCase();
+
+  if(s.includes('laptop') || s.includes('notebook')) return 'laptop';
+
+  if(
+    s.includes('wifi') ||
+    s.includes('wi-fi') ||
+    s.includes('mifi') ||
+    s.includes('modem') ||
+    s.includes('broadband')
+  ) return 'wifi';
+
+  if(s.includes('printer')) return 'printer';
+
+  if(s.includes('extension') || s.includes('sambungan')) return 'extension';
+
+  return 'other';
 }
 
-function updateSelectedAssets(){
-  $$('.asset-choice').forEach(card=>card.classList.toggle('selected',!!card.querySelector('.asset-check')?.checked));
-  const selected=$$('.asset-check:checked').map(x=>x.value);
-  $('#selectedCount').textContent=selected.length;
 
-  const summary=$('#selectedLoanSummary');
-  if(summary){
-    if(!selected.length){
-      summary.textContent='Belum ada peralatan dipilih.';
-      summary.classList.remove('has-items');
-    }else{
-      const names=selected.map(id=>{
-        const a=state.assets.find(x=>String(x.asset_id)===String(id));
-        return a?.asset_name||a?.asset_tag||id;
-      });
-      summary.textContent=`Dipilih (${selected.length}): ${names.join(', ')}`;
-      summary.classList.add('has-items');
+function loanCategoryConfig(){
+  return {
+    laptop:{
+      label:'Laptop',
+      icon:'💻',
+      description:'Laptop / notebook untuk tugasan rasmi.',
+      color:'#176fce',
+      bg:'#eaf4ff',
+      glow:'#d9ecff'
+    },
+    wifi:{
+      label:'WiFi / MiFi',
+      icon:'📶',
+      description:'Peranti internet mudah alih / broadband.',
+      color:'#168bbd',
+      bg:'#e9f9ff',
+      glow:'#d8f5ff'
+    },
+    printer:{
+      label:'Printer',
+      icon:'🖨️',
+      description:'Printer mudah alih atau peralatan cetakan.',
+      color:'#7254c6',
+      bg:'#f1edff',
+      glow:'#e9e2ff'
+    },
+    extension:{
+      label:'Extension',
+      icon:'🔌',
+      description:'Extension plug / sambungan kuasa.',
+      color:'#df8a20',
+      bg:'#fff5e5',
+      glow:'#ffedcf'
+    },
+    other:{
+      label:'Peralatan Lain',
+      icon:'▣',
+      description:'Projector, monitor, kamera, charger, audio dan lain-lain.',
+      color:'#21896d',
+      bg:'#eaf8f3',
+      glow:'#d8f3e9'
+    }
+  };
+}
+
+
+function renderApplyCategories(){
+  const grid=$('#loanCategoryGrid');
+  if(!grid) return;
+
+  const config=loanCategoryConfig();
+  const counts={laptop:0,wifi:0,printer:0,extension:0,other:0};
+
+  (state.assets||[]).forEach(asset=>{
+    counts[normalizeLoanCategory(asset.category)]++;
+  });
+
+  $('#applyAvailableCount').textContent=(state.assets||[]).length;
+
+  grid.innerHTML=Object.keys(config).map(key=>{
+    const item=config[key];
+    const count=counts[key]||0;
+
+    return `
+      <button
+        type="button"
+        class="loan-category-card ${count?'':'disabled'}"
+        onclick="openLoanRequestModal('${key}')"
+        style="--cat-color:${item.color};--cat-bg:${item.bg};--cat-glow:${item.glow}">
+        <div class="loan-category-icon">${item.icon}</div>
+        <h3>${esc(item.label)}</h3>
+        <p>${esc(item.description)}</p>
+        <span class="loan-category-stock ${count?'available':''}">
+          ${count} tersedia
+        </span>
+      </button>
+    `;
+  }).join('');
+}
+
+
+function assetsForLoanCategory(key){
+  return (state.assets||[]).filter(asset=>
+    normalizeLoanCategory(asset.category)===key
+  );
+}
+
+
+function openLoanRequestModal(categoryKey,preselectAssetId=''){
+  const config=loanCategoryConfig();
+  const item=config[categoryKey]||config.other;
+  const assets=assetsForLoanCategory(categoryKey);
+
+  state.loanCategory=categoryKey;
+  state.loanCategoryLabel=item.label;
+  state.imagePayload=null;
+
+  $('#loanModalIcon').textContent=item.icon;
+  $('#loanModalTitle').textContent=item.label;
+  $('#loanModalSubtitle').textContent=item.description;
+  $('#loanModalStockText').textContent=`${assets.length} aset tersedia`;
+
+  $('#laptopTypeGroup').classList.toggle('hidden',categoryKey!=='laptop');
+  $('#wifiNoGroup').classList.toggle('hidden',categoryKey!=='wifi');
+  $('#extensionNoGroup').classList.toggle('hidden',categoryKey!=='extension');
+  $('#otherEquipmentGroup').classList.toggle('hidden',categoryKey!=='other');
+
+  $('#loanLaptopType').value='';
+  $('#loanWifiNo').value='';
+  $('#loanExtensionNo').value='';
+  $('#loanOtherEquipment').value='';
+  $('#loanModalDue').value='';
+  $('#loanModalPurpose').value='';
+  $('#loanModalRemarks').value='';
+  $('#loanModalImage').value='';
+  $('#loanModalImageHint').textContent='Pilihan. Gambar akan dikecilkan sebelum dihantar.';
+  $('#loanDeclaration').checked=false;
+
+  const box=$('#loanModalAssets');
+
+  box.innerHTML=assets.length
+    ? assets.map(asset=>{
+        const checked=
+          preselectAssetId &&
+          String(asset.asset_id)===String(preselectAssetId);
+
+        return `
+          <label class="loan-modal-asset ${checked?'selected':''}">
+            <input
+              type="checkbox"
+              class="loan-modal-asset-check"
+              value="${attr(asset.asset_id)}"
+              ${checked?'checked':''}
+              onchange="syncLoanModalSelection()">
+            <div class="loan-modal-asset-icon">${assetIcon(asset.category)}</div>
+            <div>
+              <strong>${esc(asset.asset_name||asset.asset_tag||asset.asset_id)}</strong>
+              <small>
+                ${esc(asset.asset_tag||'')}
+                ${asset.model?` • ${esc(asset.model)}`:''}
+                ${asset.location?` • ${esc(asset.location)}`:''}
+              </small>
+            </div>
+          </label>
+        `;
+      }).join('')
+    : `<div class="loan-modal-empty">
+         Tiada aset ${esc(item.label)} berstatus TERSEDIA buat masa ini.
+       </div>`;
+
+  syncLoanModalSelection();
+
+  $('#loanRequestModal').classList.remove('hidden');
+  $('#loanRequestModal').setAttribute('aria-hidden','false');
+  document.body.style.overflow='hidden';
+}
+
+
+function closeLoanRequestModal(){
+  const modal=$('#loanRequestModal');
+  if(!modal) return;
+
+  modal.classList.add('hidden');
+  modal.setAttribute('aria-hidden','true');
+  document.body.style.overflow='';
+}
+
+
+function syncLoanModalSelection(){
+  $$('.loan-modal-asset').forEach(card=>{
+    const checked=!!card.querySelector('.loan-modal-asset-check')?.checked;
+    card.classList.toggle('selected',checked);
+  });
+
+  const selected=$$('.loan-modal-asset-check:checked').map(x=>x.value);
+
+  if(selected.length===1){
+    const asset=(state.assets||[]).find(x=>
+      String(x.asset_id)===String(selected[0])
+    );
+
+    if(asset){
+      if(state.loanCategory==='laptop' && !$('#loanLaptopType').value){
+        $('#loanLaptopType').value=
+          [asset.brand,asset.model].filter(Boolean).join(' ')||
+          asset.asset_name||
+          '';
+      }
+
+      if(state.loanCategory==='wifi' && !$('#loanWifiNo').value){
+        $('#loanWifiNo').value=asset.asset_tag||asset.asset_name||'';
+      }
+
+      if(state.loanCategory==='extension' && !$('#loanExtensionNo').value){
+        $('#loanExtensionNo').value=asset.asset_tag||asset.asset_name||'';
+      }
     }
   }
 }
+
 
 function renderMyLoans(){
   const q=($('#loanSearch').value||'').toLowerCase();
@@ -1977,17 +2369,32 @@ function cancelButton(x){
 
 async function cancelApplication(id){
   if(!confirm('Pasti mahu batalkan permohonan '+id+'?')) return;
+
   try{
     const who=identity();
-    await postApi('applicant.loan.cancel',{loan_id:id,identity_user_id:who.user_id,identity_name:who.name});
-    toast('Sedang membatalkan','Sistem sedang mengesahkan perubahan status.','ok');
-    const result=await waitForApplicantLoanStatus(id,['DIBATALKAN'],18000);
-    if(result){
-      toast('Permohonan dibatalkan','Aset tempahan telah dilepaskan semula.','ok');
-    }else{
-      toast('Arahan telah dihantar','Status akan dikemaskini sebaik pemprosesan selesai.','ok');
-    }
-  }catch(err){toast('Ralat',err.message,'err')}
+
+    await postApi(
+      'applicant.loan.cancel',
+      {
+        loan_id:id,
+        identity_user_id:who.user_id,
+        identity_name:who.name
+      }
+    );
+
+    await refreshPortal(true);
+
+    toast(
+      'Permohonan dibatalkan',
+      'Aset tempahan telah dilepaskan semula.',
+      'ok'
+    );
+
+    renderMyLoans();
+
+  }catch(err){
+    toast('Ralat',err.message,'err');
+  }
 }
 
 function renderAssetCategoryOptions(){
@@ -2007,49 +2414,133 @@ function renderAvailableAssets(){
   });
   $('#availableAssetGrid').innerHTML=rows.length?rows.map(a=>`
     <div class="card asset-card">
-      <div class="photo">${a.image_url?`<img src="${attr(a.image_url)}" alt="">`:assetIcon(a.category)}</div>
+      <div class="photo">${a.image_url?`<img src="${attr(a.image_url)}" alt="" loading="lazy" decoding="async">`:assetIcon(a.category)}</div>
       <div class="body"><span class="pill green">TERSEDIA</span><h3>${esc(a.asset_name)}</h3><p>${esc(a.asset_tag)}<br>${esc([a.brand,a.model].filter(Boolean).join(' ')||a.category)}<br>${esc(a.location||'')}</p><button class="btn btn-primary btn-sm" style="margin-top:9px" onclick="chooseAsset('${attr(a.asset_id)}')">Pilih untuk Pinjam</button></div>
     </div>
   `).join(''):'<div class="empty" style="grid-column:1/-1">Tiada peralatan sepadan.</div>';
 }
 
 function chooseAsset(id){
+  const asset=(state.assets||[]).find(x=>
+    String(x.asset_id)===String(id)
+  );
+
+  if(!asset){
+    return toast(
+      'Aset tidak ditemui',
+      'Sila muat semula senarai peralatan.',
+      'err'
+    );
+  }
+
   showView('apply');
+
   setTimeout(()=>{
-    const cb=$(`.asset-check[value="${cssEscape(id)}"]`);
-    if(cb){cb.checked=true;updateSelectedAssets();cb.closest('.asset-choice')?.scrollIntoView({behavior:'smooth',block:'center'});}
-  },60);
+    openLoanRequestModal(
+      normalizeLoanCategory(asset.category),
+      asset.asset_id
+    );
+  },30);
 }
 
-async function submitApplication(){
-  const due=$('#applyDue').value;
-  const purpose=$('#applyPurpose').value.trim();
-  const remarks=$('#applyRemarks').value.trim();
-  const selected=$$('.asset-check:checked').map(x=>x.value);
 
-  if(!due||!purpose||!selected.length){
-    return toast('Maklumat belum lengkap','Isi tarikh pulang, tujuan dan pilih sekurang-kurangnya satu aset.','err');
+async function submitApplication(){
+  const due=$('#loanModalDue').value;
+  const purpose=$('#loanModalPurpose').value.trim();
+  const userRemarks=$('#loanModalRemarks').value.trim();
+  const selected=$$('.loan-modal-asset-check:checked').map(x=>x.value);
+
+  if(!selected.length){
+    return toast('Pilih peralatan','Pilih sekurang-kurangnya satu aset tersedia.','err');
+  }
+
+  if(!due || !purpose){
+    return toast('Maklumat belum lengkap','Isi tarikh perlu pulang dan tujuan pinjaman.','err');
   }
 
   const dueDate=new Date(due+'T23:59:59');
+
   if(dueDate < new Date()){
     return toast('Tarikh tidak sah','Tarikh perlu pulang tidak boleh sebelum hari ini.','err');
   }
 
-  const beforeIds=new Set((state.loans||[]).map(x=>String(x.loan_id)));
+  const detailLines=[
+    `Kategori Permohonan: ${state.loanCategoryLabel||'Peralatan ICT'}`
+  ];
+
+  if(state.loanCategory==='laptop'){
+    const laptopType=$('#loanLaptopType').value.trim();
+
+    if(!laptopType){
+      return toast('Jenis Laptop diperlukan','Sila isi Jenis Laptop.','err');
+    }
+
+    detailLines.push(`Jenis Laptop: ${laptopType}`);
+  }
+
+  if(state.loanCategory==='wifi'){
+    const wifiNo=$('#loanWifiNo').value.trim();
+
+    if(!wifiNo){
+      return toast('No. WiFi diperlukan','Sila isi No. WiFi.','err');
+    }
+
+    detailLines.push(`No. WiFi: ${wifiNo}`);
+  }
+
+  if(state.loanCategory==='extension'){
+    const extensionNo=$('#loanExtensionNo').value.trim();
+
+    if(!extensionNo){
+      return toast('No. Extension diperlukan','Sila isi No. Extension.','err');
+    }
+
+    detailLines.push(`No. Extension: ${extensionNo}`);
+  }
+
+  if(state.loanCategory==='other'){
+    const other=$('#loanOtherEquipment').value.trim();
+
+    if(!other){
+      return toast('Nyatakan peralatan','Sila nyatakan peralatan lain yang dipohon.','err');
+    }
+
+    detailLines.push(`Peralatan Lain: ${other}`);
+  }
+
+  if(!$('#loanDeclaration').checked){
+    return toast(
+      'Pengesahan diperlukan',
+      'Tandakan pengesahan penjagaan dan pemulangan peralatan.',
+      'err'
+    );
+  }
+
+  detailLines.push(
+    'Pengesahan Pemohon: Saya bersetuju menjaga peralatan dan memulangkannya pada atau sebelum tarikh yang ditetapkan.'
+  );
+
+  if(userRemarks){
+    detailLines.push(`Catatan Pemohon: ${userRemarks}`);
+  }
+
   const btn=$('#submitApplicationBtn');
   btn.disabled=true;
-  btn.textContent='Menghantar permohonan...';
+  btn.textContent='Menghantar...';
 
   try{
     const who=identity();
+
     const payload={
       identity_user_id:who.user_id,
       identity_name:who.name,
       due_date:due,
       purpose,
-      remarks,
-      items:selected.map(asset_id=>({asset_id,condition_out:'BAIK'}))
+      remarks:detailLines.join('\n'),
+      items:selected.map(asset_id=>({
+        asset_id,
+        condition_out:'BAIK'
+      }))
     };
 
     if(state.imagePayload){
@@ -2059,80 +2550,86 @@ async function submitApplication(){
 
     await postApi('applicant.loan.create',payload);
 
-    toast('Permohonan dihantar','Sistem sedang mengesahkan rekod dan tempahan aset.','ok');
-    btn.textContent='Mengesahkan rekod...';
+    // Satu GET sahaja. Tiada polling setiap 1.1 saat.
+    const refreshed=await refreshPortal(true);
 
-    const created=await waitForNewApplicantLoan(beforeIds,22000);
+    state.imagePayload=null;
+    closeLoanRequestModal();
 
-    if(created){
-      $('#applyDue').value='';
-      $('#applyPurpose').value='';
-      $('#applyRemarks').value='';
-      $('#applyImage').value='';
-      state.imagePayload=null;
-      $('#imageHint').textContent='Boleh pilih dari laptop atau kamera telefon. Gambar akan dikecilkan sebelum dihantar.';
-      toast('Permohonan berjaya',`${created.loan_id} kini menunggu kelulusan ICT.`,'ok');
-      showView('myloans');
-    }else{
-      toast('Permohonan sedang diproses','Jika rekod belum muncul, buka Permohonan Saya sebentar lagi.','ok');
-      await refreshPortal(true);
-      showView('myloans');
-    }
+    toast(
+      'Permohonan berjaya dihantar',
+      refreshed
+        ? 'Permohonan kini menunggu kelulusan ICT.'
+        : 'Permohonan dihantar. Status akan muncul selepas sync seterusnya.',
+      'ok'
+    );
+
+    showView('myloans');
 
   }catch(err){
-    toast('Ralat',err.message,'err');
+    toast('Permohonan gagal',err.message,'err');
+
   }finally{
     btn.disabled=false;
     btn.textContent='Hantar Permohonan →';
   }
 }
 
+
 async function refreshPortal(silent=false){
   const who=identity();
+
   if(!who.user_id) return null;
-  try{
-    const data=await jsonp('applicant.bootstrap',{user_id:who.user_id,name:who.name,_t:Date.now()});
-    applyBootstrap(data);
-    return data;
-  }catch(err){
-    setConnected(false);
-    if(!silent) toast('Sambungan gagal',err.message,'err');
-    return null;
+
+  if(state.refreshPromise){
+    return state.refreshPromise;
   }
+
+  state.refreshPromise=(async()=>{
+    try{
+      const data=await jsonp(
+        'applicant.bootstrap',
+        {
+          user_id:who.user_id,
+          name:who.name,
+          _t:Date.now()
+        }
+      );
+
+      applyBootstrap(data);
+      return data;
+
+    }catch(err){
+      setConnected(false);
+
+      if(!silent){
+        toast('Sambungan gagal',err.message,'err');
+      }
+
+      return null;
+
+    }finally{
+      state.refreshPromise=null;
+    }
+  })();
+
+  return state.refreshPromise;
 }
+
 
 function startPortalSync(){
   if(state.syncTimer) return;
+
   state.syncTimer=setInterval(()=>{
-    if(document.visibilityState==='visible' && state.profile){
+    if(
+      document.visibilityState==='visible' &&
+      state.profile
+    ){
       refreshPortal(true);
     }
-  },45000);
+  },90000);
 }
 
-async function waitForNewApplicantLoan(beforeIds,timeoutMs=22000){
-  const started=Date.now();
-  while(Date.now()-started<timeoutMs){
-    const data=await refreshPortal(true);
-    if(data){
-      const created=(state.loans||[]).find(x=>!beforeIds.has(String(x.loan_id)));
-      if(created) return created;
-    }
-    await new Promise(resolve=>setTimeout(resolve,1100));
-  }
-  return null;
-}
-
-async function waitForApplicantLoanStatus(loanId,statuses,timeoutMs=18000){
-  const started=Date.now();
-  while(Date.now()-started<timeoutMs){
-    await refreshPortal(true);
-    const loan=(state.loans||[]).find(x=>String(x.loan_id)===String(loanId));
-    if(loan && statuses.includes(String(loan.status))) return loan;
-    await new Promise(resolve=>setTimeout(resolve,1100));
-  }
-  return null;
-}
 
 function loanProgress(status){
   const s=String(status||'');
@@ -2174,11 +2671,11 @@ function setConnected(ok){state.connected=ok;$('#apiDot').className='dot '+(ok?'
 
 async function handleImage(e){
   const file=e.target.files?.[0];if(!file){state.imagePayload=null;return}
-  try{state.imagePayload=await compressImage(file,1280,.78);$('#imageHint').textContent=`Siap: ${file.name} • ${Math.round(state.imagePayload.bytes/1024)} KB`;}
+  try{state.imagePayload=await compressImage(file,1024,.72);$('#loanModalImageHint').textContent=`Siap: ${file.name} • ${Math.round(state.imagePayload.bytes/1024)} KB`;}
   catch(err){state.imagePayload=null;toast('Gambar gagal diproses',err.message,'err')}
 }
 
-function compressImage(file,maxSide=1280,quality=.78){
+function compressImage(file,maxSide=1024,quality=.72){
   return new Promise((resolve,reject)=>{
     if(!file.type.startsWith('image/')) return reject(new Error('Pilih fail gambar.'));
     const reader=new FileReader();
