@@ -522,6 +522,44 @@ html,body{max-width:100%;overflow-x:hidden}
   .mini-hero{border-radius:16px !important}
 }
 
+
+/* =========================================================
+   INVENTORI ADMIN V7.1 - EDIT / TIDAK AKTIF / DELETE
+   ========================================================= */
+.asset-admin-panel{overflow:hidden}
+.asset-toolbar{margin-bottom:10px!important}
+.asset-admin-note{
+  display:flex;flex-wrap:wrap;gap:8px 18px;
+  padding:10px 12px;margin:0 0 12px;
+  border:1px solid #dce8f1;border-radius:12px;
+  background:#f7fbfe;color:#698197;font-size:10px;line-height:1.45
+}
+.asset-admin-note b{color:#294e70}
+.asset-admin-table th:last-child,.asset-admin-table td:last-child{min-width:218px}
+.asset-admin-table tr.asset-inactive{background:#f7f9fb;opacity:.78}
+.asset-admin-table tr.asset-inactive:hover{background:#f2f6f9}
+.asset-actions{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.asset-action-btn{
+  border:1px solid #d6e3ed;background:#fff;color:#365874;
+  padding:6px 8px;border-radius:8px;font-size:9px;font-weight:850;
+  white-space:nowrap
+}
+.asset-action-btn:hover{transform:translateY(-1px);border-color:#afc9dc}
+.asset-action-btn.edit{color:#126fb0;background:#f3f9ff;border-color:#cae1f2}
+.asset-action-btn.inactive{color:#93620c;background:#fff9ea;border-color:#efdfad}
+.asset-action-btn.activate{color:#137a59;background:#eefaf5;border-color:#bfe5d7}
+.asset-action-btn.delete{color:#c63f59;background:#fff5f7;border-color:#efc5ce}
+.asset-action-btn:disabled{opacity:.42;cursor:not-allowed;transform:none}
+.asset-edit-current{
+  grid-column:1/-1;padding:9px 11px;border-radius:10px;
+  background:#f5f9fc;border:1px solid #dde8f0;color:#6c8397;font-size:10px
+}
+.asset-edit-current a{color:#1578bd;font-weight:800;text-decoration:none}
+@media(max-width:900px){
+  .asset-admin-table th:last-child,.asset-admin-table td:last-child{min-width:190px}
+  .asset-actions{min-width:180px}
+}
+
 </style></head>
 <body><div class="app">
 <aside class="sidebar" id="sidebar"><div class="sidebar-media" aria-hidden="true"><video id="sidebarVideo" class="sidebar-bg-video" muted loop playsinline autoplay preload="none" poster="sidebar-celcom-poster.jpg" data-src="sidebar-celcom.mp4"></video></div><div class="sidebar-overlay" aria-hidden="true"></div><div class="brand"><div class="brand-mark pkpj-brand-mark"><img src="pkpj-premium.png" alt="PKPJ"></div><div><strong>Sistem ICT</strong><span>Langganan & Pinjaman</span></div></div><nav class="nav">
@@ -538,7 +576,40 @@ html,body{max-width:100%;overflow-x:hidden}
 <div class="dashboard-grid"><div class="card panel"><div class="panel-head"><div><div class="panel-title">Trend Pembaharuan Langganan</div><div class="panel-sub">12 bulan terkini</div></div><span class="pill blue">12 Bulan</span></div><div class="chart-wrap"><svg id="trendSvg" viewBox="0 0 900 270" preserveAspectRatio="none"></svg></div></div><div class="card panel"><div class="panel-head"><div><div class="panel-title">Pembaharuan Akan Datang</div><div class="panel-sub">Disusun mengikut tarikh tamat</div></div><button class="btn btn-sm" data-go="subscriptions">Lihat Semua</button></div><div class="table-wrap"><table><thead><tr><th>LANGGANAN</th><th>VENDOR</th><th>TAMAT</th><th>BAKI</th><th>KOS</th><th>STATUS</th></tr></thead><tbody id="renewalRows"><tr><td colspan="6" class="empty">Belum ada data.</td></tr></tbody></table></div></div><div class="card panel"><div class="panel-head"><div><div class="panel-title">Status Inventori ICT</div><div class="panel-sub">Ringkasan kategori aset</div></div><button class="btn btn-sm" data-go="assets">Lihat Semua</button></div><div class="inventory-grid" id="inventoryGrid"><div class="empty" style="grid-column:1/-1">Belum ada data aset.</div></div></div></div>
 <div class="card panel"><div class="panel-head"><div><div class="panel-title">Status Penggunaan Inventori</div><div class="panel-sub">Ketersediaan aset berkait terus dengan rekod pinjaman</div></div></div><div class="status-strip"><div class="status-box"><div class="status-number"><strong style="color:var(--green)" id="statusAvailable">—</strong><span style="color:var(--green)">TERSEDIA</span></div><div class="equipment-mini"><span>💻 Laptop</span><span>📶 WiFi</span><span>📽 Projektor</span></div></div><div class="status-box"><div class="status-number"><strong style="color:var(--blue)" id="statusUnavailable">—</strong><span style="color:var(--blue)">DIGUNAKAN</span></div><div class="equipment-mini"><span id="statusBorrowedNote">0 dipinjam</span><span id="statusReservedNote">0 reserved</span></div></div><div class="status-box"><div class="status-number"><strong style="color:var(--red)" id="statusOverdue">—</strong><span style="color:var(--red)">LEWAT</span></div><div class="equipment-mini"><span>Perlu tindakan segera</span></div></div></div></div></section>
 <section class="view" id="view-subscriptions"><div class="mini-hero purple"><div class="copy"><h2>Langganan</h2><p>Urus lesen, broadband, perkhidmatan cloud dan tarikh pembaharuan.</p></div><div class="art"><svg viewBox="0 0 420 140"><g transform="translate(60,12)"><rect x="0" y="24" width="94" height="86" rx="12" fill="#fff" opacity=".92"/><rect x="15" y="40" width="64" height="8" rx="4" fill="#cde3ff"/><rect x="15" y="58" width="48" height="8" rx="4" fill="#cde3ff"/><circle cx="69" cy="86" r="15" fill="#1f76ff"/><path d="M63 86l5 5 9-11" stroke="#fff" stroke-width="4" fill="none"/><circle cx="176" cy="65" r="40" fill="#fff" opacity=".92"/><path d="M176 42v25l18 12" fill="none" stroke="#126cff" stroke-width="7" stroke-linecap="round"/><rect x="240" y="25" width="95" height="84" rx="12" fill="#fff" opacity=".92"/><path d="M258 46h58M258 64h42M258 82h52" stroke="#cde3ff" stroke-width="8" stroke-linecap="round"/></g></svg></div></div><div class="card panel"><div class="toolbar"><div class="search">⌕ <input id="subSearch" placeholder="Cari nama langganan, vendor, PIC..."/></div><select class="field" id="subStatusFilter" style="width:auto"><option value="">Semua status</option><option>AKTIF</option><option>RENEW_SOON</option><option>TAMAT</option><option>DALAM_PROSES</option></select><button class="btn btn-primary" id="addSubscriptionBtn">＋ Langganan Baru</button></div><div class="table-wrap"><table><thead><tr><th>ID</th><th>GAMBAR</th><th>NAMA</th><th>KATEGORI</th><th>VENDOR</th><th>PIC</th><th>TAMAT</th><th>KOS (RM)</th><th>STATUS</th></tr></thead><tbody id="subscriptionsRows"></tbody></table></div></div></section>
-<section class="view" id="view-assets"><div class="mini-hero"><div class="copy"><h2>Inventori ICT</h2><p>Urus dan jejak semua aset ICT organisasi dengan mudah.</p></div><div class="art"><svg viewBox="0 0 420 140"><rect width="420" height="140" fill="rgba(255,255,255,.07)"/><g transform="translate(65,15)"><rect x="30" y="28" width="105" height="64" rx="6" fill="#182337"/><rect x="37" y="35" width="91" height="50" rx="3" fill="#78bdff"/><path d="M12 94h141l17 15H0z" fill="#dce4ed"/><rect x="188" y="56" width="84" height="49" rx="10" fill="#17314b"/><path d="M205 56V19M255 56V10" stroke="#233f5e" stroke-width="4"/><rect x="288" y="50" width="85" height="58" rx="8" fill="#f4f6f8"/><circle cx="330" cy="79" r="22" fill="#153b70"/><circle cx="330" cy="79" r="13" fill="#16a0ff"/></g></svg></div></div><div class="category-strip"><div class="cat-card"><div class="emoji">▣</div><b>Semua Kategori</b><small>Inventori ICT</small></div><div class="cat-card"><div class="emoji">💻</div><b>Laptop</b><small>Komputer riba</small></div><div class="cat-card"><div class="emoji">📶</div><b>Telekomunikasi</b><small>Broadband / MiFi</small></div><div class="cat-card"><div class="emoji">📡</div><b>Peranti WiFi</b><small>Router / AP</small></div><div class="cat-card"><div class="emoji">📽</div><b>Projektor</b><small>Peralatan AV</small></div><div class="cat-card"><div class="emoji">🔌</div><b>Sambungan</b><small>Kabel / extension</small></div></div><div class="card panel"><div class="toolbar"><div class="search">⌕ <input id="assetSearch" placeholder="Cari nama aset, kategori, jenama, model, nombor siri..."/></div><select class="field" id="assetStatusFilter" style="width:auto"><option value="">Semua status</option><option>TERSEDIA</option><option>DIPINJAM</option><option>RESERVED</option><option>DALAM_SERVIS</option><option>ROSAK</option></select><button class="btn btn-primary" id="addAssetBtn">＋ Tambah Aset</button></div><div class="table-wrap"><table><thead><tr><th>ID</th><th>GAMBAR</th><th>TAG ASET</th><th>NAMA ASET</th><th>KATEGORI</th><th>MODEL</th><th>LOKASI</th><th>KEADAAN</th><th>STATUS</th></tr></thead><tbody id="assetsRows"></tbody></table></div></div></section>
+<section class="view" id="view-assets"><div class="mini-hero"><div class="copy"><h2>Inventori ICT</h2><p>Urus dan jejak semua aset ICT organisasi dengan mudah.</p></div><div class="art"><svg viewBox="0 0 420 140"><rect width="420" height="140" fill="rgba(255,255,255,.07)"/><g transform="translate(65,15)"><rect x="30" y="28" width="105" height="64" rx="6" fill="#182337"/><rect x="37" y="35" width="91" height="50" rx="3" fill="#78bdff"/><path d="M12 94h141l17 15H0z" fill="#dce4ed"/><rect x="188" y="56" width="84" height="49" rx="10" fill="#17314b"/><path d="M205 56V19M255 56V10" stroke="#233f5e" stroke-width="4"/><rect x="288" y="50" width="85" height="58" rx="8" fill="#f4f6f8"/><circle cx="330" cy="79" r="22" fill="#153b70"/><circle cx="330" cy="79" r="13" fill="#16a0ff"/></g></svg></div></div><div class="category-strip"><div class="cat-card"><div class="emoji">▣</div><b>Semua Kategori</b><small>Inventori ICT</small></div><div class="cat-card"><div class="emoji">💻</div><b>Laptop</b><small>Komputer riba</small></div><div class="cat-card"><div class="emoji">📶</div><b>Telekomunikasi</b><small>Broadband / MiFi</small></div><div class="cat-card"><div class="emoji">📡</div><b>Peranti WiFi</b><small>Router / AP</small></div><div class="cat-card"><div class="emoji">📽</div><b>Projektor</b><small>Peralatan AV</small></div><div class="cat-card"><div class="emoji">🔌</div><b>Sambungan</b><small>Kabel / extension</small></div></div><div class="card panel asset-admin-panel">
+  <div class="toolbar asset-toolbar">
+    <div class="search">⌕ <input id="assetSearch" placeholder="Cari nama aset, kategori, jenama, model, nombor siri..."/></div>
+    <select class="field" id="assetStatusFilter" style="width:auto">
+      <option value="">Semua status</option>
+      <option>TERSEDIA</option>
+      <option>RESERVED</option>
+      <option>DIPINJAM</option>
+      <option>DALAM_SERVIS</option>
+      <option>ROSAK</option>
+      <option>TIDAK_AKTIF</option>
+    </select>
+    <button class="btn btn-primary" id="addAssetBtn">＋ Tambah Aset</button>
+  </div>
+
+  <div class="asset-admin-note">
+    <span><b>TERSEDIA</b> = dipaparkan kepada pemohon.</span>
+    <span><b>ROSAK / DALAM_SERVIS / TIDAK_AKTIF</b> = tidak dipaparkan dalam barangan tersedia.</span>
+    <span><b>Delete</b> = padam kekal untuk rekod ujian yang belum pernah digunakan.</span>
+  </div>
+
+  <div class="table-wrap">
+    <table class="asset-admin-table">
+      <thead>
+        <tr>
+          <th>ID</th><th>GAMBAR</th><th>TAG ASET</th><th>NAMA ASET</th>
+          <th>KATEGORI</th><th>MODEL</th><th>LOKASI</th><th>KEADAAN</th>
+          <th>STATUS</th><th>TINDAKAN</th>
+        </tr>
+      </thead>
+      <tbody id="assetsRows"></tbody>
+    </table>
+  </div>
+</div></section>
 <section class="view" id="view-loans"><div class="mini-hero green"><div class="copy"><h2>Pinjaman</h2><p>Urus permohonan, kelulusan, check-out dan pemulangan peralatan ICT.</p></div><div class="art"><svg viewBox="0 0 420 140"><g transform="translate(54,12)"><path d="M48 15v105M35 42h26M28 62h40M21 83h54" stroke="#fff" stroke-width="5" opacity=".75"/><circle cx="20" cy="34" r="12" fill="none" stroke="#fff" stroke-width="5" opacity=".7"/><rect x="112" y="36" width="105" height="66" rx="7" fill="#18253b"/><rect x="121" y="44" width="87" height="49" rx="3" fill="#6fbaff"/><path d="M95 103h138l17 13H78z" fill="#e3e8ef"/><rect x="255" y="54" width="80" height="54" rx="8" fill="#f5f6f8"/><circle cx="295" cy="81" r="21" fill="#123e73"/><circle cx="295" cy="81" r="12" fill="#26b1ff"/></g></svg></div></div><div class="info-banner"><span>🔄</span><div><b>Inventori & Pinjaman disambungkan.</b> Aset yang direkod untuk pinjaman akan terus berstatus RESERVED, kemudian DIPINJAM selepas check-out, dan kembali TERSEDIA selepas dipulangkan.</div></div><div class="card panel"><div class="toolbar"><div class="search">⌕ <input id="loanSearch" placeholder="Cari ID pinjaman, peminjam, tujuan..."/></div><select class="field" id="loanStatusFilter" style="width:auto"><option value="">Semua status</option><option>MENUNGGU_KELULUSAN</option><option>DILULUSKAN</option><option>DIPINJAM</option><option>HAMPIR_DUE</option><option>LEWAT</option><option>DIPULANGKAN</option></select><button class="btn btn-green" id="addLoanBtn">＋ Pinjaman Baru</button></div><div class="table-wrap"><table><thead><tr><th>ID PINJAMAN</th><th>GAMBAR</th><th>PEMINJAM</th><th>ITEM</th><th>DUE</th><th>TUJUAN</th><th>STATUS</th><th>TINDAKAN</th></tr></thead><tbody id="loansRows"></tbody></table></div></div></section>
 <section class="view" id="view-reports"><div class="mini-hero orange"><div class="copy"><h2>Laporan</h2><p>Ringkasan prestasi langganan, inventori dan pinjaman dalam satu paparan.</p></div><div class="art"><svg viewBox="0 0 420 140"><g transform="translate(70,18)"><rect x="0" y="0" width="280" height="98" rx="15" fill="#fff" opacity=".94"/><path d="M32 73l42-27 38 12 48-36 44 18 43-23" fill="none" stroke="#6f8fff" stroke-width="6" stroke-linecap="round"/><path d="M35 86V55M87 86V40M139 86V66M191 86V34M243 86V20" stroke="#cbd8ea" stroke-width="11" stroke-linecap="round"/></g></svg></div></div><div class="kpis"><div class="card kpi" style="--accent:var(--green)"><div class="kpi-head">ASET TERSEDIA</div><div class="kpi-value" id="reportAvailable">—</div><div class="kpi-foot">Inventori sedia dipinjam</div></div><div class="card kpi" style="--accent:var(--blue)"><div class="kpi-head">ASET DIPINJAM</div><div class="kpi-value" id="reportBorrowed">—</div><div class="kpi-foot">Inventori sedang digunakan</div></div><div class="card kpi" style="--accent:var(--orange)"><div class="kpi-head">RENEW SOON</div><div class="kpi-value" id="reportRenewal">—</div><div class="kpi-foot">Langganan perlu tindakan</div></div><div class="card kpi" style="--accent:var(--red)"><div class="kpi-head">PINJAMAN LEWAT</div><div class="kpi-value" id="reportOverdue">—</div><div class="kpi-foot">Perlu dipulangkan</div></div></div><div class="card panel"><div class="panel-head"><div><div class="panel-title">Eksport Data</div><div class="panel-sub">Muat turun rekod semasa dalam format CSV.</div></div></div><div class="toolbar"><button class="btn" onclick="exportCSV('subscriptions')">Export Langganan CSV</button><button class="btn" onclick="exportCSV('assets')">Export Inventori CSV</button><button class="btn" onclick="exportCSV('loans')">Export Pinjaman CSV</button></div></div></section>
 
@@ -624,6 +695,7 @@ const state = {
   users: [],
   notifications: [],
   modalType: null,
+  modalAssetId: null,
   connected: false,
   loadedAt: {},
   inFlight: {}
@@ -1203,23 +1275,112 @@ function renderAssets(){
   const st=$('#assetStatusFilter').value;
 
   const rows=state.assets.filter(x=>{
-    const hay=[x.asset_id,x.asset_tag,x.asset_name,x.category,x.brand,x.model,x.serial_no,x.location].join(' ').toLowerCase();
+    const hay=[x.asset_id,x.asset_tag,x.asset_name,x.category,x.brand,x.model,x.serial_no,x.location,x.status].join(' ').toLowerCase();
     return (!q||hay.includes(q)) && (!st||x.status===st);
   });
 
-  $('#assetsRows').innerHTML=rows.length?rows.map(x=>`
-    <tr>
-      <td class="tiny">${esc(x.asset_id)}</td>
-      <td>${photoCell(x)}</td>
-      <td class="strong">${esc(x.asset_tag)}</td>
-      <td>${esc(x.asset_name)}</td>
-      <td>${esc(x.category)}</td>
-      <td>${esc([x.brand,x.model].filter(Boolean).join(' ')||'—')}</td>
-      <td>${esc(x.location||'—')}</td>
-      <td>${esc(x.condition||'—')}</td>
-      <td>${statusPill(x.status)}</td>
-    </tr>
-  `).join(''):'<tr><td colspan="9" class="empty">Tiada rekod.</td></tr>';
+  $('#assetsRows').innerHTML=rows.length?rows.map(x=>{
+    const status=String(x.status||'');
+    const busy=['RESERVED','DIPINJAM'].includes(status);
+    const inactive=status==='TIDAK_AKTIF';
+
+    return `
+      <tr class="${inactive?'asset-inactive':''}">
+        <td class="tiny">${esc(x.asset_id)}</td>
+        <td>${photoCell(x)}</td>
+        <td class="strong">${esc(x.asset_tag)}</td>
+        <td>${esc(x.asset_name)}</td>
+        <td>${esc(x.category)}</td>
+        <td>${esc([x.brand,x.model].filter(Boolean).join(' ')||'—')}</td>
+        <td>${esc(x.location||'—')}</td>
+        <td>${esc(x.condition||'—')}</td>
+        <td>${statusPill(x.status)}</td>
+        <td>
+          <div class="asset-actions">
+            <button class="asset-action-btn edit" onclick="openAssetEditModal('${attr(x.asset_id)}')">✎ Kemaskini</button>
+            ${inactive
+              ? `<button class="asset-action-btn activate" onclick="setAssetActive('${attr(x.asset_id)}')">✓ Aktifkan</button>`
+              : `<button class="asset-action-btn inactive" ${busy?'disabled title="Selesaikan pinjaman dahulu"':''} onclick="setAssetInactive('${attr(x.asset_id)}')">◌ Tidak Aktif</button>`
+            }
+            <button class="asset-action-btn delete" ${busy?'disabled title="Aset sedang digunakan"':''} onclick="deleteAssetPermanent('${attr(x.asset_id)}')">🗑 Delete</button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join(''):'<tr><td colspan="10" class="empty">Tiada rekod.</td></tr>';
+}
+
+
+async function setAssetInactive(assetId){
+  const asset=state.assets.find(x=>String(x.asset_id)===String(assetId));
+  if(!asset) return;
+
+  if(['RESERVED','DIPINJAM'].includes(String(asset.status))){
+    return toast('Tak boleh dinyahaktif','Selesaikan pinjaman / pemulangan aset dahulu.','err');
+  }
+
+  if(!confirm(`Jadikan ${asset.asset_tag||asset.asset_name} sebagai TIDAK AKTIF?
+
+Aset akan kekal dalam rekod Admin tetapi tidak akan dipaparkan kepada pemohon.`)) return;
+
+  try{
+    await postApi('asset.update',{
+      asset_id:assetId,
+      status:'TIDAK_AKTIF'
+    });
+
+    toast('Aset dinyahaktifkan','Rekod kekal, tetapi aset tidak lagi tersedia untuk pemohon.','ok');
+    setTimeout(()=>{loadAssets(true);loadDashboard(true)},750);
+  }catch(err){handleError(err)}
+}
+
+
+async function setAssetActive(assetId){
+  const asset=state.assets.find(x=>String(x.asset_id)===String(assetId));
+  if(!asset) return;
+
+  if(!confirm(`Aktifkan semula ${asset.asset_tag||asset.asset_name} sebagai TERSEDIA?`)) return;
+
+  try{
+    await postApi('asset.update',{
+      asset_id:assetId,
+      status:'TERSEDIA'
+    });
+
+    toast('Aset diaktifkan','Aset akan kembali dipaparkan kepada pemohon jika tersedia.','ok');
+    setTimeout(()=>{loadAssets(true);loadDashboard(true)},750);
+  }catch(err){handleError(err)}
+}
+
+
+async function deleteAssetPermanent(assetId){
+  const asset=state.assets.find(x=>String(x.asset_id)===String(assetId));
+  if(!asset) return;
+
+  const label=asset.asset_tag||asset.asset_name||assetId;
+
+  if(!confirm(`DELETE KEKAL ${label}?
+
+Tindakan ini hanya sesuai untuk item testing / tersalah daftar. Jika aset pernah ada pinjaman atau maintenance, backend akan menolak delete dan anda perlu guna Tidak Aktif.`)) return;
+
+  try{
+    await postApi('asset.delete',{asset_id:assetId});
+
+    toast('Arahan delete dihantar','Sistem sedang mengesahkan sama ada aset boleh dipadam kekal.','ok');
+
+    setTimeout(async()=>{
+      await loadAssets(true);
+      const stillExists=state.assets.some(x=>String(x.asset_id)===String(assetId));
+
+      if(stillExists){
+        toast('Delete tidak dilaksanakan','Aset masih wujud. Jika ada sejarah pinjaman/maintenance, gunakan Tidak Aktif.','err');
+      }else{
+        toast('Aset dipadam','Rekod ujian telah dipadam kekal.','ok');
+        loadDashboard(true);
+      }
+    },1000);
+
+  }catch(err){handleError(err)}
 }
 
 /* =========================================================
@@ -1448,6 +1609,7 @@ function openModal(type,title,html){
 
 function closeModal(){
   state.modalType=null;
+  state.modalAssetId=null;
   $('#modalBackdrop').classList.remove('show');
 }
 
@@ -1475,8 +1637,12 @@ function openSubscriptionModal(){
 }
 
 
-function openAssetModal(){
-  openModal('asset','Tambah Aset ICT',`
+function assetFormHtml(editing=false,current=null){
+  const currentImage=current?.image_url
+    ? `<div class="asset-edit-current">Gambar semasa: <a href="${attr(current.image_url)}" target="_blank" rel="noopener">Lihat gambar aset</a>. Pilih gambar baru hanya jika mahu menggantikannya.</div>`
+    : '';
+
+  return `
     <div class="form-grid">
       ${field('asset_tag','Tag Aset *')}
       ${field('asset_name','Nama Aset *')}
@@ -1487,11 +1653,66 @@ function openAssetModal(){
       ${field('asset_department','Jabatan')}
       ${field('asset_location','Lokasi')}
       ${selectField('asset_condition','Keadaan',['BARU','BAIK','MEMUASKAN','PERLU_SERVIS','ROSAK_RINGAN','ROSAK_TERUK'],'BAIK')}
+      ${editing?selectField('asset_status','Status',['TERSEDIA','RESERVED','DIPINJAM','DALAM_SERVIS','ROSAK','TIDAK_AKTIF'],current?.status||'TERSEDIA'):''}
       ${field('asset_warranty','Warranty Tamat','date')}
-      ${imageField('asset_image','Gambar aset / peralatan')}
+      ${currentImage}
+      ${imageField('asset_image',editing?'Ganti gambar aset (pilihan)':'Gambar aset / peralatan')}
       <div class="form-group full"><label>Catatan</label><textarea class="field" id="asset_notes" placeholder="Aksesori, spesifikasi atau nota..."></textarea></div>
     </div>
-  `);
+  `;
+}
+
+
+function openAssetModal(){
+  state.modalAssetId=null;
+  openModal('asset','Tambah Aset ICT',assetFormHtml(false,null));
+  bindImagePicker('asset_image');
+}
+
+
+function dateForInput(value){
+  if(!value) return '';
+  const d=new Date(value);
+  if(isNaN(d)) return String(value).slice(0,10);
+  return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');
+}
+
+
+function setFieldValue(id,value){
+  const el=$('#'+id);
+  if(el) el.value=value??'';
+}
+
+
+function openAssetEditModal(assetId){
+  const asset=state.assets.find(x=>String(x.asset_id)===String(assetId));
+  if(!asset){
+    return toast('Aset tidak ditemui','Muat semula tab Inventori dan cuba lagi.','err');
+  }
+
+  state.modalAssetId=assetId;
+  openModal('asset_edit','Kemaskini Aset ICT',assetFormHtml(true,asset));
+
+  setFieldValue('asset_tag',asset.asset_tag);
+  setFieldValue('asset_name',asset.asset_name);
+  setFieldValue('asset_category',asset.category);
+  setFieldValue('asset_brand',asset.brand);
+  setFieldValue('asset_model',asset.model);
+  setFieldValue('asset_serial',asset.serial_no);
+  setFieldValue('asset_department',asset.department);
+  setFieldValue('asset_location',asset.location);
+  setFieldValue('asset_condition',asset.condition||'BAIK');
+  setFieldValue('asset_status',asset.status||'TERSEDIA');
+  setFieldValue('asset_warranty',dateForInput(asset.warranty_end_date));
+  setFieldValue('asset_notes',asset.notes);
+
+  if(['RESERVED','DIPINJAM'].includes(String(asset.status))){
+    const statusEl=$('#asset_status');
+    if(statusEl){
+      statusEl.disabled=true;
+      statusEl.title='Status ini dikawal oleh proses pinjaman.';
+    }
+  }
 
   bindImagePicker('asset_image');
 }
@@ -1605,7 +1826,8 @@ async function submitModal(){
       },850);
     }
 
-    if(state.modalType==='asset'){
+    if(state.modalType==='asset' || state.modalType==='asset_edit'){
+      const editing=state.modalType==='asset_edit';
       const data={
         asset_tag:v('asset_tag'),
         asset_name:v('asset_name'),
@@ -1620,23 +1842,28 @@ async function submitModal(){
         notes:v('asset_notes')
       };
 
+      if(editing){
+        data.asset_id=state.modalAssetId;
+        data.status=v('asset_status') || state.assets.find(x=>String(x.asset_id)===String(state.modalAssetId))?.status || 'TERSEDIA';
+      }
+
       if(!data.asset_tag||!data.asset_name||!data.category){
         throw new Error('Lengkapkan field bertanda *.');
       }
 
       Object.assign(data,await prepareImagePayload('asset_image'));
 
-      btn.textContent='Menyimpan...';
-      await postApi('asset.create',data);
+      btn.textContent=editing?'Mengemaskini...':'Menyimpan...';
+      await postApi(editing?'asset.update':'asset.create',data);
 
       closeModal();
       markDataStale();
-      toast('Aset disimpan','Rekod inventori telah ditambah.','ok');
+      toast(editing?'Aset dikemaskini':'Aset disimpan',editing?'Perubahan inventori telah dihantar.':'Rekod inventori telah ditambah.','ok');
 
       setTimeout(()=>{
         loadAssets(true);
         loadDashboard(true);
-      },850);
+      },750);
     }
 
     if(state.modalType==='loan'){
@@ -2135,7 +2362,8 @@ function statusPill(status){
   if(['AKTIF','TERSEDIA','SENT','SELESAI_RENEW','DIPULANGKAN','DILULUSKAN'].includes(s)) c='green';
   if(['RENEW_SOON','HAMPIR_DUE','PENDING','MENUNGGU_KELULUSAN'].includes(s)) c='yellow';
   if(['LEWAT','TAMAT','FAILED','ROSAK','DITOLAK'].includes(s)) c='red';
-  if(['DIPINJAM','DALAM_PROSES'].includes(s)) c='blue';
+  if(['DIPINJAM','DALAM_PROSES','DALAM_SERVIS'].includes(s)) c='blue';
+  if(['TIDAK_AKTIF'].includes(s)) c='gray';
   if(['RESERVED','PERMOHONAN_BARU'].includes(s)) c='purple';
   return `<span class="pill ${c}">${esc(s)}</span>`;
 }
