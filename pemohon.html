@@ -1172,6 +1172,152 @@ textarea.field{min-height:90px;resize:vertical}
   }
 }
 
+
+/* =========================================================
+   PEMOHON V4.1 - VIDEO FIT 16:9
+   - ruang video ikut nisbah asal 1280x720
+   - kurangkan crop
+   - keseluruhan login lebih padat
+   ========================================================= */
+
+.compact-login-shell{
+  width:min(1120px,96vw) !important;
+  min-height:0 !important;
+  max-height:none !important;
+  grid-template-columns:minmax(0,1.72fr) minmax(340px,.80fr) !important;
+  align-items:stretch !important;
+}
+
+.compact-video-panel{
+  min-height:0 !important;
+  height:auto !important;
+  aspect-ratio:16 / 9 !important;
+  align-self:center !important;
+  background:#d9eaf5 !important;
+}
+
+.compact-bg-video{
+  width:100% !important;
+  height:100% !important;
+  object-fit:cover !important;
+  object-position:center center !important;
+  transform:none !important;
+}
+
+.compact-login-panel{
+  min-height:0 !important;
+  padding:28px 30px !important;
+}
+
+.compact-login-card{
+  width:min(100%,380px) !important;
+}
+
+.compact-app-icon{
+  width:46px !important;
+  height:46px !important;
+  margin-bottom:16px !important;
+  border-radius:14px !important;
+  font-size:21px !important;
+}
+
+.compact-login-card h2{
+  font-size:27px !important;
+  line-height:1.06 !important;
+}
+
+.compact-sub{
+  margin:9px 0 20px !important;
+  font-size:11px !important;
+}
+
+.compact-search-box .field{
+  height:48px !important;
+}
+
+.compact-enter-btn{
+  min-height:48px !important;
+  margin-top:13px !important;
+}
+
+.compact-help{
+  margin-top:15px !important;
+  padding-top:11px !important;
+}
+
+.compact-video-caption{
+  left:26px !important;
+  right:26px !important;
+  bottom:23px !important;
+}
+
+.compact-video-caption h1{
+  font-size:29px !important;
+}
+
+.compact-video-caption p{
+  font-size:11px !important;
+  max-width:390px !important;
+}
+
+/* Tablet: kekalkan ratio video, login turun ke bawah */
+@media(max-width:900px){
+  .compact-login-shell{
+    width:min(760px,96vw) !important;
+    grid-template-columns:1fr !important;
+  }
+
+  .compact-video-panel{
+    width:100% !important;
+    aspect-ratio:16 / 9 !important;
+    min-height:0 !important;
+    height:auto !important;
+    max-height:none !important;
+  }
+
+  .compact-login-panel{
+    padding:25px 24px 29px !important;
+  }
+
+  .compact-login-card{
+    max-width:520px !important;
+  }
+}
+
+/* Telefon: video tetap 16:9 dan tidak dipaksa tinggi */
+@media(max-width:520px){
+  .compact-login-shell{
+    width:100% !important;
+    min-height:100vh !important;
+  }
+
+  .compact-video-panel{
+    width:100% !important;
+    height:auto !important;
+    min-height:0 !important;
+    max-height:none !important;
+    aspect-ratio:16 / 9 !important;
+  }
+
+  .compact-bg-video{
+    object-fit:cover !important;
+    object-position:center center !important;
+  }
+
+  .compact-video-caption{
+    left:15px !important;
+    bottom:13px !important;
+  }
+
+  .compact-video-caption h1{
+    font-size:21px !important;
+  }
+
+  .compact-login-panel{
+    padding:22px 18px 28px !important;
+  }
+}
+
 </style>
 </head>
 <body>
