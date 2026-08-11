@@ -828,16 +828,360 @@ textarea.field{min-height:90px;resize:vertical}
   }
 }
 
+
+/* =========================================================
+   PEMOHON V4 - COMPACT VIDEO ONLY LOGIN
+   - visual kiri: video sahaja
+   - buang mockup/gambar peralatan depan
+   - saiz lebih sesuai untuk portal pengguna
+   - fungsi asal tidak diubah
+   ========================================================= */
+
+.login-overlay{
+  padding:24px !important;
+  align-items:center !important;
+  justify-content:center !important;
+  background:
+    radial-gradient(circle at 16% 8%,rgba(51,159,220,.13),transparent 26rem),
+    linear-gradient(135deg,#eef7fd,#f8fbfe 52%,#edf7fb) !important;
+  overflow:auto !important;
+}
+
+.compact-login-shell{
+  width:min(1180px,96vw);
+  min-height:620px;
+  max-height:760px;
+  display:grid;
+  grid-template-columns:minmax(0,1.22fr) minmax(365px,.78fr);
+  border-radius:28px;
+  overflow:hidden;
+  background:#fff;
+  border:1px solid #d8e6f0;
+  box-shadow:0 28px 80px rgba(31,79,119,.16);
+}
+
+.compact-video-panel{
+  position:relative;
+  min-height:620px;
+  overflow:hidden;
+  background:#dcecf6;
+}
+
+.compact-bg-video{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center;
+  background:#dcecf6;
+}
+
+.compact-video-shade{
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(0,45,99,.04) 0%,
+      rgba(1,48,100,.07) 42%,
+      rgba(3,43,88,.68) 100%
+    );
+  pointer-events:none;
+}
+
+.compact-video-caption{
+  position:absolute;
+  left:34px;
+  right:34px;
+  bottom:31px;
+  color:#fff;
+  z-index:3;
+  max-width:490px;
+}
+
+.compact-badge{
+  display:inline-flex;
+  padding:6px 10px;
+  border-radius:999px;
+  background:rgba(255,255,255,.88);
+  color:#116ea8;
+  border:1px solid rgba(255,255,255,.92);
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:.10em;
+  margin-bottom:10px;
+  backdrop-filter:blur(8px);
+}
+
+.compact-video-caption h1{
+  margin:0 0 8px;
+  color:#fff;
+  font-size:34px;
+  line-height:1.04;
+  letter-spacing:-.035em;
+  text-shadow:0 2px 14px rgba(0,31,67,.24);
+}
+
+.compact-video-caption p{
+  margin:0;
+  max-width:430px;
+  color:rgba(255,255,255,.88);
+  font-size:12px;
+  line-height:1.55;
+}
+
+.compact-login-panel{
+  min-height:620px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:36px 34px;
+  background:
+    radial-gradient(circle at 100% 0%,rgba(57,198,207,.08),transparent 19rem),
+    #fff;
+}
+
+.compact-login-card{
+  width:min(100%,410px);
+}
+
+.compact-app-icon{
+  width:52px;
+  height:52px;
+  border-radius:16px;
+  display:grid;
+  place-items:center;
+  color:#fff;
+  background:linear-gradient(135deg,#1875dd,#29c8c1);
+  box-shadow:0 12px 28px rgba(30,124,211,.18);
+  font-size:24px;
+  margin-bottom:20px;
+}
+
+.compact-login-card h2{
+  margin:0;
+  color:#102e57;
+  font-size:30px;
+  line-height:1.06;
+  letter-spacing:-.035em;
+}
+
+.compact-sub{
+  margin:11px 0 25px !important;
+  color:#71859a !important;
+  font-size:12px !important;
+  line-height:1.55 !important;
+}
+
+.compact-name-field label{
+  display:block;
+  color:#24466c;
+  font-size:10px;
+  font-weight:900;
+  margin-bottom:7px;
+}
+
+.compact-search-box{
+  position:relative;
+}
+
+.compact-search-box .field{
+  height:52px;
+  border-radius:12px;
+  padding:0 14px 0 42px;
+  font-size:13px;
+  border:1px solid #c8d9e7;
+  background:#fff;
+}
+
+.compact-search-box .field:focus{
+  border-color:#2d95da;
+  box-shadow:0 0 0 3px rgba(45,149,218,.10);
+}
+
+.compact-search-icon{
+  position:absolute;
+  left:15px;
+  top:50%;
+  transform:translateY(-50%);
+  z-index:2;
+  color:#5f819f;
+  font-size:18px;
+  pointer-events:none;
+}
+
+.compact-name-field .suggestions{
+  top:calc(100% + 6px);
+  border-radius:12px;
+  max-height:220px;
+}
+
+.compact-name-field .suggestion{
+  padding:9px 11px;
+}
+
+.compact-enter-btn{
+  width:100%;
+  min-height:52px;
+  margin-top:15px !important;
+  border:0 !important;
+  border-radius:12px !important;
+  background:linear-gradient(100deg,#176fe4,#24a7dc 60%,#35c9bf) !important;
+  color:#fff !important;
+  font-size:13px !important;
+  font-weight:850 !important;
+  box-shadow:0 12px 25px rgba(26,115,205,.17) !important;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:14px;
+}
+
+.compact-enter-btn span{
+  font-size:18px;
+}
+
+.compact-help{
+  margin-top:20px;
+  padding-top:15px;
+  border-top:1px solid #e5edf3;
+  text-align:center;
+  color:#8b9cae;
+  font-size:9px;
+}
+
+/* Buang semua visual/mockup versi sebelumnya */
+.portal-showcase,
+.portal-showcase-inner,
+.portal-device-stage,
+.portal-benefits,
+.portal-pills,
+.portal-kicker,
+.portal-lead,
+.portal-card-inner,
+.portal-login-card,
+.portal-login-shell,
+.hero-ict-icons,
+.login-visual,
+.ict-scene,
+.visual-copy{
+  display:none !important;
+}
+
+@media(max-width:960px){
+  .login-overlay{
+    padding:14px !important;
+  }
+
+  .compact-login-shell{
+    width:min(760px,96vw);
+    max-height:none;
+    grid-template-columns:1fr;
+  }
+
+  .compact-video-panel{
+    min-height:290px;
+    height:34vh;
+    max-height:350px;
+  }
+
+  .compact-video-caption{
+    left:22px;
+    right:22px;
+    bottom:20px;
+  }
+
+  .compact-video-caption h1{
+    font-size:27px;
+  }
+
+  .compact-video-caption p{
+    font-size:11px;
+  }
+
+  .compact-login-panel{
+    min-height:auto;
+    padding:28px 24px 32px;
+  }
+
+  .compact-login-card{
+    max-width:520px;
+  }
+}
+
+@media(max-width:520px){
+  .login-overlay{
+    padding:0 !important;
+    align-items:flex-start !important;
+  }
+
+  .compact-login-shell{
+    width:100%;
+    min-height:100vh;
+    border-radius:0;
+    border:0;
+  }
+
+  .compact-video-panel{
+    min-height:220px;
+    height:31vh;
+    max-height:260px;
+  }
+
+  .compact-bg-video{
+    object-position:center;
+  }
+
+  .compact-video-caption{
+    left:17px;
+    right:17px;
+    bottom:15px;
+  }
+
+  .compact-badge{
+    font-size:8px;
+    padding:5px 8px;
+  }
+
+  .compact-video-caption h1{
+    font-size:23px;
+  }
+
+  .compact-video-caption p{
+    display:none;
+  }
+
+  .compact-login-panel{
+    padding:25px 19px 32px;
+  }
+
+  .compact-app-icon{
+    width:46px;
+    height:46px;
+    font-size:21px;
+    margin-bottom:16px;
+  }
+
+  .compact-login-card h2{
+    font-size:27px;
+  }
+
+  .compact-sub{
+    margin-bottom:20px !important;
+  }
+}
+
 </style>
 </head>
 <body>
 <div class="login-overlay" id="loginOverlay">
-  <div class="portal-login-shell">
+  <div class="compact-login-shell">
 
-    <section class="portal-showcase">
+    <section class="compact-video-panel">
       <video
         id="pemohonHeroVideo"
-        class="portal-bg-video"
+        class="compact-bg-video"
         muted
         loop
         playsinline
@@ -847,112 +1191,45 @@ textarea.field{min-height:90px;resize:vertical}
         <source src="pemohon-ict.mp4" type="video/mp4">
       </video>
 
-      <div class="portal-video-overlay"></div>
-      <div class="portal-orb portal-orb-one"></div>
-      <div class="portal-orb portal-orb-two"></div>
+      <div class="compact-video-shade"></div>
 
-      <div class="portal-showcase-inner">
-        <div class="portal-pills">
-          <span>▣ Inventori</span>
-          <span>➤ Pinjaman</span>
-          <span>▥ Status</span>
-        </div>
-
-        <div class="portal-kicker">PANTAS • MUDAH • TERATUR</div>
-
-        <h1>
-          Akses peralatan<br>
-          ICT dengan lebih<br>
-          <span>mudah.</span>
-        </h1>
-
-        <p class="portal-lead">
-          Mohon inventori, buat pinjaman dan semak status permohonan
-          anda dengan cepat dan teratur — semua di satu portal.
-        </p>
-
-        <div class="portal-device-stage" aria-hidden="true">
-          <div class="stage-wifi">⌁</div>
-          <div class="stage-screen">
-            <div class="stage-screen-top"></div>
-            <div class="stage-screen-row"></div>
-            <div class="stage-screen-row short"></div>
-            <div class="stage-screen-card c1"></div>
-            <div class="stage-screen-card c2"></div>
-            <div class="stage-screen-card c3"></div>
-          </div>
-          <div class="stage-router"><i></i><i></i><i></i></div>
-          <div class="stage-printer"><span></span></div>
-          <div class="stage-tablet"></div>
-          <div class="stage-check">✓<small>Permohonan<br>Dihantar</small></div>
-        </div>
-
-        <div class="portal-benefits">
-          <div class="portal-benefit">
-            <div class="benefit-icon">ϟ</div>
-            <strong>Proses Pantas</strong>
-            <span>Permohonan ringkas dalam beberapa langkah.</span>
-          </div>
-
-          <div class="portal-benefit">
-            <div class="benefit-icon">◇</div>
-            <strong>Mudah Digunakan</strong>
-            <span>Cari nama dan pilih peralatan yang tersedia.</span>
-          </div>
-
-          <div class="portal-benefit">
-            <div class="benefit-icon">✓</div>
-            <strong>Jejak & Semak</strong>
-            <span>Pantau status permohonan anda dengan mudah.</span>
-          </div>
-        </div>
+      <div class="compact-video-caption">
+        <div class="compact-badge">PORTAL INVENTORI ICT</div>
+        <h1>Permohonan inventori<br>lebih mudah.</h1>
+        <p>Semak peralatan, hantar permohonan dan pantau status dalam satu portal.</p>
       </div>
     </section>
 
-    <section class="portal-login-card">
-      <div class="portal-card-inner">
-        <div class="portal-app-icon">
-          <span>▣</span>
-        </div>
+    <section class="compact-login-panel">
+      <div class="compact-login-card">
+        <div class="compact-app-icon">▣</div>
 
-        <h2>Selamat Datang ke<br>Portal Permohonan<br>Inventori ICT</h2>
-
-        <p class="portal-card-sub">
+        <h2>Selamat Datang ke Portal Permohonan Inventori ICT</h2>
+        <p class="compact-sub">
           Pilih nama anda daripada senarai staff untuk masuk.
         </p>
 
-        <div class="form-group autocomplete-wrap portal-name-field">
+        <div class="form-group autocomplete-wrap compact-name-field">
           <label>Nama Pemohon</label>
 
-          <div class="name-search portal-search-box">
-            <span class="portal-search-icon">⌕</span>
+          <div class="name-search compact-search-box">
+            <span class="compact-search-icon">⌕</span>
             <input
               class="field"
               id="loginName"
               autocomplete="off"
               placeholder="Taip nama atau sebahagian nama...">
-            <span class="portal-person-icon">♙</span>
           </div>
 
           <div class="suggestions hidden" id="staffSuggestions"></div>
         </div>
 
-        <button class="btn btn-primary portal-enter-btn" id="loginBtn">
+        <button class="btn btn-primary compact-enter-btn" id="loginBtn">
           Masuk Portal Pemohon <span>→</span>
         </button>
 
-        <div class="portal-card-divider">
-          <span></span>
-          <small>Portal Inventori ICT</small>
-          <span></span>
-        </div>
-
-        <div class="portal-help">
-          <div class="help-icon">◉</div>
-          <div>
-            <strong>Perlukan bantuan?</strong>
-            <span>Hubungi pentadbir sistem ICT anda.</span>
-          </div>
+        <div class="compact-help">
+          <span>Portal Inventori ICT</span>
         </div>
       </div>
     </section>
