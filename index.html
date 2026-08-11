@@ -421,6 +421,15 @@ body{font-size:16px}
 .view.active{content-visibility:visible}
 .sidebar-video,.hero-video{will-change:auto}
 
+
+/* V6.7 - Tetapan Staff sahaja. API kekal fixed dalam code. */
+.settings-staff-grid{display:grid;grid-template-columns:minmax(310px,.75fr) minmax(0,1.45fr);gap:14px}
+.staff-bulk{min-height:175px;resize:vertical;line-height:1.65}
+.staff-status{display:inline-flex;padding:4px 8px;border-radius:999px;font-size:10px;font-weight:900}
+.staff-status.on{background:#e8f8f1;color:#16845f}
+.staff-status.off{background:#f2f5f7;color:#718396}
+@media(max-width:980px){.settings-staff-grid{grid-template-columns:1fr}}
+
 </style></head>
 <body><div class="app">
 <aside class="sidebar" id="sidebar"><div class="sidebar-media" aria-hidden="true"><video id="sidebarVideo" class="sidebar-bg-video" muted loop playsinline autoplay preload="none" poster="sidebar-celcom-poster.jpg" data-src="sidebar-celcom.mp4"></video></div><div class="sidebar-overlay" aria-hidden="true"></div><div class="brand"><div class="brand-mark">🖥</div><div><strong>Sistem ICT</strong><span>Langganan & Pinjaman</span></div></div><nav class="nav">
@@ -429,6 +438,7 @@ body{font-size:16px}
 <button class="nav-btn" data-view="assets"><span class="nav-ico">▣</span>Inventori ICT</button>
 <button class="nav-btn" data-view="loans"><span class="nav-ico">⇄</span>Pinjaman</button>
 <button class="nav-btn" data-view="reports"><span class="nav-ico">▥</span>Laporan</button>
+<button class="nav-btn" data-view="settings"><span class="nav-ico">⚙</span>Tetapan</button>
 </nav><div class="sidebar-bottom"><div class="connection-mini"><div class="connection-row"><span class="dot" id="sideDot"></span><strong id="sideStatus">Belum disambung</strong></div><div class="mini-muted" id="sideHint">Tetapkan sambungan di Tetapan.</div></div></div></aside>
 <main class="main"><header class="topbar" id="topbar"><div style="display:flex;align-items:center;gap:12px"><button class="btn mobile-menu" id="mobileMenu">☰</button><div class="page-title"><h1 id="pageHeading">Paparan Utama</h1><p id="pageSubtitle">Ringkasan keseluruhan langganan, inventori dan pinjaman sistem.</p></div></div><div class="top-actions"><button class="btn desktop-only" id="refreshBtn">↻ Muat Semula</button><button class="btn btn-primary" id="quickAddBtn">＋ Tambah Rekod</button></div></header>
 <section class="view active" id="view-dashboard"><div class="hero" id="dashboardHero"><div class="hero-media"><video id="heroVideo" class="hero-video" muted loop playsinline autoplay preload="none" poster="hero-ict-poster.jpg" data-src="hero-ict.mp4" aria-hidden="true"></video></div><div class="hero-shade" aria-hidden="true"></div><div class="hero-copy"><h2>Urus ICT dengan lebih efisien, lebih teratur, operasi lebih lancar.</h2><p>Pantau langganan, inventori dan pinjaman dalam satu sistem yang kemas dan mudah digunakan.</p><button class="btn btn-primary" data-go="assets">Lihat Ringkasan Penuh →</button></div><div class="hero-video-fallback">Video latar dijeda</div></div>
@@ -439,6 +449,71 @@ body{font-size:16px}
 <section class="view" id="view-assets"><div class="mini-hero"><div class="copy"><h2>Inventori ICT</h2><p>Urus dan jejak semua aset ICT organisasi dengan mudah.</p></div><div class="art"><svg viewBox="0 0 420 140"><rect width="420" height="140" fill="rgba(255,255,255,.07)"/><g transform="translate(65,15)"><rect x="30" y="28" width="105" height="64" rx="6" fill="#182337"/><rect x="37" y="35" width="91" height="50" rx="3" fill="#78bdff"/><path d="M12 94h141l17 15H0z" fill="#dce4ed"/><rect x="188" y="56" width="84" height="49" rx="10" fill="#17314b"/><path d="M205 56V19M255 56V10" stroke="#233f5e" stroke-width="4"/><rect x="288" y="50" width="85" height="58" rx="8" fill="#f4f6f8"/><circle cx="330" cy="79" r="22" fill="#153b70"/><circle cx="330" cy="79" r="13" fill="#16a0ff"/></g></svg></div></div><div class="category-strip"><div class="cat-card"><div class="emoji">▣</div><b>Semua Kategori</b><small>Inventori ICT</small></div><div class="cat-card"><div class="emoji">💻</div><b>Laptop</b><small>Komputer riba</small></div><div class="cat-card"><div class="emoji">📶</div><b>Telekomunikasi</b><small>Broadband / MiFi</small></div><div class="cat-card"><div class="emoji">📡</div><b>Peranti WiFi</b><small>Router / AP</small></div><div class="cat-card"><div class="emoji">📽</div><b>Projektor</b><small>Peralatan AV</small></div><div class="cat-card"><div class="emoji">🔌</div><b>Sambungan</b><small>Kabel / extension</small></div></div><div class="card panel"><div class="toolbar"><div class="search">⌕ <input id="assetSearch" placeholder="Cari nama aset, kategori, jenama, model, nombor siri..."/></div><select class="field" id="assetStatusFilter" style="width:auto"><option value="">Semua status</option><option>TERSEDIA</option><option>DIPINJAM</option><option>RESERVED</option><option>DALAM_SERVIS</option><option>ROSAK</option></select><button class="btn btn-primary" id="addAssetBtn">＋ Tambah Aset</button></div><div class="table-wrap"><table><thead><tr><th>ID</th><th>GAMBAR</th><th>TAG ASET</th><th>NAMA ASET</th><th>KATEGORI</th><th>MODEL</th><th>LOKASI</th><th>KEADAAN</th><th>STATUS</th></tr></thead><tbody id="assetsRows"></tbody></table></div></div></section>
 <section class="view" id="view-loans"><div class="mini-hero green"><div class="copy"><h2>Pinjaman</h2><p>Urus permohonan, kelulusan, check-out dan pemulangan peralatan ICT.</p></div><div class="art"><svg viewBox="0 0 420 140"><g transform="translate(54,12)"><path d="M48 15v105M35 42h26M28 62h40M21 83h54" stroke="#fff" stroke-width="5" opacity=".75"/><circle cx="20" cy="34" r="12" fill="none" stroke="#fff" stroke-width="5" opacity=".7"/><rect x="112" y="36" width="105" height="66" rx="7" fill="#18253b"/><rect x="121" y="44" width="87" height="49" rx="3" fill="#6fbaff"/><path d="M95 103h138l17 13H78z" fill="#e3e8ef"/><rect x="255" y="54" width="80" height="54" rx="8" fill="#f5f6f8"/><circle cx="295" cy="81" r="21" fill="#123e73"/><circle cx="295" cy="81" r="12" fill="#26b1ff"/></g></svg></div></div><div class="info-banner"><span>🔄</span><div><b>Inventori & Pinjaman disambungkan.</b> Aset yang direkod untuk pinjaman akan terus berstatus RESERVED, kemudian DIPINJAM selepas check-out, dan kembali TERSEDIA selepas dipulangkan.</div></div><div class="card panel"><div class="toolbar"><div class="search">⌕ <input id="loanSearch" placeholder="Cari ID pinjaman, peminjam, tujuan..."/></div><select class="field" id="loanStatusFilter" style="width:auto"><option value="">Semua status</option><option>MENUNGGU_KELULUSAN</option><option>DILULUSKAN</option><option>DIPINJAM</option><option>HAMPIR_DUE</option><option>LEWAT</option><option>DIPULANGKAN</option></select><button class="btn btn-green" id="addLoanBtn">＋ Pinjaman Baru</button></div><div class="table-wrap"><table><thead><tr><th>ID PINJAMAN</th><th>GAMBAR</th><th>PEMINJAM</th><th>ITEM</th><th>DUE</th><th>TUJUAN</th><th>STATUS</th><th>TINDAKAN</th></tr></thead><tbody id="loansRows"></tbody></table></div></div></section>
 <section class="view" id="view-reports"><div class="mini-hero orange"><div class="copy"><h2>Laporan</h2><p>Ringkasan prestasi langganan, inventori dan pinjaman dalam satu paparan.</p></div><div class="art"><svg viewBox="0 0 420 140"><g transform="translate(70,18)"><rect x="0" y="0" width="280" height="98" rx="15" fill="#fff" opacity=".94"/><path d="M32 73l42-27 38 12 48-36 44 18 43-23" fill="none" stroke="#6f8fff" stroke-width="6" stroke-linecap="round"/><path d="M35 86V55M87 86V40M139 86V66M191 86V34M243 86V20" stroke="#cbd8ea" stroke-width="11" stroke-linecap="round"/></g></svg></div></div><div class="kpis"><div class="card kpi" style="--accent:var(--green)"><div class="kpi-head">ASET TERSEDIA</div><div class="kpi-value" id="reportAvailable">—</div><div class="kpi-foot">Inventori sedia dipinjam</div></div><div class="card kpi" style="--accent:var(--blue)"><div class="kpi-head">ASET DIPINJAM</div><div class="kpi-value" id="reportBorrowed">—</div><div class="kpi-foot">Inventori sedang digunakan</div></div><div class="card kpi" style="--accent:var(--orange)"><div class="kpi-head">RENEW SOON</div><div class="kpi-value" id="reportRenewal">—</div><div class="kpi-foot">Langganan perlu tindakan</div></div><div class="card kpi" style="--accent:var(--red)"><div class="kpi-head">PINJAMAN LEWAT</div><div class="kpi-value" id="reportOverdue">—</div><div class="kpi-foot">Perlu dipulangkan</div></div></div><div class="card panel"><div class="panel-head"><div><div class="panel-title">Eksport Data</div><div class="panel-sub">Muat turun rekod semasa dalam format CSV.</div></div></div><div class="toolbar"><button class="btn" onclick="exportCSV('subscriptions')">Export Langganan CSV</button><button class="btn" onclick="exportCSV('assets')">Export Inventori CSV</button><button class="btn" onclick="exportCSV('loans')">Export Pinjaman CSV</button></div></div></section>
+
+<section class="view" id="view-settings">
+  <div class="mini-hero">
+    <div class="copy">
+      <h2>Tetapan Staff</h2>
+      <p>Urus senarai nama yang akan dipaparkan dalam carian Portal Pemohon.</p>
+    </div>
+    <div class="art">
+      <svg viewBox="0 0 420 140" aria-hidden="true">
+        <g transform="translate(70,14)">
+          <circle cx="56" cy="42" r="26" fill="#fff" opacity=".96"/>
+          <circle cx="56" cy="37" r="12" fill="#4ca5de"/>
+          <path d="M31 79c5-19 18-29 25-29s20 10 25 29" fill="#4ca5de"/>
+          <circle cx="142" cy="42" r="26" fill="#fff" opacity=".92"/>
+          <circle cx="142" cy="37" r="12" fill="#42ba93"/>
+          <path d="M117 79c5-19 18-29 25-29s20 10 25 29" fill="#42ba93"/>
+          <rect x="205" y="16" width="120" height="78" rx="14" fill="#fff" opacity=".94"/>
+          <path d="M226 38h77M226 57h62M226 76h49" stroke="#b8d3e8" stroke-width="8" stroke-linecap="round"/>
+        </g>
+      </svg>
+    </div>
+  </div>
+
+  <div class="settings-staff-grid">
+    <div class="card panel">
+      <div class="panel-head">
+        <div>
+          <div class="panel-title">TAMBAH SENARAI STAFF</div>
+          <div class="panel-sub">Masukkan satu nama setiap baris. Email dan no. staf tidak diperlukan.</div>
+        </div>
+      </div>
+      <textarea class="field staff-bulk" id="staffBulkInput" placeholder="Contoh:&#10;Ahmad Zaki&#10;Aina Farhana&#10;Mohd Firdaus"></textarea>
+      <div class="toolbar section-gap">
+        <button class="btn btn-primary" id="addStaffBulkBtn">＋ Tambah Nama Staff</button>
+      </div>
+      <div class="help">
+        Nama aktif dalam senarai ini akan muncul sebagai autocomplete di Portal Pemohon.
+      </div>
+    </div>
+
+    <div class="card panel">
+      <div class="panel-head">
+        <div>
+          <div class="panel-title">SENARAI STAFF AKTIF</div>
+          <div class="panel-sub"><span id="staffCount">0</span> nama direkodkan.</div>
+        </div>
+      </div>
+      <div class="toolbar">
+        <div class="search">⌕ <input id="staffSearch" placeholder="Cari nama staff..."/></div>
+        <select class="field" id="staffActiveFilter" style="width:auto">
+          <option value="">Semua</option>
+          <option value="Ya">Aktif</option>
+          <option value="Tidak">Tidak Aktif</option>
+        </select>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>NAMA STAFF</th><th>UNIT / JABATAN</th><th>STATUS</th><th>TINDAKAN</th></tr></thead>
+          <tbody id="staffRows"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="view hidden-system" id="view-notifications"><input id="notifSearch"/><select id="notifStatusFilter"><option value=""></option></select><button id="runNotifBtn"></button><table><tbody id="notificationsRows"></tbody></table></section>
 </main></div>
 <div class="modal-backdrop" id="modalBackdrop"><div class="modal"><div class="modal-head"><h3 id="modalTitle">Tambah Rekod</h3><button class="btn btn-sm" id="modalClose">✕</button></div><div class="modal-body" id="modalBody"></div><div class="modal-foot"><button class="btn" id="modalCancel">Batal</button><button class="btn btn-primary" id="modalSubmit">Simpan</button></div></div></div><div class="toast-wrap" id="toastWrap"></div>
@@ -620,6 +695,9 @@ function bindActions(){
   $('#assetStatusFilter').addEventListener('change',renderAssets);
   $('#loanSearch').addEventListener('input',renderLoans);
   $('#loanStatusFilter').addEventListener('change',renderLoans);
+  $('#staffSearch')?.addEventListener('input',renderStaffSettings);
+  $('#staffActiveFilter')?.addEventListener('change',renderStaffSettings);
+  if($('#addStaffBulkBtn')) $('#addStaffBulkBtn').onclick=addStaffBulk;
   $('#notifSearch').addEventListener('input',renderNotifications);
   $('#notifStatusFilter').addEventListener('change',renderNotifications);
 
@@ -651,7 +729,8 @@ function showView(name){
     assets:['Inventori ICT','Urus laptop, WiFi, extension, projektor dan peralatan ICT.'],
     loans:['Pinjaman','Permohonan, check-out, due date dan pemulangan aset.'],
     notifications:['Notifikasi','Peringatan renewal dan pinjaman yang perlu tindakan.'],
-    reports:['Laporan','Ringkasan dan eksport data pengurusan ICT.']
+    reports:['Laporan','Ringkasan dan eksport data pengurusan ICT.'],
+    settings:['Tetapan','Urus senarai nama staff untuk Portal Pemohon.']
   };
   $('#pageHeading').textContent=meta[name][0];
   $('#pageSubtitle').textContent=meta[name][1];
@@ -666,6 +745,7 @@ function showView(name){
   if(name==='loans') loadLoans(false);
   if(name==='notifications') loadNotifications(false);
   if(name==='reports') loadDashboard(false);
+  if(name==='settings') loadStaffSettings(false);
 }
 
 function refreshCurrent(){
@@ -675,7 +755,8 @@ function refreshCurrent(){
     assets:()=>loadAssets(true),
     loans:()=>loadLoans(true),
     notifications:()=>loadNotifications(true),
-    reports:()=>loadDashboard(true)
+    reports:()=>loadDashboard(true),
+    settings:()=>loadStaffSettings(true)
   };
   (map[state.view]||(()=>loadDashboard(true)))();
 }
@@ -1654,6 +1735,103 @@ function updateConnectionUI(){
     $('#sideHint').textContent='Sambungan tetap telah dimuatkan';
   }
 }
+
+
+/* =========================================================
+   ADMIN SETTINGS - STAFF LIST
+========================================================= */
+async function loadStaffSettings(force=false){
+  if(!requireConfig()) return;
+  if(!force && state.users.length && isFresh('users',30000)){
+    renderStaffSettings();
+    return;
+  }
+  if(state.inFlight.users) return state.inFlight.users;
+
+  state.inFlight.users=(async()=>{
+    try{
+      const res=await jsonp('users',{pageSize:500,sort:'name',order:'asc'});
+      state.users=res?.items||[];
+      state.loadedAt.users=Date.now();
+      renderStaffSettings();
+    }catch(err){handleError(err)}
+    finally{state.inFlight.users=null}
+  })();
+
+  return state.inFlight.users;
+}
+
+function renderStaffSettings(){
+  const rowsBox=$('#staffRows');
+  if(!rowsBox) return;
+
+  const q=($('#staffSearch')?.value||'').trim().toLowerCase();
+  const active=$('#staffActiveFilter')?.value||'';
+
+  const rows=(state.users||[])
+    .filter(x=>String(x.name||'').trim())
+    .filter(x=>{
+      const hay=[x.name,x.department,x.unit].join(' ').toLowerCase();
+      return (!q||hay.includes(q)) && (!active||String(x.active||'')===active);
+    })
+    .sort((a,b)=>String(a.name||'').localeCompare(String(b.name||'')));
+
+  $('#staffCount').textContent=(state.users||[]).filter(x=>String(x.name||'').trim()).length;
+
+  rowsBox.innerHTML=rows.length?rows.map(x=>{
+    const on=String(x.active||'Ya').toLowerCase()==='ya';
+    return `<tr>
+      <td><div class="strong">${esc(x.name)}</div></td>
+      <td>${esc([x.unit,x.department].filter(Boolean).join(' • ')||'—')}</td>
+      <td><span class="staff-status ${on?'on':'off'}">${on?'AKTIF':'TIDAK AKTIF'}</span></td>
+      <td><button class="btn btn-sm ${on?'btn-danger':'btn-green'}" onclick="toggleStaff('${attr(x.user_id)}','${on?'Tidak':'Ya'}')">${on?'Nyahaktif':'Aktifkan'}</button></td>
+    </tr>`;
+  }).join(''):'<tr><td colspan="4" class="empty">Tiada nama staff.</td></tr>';
+}
+
+async function addStaffBulk(){
+  const box=$('#staffBulkInput');
+  const names=(box.value||'')
+    .split(/\n|,/)
+    .map(x=>x.trim())
+    .filter(Boolean);
+
+  if(!names.length){
+    return toast('Tiada nama','Masukkan sekurang-kurangnya satu nama staff.','err');
+  }
+
+  const btn=$('#addStaffBulkBtn');
+  btn.disabled=true;
+  btn.textContent='Menyimpan...';
+
+  try{
+    await postApi('staff.bulk_add',{
+      names,
+      actor_email:cfg.actorEmail
+    });
+    box.value='';
+    toast('Senarai dihantar',`${names.length} nama sedang disimpan. Nama berulang akan dilangkau.`,'ok');
+    setTimeout(()=>loadStaffSettings(true),900);
+  }catch(err){
+    handleError(err);
+  }finally{
+    btn.disabled=false;
+    btn.textContent='＋ Tambah Nama Staff';
+  }
+}
+
+async function toggleStaff(userId,newStatus){
+  try{
+    await postApi('user.update',{
+      user_id:userId,
+      active:newStatus,
+      actor_email:cfg.actorEmail
+    });
+    toast('Status dikemaskini',newStatus==='Ya'?'Nama diaktifkan.':'Nama dinyahaktifkan.','ok');
+    setTimeout(()=>loadStaffSettings(true),750);
+  }catch(err){handleError(err)}
+}
+
 
 /* =========================================================
    REPORTS / EXPORT
