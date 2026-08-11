@@ -1318,6 +1318,77 @@ textarea.field{min-height:90px;resize:vertical}
   }
 }
 
+
+/* =========================================================
+   PKPJ PREMIUM BRAND - PORTAL PEMOHON
+   ========================================================= */
+.pkpj-login-logo{
+  position:relative !important;
+  width:62px !important;
+  height:62px !important;
+  padding:7px !important;
+  border-radius:20px !important;
+  display:grid !important;
+  place-items:center !important;
+  background:
+    linear-gradient(145deg,#ffffff,#f7fbff) !important;
+  border:1px solid #d9e7f1 !important;
+  box-shadow:
+    0 14px 32px rgba(21,75,120,.14),
+    inset 0 1px 0 #fff !important;
+  overflow:visible !important;
+}
+.pkpj-login-logo:before{
+  content:"";
+  position:absolute;
+  inset:-7px;
+  border-radius:25px;
+  background:
+    radial-gradient(circle at 26% 18%,rgba(255,202,55,.42),transparent 40%),
+    radial-gradient(circle at 76% 80%,rgba(17,71,126,.20),transparent 48%);
+  filter:blur(10px);
+  z-index:-1;
+}
+.pkpj-login-logo img{
+  width:100% !important;
+  height:100% !important;
+  object-fit:contain !important;
+  display:block !important;
+  filter:drop-shadow(0 4px 6px rgba(12,55,97,.10));
+}
+
+.pkpj-sidebar-logo{
+  position:relative !important;
+  width:48px !important;
+  height:48px !important;
+  min-width:48px !important;
+  padding:6px !important;
+  border-radius:16px !important;
+  display:grid !important;
+  place-items:center !important;
+  background:rgba(255,255,255,.96) !important;
+  border:1px solid rgba(255,255,255,.72) !important;
+  box-shadow:
+    0 10px 24px rgba(0,50,90,.20),
+    inset 0 1px 0 rgba(255,255,255,.95) !important;
+  overflow:visible !important;
+}
+.pkpj-sidebar-logo:before{
+  content:"";
+  position:absolute;
+  inset:-4px;
+  border-radius:19px;
+  background:radial-gradient(circle,rgba(255,203,52,.30),transparent 65%);
+  filter:blur(7px);
+  z-index:-1;
+}
+.pkpj-sidebar-logo img{
+  width:100% !important;
+  height:100% !important;
+  object-fit:contain !important;
+  display:block !important;
+}
+
 </style>
 </head>
 <body>
@@ -1348,7 +1419,7 @@ textarea.field{min-height:90px;resize:vertical}
 
     <section class="compact-login-panel">
       <div class="compact-login-card">
-        <div class="compact-app-icon">▣</div>
+        <div class="compact-app-icon pkpj-login-logo"><img src="pkpj-premium.png" alt="PKPJ"></div>
 
         <h2>Selamat Datang ke Portal Permohonan Inventori ICT</h2>
         <p class="compact-sub">
@@ -1385,7 +1456,7 @@ textarea.field{min-height:90px;resize:vertical}
 
 <div class="app">
 <aside class="sidebar" id="sidebar">
-  <div class="brand"><div class="brand-mark">🖥️</div><div><strong>Portal Pemohon</strong><span>Sistem Pinjaman ICT</span></div></div>
+  <div class="brand"><div class="brand-mark pkpj-sidebar-logo"><img src="pkpj-premium.png" alt="PKPJ"></div><div><strong>Portal Pemohon</strong><span>Sistem Pinjaman ICT</span></div></div>
   <div class="profile"><div class="profile-name" id="sideName">Pemohon</div><div class="profile-meta" id="sideMeta">—</div></div>
   <nav class="nav">
     <button class="nav-btn active" data-view="home"><span class="nav-ico">⌂</span>Utama</button>
