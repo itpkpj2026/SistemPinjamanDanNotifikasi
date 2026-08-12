@@ -734,9 +734,33 @@ html,body{max-width:100%;overflow-x:hidden}
   .asset-profile-field.full{grid-column:auto}
 }
 
+
+/* =========================================================
+   V7.9 - INVENTORI CATEGORY FIRST
+   ========================================================= */
+.asset-category-heading{display:flex;justify-content:space-between;align-items:center;gap:14px;margin:1px 0 10px;padding:0 2px}
+.asset-category-heading strong{display:block;color:#173955;font-size:14px}
+.asset-category-heading span:not(.pill){display:block;color:#75899b;font-size:10px;margin-top:3px;line-height:1.45}
+.asset-category-menu{grid-template-columns:repeat(auto-fit,minmax(135px,1fr))!important;overflow:visible!important}
+.asset-category-menu .cat-card{position:relative;cursor:pointer;min-width:0!important;transition:transform .14s ease,border-color .14s ease,box-shadow .14s ease;background:linear-gradient(145deg,#fff,#f9fcff)}
+.asset-category-menu .cat-card:hover{transform:translateY(-2px);border-color:#b7d7eb;box-shadow:0 12px 26px rgba(29,78,114,.09)}
+.asset-category-menu .cat-card.active{border-color:#3897d0;background:#eef9ff;box-shadow:0 0 0 3px rgba(56,151,208,.08),0 12px 25px rgba(29,78,114,.08)}
+.asset-category-menu .cat-card .emoji{width:46px;height:46px;margin:0 auto 7px;display:grid;place-items:center;border-radius:14px;background:#eef7fd;font-size:25px}
+.asset-category-menu .cat-card b{font-size:11.5px;color:#23445f}
+.asset-category-menu .cat-card small{display:block;margin-top:3px;font-size:9px}
+.asset-category-menu .cat-count{position:absolute;right:9px;top:9px;min-width:24px;height:24px;padding:0 6px;display:grid;place-items:center;border-radius:999px;background:#eaf5fc;color:#1777b5;font-size:9px;font-weight:900}
+.asset-category-menu .cat-card.active .cat-count{background:#177fc2;color:#fff}
+.asset-list-closed{display:none!important}
+.asset-selected-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:12px;margin-bottom:12px;border-bottom:1px solid #e6edf3}
+.asset-selected-head>div{min-width:0}
+.asset-selected-eyebrow{display:block;color:#7690a5;font-size:8px;font-weight:950;letter-spacing:.11em;margin-bottom:2px}
+.asset-selected-head strong{display:block;color:#173955;font-size:16px}
+.asset-selected-head small{display:block;color:#7c90a1;font-size:9px;margin-top:2px}
+@media(max-width:720px){.asset-category-heading{align-items:flex-start}.asset-category-menu{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}.asset-category-menu .cat-card{padding:11px!important}.asset-selected-head{align-items:flex-start}}
+
 </style></head>
 <body><div class="app">
-<aside class="sidebar" id="sidebar"><div class="sidebar-media" aria-hidden="true"><video id="sidebarVideo" class="sidebar-bg-video" muted loop playsinline autoplay preload="none" poster="sidebar-celcom-poster.jpg" data-src="sidebar-celcom.mp4"></video></div><div class="sidebar-overlay" aria-hidden="true"></div><div class="brand"><div class="brand-mark pkpj-brand-mark"><img src="pkpj-premium.png" alt="PKPJ"></div><div><strong>Sistem ICT</strong><span>Langganan & Pinjaman</span></div></div><nav class="nav">
+<aside class="sidebar" id="sidebar"><div class="sidebar-media" aria-hidden="true"><img class="sidebar-bg-video" src="sidebar-celcom-poster.jpg" alt="" loading="eager" decoding="async"></div><div class="sidebar-overlay" aria-hidden="true"></div><div class="brand"><div class="brand-mark pkpj-brand-mark"><img src="pkpj-premium.png" alt="PKPJ"></div><div><strong>Sistem ICT</strong><span>Langganan & Pinjaman</span></div></div><nav class="nav">
 <button class="nav-btn active" data-view="dashboard"><span class="nav-ico">⌂</span>Dashboard</button>
 <button class="nav-btn" data-view="subscriptions"><span class="nav-ico">▤</span>Langganan</button>
 <button class="nav-btn" data-view="assets"><span class="nav-ico">▣</span>Inventori ICT</button>
@@ -766,7 +790,25 @@ html,body{max-width:100%;overflow-x:hidden}
 <div class="dashboard-grid"><div class="card panel"><div class="panel-head"><div><div class="panel-title">Trend Pembaharuan Langganan</div><div class="panel-sub">12 bulan terkini</div></div><span class="pill blue">12 Bulan</span></div><div class="chart-wrap"><svg id="trendSvg" viewBox="0 0 900 270" preserveAspectRatio="none"></svg></div></div><div class="card panel"><div class="panel-head"><div><div class="panel-title">Pembaharuan Akan Datang</div><div class="panel-sub">Disusun mengikut tarikh tamat</div></div><button class="btn btn-sm" data-go="subscriptions">Lihat Semua</button></div><div class="table-wrap"><table><thead><tr><th>LANGGANAN</th><th>VENDOR</th><th>TAMAT</th><th>BAKI</th><th>KOS</th><th>STATUS</th></tr></thead><tbody id="renewalRows"><tr><td colspan="6" class="empty">Belum ada data.</td></tr></tbody></table></div></div><div class="card panel"><div class="panel-head"><div><div class="panel-title">Status Inventori ICT</div><div class="panel-sub">Ringkasan kategori aset</div></div><button class="btn btn-sm" data-go="assets">Lihat Semua</button></div><div class="inventory-grid" id="inventoryGrid"><div class="empty" style="grid-column:1/-1">Belum ada data aset.</div></div></div></div>
 <div class="card panel"><div class="panel-head"><div><div class="panel-title">Status Penggunaan Inventori</div><div class="panel-sub">Ketersediaan aset berkait terus dengan rekod pinjaman</div></div></div><div class="status-strip"><div class="status-box"><div class="status-number"><strong style="color:var(--green)" id="statusAvailable">—</strong><span style="color:var(--green)">TERSEDIA</span></div><div class="equipment-mini"><span>💻 Laptop</span><span>📶 WiFi</span><span>📽 Projektor</span></div></div><div class="status-box"><div class="status-number"><strong style="color:var(--blue)" id="statusUnavailable">—</strong><span style="color:var(--blue)">DIGUNAKAN</span></div><div class="equipment-mini"><span id="statusBorrowedNote">0 dipinjam</span><span id="statusReservedNote">0 reserved</span></div></div><div class="status-box"><div class="status-number"><strong style="color:var(--red)" id="statusOverdue">—</strong><span style="color:var(--red)">LEWAT</span></div><div class="equipment-mini"><span>Perlu tindakan segera</span></div></div></div></div></section>
 <section class="view" id="view-subscriptions"><div class="mini-hero purple"><div class="copy"><h2>Langganan</h2><p>Urus lesen, broadband, perkhidmatan cloud dan tarikh pembaharuan.</p></div><div class="art"><svg viewBox="0 0 420 140"><g transform="translate(60,12)"><rect x="0" y="24" width="94" height="86" rx="12" fill="#fff" opacity=".92"/><rect x="15" y="40" width="64" height="8" rx="4" fill="#cde3ff"/><rect x="15" y="58" width="48" height="8" rx="4" fill="#cde3ff"/><circle cx="69" cy="86" r="15" fill="#1f76ff"/><path d="M63 86l5 5 9-11" stroke="#fff" stroke-width="4" fill="none"/><circle cx="176" cy="65" r="40" fill="#fff" opacity=".92"/><path d="M176 42v25l18 12" fill="none" stroke="#126cff" stroke-width="7" stroke-linecap="round"/><rect x="240" y="25" width="95" height="84" rx="12" fill="#fff" opacity=".92"/><path d="M258 46h58M258 64h42M258 82h52" stroke="#cde3ff" stroke-width="8" stroke-linecap="round"/></g></svg></div></div><div class="card panel"><div class="toolbar"><div class="search">⌕ <input id="subSearch" placeholder="Cari nama langganan, vendor, PIC..."/></div><select class="field" id="subStatusFilter" style="width:auto"><option value="">Semua status</option><option>AKTIF</option><option>RENEW_SOON</option><option>TAMAT</option><option>DALAM_PROSES</option></select><button class="btn btn-primary" id="addSubscriptionBtn">＋ Langganan Baru</button></div><div class="table-wrap"><table><thead><tr><th>ID</th><th>GAMBAR</th><th>NAMA</th><th>KATEGORI</th><th>VENDOR</th><th>PIC</th><th>TAMAT</th><th>KOS (RM)</th><th>STATUS</th></tr></thead><tbody id="subscriptionsRows"></tbody></table></div></div></section>
-<section class="view" id="view-assets"><div class="mini-hero"><div class="copy"><h2>Inventori ICT</h2><p>Urus dan jejak semua aset ICT organisasi dengan mudah.</p></div><div class="art"><svg viewBox="0 0 420 140"><rect width="420" height="140" fill="rgba(255,255,255,.07)"/><g transform="translate(65,15)"><rect x="30" y="28" width="105" height="64" rx="6" fill="#182337"/><rect x="37" y="35" width="91" height="50" rx="3" fill="#78bdff"/><path d="M12 94h141l17 15H0z" fill="#dce4ed"/><rect x="188" y="56" width="84" height="49" rx="10" fill="#17314b"/><path d="M205 56V19M255 56V10" stroke="#233f5e" stroke-width="4"/><rect x="288" y="50" width="85" height="58" rx="8" fill="#f4f6f8"/><circle cx="330" cy="79" r="22" fill="#153b70"/><circle cx="330" cy="79" r="13" fill="#16a0ff"/></g></svg></div></div><div class="category-strip"><div class="cat-card"><div class="emoji">▣</div><b>Semua Kategori</b><small>Inventori ICT</small></div><div class="cat-card"><div class="emoji">💻</div><b>Laptop</b><small>Komputer riba</small></div><div class="cat-card"><div class="emoji">📶</div><b>Telekomunikasi</b><small>Broadband / MiFi</small></div><div class="cat-card"><div class="emoji">📡</div><b>Peranti WiFi</b><small>Router / AP</small></div><div class="cat-card"><div class="emoji">📽</div><b>Projektor</b><small>Peralatan AV</small></div><div class="cat-card"><div class="emoji">🔌</div><b>Sambungan</b><small>Kabel / extension</small></div></div><div class="card panel asset-admin-panel">
+<section class="view" id="view-assets"><div class="mini-hero"><div class="copy"><h2>Inventori ICT</h2><p>Urus dan jejak semua aset ICT organisasi dengan mudah.</p></div><div class="art"><svg viewBox="0 0 420 140"><rect width="420" height="140" fill="rgba(255,255,255,.07)"/><g transform="translate(65,15)"><rect x="30" y="28" width="105" height="64" rx="6" fill="#182337"/><rect x="37" y="35" width="91" height="50" rx="3" fill="#78bdff"/><path d="M12 94h141l17 15H0z" fill="#dce4ed"/><rect x="188" y="56" width="84" height="49" rx="10" fill="#17314b"/><path d="M205 56V19M255 56V10" stroke="#233f5e" stroke-width="4"/><rect x="288" y="50" width="85" height="58" rx="8" fill="#f4f6f8"/><circle cx="330" cy="79" r="22" fill="#153b70"/><circle cx="330" cy="79" r="13" fill="#16a0ff"/></g></svg></div></div><div class="asset-category-heading">
+  <div>
+    <strong>Kategori Inventori</strong>
+    <span>Pilih satu kategori untuk membuka senarai item. Kategori disusun automatik mengikut data yang telah dimasukkan.</span>
+  </div>
+  <span class="pill blue" id="assetCategoryTotal">0 aset</span>
+</div>
+<div class="category-strip asset-category-menu" id="assetCategoryCards">
+  <div class="cat-card asset-cat-loading"><div class="emoji">…</div><b>Memuatkan kategori</b><small>Inventori ICT</small></div>
+</div>
+<div class="card panel asset-admin-panel asset-list-closed" id="assetListPanel">
+  <div class="asset-selected-head">
+    <div>
+      <span class="asset-selected-eyebrow">SENARAI INVENTORI</span>
+      <strong id="assetSelectedTitle">Pilih kategori di atas</strong>
+      <small id="assetSelectedCount">0 rekod</small>
+    </div>
+    <button class="btn btn-sm" type="button" id="assetCloseListBtn" title="Tutup senarai">← Kategori</button>
+  </div>
   <div class="toolbar asset-toolbar">
     <div class="search">⌕ <input id="assetSearch" placeholder="Cari nama aset, kategori, jenama, model, nombor siri..."/></div>
     <select class="field" id="assetStatusFilter" style="width:auto">
@@ -926,7 +968,8 @@ const state = {
   modalAssetId: null,
   connected: false,
   loadedAt: {},
-  inFlight: {}
+  inFlight: {},
+  assetCategoryView: ''
 };
 
 const SYSTEM_CONFIG = {
@@ -955,7 +998,7 @@ const $$ = (s, root=document) => [...root.querySelectorAll(s)];
 document.addEventListener('DOMContentLoaded', init);
 
 
-const ADMIN_FAST_CACHE_KEY='ict_admin_lists_v77';
+const ADMIN_FAST_CACHE_KEY='ict_admin_lists_v79';
 
 function readAdminFastCache(){
   try{
@@ -996,38 +1039,30 @@ function init(){
   bindNavigation();
   bindActions();
   hydrateAdminFastCache();
-  initPortalQr();
 
-  // Fixed embedded config tersedia pada semua PC; status Connected hanya selepas API berjaya menjawab.
-  state.connected = false;
+  state.connected=false;
   updateConnectionUI();
 
-  // Render last dashboard snapshot instantly, then refresh silently.
-  try{
-    renderCachedDashboard();
-  }catch(err){
-    console.warn('Dashboard cache render skipped:', err);
+  let hasDashboardCache=false;
+  try{hasDashboardCache=!!renderCachedDashboard();}catch(err){console.warn(err)}
+
+  jsonp('ping',{}, {timeoutMs:10000,retries:0})
+    .catch(err=>console.warn('Ping API tertangguh:',err));
+
+  setTimeout(()=>{
+    loadDashboard(true).catch(err=>console.warn('Dashboard refresh tertangguh:',err));
+  },hasDashboardCache?650:80);
+
+  const lateVisuals=()=>{
+    try{initPortalQr()}catch(err){console.warn(err)}
+    try{initHeroVideo()}catch(err){console.warn(err)}
+  };
+
+  if('requestIdleCallback' in window){
+    requestIdleCallback(lateVisuals,{timeout:5000});
+  }else{
+    setTimeout(lateVisuals,4500);
   }
-
-  // Start media after first paint so video cannot block initial UI.
-  // Beri API/dashboard keutamaan penuh; video hanya mula selepas UI stabil.
-  requestAnimationFrame(function(){
-    setTimeout(function(){
-      try{ initHeroVideo(); }catch(err){ console.warn(err); }
-    }, 1800);
-    setTimeout(function(){
-      try{ initSidebarVideo(); }catch(err){ console.warn(err); }
-    }, 3200);
-  });
-
-  // Fetch fresh data in background without blocking navigation.
-  setTimeout(function(){
-    loadDashboard(true).catch(function(err){
-      state.connected = false;
-      updateConnectionUI();
-      console.error(err);
-    });
-  }, 10);
 }
 
 function initHeroVideo(){
@@ -1069,38 +1104,6 @@ function initHeroVideo(){
 }
 
 
-function initSidebarVideo(){
-  const video=$('#sidebarVideo');
-  if(!video) return;
-
-  const loadVideo=()=>{
-    if(video.dataset.loaded==='1') return;
-    const src=video.dataset.src;
-    if(!src) return;
-    video.dataset.loaded='1';
-    video.src=src;
-    video.load();
-    const p=video.play();
-    if(p && typeof p.catch==='function') p.catch(()=>{});
-  };
-
-  // Give API/dashboard rendering priority; load visual background when browser is idle.
-  if('requestIdleCallback' in window){
-    requestIdleCallback(loadVideo,{timeout:1600});
-  }else{
-    setTimeout(loadVideo,1100);
-  }
-
-  document.addEventListener('visibilitychange',()=>{
-    if(document.hidden){
-      video.pause();
-    }else if(video.dataset.loaded==='1'){
-      const p=video.play();
-      if(p && typeof p.catch==='function') p.catch(()=>{});
-    }
-  });
-}
-
 function bindNavigation(){
   $$('.nav-btn').forEach(btn=>{
     btn.addEventListener('click',()=>{
@@ -1128,6 +1131,7 @@ function bindActions(){
   $('#subStatusFilter').addEventListener('change',renderSubscriptions);
   $('#assetSearch').addEventListener('input',renderAssets);
   $('#assetStatusFilter').addEventListener('change',renderAssets);
+  $('#assetCloseListBtn')?.addEventListener('click',closeAssetCategoryList);
   $('#loanSearch').addEventListener('input',renderLoans);
   $('#loanStatusFilter').addEventListener('change',renderLoans);
   $('#staffSearch')?.addEventListener('input',renderStaffSettings);
@@ -1215,7 +1219,7 @@ function quickAdd(){
    API: GET = JSONP
    Backend Code.gs supports callback=
 ========================================================= */
-function jsonpOnce(action,params={},timeoutMs=32000){
+function jsonpOnce(action,params={},timeoutMs=15000){
   return new Promise((resolve,reject)=>{
     if(!cfg.apiUrl) return reject(new Error('API URL belum ditetapkan.'));
 
@@ -1261,8 +1265,8 @@ function jsonpOnce(action,params={},timeoutMs=32000){
 }
 
 async function jsonp(action,params={},options={}){
-  const timeoutMs=options.timeoutMs||32000;
-  const retries=Number.isFinite(options.retries)?options.retries:1;
+  const timeoutMs=options.timeoutMs||15000;
+  const retries=Number.isFinite(options.retries)?options.retries:0;
   let lastErr=null;
 
   for(let attempt=0;attempt<=retries;attempt++){
@@ -1296,12 +1300,12 @@ function makeWriteRequestId(){
 }
 
 async function getWriteStatusOnce(requestId){
-  return jsonp('admin.write_status',{request_id:requestId,_t:Date.now()},{timeoutMs:30000,retries:0});
+  return jsonp('admin.write_status',{request_id:requestId,_t:Date.now()},{timeoutMs:10000,retries:0});
 }
 
-async function waitForWriteStatus(requestId,action,maxWait=90000){
+async function waitForWriteStatus(requestId,action,maxWait=35000){
   const started=Date.now();
-  let interval=900;
+  let interval=500;
 
   while(Date.now()-started<maxWait){
     try{
@@ -1315,7 +1319,7 @@ async function waitForWriteStatus(requestId,action,maxWait=90000){
     }
 
     await new Promise(r=>setTimeout(r,interval));
-    interval=Math.min(1800,interval+150);
+    interval=Math.min(1400,interval+150);
   }
 
   throw new Error('Sambungan masih perlahan. Operasi mungkin sudah selesai; tekan Muat Semula untuk semak tanpa menghantar rekod dua kali.');
@@ -1331,8 +1335,8 @@ async function sendPostWrite(action,payload,requestId){
   fetch(cfg.apiUrl,{method:'POST',mode:'no-cors',body})
     .catch(err=>console.warn('POST transport warning:',err));
 
-  await new Promise(r=>setTimeout(r,500));
-  return waitForWriteStatus(requestId,action,action==='image.attach'?120000:90000);
+  await new Promise(r=>setTimeout(r,250));
+  return waitForWriteStatus(requestId,action,action==='image.attach'?120000:35000);
 }
 
 async function postApi(action,data={}){
@@ -1351,7 +1355,7 @@ async function postApi(action,data={}){
         request_id:requestId,
         data:serialized,
         _t:Date.now()
-      },{timeoutMs:32000,retries:0});
+      },{timeoutMs:15000,retries:0});
     }catch(err){
       // Jika server sempat siap tetapi response lambat, semak status dahulu.
       try{
@@ -1420,7 +1424,7 @@ function renderCachedDashboard(){
 async function loadDashboard(force=false){
   if(!requireConfig()) return;
 
-  if(!force && state.dashboard && isFresh('dashboard',30000)){
+  if(!force && state.dashboard && isFresh('dashboard',120000)){
     renderDashboard(state.dashboard);
     renderReports(state.dashboard);
     return;
@@ -1574,13 +1578,34 @@ function renderTrend(items){
   `;
 }
 
+function upsertLocalRecord(kind,record){
+  if(!record) return;
+  const map={subscription:['subscriptions','subscription_id'],asset:['assets','asset_id'],loan:['loans','loan_id']};
+  const spec=map[kind]; if(!spec) return;
+  const stateKey=spec[0],idKey=spec[1],id=record[idKey]; if(!id) return;
+  const list=state[stateKey]||[];
+  const index=list.findIndex(x=>String(x[idKey])===String(id));
+  if(index>=0) list[index]={...list[index],...record}; else list.unshift(record);
+  state[stateKey]=list; state.loadedAt[stateKey]=Date.now(); saveAdminFastCache();
+  if(kind==='asset'){ renderAssetCategoryCards(); if(state.assetCategoryView) renderAssets(); }
+}
+
+function scheduleSilentRefresh(kind,delay=2500){
+  setTimeout(()=>{
+    if(kind==='subscription') loadSubscriptions(true);
+    if(kind==='asset') loadAssets(true);
+    if(kind==='loan') loadLoans(true);
+    loadDashboard(true);
+  },delay);
+}
+
 /* =========================================================
    SUBSCRIPTIONS
 ========================================================= */
 async function loadSubscriptions(force=false){
   if(!requireConfig()) return;
   if(state.subscriptions.length) renderSubscriptions();
-  if(!force && state.subscriptions.length && isFresh('subscriptions',30000)){
+  if(!force && state.subscriptions.length && isFresh('subscriptions',120000)){
     renderSubscriptions();
     return;
   }
@@ -1627,11 +1652,99 @@ function renderSubscriptions(){
 /* =========================================================
    ASSETS
 ========================================================= */
+function assetCategoryIcon(category){
+  const key=String(category||'').trim().toLowerCase();
+  const exact={
+    'laptop':'💻','desktop':'🖥️','monitor':'🖥️','wifi/mifi':'📶','wifi':'📶','mifi':'📶',
+    'projector':'📽️','projektor':'📽️','extension':'🔌','charger/adapter':'🔋','charger':'🔋',
+    'printer':'🖨️','camera':'📷','kamera':'📷','audio':'🎧','network device':'🌐',
+    'storage device':'💾','accessory':'🧩','other':'▣'
+  };
+  if(exact[key]) return exact[key];
+  if(key.includes('laptop')||key.includes('notebook')) return '💻';
+  if(key.includes('wifi')||key.includes('mifi')||key.includes('broadband')||key.includes('router')) return '📶';
+  if(key.includes('printer')) return '🖨️';
+  if(key.includes('project')) return '📽️';
+  if(key.includes('extension')||key.includes('kabel')||key.includes('cable')) return '🔌';
+  if(key.includes('monitor')||key.includes('desktop')) return '🖥️';
+  if(key.includes('camera')||key.includes('kamera')) return '📷';
+  if(key.includes('audio')||key.includes('speaker')||key.includes('mic')) return '🎧';
+  return '▣';
+}
+
+function assetCategoryDescription(category){
+  const key=String(category||'').toLowerCase();
+  if(key.includes('laptop')) return 'Komputer riba';
+  if(key.includes('wifi')||key.includes('mifi')||key.includes('broadband')) return 'WiFi / MiFi / broadband';
+  if(key.includes('printer')) return 'Peralatan cetakan';
+  if(key.includes('project')) return 'Projektor / visual';
+  if(key.includes('extension')) return 'Sambungan kuasa';
+  if(key.includes('monitor')) return 'Paparan / monitor';
+  if(key.includes('desktop')) return 'Komputer desktop';
+  if(key.includes('charger')) return 'Pengecas / adapter';
+  if(key.includes('camera')||key.includes('kamera')) return 'Kamera / visual';
+  if(key.includes('network')) return 'Peralatan rangkaian';
+  if(key.includes('storage')) return 'Storan data';
+  return 'Peralatan ICT';
+}
+
+function renderAssetCategoryCards(){
+  const box=$('#assetCategoryCards');
+  if(!box) return;
+
+  const counts={};
+  (state.assets||[]).forEach(asset=>{
+    const category=String(asset.category||'Lain-lain').trim()||'Lain-lain';
+    counts[category]=(counts[category]||0)+1;
+  });
+
+  const entries=Object.entries(counts).sort((a,b)=>a[0].localeCompare(b[0]));
+  $('#assetCategoryTotal').textContent=`${(state.assets||[]).length} aset`;
+
+  if(!entries.length){
+    box.innerHTML='<div class="empty" style="grid-column:1/-1">Belum ada rekod inventori.</div>';
+    state.assetCategoryView='';
+    $('#assetListPanel')?.classList.add('asset-list-closed');
+    return;
+  }
+
+  const allCard=`<button type="button" class="cat-card ${state.assetCategoryView==='__ALL__'?'active':''}" onclick="openAssetCategory('__ALL__')">
+      <span class="cat-count">${state.assets.length}</span>
+      <div class="emoji">🗂️</div><b>Semua Inventori</b><small>Lihat semua kategori</small>
+    </button>`;
+
+  box.innerHTML=allCard+entries.map(([category,count])=>`
+    <button type="button" class="cat-card ${state.assetCategoryView===category?'active':''}" onclick="openAssetCategory('${attr(category)}')">
+      <span class="cat-count">${count}</span>
+      <div class="emoji">${assetCategoryIcon(category)}</div>
+      <b>${esc(category)}</b>
+      <small>${esc(assetCategoryDescription(category))}</small>
+    </button>
+  `).join('');
+}
+
+function openAssetCategory(category){
+  state.assetCategoryView=String(category||'');
+  $('#assetSearch').value='';
+  $('#assetStatusFilter').value='';
+  $('#assetListPanel').classList.remove('asset-list-closed');
+  renderAssetCategoryCards();
+  renderAssets();
+  requestAnimationFrame(()=>$('#assetListPanel')?.scrollIntoView({behavior:'smooth',block:'start'}));
+}
+
+function closeAssetCategoryList(){
+  state.assetCategoryView='';
+  $('#assetListPanel')?.classList.add('asset-list-closed');
+  renderAssetCategoryCards();
+}
+
 async function loadAssets(force=false){
   if(!requireConfig()) return;
-  if(state.assets.length) renderAssets();
-  if(!force && state.assets.length && isFresh('assets',30000)){
-    renderAssets();
+  if(state.assets.length){ renderAssetCategoryCards(); if(state.assetCategoryView) renderAssets(); }
+  if(!force && state.assets.length && isFresh('assets',120000)){
+    renderAssetCategoryCards();
+    if(state.assetCategoryView) renderAssets();
     return;
   }
   if(state.inFlight.assets) return state.inFlight.assets;
@@ -1642,7 +1755,8 @@ async function loadAssets(force=false){
       state.assets=res?.items||[];
       state.loadedAt.assets=Date.now();
       saveAdminFastCache();
-      renderAssets();
+      renderAssetCategoryCards();
+      if(state.assetCategoryView) renderAssets();
     }catch(err){if(state.assets.length){console.warn('Inventori refresh tertangguh:',err)}else{handleError(err)}}
     finally{state.inFlight.assets=null}
   })();
@@ -1689,13 +1803,29 @@ function openAssetImage(url){
 
 
 function renderAssets(){
+  const panel=$('#assetListPanel');
+  if(!state.assetCategoryView){
+    panel?.classList.add('asset-list-closed');
+    return;
+  }
+
+  panel?.classList.remove('asset-list-closed');
+
   const q=($('#assetSearch').value||'').toLowerCase();
   const st=$('#assetStatusFilter').value;
+  const category=state.assetCategoryView;
 
-  const rows=state.assets.filter(x=>{
+  const categoryRows=state.assets.filter(x=>
+    category==='__ALL__' || String(x.category||'Lain-lain')===category
+  );
+
+  const rows=categoryRows.filter(x=>{
     const hay=[x.asset_id,x.asset_tag,x.asset_name,x.category,x.brand,x.model,x.serial_no,x.location,x.status].join(' ').toLowerCase();
     return (!q||hay.includes(q)) && (!st||x.status===st);
   });
+
+  $('#assetSelectedTitle').textContent=category==='__ALL__'?'Semua Inventori':category;
+  $('#assetSelectedCount').textContent=`${rows.length} dipaparkan • ${categoryRows.length} dalam kategori`;
 
   $('#assetsRows').innerHTML=rows.length?rows.map(x=>{
     const status=String(x.status||'');
@@ -1734,7 +1864,7 @@ function renderAssets(){
         </td>
       </tr>
     `;
-  }).join(''):'<tr><td colspan="9" class="empty">Tiada rekod.</td></tr>';
+  }).join(''):'<tr><td colspan="9" class="empty">Tiada rekod dalam pilihan ini.</td></tr>';
 }
 
 
@@ -1972,7 +2102,7 @@ async function deleteAssetPermanent(assetId){
 async function loadLoans(force=false){
   if(!requireConfig()) return;
   if(state.loans.length) renderLoans();
-  if(!force && state.loans.length && isFresh('loans',20000)){
+  if(!force && state.loans.length && isFresh('loans',60000)){
     renderLoans();
     return;
   }
@@ -2459,16 +2589,16 @@ async function submitModal(){
       btn.textContent='Menyimpan...';
       const saved=await postApi('subscription.create',data);
 
+      upsertLocalRecord('subscription',saved);
+      renderSubscriptions();
       closeModal();
 
       if(imageFile && saved?.subscription_id){
         uploadImageFileInBackground('subscription',saved.subscription_id,imageFile,'Langganan');
       }
       markDataStale();
-      toast('Langganan disimpan','Rekod berjaya disimpan.','ok');
-
-      await loadSubscriptions(true);
-      loadDashboard(true);
+      toast('Langganan disimpan','Rekod berjaya disimpan. Senarai dikemaskini terus.','ok');
+      scheduleSilentRefresh('subscription',3000);
     }
 
     if(state.modalType==='asset' || state.modalType==='asset_edit'){
@@ -2492,8 +2622,8 @@ async function submitModal(){
         data.status=v('asset_status') || state.assets.find(x=>String(x.asset_id)===String(state.modalAssetId))?.status || 'TERSEDIA';
       }
 
-      if(!data.asset_tag||!data.asset_name||!data.category){
-        throw new Error('Lengkapkan field bertanda *.');
+      if(!data.asset_name||!data.category){
+        throw new Error('Isi Nama Aset dan Kategori. Tag Aset boleh dibiarkan kosong.');
       }
 
       const imageFile=getSelectedImageFile('asset_image');
@@ -2502,16 +2632,16 @@ async function submitModal(){
       const saved=await postApi(editing?'asset.update':'asset.create',data);
       const targetId=editing ? data.asset_id : saved?.asset_id;
 
+      upsertLocalRecord('asset',saved);
+      renderAssets();
       closeModal();
 
       if(imageFile && targetId){
         uploadImageFileInBackground('asset',targetId,imageFile,'Aset');
       }
       markDataStale();
-      toast(editing?'Aset dikemaskini':'Aset disimpan',editing?'Perubahan inventori berjaya disimpan.':'Rekod inventori berjaya ditambah.','ok');
-
-      await loadAssets(true);
-      loadDashboard(true);
+      toast(editing?'Aset dikemaskini':'Aset disimpan',editing?'Perubahan terus dipaparkan.':'Rekod terus dipaparkan dalam Inventori.','ok');
+      scheduleSilentRefresh('asset',3000);
     }
 
     if(state.modalType==='loan'){
@@ -2533,13 +2663,13 @@ async function submitModal(){
         throw new Error('Pilih peminjam, due date dan sekurang-kurangnya satu aset.');
       }
 
-      const loanImagePayload=await prepareImagePayload('loan_image');
+      const loanImageFile=getSelectedImageFile('loan_image');
 
       btn.textContent='Menyimpan...';
       const savedLoan=await postApi('loan.create',data);
 
-      if(loanImagePayload?.image_data_url && savedLoan?.loan_id){
-        await postApiLarge('image.attach',{entity_type:'loan',entity_id:savedLoan.loan_id,...loanImagePayload});
+      if(loanImageFile && savedLoan?.loan_id){
+        uploadImageFileInBackground('loan',savedLoan.loan_id,loanImageFile,'Pinjaman');
       }
 
       closeModal();
@@ -2551,13 +2681,8 @@ async function submitModal(){
         'ok'
       );
 
-      setTimeout(async()=>{
-        await Promise.all([
-          loadLoans(true),
-          loadAssets(true),
-          loadDashboard(true)
-        ]);
-      },850);
+      scheduleSilentRefresh('loan',1800);
+      setTimeout(()=>loadAssets(true),2200);
     }
 
   }catch(err){
@@ -2709,21 +2834,23 @@ async function prepareImageFilePayload(file){
 
 
 async function uploadImageFileInBackground(entityType,entityId,file,label='Rekod'){
-  toast(label+' disimpan','Gambar sedang dimuat naik di belakang. Anda boleh terus guna sistem.','ok');
-
+  toast(label+' disimpan','Gambar dimuat naik di belakang. Anda boleh terus guna sistem.','ok');
   try{
     const payload=await prepareImageFilePayload(file);
-    await postApiLarge('image.attach',{
-      entity_type:entityType,
-      entity_id:entityId,
-      ...payload
-    });
+    const imageResult=await postApiLarge('image.attach',{entity_type:entityType,entity_id:entityId,...payload});
+
+    if(entityType==='asset'){
+      upsertLocalRecord('asset',{asset_id:entityId,...imageResult});
+      if(state.view==='assets') renderAssets();
+    }else if(entityType==='subscription'){
+      upsertLocalRecord('subscription',{subscription_id:entityId,...imageResult});
+      if(state.view==='subscriptions') renderSubscriptions();
+    }else if(entityType==='loan'){
+      upsertLocalRecord('loan',{loan_id:entityId,...imageResult});
+      if(state.view==='loans') renderLoans();
+    }
 
     toast('Gambar disimpan',label+' dan gambar asal berjaya disimpan ke Google Drive.','ok');
-    markDataStale();
-    if(entityType==='asset') loadAssets(true);
-    if(entityType==='subscription') loadSubscriptions(true);
-    if(entityType==='loan') loadLoans(true);
   }catch(err){
     toast('Upload gambar gagal',err.message||String(err),'err');
   }
@@ -2744,10 +2871,8 @@ function formatBytes(bytes){
 
 
 function markDataStale(){
-  state.loadedAt={};
-  try{
-    localStorage.removeItem('ict_dashboard_cache_v3');
-  }catch(err){}
+  state.loadedAt.dashboard=0;
+  try{localStorage.removeItem('ict_dashboard_cache_v3');}catch(err){}
 }
 
 
