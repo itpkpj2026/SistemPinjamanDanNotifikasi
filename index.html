@@ -607,6 +607,9 @@ html,body{max-width:100%;overflow-x:hidden}
   @page{size:A4 landscape;margin:7mm}
 }
 
+
+.loan-pdf-btn{background:#fff3e6!important;color:#a45a0d!important;border-color:#f0d0aa!important}
+
 </style></head>
 <body><div class="app">
 <aside class="sidebar" id="sidebar"><div class="sidebar-media" aria-hidden="true"><video id="sidebarVideo" class="sidebar-bg-video" muted loop playsinline autoplay preload="none" poster="sidebar-celcom-poster.jpg" data-src="sidebar-celcom.mp4"></video></div><div class="sidebar-overlay" aria-hidden="true"></div><div class="brand"><div class="brand-mark pkpj-brand-mark"><img src="pkpj-premium.png" alt="PKPJ"></div><div><strong>Sistem ICT</strong><span>Langganan & Pinjaman</span></div></div><nav class="nav">
@@ -736,6 +739,7 @@ html,body{max-width:100%;overflow-x:hidden}
       </div>
       <div class="movement-toolbar-actions">
         <button class="btn btn-primary" id="movementPrintBtn">🖨 Cetak</button>
+        <button class="btn" id="movementPdfBtn">📄 PDF</button>
         <button class="btn" id="movementCloseBtn">✕ Tutup</button>
       </div>
     </div>
@@ -980,6 +984,7 @@ function bindActions(){
   $('#modalSubmit').onclick=submitModal;
   $('#movementCloseBtn').onclick=closeMovementRegister;
   $('#movementPrintBtn').onclick=()=>window.print();
+  $('#movementPdfBtn').onclick=openMovementPdf;
 }
 
 function showView(name){
@@ -1640,7 +1645,7 @@ function loanActionButtons(loan){
 
   return `<div class="action-row">
     ${primary}
-    <button class="btn btn-sm loan-register-btn" onclick="openMovementRegister('${attr(loan.loan_id)}')">📄 Daftar</button>
+    <button class="btn btn-sm loan-register-btn" onclick="openMovementRegister('${attr(loan.loan_id)}')">📄 Daftar</button> <button class="btn btn-sm loan-pdf-btn" onclick="openMovementRegisterPdf('${attr(loan.loan_id)}')">PDF</button>
   </div>`;
 }
 
@@ -2493,6 +2498,77 @@ async function toggleStaff(userId,newStatus){
 /* =========================================================
    DAFTAR PERGERAKAN KEW.PA-6
 ========================================================= */
+let currentMovementRegisterData=null;
+
+function movementPdfDocumentHtml(data){
+  const pages=data?.pages||[];
+  const content=pages.length?pages.map((page,pageIndex)=>{
+    const a=page.asset||{};
+    const rows=page.movements||[];
+    const body=rows.length
+      ? rows.map(movementRowHtml).join('')
+      : `<tr class="movement-empty-row"><td>1</td><td colspan="9">Tiada rekod pergerakan.</td></tr>`;
+
+    return `<section class="movement-page">
+      <div class="movement-page-header">
+        <div class="movement-form-code">${esc(data.form_code||'KEW.PA-6')}</div>
+        <h1>${esc(data.title||'DAFTAR PERGERAKAN HARTA MODAL DAN INVENTORI')}</h1>
+      </div>
+      <table class="movement-asset-meta">
+        <tr><td>Jenis</td><td>:</td><td>${esc(a.type||a.asset_name||'')}</td></tr>
+        <tr><td>Jenama dan Model</td><td>:</td><td>${esc(a.brand_model||'')}</td></tr>
+        <tr><td>No. Siri Pembuat</td><td>:</td><td>${esc(a.manufacturer_serial||'')}</td></tr>
+        <tr><td>No. Siri Pendaftaran</td><td>:</td><td>${esc(a.registration_serial||'')}</td></tr>
+      </table>
+      <table class="movement-register">
+        <thead>
+          <tr><th rowspan="3" style="width:35px">Bil.</th><th rowspan="3" style="width:150px">Nama Peminjam</th><th colspan="2">Tarikh</th><th rowspan="3" style="width:85px">Tandatangan<br>Peminjam</th><th colspan="4">Pegawai Pengeluar</th><th rowspan="3" style="width:170px">Catatan</th></tr>
+          <tr><th rowspan="2" style="width:78px">Dikeluarkan</th><th rowspan="2" style="width:88px">Jangka<br>Dipulangkan</th><th colspan="2">Ketika Dikeluarkan</th><th colspan="2">Ketika Dipulangkan</th></tr>
+          <tr><th style="width:90px">Tandatangan</th><th style="width:72px">Tarikh</th><th style="width:90px">Tandatangan</th><th style="width:72px">Tarikh</th></tr>
+        </thead>
+        <tbody>${body}</tbody>
+      </table>
+      <div class="movement-print-foot"><span>Aset: ${esc(a.asset_id||'')}</span><span>Dijana: ${fmtDateTime(data.generated_at)}</span></div>
+    </section>`;
+  }).join(''):'<div>Tiada data.</div>';
+
+  const css=[...document.querySelectorAll('style')].map(x=>x.textContent).join('\n');
+  return `<!doctype html><html><head><meta charset="utf-8"><title>${esc(data?.form_code||'KEW.PA-6')} - Daftar Pergerakan</title><style>${css}\nbody{background:#fff!important;padding:0!important}.movement-page{box-shadow:none!important;border:0!important;margin:0 auto!important}.no-print{display:none!important}@page{size:A4 landscape;margin:8mm}</style></head><body>${content}<script>window.addEventListener('load',()=>setTimeout(()=>window.print(),350));<\/script></body></html>`;
+}
+
+function openMovementPdf(){
+  if(!currentMovementRegisterData){
+    return toast('PDF belum tersedia','Buka Daftar Pergerakan dahulu.','err');
+  }
+  const w=window.open('','_blank');
+  if(!w){
+    return toast('Popup disekat','Benarkan popup browser untuk membuka PDF.','err');
+  }
+  w.document.open();
+  w.document.write(movementPdfDocumentHtml(currentMovementRegisterData));
+  w.document.close();
+  toast('PDF dibuka','Dalam dialog cetak pilih “Save as PDF / Simpan sebagai PDF”.','ok');
+}
+
+async function openMovementRegisterPdf(loanId){
+  const w=window.open('','_blank');
+  if(!w){
+    return toast('Popup disekat','Benarkan popup browser untuk membuka PDF.','err');
+  }
+  w.document.write('<div style="font-family:Arial;padding:35px">Menjana format PDF...</div>');
+  try{
+    const data=await jsonp('movement_register',{loan_id:loanId,_t:Date.now()},{timeoutMs:30000,retries:1});
+    currentMovementRegisterData=data;
+    w.document.open();
+    w.document.write(movementPdfDocumentHtml(data));
+    w.document.close();
+  }catch(err){
+    w.document.open();
+    w.document.write(`<div style="font-family:Arial;padding:35px;color:#b73349">${esc(err.message)}</div>`);
+    w.document.close();
+  }
+}
+
 async function openMovementRegister(loanId){
   const modal=$('#movementModal');
   const area=$('#movementPrintArea');
@@ -2505,6 +2581,7 @@ async function openMovementRegister(loanId){
       {loan_id:loanId,_t:Date.now()},
       {timeoutMs:28000,retries:1}
     );
+    currentMovementRegisterData=data;
     renderMovementRegister(data);
   }catch(err){
     area.innerHTML=`<div class="card panel" style="text-align:center;padding:35px;color:#b73349">${esc(err.message)}</div>`;
