@@ -736,7 +736,7 @@ html,body{max-width:100%;overflow-x:hidden}
 
 
 /* =========================================================
-   V7.9 - INVENTORI CATEGORY FIRST
+   V8.0 - INVENTORI CATEGORY FIRST
    ========================================================= */
 .asset-category-heading{display:flex;justify-content:space-between;align-items:center;gap:14px;margin:1px 0 10px;padding:0 2px}
 .asset-category-heading strong{display:block;color:#173955;font-size:14px}
@@ -758,16 +758,100 @@ html,body{max-width:100%;overflow-x:hidden}
 .asset-selected-head small{display:block;color:#7c90a1;font-size:9px;margin-top:2px}
 @media(max-width:720px){.asset-category-heading{align-items:flex-start}.asset-category-menu{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}.asset-category-menu .cat-card{padding:11px!important}.asset-selected-head{align-items:flex-start}}
 
+
+/* =========================================================
+   V8.0 - OPERATOR LOGIN + DEEP SETTINGS + CLEAN STATUS
+   ========================================================= */
+.hidden-technical,.connection-mini{display:none!important}
+.operator-mini{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:9px 10px;border-radius:12px;background:rgba(255,255,255,.72);
+  border:1px solid rgba(255,255,255,.78);backdrop-filter:blur(10px)
+}
+.operator-mini strong{display:block;color:#24445f;font-size:9.5px}
+.operator-mini span{display:block;color:#71889b;font-size:8px;margin-top:2px}
+.operator-mini button{
+  width:29px;height:29px;border:1px solid #d7e5ef;border-radius:9px;
+  background:#fff;color:#4d7189;cursor:pointer
+}
+.admin-login-overlay{
+  position:fixed;inset:0;z-index:10000;display:grid;place-items:center;padding:18px;
+  background:linear-gradient(135deg,#eaf5fb,#f9fcfe)
+}
+.admin-login-overlay.hidden{display:none!important}
+.admin-login-card{
+  width:min(430px,94vw);padding:30px 28px;border-radius:26px;background:#fff;
+  border:1px solid #dbe8f1;box-shadow:0 28px 80px rgba(21,64,96,.18)
+}
+.admin-login-logo{
+  width:68px;height:68px;margin:0 auto 18px;padding:8px;border-radius:21px;
+  display:grid;place-items:center;background:#fff;border:1px solid #dce8f1;
+  box-shadow:0 12px 28px rgba(30,83,120,.10)
+}
+.admin-login-logo img{width:100%;height:100%;object-fit:contain}
+.admin-login-card h2{text-align:center;margin:0;color:#173b58;font-size:24px}
+.admin-login-card>p{text-align:center;color:#72899a;font-size:10.5px;line-height:1.5;margin:8px 0 20px}
+.admin-login-card label{display:block;color:#49687f;font-size:9px;font-weight:900;margin:10px 0 6px}
+.admin-login-btn{width:100%;margin-top:12px;min-height:45px}
+.admin-login-info{padding:10px 11px;border-radius:10px;background:#eef8ff;color:#55778f;font-size:9.5px;line-height:1.45}
+.settings-extra-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.icon-setting-row{
+  display:grid;grid-template-columns:minmax(120px,1fr) 70px minmax(140px,1.3fr);
+  gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid #edf2f6
+}
+.icon-setting-row:last-child{border-bottom:0}
+.icon-setting-row strong{font-size:9.5px;color:#365973}
+.icon-setting-row .field{height:36px;font-size:10px;padding:0 9px}
+.role-pill{display:inline-flex;padding:4px 7px;border-radius:999px;font-size:8px;font-weight:900;background:#edf6fc;color:#3f6d8d}
+.role-pill.super{background:#fff0d9;color:#9b681c}
+.super-admin-only.role-hidden{display:none!important}
+
+@media(max-width:900px){
+  .settings-extra-grid{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  .admin-login-card{padding:24px 19px}
+  .icon-setting-row{grid-template-columns:1fr 62px}
+  .icon-setting-row .icon-desc{grid-column:1/-1}
+}
+
 </style></head>
-<body><div class="app">
+<body>
+<div class="admin-login-overlay" id="adminLoginOverlay">
+  <div class="admin-login-card">
+    <div class="admin-login-logo"><img src="pkpj-premium.png" alt="PKPJ"></div>
+    <h2>Log Masuk Pengurusan ICT</h2>
+    <p>Pilih nama staf IT. Nama ini akan direkod sebagai pegawai yang meluluskan pinjaman.</p>
+
+    <div id="operatorExistingBox">
+      <label>Nama Staf IT</label>
+      <select class="field" id="adminOperatorSelect">
+        <option value="">Memuatkan senarai…</option>
+      </select>
+      <button class="btn btn-primary admin-login-btn" type="button" id="operatorLoginBtn">Masuk Sistem</button>
+    </div>
+
+    <div class="operator-bootstrap hidden" id="operatorBootstrapBox">
+      <div class="admin-login-info">Belum ada Super Admin. Daftarkan nama pertama untuk memulakan sistem.</div>
+      <label>Nama Super Admin Pertama</label>
+      <input class="field" id="operatorBootstrapName" placeholder="Contoh: Muhammad Faizal">
+      <button class="btn btn-primary admin-login-btn" type="button" id="operatorBootstrapBtn">Daftar & Masuk</button>
+    </div>
+  </div>
+</div>
+<div class="app">
 <aside class="sidebar" id="sidebar"><div class="sidebar-media" aria-hidden="true"><img class="sidebar-bg-video" src="sidebar-celcom-poster.jpg" alt="" loading="eager" decoding="async"></div><div class="sidebar-overlay" aria-hidden="true"></div><div class="brand"><div class="brand-mark pkpj-brand-mark"><img src="pkpj-premium.png" alt="PKPJ"></div><div><strong>Sistem ICT</strong><span>Langganan & Pinjaman</span></div></div><nav class="nav">
 <button class="nav-btn active" data-view="dashboard"><span class="nav-ico">⌂</span>Dashboard</button>
 <button class="nav-btn" data-view="subscriptions"><span class="nav-ico">▤</span>Langganan</button>
 <button class="nav-btn" data-view="assets"><span class="nav-ico">▣</span>Inventori ICT</button>
-<button class="nav-btn" data-view="loans"><span class="nav-ico">⇄</span>Pinjaman</button>
+<button class="nav-btn" data-view="loans"><span class="nav-ico">✓</span>Kelulusan Pinjaman</button>
 <button class="nav-btn" data-view="reports"><span class="nav-ico">▥</span>Laporan</button>
 <button class="nav-btn" data-view="settings"><span class="nav-ico">⚙</span>Tetapan</button>
-</nav><div class="sidebar-bottom"><div class="connection-mini"><div class="connection-row"><span class="dot" id="sideDot"></span><strong id="sideStatus">Belum disambung</strong></div><div class="mini-muted" id="sideHint">Tetapkan sambungan di Tetapan.</div></div></div></aside>
+</nav><div class="sidebar-bottom">
+      <div class="operator-mini" id="operatorMini">
+        <div><strong id="operatorName">Belum log masuk</strong><span id="operatorRole">—</span></div>
+        <button type="button" id="operatorSwitchBtn" title="Tukar pengguna">⇄</button>
+      </div><div class="connection-mini hidden-technical"><span class="dot" id="sideDot"></span><strong id="sideStatus"></strong><div id="sideHint"></div></div></div></aside>
 <main class="main"><header class="topbar" id="topbar"><div style="display:flex;align-items:center;gap:12px"><button class="btn mobile-menu" id="mobileMenu">☰</button><div class="page-title"><h1 id="pageHeading">Paparan Utama</h1><p id="pageSubtitle">Ringkasan keseluruhan langganan, inventori dan pinjaman sistem.</p></div></div><div class="top-actions"><button class="btn desktop-only" id="refreshBtn">↻ Muat Semula</button><button class="btn btn-primary" id="quickAddBtn">＋ Tambah Rekod</button></div></header>
 <section class="view active" id="view-dashboard"><div class="hero" id="dashboardHero"><div class="hero-media"><video id="heroVideo" class="hero-video" muted loop playsinline autoplay preload="none" poster="hero-ict-poster.jpg" data-src="hero-ict.mp4" aria-hidden="true"></video></div><div class="hero-shade" aria-hidden="true"></div><div class="hero-copy"><h2>Urus ICT dengan lebih efisien, lebih teratur, operasi lebih lancar.</h2><p>Pantau langganan, inventori dan pinjaman dalam satu sistem yang kemas dan mudah digunakan.</p><button class="btn btn-primary" data-go="assets">Lihat Ringkasan Penuh →</button></div><div class="hero-video-fallback">Video latar dijeda</div></div>
 <div class="portal-qr-strip">
@@ -842,7 +926,7 @@ html,body{max-width:100%;overflow-x:hidden}
     </table>
   </div>
 </div></section>
-<section class="view" id="view-loans"><div class="mini-hero green"><div class="copy"><h2>Pinjaman</h2><p>Urus permohonan, kelulusan, check-out dan pemulangan peralatan ICT.</p></div><div class="art"><svg viewBox="0 0 420 140"><g transform="translate(54,12)"><path d="M48 15v105M35 42h26M28 62h40M21 83h54" stroke="#fff" stroke-width="5" opacity=".75"/><circle cx="20" cy="34" r="12" fill="none" stroke="#fff" stroke-width="5" opacity=".7"/><rect x="112" y="36" width="105" height="66" rx="7" fill="#18253b"/><rect x="121" y="44" width="87" height="49" rx="3" fill="#6fbaff"/><path d="M95 103h138l17 13H78z" fill="#e3e8ef"/><rect x="255" y="54" width="80" height="54" rx="8" fill="#f5f6f8"/><circle cx="295" cy="81" r="21" fill="#123e73"/><circle cx="295" cy="81" r="12" fill="#26b1ff"/></g></svg></div></div><div class="info-banner"><span>🔄</span><div><b>Inventori & Pinjaman disambungkan.</b> Aset yang direkod untuk pinjaman akan terus berstatus RESERVED, kemudian DIPINJAM selepas check-out, dan kembali TERSEDIA selepas dipulangkan.</div></div><div class="card panel"><div class="toolbar"><div class="search">⌕ <input id="loanSearch" placeholder="Cari ID pinjaman, peminjam, tujuan..."/></div><select class="field" id="loanStatusFilter" style="width:auto"><option value="">Semua status</option><option>MENUNGGU_KELULUSAN</option><option>DILULUSKAN</option><option>DIPINJAM</option><option>HAMPIR_DUE</option><option>LEWAT</option><option>DIPULANGKAN</option></select><button class="btn btn-green" id="addLoanBtn">＋ Pinjaman Baru</button></div><div class="table-wrap"><table><thead><tr><th>ID PINJAMAN</th><th>GAMBAR</th><th>PEMINJAM</th><th>ITEM</th><th>DUE</th><th>TUJUAN</th><th>STATUS</th><th>TINDAKAN</th></tr></thead><tbody id="loansRows"></tbody></table></div></div></section>
+<section class="view" id="view-loans"><div class="mini-hero green"><div class="copy"><h2>Kelulusan Pinjaman</h2><p>Urus permohonan, kelulusan, check-out dan pemulangan peralatan ICT.</p></div><div class="art"><svg viewBox="0 0 420 140"><g transform="translate(54,12)"><path d="M48 15v105M35 42h26M28 62h40M21 83h54" stroke="#fff" stroke-width="5" opacity=".75"/><circle cx="20" cy="34" r="12" fill="none" stroke="#fff" stroke-width="5" opacity=".7"/><rect x="112" y="36" width="105" height="66" rx="7" fill="#18253b"/><rect x="121" y="44" width="87" height="49" rx="3" fill="#6fbaff"/><path d="M95 103h138l17 13H78z" fill="#e3e8ef"/><rect x="255" y="54" width="80" height="54" rx="8" fill="#f5f6f8"/><circle cx="295" cy="81" r="21" fill="#123e73"/><circle cx="295" cy="81" r="12" fill="#26b1ff"/></g></svg></div></div><div class="info-banner"><span>🔄</span><div><b>Inventori & Pinjaman disambungkan.</b> Aset yang direkod untuk pinjaman akan terus berstatus RESERVED, kemudian DIPINJAM selepas check-out, dan kembali TERSEDIA selepas dipulangkan.</div></div><div class="card panel"><div class="toolbar"><div class="search">⌕ <input id="loanSearch" placeholder="Cari ID pinjaman, peminjam, tujuan..."/></div><select class="field" id="loanStatusFilter" style="width:auto"><option value="">Semua status</option><option>MENUNGGU_KELULUSAN</option><option>DILULUSKAN</option><option>DIPINJAM</option><option>HAMPIR_DUE</option><option>LEWAT</option><option>DIPULANGKAN</option></select><button class="btn btn-green" id="addLoanBtn">＋ Pinjaman Baru</button></div><div class="table-wrap"><table><thead><tr><th>ID PINJAMAN</th><th>GAMBAR</th><th>PEMINJAM</th><th>ITEM</th><th>DUE</th><th>TUJUAN</th><th>STATUS</th><th>DILULUSKAN OLEH</th><th>TINDAKAN</th></tr></thead><tbody id="loansRows"></tbody></table></div></div></section>
 <section class="view" id="view-reports"><div class="mini-hero orange"><div class="copy"><h2>Laporan</h2><p>Ringkasan prestasi langganan, inventori dan pinjaman dalam satu paparan.</p></div><div class="art"><svg viewBox="0 0 420 140"><g transform="translate(70,18)"><rect x="0" y="0" width="280" height="98" rx="15" fill="#fff" opacity=".94"/><path d="M32 73l42-27 38 12 48-36 44 18 43-23" fill="none" stroke="#6f8fff" stroke-width="6" stroke-linecap="round"/><path d="M35 86V55M87 86V40M139 86V66M191 86V34M243 86V20" stroke="#cbd8ea" stroke-width="11" stroke-linecap="round"/></g></svg></div></div><div class="kpis"><div class="card kpi" style="--accent:var(--green)"><div class="kpi-head">ASET TERSEDIA</div><div class="kpi-value" id="reportAvailable">—</div><div class="kpi-foot">Inventori sedia dipinjam</div></div><div class="card kpi" style="--accent:var(--blue)"><div class="kpi-head">ASET DIPINJAM</div><div class="kpi-value" id="reportBorrowed">—</div><div class="kpi-foot">Inventori sedang digunakan</div></div><div class="card kpi" style="--accent:var(--orange)"><div class="kpi-head">RENEW SOON</div><div class="kpi-value" id="reportRenewal">—</div><div class="kpi-foot">Langganan perlu tindakan</div></div><div class="card kpi" style="--accent:var(--red)"><div class="kpi-head">PINJAMAN LEWAT</div><div class="kpi-value" id="reportOverdue">—</div><div class="kpi-foot">Perlu dipulangkan</div></div></div><div class="card panel"><div class="panel-head"><div><div class="panel-title">Eksport Data</div><div class="panel-sub">Muat turun rekod semasa dalam format CSV.</div></div></div><div class="toolbar"><button class="btn" onclick="exportCSV('subscriptions')">Export Langganan CSV</button><button class="btn" onclick="exportCSV('assets')">Export Inventori CSV</button><button class="btn" onclick="exportCSV('loans')">Export Pinjaman CSV</button></div></div></section>
 
 <section class="view" id="view-settings">
@@ -907,6 +991,53 @@ html,body{max-width:100%;overflow-x:hidden}
       </div>
     </div>
   </div>
+
+  <div class="settings-extra-grid super-admin-only">
+    <div class="card panel">
+      <div class="panel-head">
+        <div>
+          <div class="panel-title">AKSES PENTADBIR & STAF IT</div>
+          <div class="panel-sub">Super Admin boleh urus tetapan mendalam. Staf IT boleh urus operasi dan kelulusan.</div>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Nama</label>
+          <input class="field" id="itOperatorName" placeholder="Nama staf IT">
+        </div>
+        <div class="form-group">
+          <label>Peranan</label>
+          <select class="field" id="itOperatorRole">
+            <option value="STAFF_IT">Staf IT</option>
+            <option value="SUPER_ADMIN">Super Admin</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn btn-primary" type="button" id="addItOperatorBtn">＋ Tambah Akses</button>
+      <div class="table-wrap section-gap">
+        <table>
+          <thead><tr><th>NAMA</th><th>PERANAN</th><th>STATUS</th><th>TINDAKAN</th></tr></thead>
+          <tbody id="itOperatorRows"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card panel">
+      <div class="panel-head">
+        <div>
+          <div class="panel-title">IKON & PAPARAN KATEGORI</div>
+          <div class="panel-sub">Ubah ikon kategori tanpa mengubah coding.</div>
+        </div>
+      </div>
+      <div id="categoryIconSettings"></div>
+      <div class="form-group section-gap">
+        <label>Tajuk Portal Pemohon</label>
+        <input class="field" id="portalTitleSetting" value="Selamat Datang ke Portal Permohonan Peminjaman Inventori ICT">
+      </div>
+      <button class="btn btn-primary" type="button" id="saveCategorySettingsBtn">Simpan Tetapan Paparan</button>
+    </div>
+  </div>
+
 </section>
 
 <section class="view hidden-system" id="view-notifications"><input id="notifSearch"/><select id="notifStatusFilter"><option value=""></option></select><button id="runNotifBtn"></button><table><tbody id="notificationsRows"></tbody></table></section>
@@ -969,7 +1100,9 @@ const state = {
   connected: false,
   loadedAt: {},
   inFlight: {},
-  assetCategoryView: ''
+  assetCategoryView: '',
+  operator: null,
+  settings: {}
 };
 
 const SYSTEM_CONFIG = {
@@ -998,7 +1131,7 @@ const $$ = (s, root=document) => [...root.querySelectorAll(s)];
 document.addEventListener('DOMContentLoaded', init);
 
 
-const ADMIN_FAST_CACHE_KEY='ict_admin_lists_v79';
+const ADMIN_FAST_CACHE_KEY='ict_admin_lists_v80';
 
 function readAdminFastCache(){
   try{
@@ -1039,6 +1172,7 @@ function init(){
   bindNavigation();
   bindActions();
   hydrateAdminFastCache();
+  initOperatorSession();
 
   state.connected=false;
   updateConnectionUI();
@@ -1163,6 +1297,11 @@ function bindActions(){
   $('#movementCloseBtn').onclick=closeMovementRegister;
   $('#movementPrintBtn').onclick=()=>window.print();
   $('#movementPdfBtn').onclick=openMovementPdf;
+  $('#operatorSwitchBtn')?.addEventListener('click',showOperatorLogin);
+  $('#operatorLoginBtn')?.addEventListener('click',operatorLogin);
+  $('#operatorBootstrapBtn')?.addEventListener('click',bootstrapSuperAdmin);
+  $('#addItOperatorBtn')?.addEventListener('click',addItOperator);
+  $('#saveCategorySettingsBtn')?.addEventListener('click',saveCategorySettings);
 }
 
 function showView(name){
@@ -1175,7 +1314,7 @@ function showView(name){
     dashboard:['Dashboard','Ringkasan keseluruhan langganan dan pinjaman sistem.'],
     subscriptions:['Langganan','Urus perkhidmatan, lesen, vendor dan tarikh pembaharuan.'],
     assets:['Inventori ICT','Urus laptop, WiFi, extension, projektor dan peralatan ICT.'],
-    loans:['Pinjaman','Permohonan, check-out, due date dan pemulangan aset.'],
+    loans:['Kelulusan Pinjaman','Permohonan, kelulusan, check-out, due date dan pemulangan aset.'],
     notifications:['Notifikasi','Peringatan renewal dan pinjaman yang perlu tindakan.'],
     reports:['Laporan','Ringkasan dan eksport data pengurusan ICT.'],
     settings:['Tetapan','Urus senarai nama staff untuk Portal Pemohon.']
@@ -1193,7 +1332,10 @@ function showView(name){
   if(name==='loans') loadLoans(false);
   if(name==='notifications') loadNotifications(false);
   if(name==='reports') loadDashboard(false);
-  if(name==='settings') loadStaffSettings(false);
+  if(name==='settings'){
+    loadStaffSettings(false);
+    loadDeepSettings(false);
+  }
 }
 
 function refreshCurrent(){
@@ -1343,7 +1485,12 @@ async function postApi(action,data={}){
   if(!cfg.apiUrl) throw new Error('API URL belum ditetapkan.');
 
   const requestId=makeWriteRequestId();
-  const payload={...data,actor_email:data.actor_email||cfg.actorEmail};
+  const payload={
+    ...data,
+    actor_user_id:data.actor_user_id||state.operator?.user_id||'',
+    actor_name:data.actor_name||state.operator?.name||'',
+    actor_email:data.actor_email||cfg.actorEmail
+  };
   const serialized=JSON.stringify(payload);
   const isLarge=serialized.length>2800 || !!payload.image_data_url;
 
@@ -1652,40 +1799,46 @@ function renderSubscriptions(){
 /* =========================================================
    ASSETS
 ========================================================= */
-function assetCategoryIcon(category){
-  const key=String(category||'').trim().toLowerCase();
-  const exact={
-    'laptop':'💻','desktop':'🖥️','monitor':'🖥️','wifi/mifi':'📶','wifi':'📶','mifi':'📶',
-    'projector':'📽️','projektor':'📽️','extension':'🔌','charger/adapter':'🔋','charger':'🔋',
-    'printer':'🖨️','camera':'📷','kamera':'📷','audio':'🎧','network device':'🌐',
-    'storage device':'💾','accessory':'🧩','other':'▣'
+function categoryDisplayMap(){
+  const defaults={
+    'Laptop':{icon:'💻',description:'Komputer riba'},
+    'WiFi/MiFi':{icon:'📶',description:'MiFi / broadband mudah alih'},
+    'Printer':{icon:'🖨️',description:'Cetakan & dokumen'},
+    'Projector':{icon:'📽️',description:'Paparan / AV'},
+    'Extension':{icon:'🔌',description:'Sambungan kuasa'},
+    'Monitor':{icon:'🖥️',description:'Paparan monitor'},
+    'Camera':{icon:'📷',description:'Kamera / rakaman'},
+    'Charger/Adapter':{icon:'🔋',description:'Kuasa & adapter'},
+    'Accessory':{icon:'🧰',description:'Aksesori ICT'},
+    'Aksesori':{icon:'🧰',description:'Aksesori ICT'},
+    'Audio':{icon:'🎧',description:'Audio / mikrofon'},
+    'Network Device':{icon:'🌐',description:'Rangkaian / switch / AP'},
+    'Storage Device':{icon:'💾',description:'Storan data'}
   };
-  if(exact[key]) return exact[key];
-  if(key.includes('laptop')||key.includes('notebook')) return '💻';
-  if(key.includes('wifi')||key.includes('mifi')||key.includes('broadband')||key.includes('router')) return '📶';
-  if(key.includes('printer')) return '🖨️';
-  if(key.includes('project')) return '📽️';
-  if(key.includes('extension')||key.includes('kabel')||key.includes('cable')) return '🔌';
-  if(key.includes('monitor')||key.includes('desktop')) return '🖥️';
-  if(key.includes('camera')||key.includes('kamera')) return '📷';
-  if(key.includes('audio')||key.includes('speaker')||key.includes('mic')) return '🎧';
-  return '▣';
+
+  try{
+    const custom=JSON.parse(state.settings?.inventory_category_icons_json||'{}');
+    Object.keys(custom||{}).forEach(k=>{
+      const v=custom[k];
+      if(typeof v==='string'){
+        defaults[k]={...(defaults[k]||{}),icon:v};
+      }else if(v && typeof v==='object'){
+        defaults[k]={...(defaults[k]||{}),...v};
+      }
+    });
+  }catch(err){}
+
+  return defaults;
 }
 
+
+function assetCategoryIcon(category){
+  return categoryDisplayMap()[String(category||'')]?.icon || '🧰';
+}
+
+
 function assetCategoryDescription(category){
-  const key=String(category||'').toLowerCase();
-  if(key.includes('laptop')) return 'Komputer riba';
-  if(key.includes('wifi')||key.includes('mifi')||key.includes('broadband')) return 'WiFi / MiFi / broadband';
-  if(key.includes('printer')) return 'Peralatan cetakan';
-  if(key.includes('project')) return 'Projektor / visual';
-  if(key.includes('extension')) return 'Sambungan kuasa';
-  if(key.includes('monitor')) return 'Paparan / monitor';
-  if(key.includes('desktop')) return 'Komputer desktop';
-  if(key.includes('charger')) return 'Pengecas / adapter';
-  if(key.includes('camera')||key.includes('kamera')) return 'Kamera / visual';
-  if(key.includes('network')) return 'Peralatan rangkaian';
-  if(key.includes('storage')) return 'Storan data';
-  return 'Peralatan ICT';
+  return categoryDisplayMap()[String(category||'')]?.description || 'Peralatan ICT';
 }
 
 function renderAssetCategoryCards(){
@@ -2148,9 +2301,10 @@ function renderLoans(){
       <td>${fmtDate(x.due_date)}</td>
       <td>${esc(x.purpose||'—')}</td>
       <td>${statusPill(x.status)}</td>
+      <td><span class="tiny strong">${esc(x.approved_by_user_id?userName(x.approved_by_user_id):'—')}</span></td>
       <td>${loanActionButtons(x)}</td>
     </tr>
-  `).join(''):'<tr><td colspan="8" class="empty">Tiada rekod.</td></tr>';
+  `).join(''):'<tr><td colspan="9" class="empty">Tiada rekod.</td></tr>';
 }
 
 
@@ -2167,9 +2321,17 @@ function loanActionButtons(loan){
     primary=`<button class="btn btn-sm btn-green" onclick="loanAction('return','${attr(loan.loan_id)}')">Pulang Semua</button>`;
   }
 
+  const superCancel=isSuperAdmin()
+    ? `<button class="asset-icon-btn inactive" type="button"
+         title="Batal & hapus rekod (Super Admin)"
+         onclick="purgeLoanAdmin('${attr(loan.loan_id)}')">✕</button>`
+    : '';
+
   return `<div class="action-row">
     ${primary}
-    <button class="btn btn-sm loan-register-btn" onclick="openMovementRegister('${attr(loan.loan_id)}')">📄 Daftar</button> <button class="btn btn-sm loan-pdf-btn" onclick="openMovementRegisterPdf('${attr(loan.loan_id)}')">PDF</button>
+    <button class="btn btn-sm loan-register-btn" onclick="openMovementRegister('${attr(loan.loan_id)}')">📄 Daftar</button>
+    <button class="btn btn-sm loan-pdf-btn" onclick="openMovementRegisterPdf('${attr(loan.loan_id)}')">PDF</button>
+    ${superCancel}
   </div>`;
 }
 
@@ -2206,6 +2368,8 @@ async function loanAction(action,loanId){
   try{
     await postApi(apiMap[action],{
       loan_id:loanId,
+      actor_user_id:state.operator?.user_id||'',
+      actor_name:state.operator?.name||'',
       actor_email:cfg.actorEmail
     });
 
@@ -2408,7 +2572,7 @@ function assetFormHtml(editing=false,current=null){
     </details>
   `;
 
-  const dangerZone=editing
+  const dangerZone=editing && isSuperAdmin()
     ? `<div class="asset-edit-danger">
          <div>
            <strong>Delete rekod aset</strong>
@@ -2432,7 +2596,7 @@ function assetFormHtml(editing=false,current=null){
       ${field('asset_warranty','Warranty Tamat','date')}
       ${manualTag}
       ${currentImage}
-      ${imageField('asset_image',editing?'Ganti gambar aset (pilihan)':'Gambar aset / peralatan')}
+      ${imageField('asset_image',editing?'Ganti gambar / PDF (pilihan)':'Gambar / PDF aset')}
       <div class="form-group full"><label>Catatan</label><textarea class="field" id="asset_notes" placeholder="Aksesori, spesifikasi atau nota..."></textarea></div>
       ${dangerZone}
     </div>
@@ -2711,12 +2875,12 @@ function imageField(id,label){
   return `
     <div class="form-group full">
       <label>${esc(label)}</label>
-      <input id="${id}" type="file" accept="image/*,.heic,.heif,.avif" hidden>
+      <input id="${id}" type="file" accept="image/*,application/pdf,.pdf,.heic,.heif,.avif" hidden>
       <label class="upload-zone" for="${id}">
         <div>
           <div style="font-size:24px;margin-bottom:5px">📷</div>
-          <strong>Ambil gambar atau pilih dari peranti</strong>
-          <span>Fail asal disimpan tanpa compression · JPG/PNG/WEBP/HEIC · maksimum 15 MB</span>
+          <strong>Ambil gambar atau pilih gambar / PDF</strong>
+          <span>Gambar asal atau PDF · tanpa compression · maksimum 15 MB</span>
         </div>
       </label>
       <div class="upload-preview" id="${id}_preview">
@@ -2748,15 +2912,18 @@ function bindImagePicker(id){
       return;
     }
 
-    if(!String(file.type||'').startsWith('image/') && !/\.(heic|heif|avif)$/i.test(file.name||'')){
+    const isPdf=String(file.type||'')==='application/pdf' || /\.pdf$/i.test(file.name||'');
+    const isImage=String(file.type||'').startsWith('image/') || /\.(heic|heif|avif)$/i.test(file.name||'');
+
+    if(!isImage && !isPdf){
       input.value='';
-      toast('Fail tidak sah','Sila pilih fail gambar.','err');
+      toast('Fail tidak sah','Sila pilih gambar atau PDF.','err');
       return;
     }
 
     if(file.size>15*1024*1024){
       input.value='';
-      toast('Gambar terlalu besar','Pilih gambar asal bawah 15 MB.','err');
+      toast('Fail terlalu besar','Pilih gambar atau PDF bawah 15 MB.','err');
       return;
     }
 
@@ -2766,9 +2933,14 @@ function bindImagePicker(id){
 
     const img=$('#'+id+'_preview_img');
     if(img){
-      img.src=url;
-      img.onerror=()=>{ img.style.display='none'; };
-      img.onload=()=>{ img.style.display='block'; };
+      if(isPdf){
+        img.removeAttribute('src');
+        img.style.display='none';
+      }else{
+        img.src=url;
+        img.onerror=()=>{ img.style.display='none'; };
+        img.onload=()=>{ img.style.display='block'; };
+      }
     }
 
     $('#'+id+'_preview_name').textContent=file.name;
@@ -2823,7 +2995,7 @@ function fileToDataUrl(file){
 async function prepareImageFilePayload(file){
   if(!file) return {};
   if(file.size>15*1024*1024){
-    throw new Error('Gambar melebihi 15 MB.');
+    throw new Error('Fail melebihi 15 MB.');
   }
   const dataUrl=await fileToDataUrl(file);
   return {
@@ -2834,7 +3006,7 @@ async function prepareImageFilePayload(file){
 
 
 async function uploadImageFileInBackground(entityType,entityId,file,label='Rekod'){
-  toast(label+' disimpan','Gambar dimuat naik di belakang. Anda boleh terus guna sistem.','ok');
+  toast(label+' disimpan','Gambar/PDF dimuat naik di belakang. Anda boleh terus guna sistem.','ok');
   try{
     const payload=await prepareImageFilePayload(file);
     const imageResult=await postApiLarge('image.attach',{entity_type:entityType,entity_id:entityId,...payload});
@@ -2850,9 +3022,9 @@ async function uploadImageFileInBackground(entityType,entityId,file,label='Rekod
       if(state.view==='loans') renderLoans();
     }
 
-    toast('Gambar disimpan',label+' dan gambar asal berjaya disimpan ke Google Drive.','ok');
+    toast('Dokumen disimpan',label+' dan gambar/PDF berjaya disimpan ke Google Drive.','ok');
   }catch(err){
-    toast('Upload gambar gagal',err.message||String(err),'err');
+    toast('Upload dokumen gagal',err.message||String(err),'err');
   }
 }
 
@@ -2881,22 +3053,362 @@ function v(id){
 }
 
 
+
+function isSuperAdmin(){
+  return String(state.operator?.role||'')==='SUPER_ADMIN';
+}
+
+
+function operatorStorageKey(){
+  return 'ict_admin_operator_v80';
+}
+
+
+function readStoredOperator(){
+  try{
+    return JSON.parse(localStorage.getItem(operatorStorageKey())||'null');
+  }catch(err){return null}
+}
+
+
+function saveStoredOperator(operator){
+  try{
+    localStorage.setItem(operatorStorageKey(),JSON.stringify(operator||null));
+  }catch(err){}
+}
+
+
+function applyOperatorSession(operator){
+  state.operator=operator||null;
+
+  if(operator){
+    $('#operatorName').textContent=operator.name||'Staf IT';
+    $('#operatorRole').textContent=operator.role==='SUPER_ADMIN'?'Super Admin':'Staf IT';
+    $('#adminLoginOverlay').classList.add('hidden');
+  }else{
+    $('#operatorName').textContent='Belum log masuk';
+    $('#operatorRole').textContent='—';
+    $('#adminLoginOverlay').classList.remove('hidden');
+  }
+
+  $$('.super-admin-only').forEach(el=>{
+    el.classList.toggle('role-hidden',!isSuperAdmin());
+  });
+
+  const settingsBtn=$('.nav-btn[data-view="settings"]');
+  if(settingsBtn){
+    settingsBtn.style.display=isSuperAdmin()?'':'none';
+  }
+}
+
+
+async function initOperatorSession(){
+  const stored=readStoredOperator();
+
+  if(stored?.user_id && stored?.name){
+    applyOperatorSession(stored);
+  }else{
+    applyOperatorSession(null);
+  }
+
+  await loadOperatorOptions(true);
+
+  if(stored?.user_id){
+    const current=(state.users||[]).find(
+      x=>String(x.user_id)===String(stored.user_id) &&
+        ['SUPER_ADMIN','STAFF_IT'].includes(String(x.role||'')) &&
+        String(x.active||'Ya').toLowerCase()==='ya'
+    );
+
+    if(current){
+      applyOperatorSession({
+        user_id:current.user_id,
+        name:current.name,
+        role:current.role
+      });
+      return;
+    }
+  }
+
+  if(!state.operator){
+    showOperatorLogin();
+  }
+}
+
+
+function showOperatorLogin(){
+  $('#adminLoginOverlay').classList.remove('hidden');
+  loadOperatorOptions(true);
+}
+
+
+async function loadOperatorOptions(force=false){
+  if(force || !state.users.length){
+    try{
+      const res=await jsonp('users',{pageSize:500,sort:'name',order:'asc'},{timeoutMs:9000,retries:0});
+      state.users=res?.items||state.users||[];
+      state.loadedAt.users=Date.now();
+      saveAdminFastCache();
+    }catch(err){
+      console.warn('Operator list refresh skipped.');
+    }
+  }
+
+  const operators=(state.users||[])
+    .filter(x=>
+      ['SUPER_ADMIN','STAFF_IT'].includes(String(x.role||'')) &&
+      String(x.active||'Ya').toLowerCase()==='ya'
+    )
+    .sort((a,b)=>String(a.name||'').localeCompare(String(b.name||'')));
+
+  const sel=$('#adminOperatorSelect');
+
+  if(sel){
+    sel.innerHTML=operators.length
+      ? '<option value="">Pilih nama…</option>'+
+        operators.map(x=>`<option value="${attr(x.user_id)}">${esc(x.name)} — ${x.role==='SUPER_ADMIN'?'Super Admin':'Staf IT'}</option>`).join('')
+      : '<option value="">Belum ada pengguna pentadbir</option>';
+  }
+
+  $('#operatorExistingBox')?.classList.toggle('hidden',!operators.length);
+  $('#operatorBootstrapBox')?.classList.toggle('hidden',!!operators.length);
+
+  renderItOperators();
+}
+
+
+function operatorLogin(){
+  const id=$('#adminOperatorSelect')?.value||'';
+  const user=(state.users||[]).find(x=>String(x.user_id)===String(id));
+
+  if(!user){
+    return toast('Pilih nama','Pilih nama staf IT untuk masuk.','err');
+  }
+
+  const operator={
+    user_id:user.user_id,
+    name:user.name,
+    role:user.role
+  };
+
+  saveStoredOperator(operator);
+  applyOperatorSession(operator);
+  toast('Selamat datang',operator.name,'ok');
+}
+
+
+async function bootstrapSuperAdmin(){
+  const name=($('#operatorBootstrapName')?.value||'').trim();
+  if(!name) return toast('Nama diperlukan','Masukkan nama Super Admin.','err');
+
+  try{
+    const user=await postApi('user.create',{
+      name,
+      role:'SUPER_ADMIN',
+      active:'Ya'
+    });
+
+    const operator={
+      user_id:user.user_id,
+      name:user.name,
+      role:'SUPER_ADMIN'
+    };
+
+    state.users.push(user);
+    saveStoredOperator(operator);
+    applyOperatorSession(operator);
+    saveAdminFastCache();
+    toast('Super Admin diwujudkan',name,'ok');
+
+  }catch(err){
+    handleError(err);
+  }
+}
+
+
+async function addItOperator(){
+  if(!isSuperAdmin()){
+    return toast('Akses terhad','Hanya Super Admin boleh mengurus akses.','err');
+  }
+
+  const name=($('#itOperatorName')?.value||'').trim();
+  const role=$('#itOperatorRole')?.value||'STAFF_IT';
+
+  if(!name) return toast('Nama diperlukan','Masukkan nama staf IT.','err');
+
+  try{
+    const user=await postApi('user.create',{
+      name,
+      role,
+      active:'Ya'
+    });
+
+    state.users.push(user);
+    $('#itOperatorName').value='';
+    renderItOperators();
+    saveAdminFastCache();
+    toast('Akses ditambah',`${name} — ${role==='SUPER_ADMIN'?'Super Admin':'Staf IT'}`,'ok');
+  }catch(err){
+    handleError(err);
+  }
+}
+
+
+function renderItOperators(){
+  const box=$('#itOperatorRows');
+  if(!box) return;
+
+  const rows=(state.users||[])
+    .filter(x=>['SUPER_ADMIN','STAFF_IT'].includes(String(x.role||'')))
+    .sort((a,b)=>String(a.name||'').localeCompare(String(b.name||'')));
+
+  box.innerHTML=rows.length?rows.map(x=>`
+    <tr>
+      <td class="strong">${esc(x.name)}</td>
+      <td><span class="role-pill ${x.role==='SUPER_ADMIN'?'super':''}">${x.role==='SUPER_ADMIN'?'SUPER ADMIN':'STAF IT'}</span></td>
+      <td>${statusPill(String(x.active||'Ya').toLowerCase()==='ya'?'AKTIF':'TIDAK_AKTIF')}</td>
+      <td>
+        <button class="btn btn-sm ${String(x.active||'Ya').toLowerCase()==='ya'?'btn-danger':'btn-green'}"
+          onclick="toggleAdminOperator('${attr(x.user_id)}','${String(x.active||'Ya').toLowerCase()==='ya'?'Tidak':'Ya'}')">
+          ${String(x.active||'Ya').toLowerCase()==='ya'?'Nyahaktif':'Aktifkan'}
+        </button>
+      </td>
+    </tr>
+  `).join(''):'<tr><td colspan="4" class="empty">Belum ada akses pentadbir.</td></tr>';
+}
+
+
+async function toggleAdminOperator(userId,active){
+  if(!isSuperAdmin()) return;
+
+  try{
+    await postApi('user.update',{user_id:userId,active});
+    const user=state.users.find(x=>String(x.user_id)===String(userId));
+    if(user) user.active=active;
+    renderItOperators();
+    saveAdminFastCache();
+  }catch(err){handleError(err)}
+}
+
+
+async function loadDeepSettings(force=false){
+  if(!isSuperAdmin()) return;
+
+  try{
+    const settings=await jsonp('settings',{_t:force?Date.now():''},{timeoutMs:9000,retries:0});
+    state.settings=settings||{};
+  }catch(err){
+    console.warn('Deep settings refresh skipped.');
+    state.settings=state.settings||{};
+  }
+
+  renderCategorySettings();
+  renderItOperators();
+}
+
+
+function currentCategoryNames(){
+  return [...new Set((state.assets||[]).map(x=>String(x.category||'').trim()).filter(Boolean))]
+    .sort((a,b)=>a.localeCompare(b));
+}
+
+
+function renderCategorySettings(){
+  const box=$('#categoryIconSettings');
+  if(!box) return;
+
+  const map=categoryDisplayMap();
+  const cats=[...new Set([
+    ...Object.keys(map),
+    ...currentCategoryNames()
+  ])].sort((a,b)=>a.localeCompare(b));
+
+  box.innerHTML=cats.map((cat,index)=>{
+    const meta=map[cat]||{};
+    return `
+      <div class="icon-setting-row" data-category="${attr(cat)}">
+        <strong>${esc(cat)}</strong>
+        <input class="field icon-value" value="${attr(meta.icon||'🧰')}" maxlength="8" title="Ikon">
+        <input class="field icon-desc" value="${attr(meta.description||'Peralatan ICT')}" placeholder="Penerangan">
+      </div>
+    `;
+  }).join('');
+
+  if($('#portalTitleSetting')){
+    $('#portalTitleSetting').value=
+      state.settings?.portal_title||
+      'Selamat Datang ke Portal Permohonan Peminjaman Inventori ICT';
+  }
+}
+
+
+async function saveCategorySettings(){
+  if(!isSuperAdmin()){
+    return toast('Akses terhad','Hanya Super Admin boleh ubah tetapan paparan.','err');
+  }
+
+  const map={};
+
+  $$('#categoryIconSettings .icon-setting-row').forEach(row=>{
+    const cat=row.dataset.category||'';
+    const icon=row.querySelector('.icon-value')?.value?.trim()||'🧰';
+    const description=row.querySelector('.icon-desc')?.value?.trim()||'Peralatan ICT';
+    if(cat) map[cat]={icon,description};
+  });
+
+  const portalTitle=($('#portalTitleSetting')?.value||'').trim()||
+    'Selamat Datang ke Portal Permohonan Peminjaman Inventori ICT';
+
+  try{
+    await postApi('settings.update',{
+      values:{
+        inventory_category_icons_json:JSON.stringify(map),
+        portal_title:portalTitle,
+        manual_name_enabled:'Ya'
+      }
+    });
+
+    state.settings.inventory_category_icons_json=JSON.stringify(map);
+    state.settings.portal_title=portalTitle;
+
+    renderAssetCategoryCards();
+    toast('Tetapan disimpan','Ikon dan paparan portal telah dikemaskini.','ok');
+  }catch(err){handleError(err)}
+}
+
+
+async function purgeLoanAdmin(loanId){
+  if(!isSuperAdmin()){
+    return toast('Akses terhad','Hanya Super Admin boleh batal & hapus rekod pinjaman.','err');
+  }
+
+  if(!confirm(`Batal & hapus ${loanId}? Rekod pinjaman ini akan dikeluarkan dan aset dilepaskan semula.`)) return;
+
+  try{
+    await postApi('loan.purge',{
+      loan_id:loanId,
+      force:true,
+      actor_user_id:state.operator?.user_id||'',
+      actor_name:state.operator?.name||''
+    });
+
+    state.loans=state.loans.filter(x=>String(x.loan_id)!==String(loanId));
+    renderLoans();
+    loadAssets(true);
+    loadDashboard(true);
+    toast('Pinjaman dibatalkan','Rekod telah dikeluarkan oleh Super Admin.','ok');
+  }catch(err){handleError(err)}
+}
+
+
 /* =========================================================
    SETTINGS
 ========================================================= */
 function updateConnectionUI(){
   const dot=$('#sideDot');
-  if(!dot) return;
-
-  if(state.connected){
-    dot.className='dot ok';
-    $('#sideStatus').textContent='API Connected';
-    $('#sideHint').textContent='Sistem sedia digunakan';
-  }else{
-    dot.className='dot';
-    $('#sideStatus').textContent='API Ready';
-    $('#sideHint').textContent='Sambungan tetap telah dimuatkan';
-  }
+  if(dot) dot.className='dot '+(state.connected?'ok':'');
+  if($('#sideStatus')) $('#sideStatus').textContent='';
+  if($('#sideHint')) $('#sideHint').textContent='';
 }
 
 
@@ -3329,15 +3841,18 @@ function fmtDateTime(v){
 
 function photoCell(record,entityType=''){
   if(!record?.image_url){
-    return '<span class="tiny muted">Tiada gambar</span>';
+    return '<span class="tiny muted">Tiada dokumen</span>';
   }
 
   const id = entityType==='asset' ? record.asset_id
     : entityType==='subscription' ? record.subscription_id
     : entityType==='loan' ? record.loan_id : '';
 
+  const isPdf=/\.pdf$/i.test(String(record.image_name||'')) ||
+    /application\/pdf/i.test(String(record.image_mime||''));
+
   return `<div class="photo-actions-mini">
-    <a class="view-image-btn" href="${attr(record.image_url)}" target="_blank" rel="noopener" title="${attr(record.image_name||'Lihat gambar')}">👁 Lihat</a>
+    <a class="view-image-btn" href="${attr(record.image_url)}" target="_blank" rel="noopener" title="${attr(record.image_name||'Lihat dokumen')}">${isPdf?'📄 PDF':'👁 Lihat'}</a>
     ${id?`<button class="delete-image-mini" type="button" onclick="deleteRecordImage('${attr(entityType)}','${attr(id)}')">🗑</button>`:''}
   </div>`;
 }
