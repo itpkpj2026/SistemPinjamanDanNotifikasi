@@ -2774,17 +2774,36 @@ function loanProgress(status){
   return `<div class="loan-progress-mini">${steps.map((_,i)=>`<i class="${i<=index?'done':''}"></i>`).join('')}<small>${index===0?'Menunggu ICT':index===1?'Sedia untuk diambil':index===2?'Sedang dipinjam':'Selesai'}</small></div>`;
 }
 
-function jsonp(action,params={}){
+function jsonpOnce(action,params={},timeoutMs=24000){
   return new Promise((resolve,reject)=>{
     const cb='__pemohon_'+Date.now()+'_'+Math.floor(Math.random()*99999);
     const q=new URLSearchParams({action,token:SYSTEM_CONFIG.APPLICANT_TOKEN,callback:cb,...Object.fromEntries(Object.entries(params).filter(([,v])=>v!==undefined&&v!==null&&v!==''))});
     const s=document.createElement('script');
-    const timer=setTimeout(()=>{clean();reject(new Error('API timeout. Cuba semula.'));},12000);
+    const timer=setTimeout(()=>{clean();reject(new Error('API mengambil masa terlalu lama. Sistem akan cuba sekali lagi.'));},timeoutMs);
     function clean(){clearTimeout(timer);delete window[cb];s.remove();}
-    window[cb]=(payload)=>{clean();if(payload?.ok){setConnected(true);resolve(payload.data)}else{setConnected(false);reject(new Error(payload?.error?.message||'API error'))}};
-    s.onerror=()=>{clean();setConnected(false);reject(new Error('Gagal sambung Apps Script.'))};
+    window[cb]=(payload)=>{clean();if(payload?.ok){setConnected(true);resolve(payload.data)}else{reject(new Error(payload?.error?.message||'API error'))}};
+    s.onerror=()=>{clean();reject(new Error('Gagal sambung Apps Script.'))};
     s.src=SYSTEM_CONFIG.API_URL+'?'+q.toString();document.head.appendChild(s);
   });
+}
+
+async function jsonp(action,params={},options={}){
+  const timeoutMs=options.timeoutMs||24000;
+  const retries=Number.isFinite(options.retries)?options.retries:1;
+  let lastErr=null;
+
+  for(let attempt=0;attempt<=retries;attempt++){
+    try{
+      if(attempt>0) await new Promise(r=>setTimeout(r,450));
+      return await jsonpOnce(action,params,timeoutMs);
+    }catch(err){
+      lastErr=err;
+      if(attempt>=retries) break;
+    }
+  }
+
+  setConnected(false);
+  throw lastErr||new Error('API tidak dapat dihubungi.');
 }
 
 async function postApi(action,data){
