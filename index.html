@@ -736,7 +736,7 @@ html,body{max-width:100%;overflow-x:hidden}
 
 
 /* =========================================================
-   V8.1 - INVENTORI CATEGORY FIRST
+   V8.2 - INVENTORI CATEGORY FIRST
    ========================================================= */
 .asset-category-heading{display:flex;justify-content:space-between;align-items:center;gap:14px;margin:1px 0 10px;padding:0 2px}
 .asset-category-heading strong{display:block;color:#173955;font-size:14px}
@@ -760,7 +760,7 @@ html,body{max-width:100%;overflow-x:hidden}
 
 
 /* =========================================================
-   V8.1 - OPERATOR LOGIN + DEEP SETTINGS + CLEAN STATUS
+   V8.2 - OPERATOR LOGIN + DEEP SETTINGS + CLEAN STATUS
    ========================================================= */
 .hidden-technical,.connection-mini{display:none!important}
 .operator-mini{
@@ -816,7 +816,7 @@ html,body{max-width:100%;overflow-x:hidden}
 }
 
 
-/* V8.1 - SETTINGS COLLAPSED */
+/* V8.2 - SETTINGS COLLAPSED */
 .settings-accordion-stack{display:grid;gap:10px}
 .settings-accordion{
   border:1px solid #dce7ef;border-radius:16px;background:#fff;overflow:hidden;
@@ -1137,7 +1137,7 @@ const $$ = (s, root=document) => [...root.querySelectorAll(s)];
 document.addEventListener('DOMContentLoaded', init);
 
 
-const ADMIN_FAST_CACHE_KEY='ict_admin_lists_v81';
+const ADMIN_FAST_CACHE_KEY='ict_admin_lists_v82';
 
 function readAdminFastCache(){
   try{
@@ -1255,7 +1255,7 @@ function startApprovalAutoRefresh(){
     ){
       loadLoans(true);
     }
-  },25000);
+  },12000);
 }
 
 
@@ -3294,7 +3294,7 @@ function renderItOperators(){
             onclick="toggleAdminOperator('${attr(x.user_id)}','${String(x.active||'Ya').toLowerCase()==='ya'?'Tidak':'Ya'}')">
             ${String(x.active||'Ya').toLowerCase()==='ya'?'Nyahaktif':'Aktifkan'}
           </button>
-          ${isSuperAdmin()?`<button class="admin-remove-access" type="button" title="Hapus nama daripada log masuk Admin" onclick="removeAdminOperator('${attr(x.user_id)}')">🗑</button>`:''}
+          ${isSuperAdmin()?`<button class="admin-remove-access" type="button" title="Hapus nama log masuk Admin" aria-label="Hapus nama log masuk Admin" onclick="removeAdminOperator('${attr(x.user_id)}')">🗑 Hapus</button>`:''}
         </div>
       </td>
     </tr>
@@ -3328,7 +3328,7 @@ async function removeAdminOperator(userId){
     return toast('Tidak dibenarkan','Anda tidak boleh menghapus akses akaun yang sedang digunakan.','err');
   }
 
-  if(!confirm(`Hapus ${target.name} daripada senarai log masuk Admin? Sejarah approval lama akan kekal.`)) return;
+  if(!confirm(`Hapus login Admin \"${target.name}\"? Nama ini tidak akan boleh log masuk lagi. Sejarah kelulusan lama tetap dikekalkan.`)) return;
 
   try{
     await postApi('admin.operator.remove',{
