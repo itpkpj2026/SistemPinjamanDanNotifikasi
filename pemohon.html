@@ -1837,7 +1837,7 @@ table{max-width:none}
             <div class="upload-box">
               <input id="loanModalImage" type="file" accept="image/*" capture="environment">
               <div class="tiny muted" id="loanModalImageHint" style="margin-top:6px">
-                Pilihan. Gambar akan dikecilkan sebelum dihantar.
+                Pilihan. Gambar asal akan dihantar tanpa compression.
               </div>
             </div>
           </div>
@@ -1871,7 +1871,7 @@ const SYSTEM_CONFIG={
   APPLICANT_TOKEN:'4E52A3842E482E9B56766B10FDE318AD'
 };
 
-const state={profile:null,kpi:{},assets:[],loans:[],staffList:[],selectedUserId:'',connected:false,currentView:'home',imagePayload:null,lastSync:0,syncTimer:null,refreshPromise:null,loanCategory:'',loanCategoryLabel:''};
+const state={profile:null,kpi:{},assets:[],loans:[],staffList:[],selectedUserId:'',connected:false,currentView:'home',imagePayload:null,lastSync:0,syncTimer:null,refreshPromise:null,loanCategory:'',loanCategoryLabel:'',qrAssetId:''};
 const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>[...r.querySelectorAll(s)];
 
@@ -1879,7 +1879,7 @@ const $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const PORTAL_CACHE_TTL=10*60*1000;
 
 function portalCacheKey(userId){
-  return 'ict_applicant_bootstrap_v64_'+String(userId||'');
+  return 'ict_applicant_bootstrap_v65_'+String(userId||'');
 }
 
 function readPortalCache(userId){
@@ -1902,7 +1902,7 @@ function savePortalCache(data){
 
 function readStaffCache(){
   try{
-    const raw=localStorage.getItem('ict_applicant_staff_cache_v64');
+    const raw=localStorage.getItem('ict_applicant_staff_cache_v65');
     if(!raw) return [];
     const item=JSON.parse(raw);
     if(Date.now()-(item.savedAt||0)>6*60*60*1000) return [];
@@ -1911,19 +1911,20 @@ function readStaffCache(){
 }
 
 function saveStaffCache(list){
-  try{localStorage.setItem('ict_applicant_staff_cache_v64',JSON.stringify({savedAt:Date.now(),data:list}));}catch(err){}
+  try{localStorage.setItem('ict_applicant_staff_cache_v65',JSON.stringify({savedAt:Date.now(),data:list}));}catch(err){}
 }
 
 document.addEventListener('DOMContentLoaded',init);
 
 function init(){
+  state.qrAssetId=new URLSearchParams(window.location.search).get('asset')||'';
   bindUI();
   initPemohonHeroVideo();
 
   const cachedStaff=readStaffCache();
   if(cachedStaff.length){
     state.staffList=cachedStaff;
-    const refreshStaff=()=>loadStaffNames();
+    const refreshStaff=()=>loadStaffNames(true);
     if('requestIdleCallback' in window){
       requestIdleCallback(refreshStaff,{timeout:3500});
     }else{
@@ -1945,6 +1946,7 @@ function init(){
       applyBootstrap(cached);
       $('#loginOverlay').classList.add('hidden');
       setPemohonVideoActive(false);
+      setTimeout(()=>maybeOpenQrAsset(false),50);
     }
 
     if(cached){
@@ -2060,14 +2062,18 @@ function showView(name){
   }
 }
 
-async function loadStaffNames(){
+async function loadStaffNames(silent=false){
   try{
     const list=await jsonp('applicant.staff_list',{_t:Date.now()});
     state.staffList=Array.isArray(list)?list:[];
     saveStaffCache(state.staffList);
   }catch(err){
-    setConnected(false);
-    toast('Senarai staff belum dapat dimuatkan',err.message,'err');
+    if(!state.staffList.length) setConnected(false);
+    if(!silent && !state.staffList.length){
+      toast('Senarai staff belum dapat dimuatkan',err.message,'err');
+    }else{
+      console.warn('Refresh senarai staff tertangguh:',err);
+    }
   }
 }
 
@@ -2165,18 +2171,50 @@ async function loginApplicant(silent=false){
     applyBootstrap(data);
     $('#loginOverlay').classList.add('hidden');
     setPemohonVideoActive(false);
+    setTimeout(()=>maybeOpenQrAsset(true),50);
 
     if(!silent){
       toast('Selamat datang',data.profile?.name||'Pemohon','ok');
     }
   }catch(err){
-    setConnected(false);
-    toast('Tak dapat masuk',err.message,'err');
+    if(!state.profile) setConnected(false);
+    if(!silent || !state.profile){
+      toast('Tak dapat masuk',err.message,'err');
+    }else{
+      console.warn('Refresh sesi pemohon tertangguh:',err);
+    }
   }finally{
     btn.disabled=false;
     btn.textContent='Masuk Portal Pemohon';
   }
 }
+
+function maybeOpenQrAsset(finalCheck=false){
+  const assetId=String(state.qrAssetId||'').trim();
+  if(!assetId || !state.profile) return;
+
+  const asset=(state.assets||[]).find(x=>String(x.asset_id)===assetId);
+
+  if(asset){
+    state.qrAssetId='';
+    try{
+      const clean=new URL(window.location.href);
+      clean.searchParams.delete('asset');
+      history.replaceState({},'',clean.pathname+clean.search+clean.hash);
+    }catch(err){}
+
+    toast('QR aset dikesan',[asset.asset_tag,asset.asset_name].filter(Boolean).join(' — ')||assetId,'ok');
+    showView('apply');
+    setTimeout(()=>openLoanRequestModal(normalizeLoanCategory(asset.category),asset.asset_id),80);
+    return;
+  }
+
+  if(finalCheck){
+    state.qrAssetId='';
+    toast('Aset tidak tersedia','Aset daripada QR mungkin sedang dipinjam, reserved, tidak aktif atau telah dipadam.','err');
+  }
+}
+
 
 function logoutApplicant(){
   localStorage.removeItem('ict_applicant_user_id');
@@ -2417,7 +2455,7 @@ function openLoanRequestModal(categoryKey,preselectAssetId=''){
   $('#loanModalPurpose').value='';
   $('#loanModalRemarks').value='';
   $('#loanModalImage').value='';
-  $('#loanModalImageHint').textContent='Pilihan. Gambar akan dikecilkan sebelum dihantar.';
+  $('#loanModalImageHint').textContent='Pilihan. Gambar asal akan dihantar tanpa compression.';
   $('#loanDeclaration').checked=false;
 
   const box=$('#loanModalAssets');
@@ -2811,7 +2849,7 @@ function loanProgress(status){
   return `<div class="loan-progress-mini">${steps.map((_,i)=>`<i class="${i<=index?'done':''}"></i>`).join('')}<small>${index===0?'Menunggu ICT':index===1?'Sedia untuk diambil':index===2?'Sedang dipinjam':'Selesai'}</small></div>`;
 }
 
-function jsonpOnce(action,params={},timeoutMs=24000){
+function jsonpOnce(action,params={},timeoutMs=32000){
   return new Promise((resolve,reject)=>{
     const cb='__pemohon_'+Date.now()+'_'+Math.floor(Math.random()*99999);
     const q=new URLSearchParams({action,token:SYSTEM_CONFIG.APPLICANT_TOKEN,callback:cb,...Object.fromEntries(Object.entries(params).filter(([,v])=>v!==undefined&&v!==null&&v!==''))});
@@ -2825,7 +2863,7 @@ function jsonpOnce(action,params={},timeoutMs=24000){
 }
 
 async function jsonp(action,params={},options={}){
-  const timeoutMs=options.timeoutMs||24000;
+  const timeoutMs=options.timeoutMs||32000;
   const retries=Number.isFinite(options.retries)?options.retries:1;
   let lastErr=null;
 
@@ -2853,16 +2891,31 @@ async function postApi(action,data){
 function setConnected(ok){state.connected=ok;$('#apiDot').className='dot '+(ok?'ok':'err');$('#apiText').textContent=ok?'API Connected':'API Offline'}
 
 async function handleImage(e){
-  const file=e.target.files?.[0];if(!file){state.imagePayload=null;return}
-  try{state.imagePayload=await compressImage(file,1024,.72);$('#loanModalImageHint').textContent=`Siap: ${file.name} • ${Math.round(state.imagePayload.bytes/1024)} KB`;}
-  catch(err){state.imagePayload=null;toast('Gambar gagal diproses',err.message,'err')}
+  const file=e.target.files?.[0];
+  if(!file){state.imagePayload=null;return}
+
+  if(file.size>15*1024*1024){
+    e.target.value='';
+    state.imagePayload=null;
+    return toast('Gambar terlalu besar','Pilih gambar asal bawah 15 MB.','err');
+  }
+
+  try{
+    const dataUrl=await fileToDataUrlOriginal(file);
+    state.imagePayload={dataUrl,name:file.name,bytes:file.size};
+    $('#loanModalImageHint').textContent=`Siap: ${file.name} • ${Math.round(file.size/1024)} KB • fail asal tanpa compression`;
+  }catch(err){
+    state.imagePayload=null;
+    toast('Gambar gagal diproses',err.message,'err');
+  }
 }
 
-function compressImage(file,maxSide=1024,quality=.72){
+function fileToDataUrlOriginal(file){
   return new Promise((resolve,reject)=>{
-    if(!file.type.startsWith('image/')) return reject(new Error('Pilih fail gambar.'));
     const reader=new FileReader();
-    reader.onload=()=>{const img=new Image();img.onload=()=>{let w=img.width,h=img.height;const scale=Math.min(1,maxSide/Math.max(w,h));w=Math.round(w*scale);h=Math.round(h*scale);const c=document.createElement('canvas');c.width=w;c.height=h;const ctx=c.getContext('2d');ctx.drawImage(img,0,0,w,h);const dataUrl=c.toDataURL('image/jpeg',quality);resolve({dataUrl,name:(file.name.replace(/\.[^.]+$/,'')||'gambar')+'.jpg',bytes:Math.round((dataUrl.length*3)/4)})};img.onerror=()=>reject(new Error('Gambar tidak dapat dibaca.'));img.src=reader.result};reader.onerror=()=>reject(new Error('Fail tidak dapat dibaca.'));reader.readAsDataURL(file);
+    reader.onload=()=>resolve(String(reader.result||''));
+    reader.onerror=()=>reject(new Error('Fail tidak dapat dibaca.'));
+    reader.readAsDataURL(file);
   });
 }
 
