@@ -577,6 +577,36 @@ html,body{max-width:100%;overflow-x:hidden}
 .view-image-btn:hover{background:#eaf6ff;border-color:#a9d0e9;transform:translateY(-1px)}
 .asset-action-btn.view{color:#176fae!important;background:#edf8ff!important;border-color:#c6e2f3!important;text-decoration:none!important}
 
+
+/* =========================================================
+   V7.4 API RESILIENT + KEW.PA-6 MOVEMENT REGISTER
+   ========================================================= */
+.api-retrying{opacity:.8}
+.movement-modal-backdrop{display:none;position:fixed;inset:0;z-index:180;background:rgba(10,25,42,.64);backdrop-filter:blur(6px);padding:18px;overflow:auto}
+.movement-modal-backdrop.show{display:block}
+.movement-modal-shell{width:min(1380px,98vw);margin:0 auto;background:#eef3f7;border-radius:18px;box-shadow:0 35px 100px rgba(0,22,45,.30);overflow:hidden}
+.movement-modal-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 16px;background:#fff;border-bottom:1px solid #d9e2ea;position:sticky;top:0;z-index:4}
+.movement-modal-toolbar strong{display:block;font-size:14px}.movement-modal-toolbar span{display:block;font-size:10px;color:#718398;margin-top:2px}.movement-toolbar-actions{display:flex;gap:8px}
+.movement-modal-body{padding:18px;overflow:auto}
+.movement-page{width:1120px;max-width:100%;margin:0 auto 20px;background:#fff;padding:24px 25px 30px;color:#111;font-family:Arial,Helvetica,sans-serif;box-shadow:0 8px 28px rgba(24,48,73,.10)}
+.movement-page-header{position:relative;text-align:center;margin-bottom:13px}.movement-page-header h1{font-family:Georgia,'Times New Roman',serif;font-size:20px;letter-spacing:.01em;margin:0;font-weight:700}.movement-form-code{position:absolute;right:0;top:0;font-family:Georgia,'Times New Roman',serif;font-size:12px;font-weight:700}
+.movement-asset-meta{width:100%;border-collapse:collapse;margin:5px 0 12px;table-layout:fixed}.movement-asset-meta td{border:1px solid #222!important;padding:5px 7px!important;font-size:11px!important;color:#111!important}.movement-asset-meta td:first-child{width:155px;font-weight:700}.movement-asset-meta td:nth-child(2){width:10px;text-align:center;font-weight:700}
+.movement-register{width:100%;border-collapse:collapse;table-layout:fixed;min-width:0!important}.movement-register th,.movement-register td{border:1px solid #222!important;color:#111!important;background:#fff!important;padding:5px 4px!important;font-size:9.5px!important;line-height:1.25;text-align:center;vertical-align:middle}.movement-register th{font-family:Georgia,'Times New Roman',serif;font-weight:700}.movement-register td.borrower{text-align:left;font-weight:700}.movement-register td.notes{text-align:left;font-size:8.7px!important}.movement-register .sig-cell{height:52px;vertical-align:bottom}.movement-register .sig-name{display:block;font-size:7.8px;color:#444;margin-top:20px}.movement-empty-row td{height:38px}
+.movement-print-foot{margin-top:8px;display:flex;justify-content:space-between;font-size:8px;color:#555}
+.loan-register-btn{border-color:#b8d8ec!important;background:#f1f9ff!important;color:#176ca4!important}
+@media(max-width:900px){.movement-modal-backdrop{padding:6px}.movement-modal-body{padding:7px}.movement-modal-shell{border-radius:12px}.movement-page{min-width:980px;padding:18px}.movement-modal-toolbar{position:relative}.movement-toolbar-actions{flex-wrap:wrap}}
+@media print{
+  body *{visibility:hidden!important}
+  #movementModal,#movementModal *{visibility:visible!important}
+  #movementModal{display:block!important;position:absolute!important;inset:0!important;background:#fff!important;padding:0!important;overflow:visible!important}
+  .movement-modal-shell{width:100%!important;box-shadow:none!important;border-radius:0!important;background:#fff!important;overflow:visible!important}
+  .no-print{display:none!important}
+  .movement-modal-body{padding:0!important;overflow:visible!important}
+  .movement-page{width:100%!important;max-width:none!important;box-shadow:none!important;margin:0!important;padding:10mm 8mm!important;page-break-after:always}
+  .movement-page:last-child{page-break-after:auto}
+  @page{size:A4 landscape;margin:7mm}
+}
+
 </style></head>
 <body><div class="app">
 <aside class="sidebar" id="sidebar"><div class="sidebar-media" aria-hidden="true"><video id="sidebarVideo" class="sidebar-bg-video" muted loop playsinline autoplay preload="none" poster="sidebar-celcom-poster.jpg" data-src="sidebar-celcom.mp4"></video></div><div class="sidebar-overlay" aria-hidden="true"></div><div class="brand"><div class="brand-mark pkpj-brand-mark"><img src="pkpj-premium.png" alt="PKPJ"></div><div><strong>Sistem ICT</strong><span>Langganan & Pinjaman</span></div></div><nav class="nav">
@@ -696,6 +726,22 @@ html,body{max-width:100%;overflow-x:hidden}
 
 <section class="view hidden-system" id="view-notifications"><input id="notifSearch"/><select id="notifStatusFilter"><option value=""></option></select><button id="runNotifBtn"></button><table><tbody id="notificationsRows"></tbody></table></section>
 </main></div>
+
+<div class="movement-modal-backdrop" id="movementModal">
+  <div class="movement-modal-shell">
+    <div class="movement-modal-toolbar no-print">
+      <div>
+        <strong>Daftar Pergerakan Harta Modal & Inventori</strong>
+        <span id="movementModalHint">Format KEW.PA-6</span>
+      </div>
+      <div class="movement-toolbar-actions">
+        <button class="btn btn-primary" id="movementPrintBtn">🖨 Cetak</button>
+        <button class="btn" id="movementCloseBtn">✕ Tutup</button>
+      </div>
+    </div>
+    <div class="movement-modal-body" id="movementPrintArea"></div>
+  </div>
+</div>
 <div class="modal-backdrop" id="modalBackdrop"><div class="modal"><div class="modal-head"><h3 id="modalTitle">Tambah Rekod</h3><button class="btn btn-sm" id="modalClose">✕</button></div><div class="modal-body" id="modalBody"></div><div class="modal-foot"><button class="btn" id="modalCancel">Batal</button><button class="btn btn-primary" id="modalSubmit">Simpan</button></div></div></div><div class="toast-wrap" id="toastWrap"></div>
 <script>
 /* =========================================================
@@ -743,9 +789,42 @@ const $$ = (s, root=document) => [...root.querySelectorAll(s)];
 
 document.addEventListener('DOMContentLoaded', init);
 
+
+const ADMIN_FAST_CACHE_KEY='ict_admin_lists_v74';
+
+function readAdminFastCache(){
+  try{
+    const raw=localStorage.getItem(ADMIN_FAST_CACHE_KEY);
+    if(!raw) return null;
+    const data=JSON.parse(raw);
+    if(!data || Date.now()-(data.saved_at||0)>30*60*1000) return null;
+    return data;
+  }catch(err){return null}
+}
+
+function saveAdminFastCache(){
+  try{
+    localStorage.setItem(ADMIN_FAST_CACHE_KEY,JSON.stringify({
+      saved_at:Date.now(),
+      assets:(state.assets||[]).slice(0,500),
+      loans:(state.loans||[]).slice(0,500),
+      users:(state.users||[]).slice(0,500)
+    }));
+  }catch(err){}
+}
+
+function hydrateAdminFastCache(){
+  const cached=readAdminFastCache();
+  if(!cached) return;
+  state.assets=cached.assets||state.assets;
+  state.loans=cached.loans||state.loans;
+  state.users=cached.users||state.users;
+}
+
 function init(){
   bindNavigation();
   bindActions();
+  hydrateAdminFastCache();
 
   // Fixed embedded config tersedia pada semua PC; status Connected hanya selepas API berjaya menjawab.
   state.connected = false;
@@ -899,6 +978,8 @@ function bindActions(){
     if(e.target.id==='modalBackdrop') closeModal();
   });
   $('#modalSubmit').onclick=submitModal;
+  $('#movementCloseBtn').onclick=closeMovementRegister;
+  $('#movementPrintBtn').onclick=()=>window.print();
 }
 
 function showView(name){
@@ -955,7 +1036,7 @@ function quickAdd(){
    API: GET = JSONP
    Backend Code.gs supports callback=
 ========================================================= */
-function jsonp(action, params={}){
+function jsonpOnce(action,params={},timeoutMs=24000){
   return new Promise((resolve,reject)=>{
     if(!cfg.apiUrl) return reject(new Error('API URL belum ditetapkan.'));
 
@@ -970,8 +1051,8 @@ function jsonp(action, params={}){
     const script=document.createElement('script');
     const timer=setTimeout(()=>{
       cleanup();
-      reject(new Error('API timeout. Semak URL deployment / akses Web App.'));
-    },12000);
+      reject(new Error('API timeout. Sambungan Google Apps Script mengambil masa terlalu lama.'));
+    },timeoutMs);
 
     function cleanup(){
       clearTimeout(timer);
@@ -986,16 +1067,12 @@ function jsonp(action, params={}){
         updateConnectionUI();
         resolve(payload.data);
       }else{
-        state.connected=false;
-        updateConnectionUI();
         reject(new Error(payload?.error?.message || 'API error'));
       }
     };
 
     script.onerror=()=>{
       cleanup();
-      state.connected=false;
-      updateConnectionUI();
       reject(new Error('Gagal memuatkan API. Semak deployment Apps Script.'));
     };
 
@@ -1004,50 +1081,97 @@ function jsonp(action, params={}){
   });
 }
 
+async function jsonp(action,params={},options={}){
+  const timeoutMs=options.timeoutMs||24000;
+  const retries=Number.isFinite(options.retries)?options.retries:1;
+  let lastErr=null;
+
+  for(let attempt=0;attempt<=retries;attempt++){
+    try{
+      if(attempt>0){
+        document.body.classList.add('api-retrying');
+        await new Promise(r=>setTimeout(r,500*attempt));
+      }
+      const result=await jsonpOnce(action,params,timeoutMs);
+      document.body.classList.remove('api-retrying');
+      return result;
+    }catch(err){
+      lastErr=err;
+      if(attempt>=retries) break;
+    }
+  }
+
+  document.body.classList.remove('api-retrying');
+  state.connected=false;
+  updateConnectionUI();
+  throw lastErr||new Error('API tidak dapat dihubungi.');
+}
+
 /* =========================================================
-   API WRITE V2
+   API WRITE V4
    - data biasa: JSONP admin.write -> response/error boleh dibaca
    - payload besar/gambar: POST no-cors hanya untuk upload binary
 ========================================================= */
-async function postApi(action, data={}){
+function makeWriteRequestId(){
+  return 'WR-'+Date.now()+'-'+Math.random().toString(36).slice(2,10).toUpperCase();
+}
+
+async function postApi(action,data={}){
   if(!cfg.apiUrl) throw new Error('API URL belum ditetapkan.');
 
+  const requestId=makeWriteRequestId();
   const payload={
     ...data,
     actor_email:data.actor_email || cfg.actorEmail
   };
 
-  const serialized=JSON.stringify(payload);
-  const hasImage=!!payload.image_data_url;
-
-  // Reliable path: kita boleh baca success/error sebenar dari Apps Script.
-  if(!hasImage && serialized.length < 6500){
-    return jsonp('admin.write',{
-      write_action:action,
-      data:serialized,
-      _t:Date.now()
-    });
-  }
-
-  return postApiLarge(action,payload);
-}
-
-async function postApiLarge(action, data={}){
   const body=new URLSearchParams();
   body.set('action',action);
   body.set('token',cfg.token);
-  body.set('data',JSON.stringify({
-    ...data,
-    actor_email:data.actor_email || cfg.actorEmail
-  }));
+  body.set('request_id',requestId);
+  body.set('data',JSON.stringify(payload));
 
-  await fetch(cfg.apiUrl,{
+  // Semua write melalui POST: elak URL terlalu panjang dan timeout JSONP write.
+  // Fire-and-forget: jangan tunggu response POST yang boleh ambil lama.
+  // Backend terus menulis status request_id; UI poll status secara berasingan.
+  fetch(cfg.apiUrl,{
     method:'POST',
     mode:'no-cors',
     body
-  });
+  }).catch(err=>console.warn('POST transport warning:',err));
 
-  return {queued:true};
+  await new Promise(r=>setTimeout(r,250));
+  return waitForWriteStatus(requestId,action);
+}
+
+async function waitForWriteStatus(requestId,action){
+  const started=Date.now();
+  const maxWait=45000;
+
+  while(Date.now()-started<maxWait){
+    try{
+      const status=await jsonp(
+        'admin.write_status',
+        {request_id:requestId,_t:Date.now()},
+        {timeoutMs:18000,retries:1}
+      );
+
+      if(status?.state==='done'){
+        if(status.ok) return status.data||{ok:true};
+        throw new Error(status?.error?.message||`Operasi ${action} gagal.`);
+      }
+    }catch(err){
+      if(!/timeout|memuatkan API|deployment/i.test(err?.message||'')) throw err;
+    }
+
+    await new Promise(r=>setTimeout(r,650));
+  }
+
+  throw new Error('API masih memproses permintaan. Cuba Refresh selepas beberapa saat; sistem tidak akan gandakan rekod yang sama.');
+}
+
+async function postApiLarge(action,data={}){
+  return postApi(action,data);
 }
 
 async function checkApiHealth(){
@@ -1302,6 +1426,7 @@ function renderSubscriptions(){
 ========================================================= */
 async function loadAssets(force=false){
   if(!requireConfig()) return;
+  if(state.assets.length) renderAssets();
   if(!force && state.assets.length && isFresh('assets',30000)){
     renderAssets();
     return;
@@ -1313,6 +1438,7 @@ async function loadAssets(force=false){
       const res=await jsonp('assets',{pageSize:200,sort:'asset_name',order:'asc'});
       state.assets=res?.items||[];
       state.loadedAt.assets=Date.now();
+      saveAdminFastCache();
       renderAssets();
     }catch(err){handleError(err)}
     finally{state.inFlight.assets=null}
@@ -1354,7 +1480,7 @@ function renderAssets(){
               ? `<button class="asset-action-btn activate" onclick="setAssetActive('${attr(x.asset_id)}')">✓ Aktifkan</button>`
               : `<button class="asset-action-btn inactive" ${busy?'disabled title="Selesaikan pinjaman dahulu"':''} onclick="setAssetInactive('${attr(x.asset_id)}')">◌ Tidak Aktif</button>`
             }
-            <button class="asset-action-btn delete" ${busy?'disabled title="Aset sedang digunakan"':''} onclick="deleteAssetPermanent('${attr(x.asset_id)}')">🗑 Delete</button>
+            <button class="asset-action-btn delete" onclick="deleteAssetPermanent('${attr(x.asset_id)}')">🗑 Delete</button>
           </div>
         </td>
       </tr>
@@ -1409,27 +1535,33 @@ async function setAssetActive(assetId){
 
 async function deleteAssetPermanent(assetId){
   const asset=state.assets.find(x=>String(x.asset_id)===String(assetId));
-  if(!asset) return;
+  const label=asset ? `${asset.asset_tag||asset.asset_id} — ${asset.asset_name||''}` : assetId;
 
-  const label=asset.asset_tag||asset.asset_name||assetId;
+  const first=confirm(
+    `DELETE KEKAL: ${label}\n\nRekod ini akan dipadam walaupun mempunyai sejarah pinjaman/maintenance. Untuk data sebenar, gunakan Tidak Aktif.\n\nTeruskan?`
+  );
+  if(!first) return;
 
-  if(!confirm(`DELETE KEKAL ${label}?\n\nGunakan Delete untuk item testing / tersalah daftar. Jika aset mempunyai sejarah pinjaman atau maintenance, sistem akan terangkan sebab ia tidak boleh dipadam dan anda boleh gunakan Tidak Aktif.`)) return;
+  const second=confirm(
+    'Pengesahan terakhir: Jika ini rekod testing, sejarah pinjaman berkaitan yang sudah tiada item lain juga akan dibersihkan. Pasti mahu DELETE?'
+  );
+  if(!second) return;
 
   try{
-    const result=await postApi('asset.delete',{asset_id:assetId});
+    const result=await postApi('asset.delete',{asset_id:assetId,force:true});
+    state.assets=state.assets.filter(x=>String(x.asset_id)!==String(assetId));
+    saveAdminFastCache();
+    renderAssets();
 
-    await loadAssets(true);
+    toast(
+      'Aset dipadam',
+      `Delete selesai. Loan item dibersihkan: ${result?.deleted_loan_items||0}; loan kosong dibuang: ${result?.deleted_loans||0}.`,
+      'ok'
+    );
 
-    const stillExists=state.assets.some(x=>String(x.asset_id)===String(assetId));
-
-    if(stillExists){
-      throw new Error('Aset masih wujud selepas proses delete. Sila cuba refresh atau semak deployment backend terbaru.');
-    }
-
-    toast('Aset dipadam',`${label} telah dipadam kekal.`,'ok');
+    loadAssets(true);
+    loadLoans(true);
     loadDashboard(true);
-    return result;
-
   }catch(err){
     toast('Delete tidak berjaya',err.message,'err');
   }
@@ -1440,6 +1572,7 @@ async function deleteAssetPermanent(assetId){
 ========================================================= */
 async function loadLoans(force=false){
   if(!requireConfig()) return;
+  if(state.loans.length) renderLoans();
   if(!force && state.loans.length && isFresh('loans',20000)){
     renderLoans();
     return;
@@ -1455,6 +1588,7 @@ async function loadLoans(force=false){
       state.loans=loanRes?.items||[];
       state.users=userRes?.items||state.users||[];
       state.loadedAt.loans=Date.now();
+      saveAdminFastCache();
       renderLoans();
     }catch(err){handleError(err)}
     finally{state.inFlight.loans=null}
@@ -1493,23 +1627,21 @@ function renderLoans(){
 
 function loanActionButtons(loan){
   const s=String(loan.status||'');
+  let primary='';
 
   if(['MENUNGGU_KELULUSAN','PERMOHONAN_BARU'].includes(s)){
-    return `<div class="action-row">
-      <button class="btn btn-sm btn-green" onclick="loanAction('approve','${attr(loan.loan_id)}')">Lulus</button>
-      <button class="btn btn-sm btn-danger" onclick="loanAction('reject','${attr(loan.loan_id)}')">Tolak</button>
-    </div>`;
+    primary=`<button class="btn btn-sm btn-green" onclick="loanAction('approve','${attr(loan.loan_id)}')">Lulus</button>
+      <button class="btn btn-sm btn-danger" onclick="loanAction('reject','${attr(loan.loan_id)}')">Tolak</button>`;
+  }else if(s==='DILULUSKAN'){
+    primary=`<button class="btn btn-sm btn-primary" onclick="loanAction('checkout','${attr(loan.loan_id)}')">Check-out</button>`;
+  }else if(['DIPINJAM','HAMPIR_DUE','LEWAT'].includes(s)){
+    primary=`<button class="btn btn-sm btn-green" onclick="loanAction('return','${attr(loan.loan_id)}')">Pulang Semua</button>`;
   }
 
-  if(s==='DILULUSKAN'){
-    return `<button class="btn btn-sm btn-primary" onclick="loanAction('checkout','${attr(loan.loan_id)}')">Check-out</button>`;
-  }
-
-  if(['DIPINJAM','HAMPIR_DUE','LEWAT'].includes(s)){
-    return `<button class="btn btn-sm btn-green" onclick="loanAction('return','${attr(loan.loan_id)}')">Pulang Semua</button>`;
-  }
-
-  return '<span class="tiny muted">—</span>';
+  return `<div class="action-row">
+    ${primary}
+    <button class="btn btn-sm loan-register-btn" onclick="openMovementRegister('${attr(loan.loan_id)}')">📄 Daftar</button>
+  </div>`;
 }
 
 
@@ -2356,6 +2488,112 @@ async function toggleStaff(userId,newStatus){
   }catch(err){handleError(err)}
 }
 
+
+
+/* =========================================================
+   DAFTAR PERGERAKAN KEW.PA-6
+========================================================= */
+async function openMovementRegister(loanId){
+  const modal=$('#movementModal');
+  const area=$('#movementPrintArea');
+  modal.classList.add('show');
+  area.innerHTML='<div class="card panel" style="text-align:center;padding:45px">Memuatkan daftar pergerakan...</div>';
+
+  try{
+    const data=await jsonp(
+      'movement_register',
+      {loan_id:loanId,_t:Date.now()},
+      {timeoutMs:28000,retries:1}
+    );
+    renderMovementRegister(data);
+  }catch(err){
+    area.innerHTML=`<div class="card panel" style="text-align:center;padding:35px;color:#b73349">${esc(err.message)}</div>`;
+  }
+}
+
+function closeMovementRegister(){
+  $('#movementModal').classList.remove('show');
+}
+
+function movementDate(v){
+  if(!v) return '';
+  const d=new Date(v);
+  if(isNaN(d)) return esc(v);
+  return new Intl.DateTimeFormat('ms-MY',{day:'2-digit',month:'2-digit',year:'numeric'}).format(d);
+}
+
+function movementRowHtml(row,index){
+  return `<tr>
+    <td>${index+1}</td>
+    <td class="borrower">${esc(row.borrower_name||'')}</td>
+    <td>${movementDate(row.issued_date)}</td>
+    <td>${movementDate(row.expected_return_date)}</td>
+    <td class="sig-cell"></td>
+    <td class="sig-cell"><span class="sig-name">${esc(row.issuing_officer_name||'')}</span></td>
+    <td>${movementDate(row.issue_officer_date)}</td>
+    <td class="sig-cell"><span class="sig-name">${esc(row.returning_officer_name||'')}</span></td>
+    <td>${movementDate(row.return_officer_date)}</td>
+    <td class="notes">${esc(row.notes||'')}</td>
+  </tr>`;
+}
+
+function renderMovementRegister(data){
+  const pages=data?.pages||[];
+  $('#movementModalHint').textContent=`${data?.form_code||'KEW.PA-6'} • ${pages.length} aset`;
+
+  $('#movementPrintArea').innerHTML=pages.length?pages.map((page,pageIndex)=>{
+    const a=page.asset||{};
+    const rows=page.movements||[];
+    const body=rows.length
+      ? rows.map(movementRowHtml).join('')
+      : `<tr class="movement-empty-row"><td>1</td><td colspan="9">Tiada rekod pergerakan.</td></tr>`;
+
+    return `<section class="movement-page">
+      <div class="movement-page-header">
+        <div class="movement-form-code">${esc(data.form_code||'KEW.PA-6')}</div>
+        <h1>${esc(data.title||'DAFTAR PERGERAKAN HARTA MODAL DAN INVENTORI')}</h1>
+      </div>
+
+      <table class="movement-asset-meta">
+        <tr><td>Jenis</td><td>:</td><td>${esc(a.type||a.asset_name||'')}</td></tr>
+        <tr><td>Jenama dan Model</td><td>:</td><td>${esc(a.brand_model||'')}</td></tr>
+        <tr><td>No. Siri Pembuat</td><td>:</td><td>${esc(a.manufacturer_serial||'')}</td></tr>
+        <tr><td>No. Siri Pendaftaran</td><td>:</td><td>${esc(a.registration_serial||'')}</td></tr>
+      </table>
+
+      <table class="movement-register">
+        <thead>
+          <tr>
+            <th rowspan="3" style="width:35px">Bil.</th>
+            <th rowspan="3" style="width:150px">Nama Peminjam</th>
+            <th colspan="2">Tarikh</th>
+            <th rowspan="3" style="width:85px">Tandatangan<br>Peminjam</th>
+            <th colspan="4">Pegawai Pengeluar</th>
+            <th rowspan="3" style="width:170px">Catatan</th>
+          </tr>
+          <tr>
+            <th rowspan="2" style="width:78px">Dikeluarkan</th>
+            <th rowspan="2" style="width:88px">Jangka<br>Dipulangkan</th>
+            <th colspan="2">Ketika Dikeluarkan</th>
+            <th colspan="2">Ketika Dipulangkan</th>
+          </tr>
+          <tr>
+            <th style="width:90px">Tandatangan</th>
+            <th style="width:72px">Tarikh</th>
+            <th style="width:90px">Tandatangan</th>
+            <th style="width:72px">Tarikh</th>
+          </tr>
+        </thead>
+        <tbody>${body}</tbody>
+      </table>
+
+      <div class="movement-print-foot">
+        <span>Aset: ${esc(a.asset_id||'')}</span>
+        <span>Dijana: ${fmtDateTime(data.generated_at)}</span>
+      </div>
+    </section>`;
+  }).join(''):'<div class="card panel">Tiada data.</div>';
+}
 
 /* =========================================================
    REPORTS / EXPORT
