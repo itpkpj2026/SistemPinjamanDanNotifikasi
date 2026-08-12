@@ -566,6 +566,17 @@ html,body{max-width:100%;overflow-x:hidden}
 .asset-action-btn{min-height:30px!important;padding:6px 8px!important;font-size:9.5px!important;white-space:nowrap}
 @media(max-width:1180px){.asset-actions{grid-template-columns:1fr!important}.asset-action-btn{width:100%}}
 
+
+/* V7.3 - gambar + tindakan lebih jelas */
+.view-image-btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:5px;
+  padding:6px 9px;border-radius:9px;border:1px solid #cfe1ef;
+  background:#f6fbff;color:#176fae;text-decoration:none;font-size:9px;font-weight:850;
+  white-space:nowrap;transition:.15s
+}
+.view-image-btn:hover{background:#eaf6ff;border-color:#a9d0e9;transform:translateY(-1px)}
+.asset-action-btn.view{color:#176fae!important;background:#edf8ff!important;border-color:#c6e2f3!important;text-decoration:none!important}
+
 </style></head>
 <body><div class="app">
 <aside class="sidebar" id="sidebar"><div class="sidebar-media" aria-hidden="true"><video id="sidebarVideo" class="sidebar-bg-video" muted loop playsinline autoplay preload="none" poster="sidebar-celcom-poster.jpg" data-src="sidebar-celcom.mp4"></video></div><div class="sidebar-overlay" aria-hidden="true"></div><div class="brand"><div class="brand-mark pkpj-brand-mark"><img src="pkpj-premium.png" alt="PKPJ"></div><div><strong>Sistem ICT</strong><span>Langganan & Pinjaman</span></div></div><nav class="nav">
@@ -646,7 +657,7 @@ html,body{max-width:100%;overflow-x:hidden}
       <div class="panel-head">
         <div>
           <div class="panel-title">TAMBAH SENARAI STAFF</div>
-          <div class="panel-sub">Masukkan satu nama setiap baris. Senarai besar seperti 100–300 nama akan disimpan secara batch.</div>
+          <div class="panel-sub">Masukkan satu nama setiap baris. Senarai besar disimpan secara batch. Nama yang sama juga dibenarkan.</div>
         </div>
       </div>
       <textarea class="field staff-bulk" id="staffBulkInput" placeholder="Contoh:&#10;Ahmad Zaki&#10;Aina Farhana&#10;Mohd Firdaus"></textarea>
@@ -1337,6 +1348,7 @@ function renderAssets(){
         <td>${statusPill(x.status)}</td>
         <td>
           <div class="asset-actions">
+            ${x.image_url ? `<a class="asset-action-btn view" href="${attr(x.image_url)}" target="_blank" rel="noopener">🖼 Lihat Gambar</a>` : ''}
             <button class="asset-action-btn edit" onclick="openAssetEditModal('${attr(x.asset_id)}')">✎ Kemaskini</button>
             ${inactive
               ? `<button class="asset-action-btn activate" onclick="setAssetActive('${attr(x.asset_id)}')">✓ Aktifkan</button>`
@@ -2408,10 +2420,10 @@ function fmtDateTime(v){
 
 function photoCell(record){
   if(!record?.image_url){
-    return '<span class="tiny muted">—</span>';
+    return '<span class="tiny muted">Tiada gambar</span>';
   }
 
-  return `<a class="photo-link" href="${attr(record.image_url)}" target="_blank" rel="noopener" title="${attr(record.image_name||'Lihat gambar')}">📷</a>`;
+  return `<a class="view-image-btn" href="${attr(record.image_url)}" target="_blank" rel="noopener" title="${attr(record.image_name||'Lihat gambar')}">🖼 Lihat Gambar</a>`;
 }
 
 
