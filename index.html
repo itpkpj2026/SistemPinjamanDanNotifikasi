@@ -736,7 +736,7 @@ html,body{max-width:100%;overflow-x:hidden}
 
 
 /* =========================================================
-   V8.0 - INVENTORI CATEGORY FIRST
+   V8.1 - INVENTORI CATEGORY FIRST
    ========================================================= */
 .asset-category-heading{display:flex;justify-content:space-between;align-items:center;gap:14px;margin:1px 0 10px;padding:0 2px}
 .asset-category-heading strong{display:block;color:#173955;font-size:14px}
@@ -760,7 +760,7 @@ html,body{max-width:100%;overflow-x:hidden}
 
 
 /* =========================================================
-   V8.0 - OPERATOR LOGIN + DEEP SETTINGS + CLEAN STATUS
+   V8.1 - OPERATOR LOGIN + DEEP SETTINGS + CLEAN STATUS
    ========================================================= */
 .hidden-technical,.connection-mini{display:none!important}
 .operator-mini{
@@ -813,6 +813,40 @@ html,body{max-width:100%;overflow-x:hidden}
   .admin-login-card{padding:24px 19px}
   .icon-setting-row{grid-template-columns:1fr 62px}
   .icon-setting-row .icon-desc{grid-column:1/-1}
+}
+
+
+/* V8.1 - SETTINGS COLLAPSED */
+.settings-accordion-stack{display:grid;gap:10px}
+.settings-accordion{
+  border:1px solid #dce7ef;border-radius:16px;background:#fff;overflow:hidden;
+  box-shadow:0 7px 20px rgba(31,76,111,.045)
+}
+.settings-accordion>summary{
+  list-style:none;display:flex;align-items:center;gap:11px;padding:14px 16px;
+  cursor:pointer;user-select:none;background:linear-gradient(120deg,#fff,#f8fbfd)
+}
+.settings-accordion>summary::-webkit-details-marker{display:none}
+.settings-accordion>summary .settings-acc-icon{
+  width:39px;height:39px;min-width:39px;display:grid;place-items:center;
+  border-radius:12px;background:#edf7fd;font-size:18px
+}
+.settings-accordion>summary span:nth-child(2){flex:1;min-width:0}
+.settings-accordion>summary b{display:block;color:#24465f;font-size:11px}
+.settings-accordion>summary small{display:block;margin-top:3px;color:#7a8fa1;font-size:9px;line-height:1.35}
+.settings-accordion>summary i{font-style:normal;color:#6d8799;font-size:18px;transition:.16s}
+.settings-accordion[open]>summary i{transform:rotate(45deg)}
+.settings-accordion-body{padding:0 12px 12px}
+.settings-accordion-body .card.panel{box-shadow:none;margin:0;border-radius:13px}
+.admin-remove-access{
+  width:30px;height:30px;padding:0;display:grid;place-items:center;border-radius:9px;
+  border:1px solid #f0cbd1;background:#fff8f9;color:#b44157;cursor:pointer
+}
+.admin-remove-access:hover{background:#fff0f2}
+@media(max-width:620px){
+  .settings-accordion>summary{padding:12px}
+  .settings-accordion-body{padding:0 8px 8px}
+  .settings-accordion-body.settings-staff-grid{display:grid!important;grid-template-columns:1fr!important}
 }
 
 </style></head>
@@ -932,8 +966,8 @@ html,body{max-width:100%;overflow-x:hidden}
 <section class="view" id="view-settings">
   <div class="mini-hero">
     <div class="copy">
-      <h2>Tetapan Staff</h2>
-      <p>Urus senarai nama yang akan dipaparkan dalam carian Portal Pemohon.</p>
+      <h2>Tetapan Sistem</h2>
+      <p>Semua tetapan disorok secara lalai. Buka bahagian yang diperlukan sahaja.</p>
     </div>
     <div class="art">
       <svg viewBox="0 0 420 140" aria-hidden="true">
@@ -951,93 +985,65 @@ html,body{max-width:100%;overflow-x:hidden}
     </div>
   </div>
 
-  <div class="settings-staff-grid">
-    <div class="card panel">
-      <div class="panel-head">
-        <div>
-          <div class="panel-title">TAMBAH SENARAI STAFF</div>
-          <div class="panel-sub">Masukkan satu nama setiap baris. Senarai besar disimpan secara batch. Nama yang sama juga dibenarkan.</div>
+  <div class="settings-accordion-stack">
+    <details class="settings-accordion">
+      <summary>
+        <span class="settings-acc-icon">♙</span>
+        <span><b>Senarai Staff Pemohon</b><small>Tambah, cari dan aktif/nyahaktif nama pemohon.</small></span>
+        <i>＋</i>
+      </summary>
+      <div class="settings-accordion-body settings-staff-grid">
+        <div class="card panel">
+          <div class="panel-head"><div><div class="panel-title">TAMBAH SENARAI STAFF</div><div class="panel-sub">Masukkan satu nama setiap baris. Nama yang sama dibenarkan.</div></div></div>
+          <textarea class="field staff-bulk" id="staffBulkInput" placeholder="Contoh:&#10;Ahmad Zaki&#10;Aina Farhana&#10;Mohd Firdaus"></textarea>
+          <div class="toolbar section-gap"><button class="btn btn-primary" id="addStaffBulkBtn">＋ Tambah Nama Staff</button></div>
+          <div class="help">Nama aktif akan muncul sebagai autocomplete di Portal Pemohon. Nama manual tetap tersedia sebagai fallback.</div>
         </div>
-      </div>
-      <textarea class="field staff-bulk" id="staffBulkInput" placeholder="Contoh:&#10;Ahmad Zaki&#10;Aina Farhana&#10;Mohd Firdaus"></textarea>
-      <div class="toolbar section-gap">
-        <button class="btn btn-primary" id="addStaffBulkBtn">＋ Tambah Nama Staff</button>
-      </div>
-      <div class="help">
-        Nama aktif dalam senarai ini akan muncul sebagai autocomplete di Portal Pemohon.
-      </div>
-    </div>
 
-    <div class="card panel">
-      <div class="panel-head">
-        <div>
-          <div class="panel-title">SENARAI STAFF AKTIF</div>
-          <div class="panel-sub"><span id="staffCount">0</span> nama direkodkan.</div>
+        <div class="card panel">
+          <div class="panel-head"><div><div class="panel-title">SENARAI STAFF AKTIF</div><div class="panel-sub"><span id="staffCount">0</span> nama direkodkan.</div></div></div>
+          <div class="toolbar">
+            <div class="search">⌕ <input id="staffSearch" placeholder="Cari nama staff..."/></div>
+            <select class="field" id="staffActiveFilter" style="width:auto"><option value="">Semua</option><option value="Ya">Aktif</option><option value="Tidak">Tidak Aktif</option></select>
+          </div>
+          <div class="table-wrap"><table><thead><tr><th>NAMA STAFF</th><th>UNIT / JABATAN</th><th>STATUS</th><th>TINDAKAN</th></tr></thead><tbody id="staffRows"></tbody></table></div>
         </div>
       </div>
-      <div class="toolbar">
-        <div class="search">⌕ <input id="staffSearch" placeholder="Cari nama staff..."/></div>
-        <select class="field" id="staffActiveFilter" style="width:auto">
-          <option value="">Semua</option>
-          <option value="Ya">Aktif</option>
-          <option value="Tidak">Tidak Aktif</option>
-        </select>
+    </details>
+
+    <details class="settings-accordion super-admin-only">
+      <summary>
+        <span class="settings-acc-icon">🔐</span>
+        <span><b>Akses Pentadbir & Staf IT</b><small>Urus siapa boleh log masuk ke portal Admin.</small></span>
+        <i>＋</i>
+      </summary>
+      <div class="settings-accordion-body">
+        <div class="card panel">
+          <div class="form-grid">
+            <div class="form-group"><label>Nama</label><input class="field" id="itOperatorName" placeholder="Nama staf IT"></div>
+            <div class="form-group"><label>Peranan</label><select class="field" id="itOperatorRole"><option value="STAFF_IT">Staf IT</option><option value="SUPER_ADMIN">Super Admin</option></select></div>
+          </div>
+          <button class="btn btn-primary" type="button" id="addItOperatorBtn">＋ Tambah Akses</button>
+          <div class="table-wrap section-gap"><table><thead><tr><th>NAMA</th><th>PERANAN</th><th>STATUS</th><th>TINDAKAN</th></tr></thead><tbody id="itOperatorRows"></tbody></table></div>
+        </div>
       </div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>NAMA STAFF</th><th>UNIT / JABATAN</th><th>STATUS</th><th>TINDAKAN</th></tr></thead>
-          <tbody id="staffRows"></tbody>
-        </table>
+    </details>
+
+    <details class="settings-accordion super-admin-only">
+      <summary>
+        <span class="settings-acc-icon">🎨</span>
+        <span><b>Ikon & Paparan Kategori</b><small>Ubah ikon, penerangan kategori dan tajuk portal tanpa coding.</small></span>
+        <i>＋</i>
+      </summary>
+      <div class="settings-accordion-body">
+        <div class="card panel">
+          <div id="categoryIconSettings"></div>
+          <div class="form-group section-gap"><label>Tajuk Portal Pemohon</label><input class="field" id="portalTitleSetting" value="Selamat Datang ke Portal Permohonan Peminjaman Inventori ICT"></div>
+          <button class="btn btn-primary" type="button" id="saveCategorySettingsBtn">Simpan Tetapan Paparan</button>
+        </div>
       </div>
-    </div>
+    </details>
   </div>
-
-  <div class="settings-extra-grid super-admin-only">
-    <div class="card panel">
-      <div class="panel-head">
-        <div>
-          <div class="panel-title">AKSES PENTADBIR & STAF IT</div>
-          <div class="panel-sub">Super Admin boleh urus tetapan mendalam. Staf IT boleh urus operasi dan kelulusan.</div>
-        </div>
-      </div>
-      <div class="form-grid">
-        <div class="form-group">
-          <label>Nama</label>
-          <input class="field" id="itOperatorName" placeholder="Nama staf IT">
-        </div>
-        <div class="form-group">
-          <label>Peranan</label>
-          <select class="field" id="itOperatorRole">
-            <option value="STAFF_IT">Staf IT</option>
-            <option value="SUPER_ADMIN">Super Admin</option>
-          </select>
-        </div>
-      </div>
-      <button class="btn btn-primary" type="button" id="addItOperatorBtn">＋ Tambah Akses</button>
-      <div class="table-wrap section-gap">
-        <table>
-          <thead><tr><th>NAMA</th><th>PERANAN</th><th>STATUS</th><th>TINDAKAN</th></tr></thead>
-          <tbody id="itOperatorRows"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <div class="card panel">
-      <div class="panel-head">
-        <div>
-          <div class="panel-title">IKON & PAPARAN KATEGORI</div>
-          <div class="panel-sub">Ubah ikon kategori tanpa mengubah coding.</div>
-        </div>
-      </div>
-      <div id="categoryIconSettings"></div>
-      <div class="form-group section-gap">
-        <label>Tajuk Portal Pemohon</label>
-        <input class="field" id="portalTitleSetting" value="Selamat Datang ke Portal Permohonan Peminjaman Inventori ICT">
-      </div>
-      <button class="btn btn-primary" type="button" id="saveCategorySettingsBtn">Simpan Tetapan Paparan</button>
-    </div>
-  </div>
-
 </section>
 
 <section class="view hidden-system" id="view-notifications"><input id="notifSearch"/><select id="notifStatusFilter"><option value=""></option></select><button id="runNotifBtn"></button><table><tbody id="notificationsRows"></tbody></table></section>
@@ -1131,7 +1137,7 @@ const $$ = (s, root=document) => [...root.querySelectorAll(s)];
 document.addEventListener('DOMContentLoaded', init);
 
 
-const ADMIN_FAST_CACHE_KEY='ict_admin_lists_v80';
+const ADMIN_FAST_CACHE_KEY='ict_admin_lists_v81';
 
 function readAdminFastCache(){
   try{
@@ -1235,6 +1241,21 @@ function initHeroVideo(){
       if(p && typeof p.catch==='function') p.catch(()=>{});
     }
   });
+}
+
+
+function startApprovalAutoRefresh(){
+  if(window.__approvalRefreshTimer) return;
+
+  window.__approvalRefreshTimer=setInterval(()=>{
+    if(
+      state.currentView==='loans' &&
+      document.visibilityState==='visible' &&
+      state.operator
+    ){
+      loadLoans(true);
+    }
+  },25000);
 }
 
 
@@ -3268,10 +3289,13 @@ function renderItOperators(){
       <td><span class="role-pill ${x.role==='SUPER_ADMIN'?'super':''}">${x.role==='SUPER_ADMIN'?'SUPER ADMIN':'STAF IT'}</span></td>
       <td>${statusPill(String(x.active||'Ya').toLowerCase()==='ya'?'AKTIF':'TIDAK_AKTIF')}</td>
       <td>
-        <button class="btn btn-sm ${String(x.active||'Ya').toLowerCase()==='ya'?'btn-danger':'btn-green'}"
-          onclick="toggleAdminOperator('${attr(x.user_id)}','${String(x.active||'Ya').toLowerCase()==='ya'?'Tidak':'Ya'}')">
-          ${String(x.active||'Ya').toLowerCase()==='ya'?'Nyahaktif':'Aktifkan'}
-        </button>
+        <div class="action-row">
+          <button class="btn btn-sm ${String(x.active||'Ya').toLowerCase()==='ya'?'btn-danger':'btn-green'}"
+            onclick="toggleAdminOperator('${attr(x.user_id)}','${String(x.active||'Ya').toLowerCase()==='ya'?'Tidak':'Ya'}')">
+            ${String(x.active||'Ya').toLowerCase()==='ya'?'Nyahaktif':'Aktifkan'}
+          </button>
+          ${isSuperAdmin()?`<button class="admin-remove-access" type="button" title="Hapus nama daripada log masuk Admin" onclick="removeAdminOperator('${attr(x.user_id)}')">🗑</button>`:''}
+        </div>
       </td>
     </tr>
   `).join(''):'<tr><td colspan="4" class="empty">Belum ada akses pentadbir.</td></tr>';
@@ -3288,6 +3312,40 @@ async function toggleAdminOperator(userId,active){
     renderItOperators();
     saveAdminFastCache();
   }catch(err){handleError(err)}
+}
+
+
+
+async function removeAdminOperator(userId){
+  if(!isSuperAdmin()){
+    return toast('Akses terhad','Hanya Super Admin boleh menghapus akses log masuk Admin.','err');
+  }
+
+  const target=(state.users||[]).find(x=>String(x.user_id)===String(userId));
+  if(!target) return;
+
+  if(String(state.operator?.user_id||'')===String(userId)){
+    return toast('Tidak dibenarkan','Anda tidak boleh menghapus akses akaun yang sedang digunakan.','err');
+  }
+
+  if(!confirm(`Hapus ${target.name} daripada senarai log masuk Admin? Sejarah approval lama akan kekal.`)) return;
+
+  try{
+    await postApi('admin.operator.remove',{
+      actor_user_id:state.operator?.user_id||'',
+      target_user_id:userId
+    });
+
+    target.role='REMOVED_ADMIN';
+    target.active='Tidak';
+    renderItOperators();
+    loadOperatorOptions(false);
+    saveAdminFastCache();
+
+    toast('Akses dihapus',`${target.name} tidak lagi muncul dalam log masuk Admin.`,'ok');
+  }catch(err){
+    handleError(err);
+  }
 }
 
 
