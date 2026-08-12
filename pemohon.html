@@ -1585,6 +1585,13 @@ table{max-width:none}
   .suggestions{max-height:210px!important}
 }
 
+
+/* V6.2 - gambar + speed UI */
+.asset-card-actions{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-top:9px}
+.asset-card-actions .btn{margin-top:0!important}
+.asset-view-image{color:#176fae!important;background:#eef8ff!important;border-color:#c8e2f2!important;text-decoration:none!important}
+.popup-view-image{display:inline-flex;margin-top:5px;padding:3px 6px;border-radius:7px;background:#edf8ff;color:#176fae;text-decoration:none;font-size:8px;font-weight:850}
+
 </style>
 </head>
 <body>
@@ -1903,8 +1910,17 @@ function init(){
   initPemohonHeroVideo();
 
   const cachedStaff=readStaffCache();
-  if(cachedStaff.length) state.staffList=cachedStaff;
-  loadStaffNames();
+  if(cachedStaff.length){
+    state.staffList=cachedStaff;
+    const refreshStaff=()=>loadStaffNames();
+    if('requestIdleCallback' in window){
+      requestIdleCallback(refreshStaff,{timeout:3500});
+    }else{
+      setTimeout(refreshStaff,2500);
+    }
+  }else{
+    loadStaffNames();
+  }
 
   const savedId=localStorage.getItem('ict_applicant_user_id')||'';
   const savedName=localStorage.getItem('ict_applicant_name')||'';
@@ -1920,7 +1936,11 @@ function init(){
       setPemohonVideoActive(false);
     }
 
-    loginApplicant(true);
+    if(cached){
+      setTimeout(()=>loginApplicant(true),900);
+    }else{
+      loginApplicant(true);
+    }
   }
 }
 
@@ -2387,6 +2407,7 @@ function openLoanRequestModal(categoryKey,preselectAssetId=''){
                 ${asset.model?` • ${esc(asset.model)}`:''}
                 ${asset.location?` • ${esc(asset.location)}`:''}
               </small>
+              ${asset.image_url?`<a class="popup-view-image" href="${attr(asset.image_url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Lihat Gambar</a>`:''}
             </div>
           </label>
         `;
@@ -2521,7 +2542,7 @@ function renderAvailableAssets(){
   $('#availableAssetGrid').innerHTML=rows.length?rows.map(a=>`
     <div class="card asset-card">
       <div class="photo">${a.image_url?`<img src="${attr(a.image_url)}" alt="" loading="lazy" decoding="async">`:assetIcon(a.category)}</div>
-      <div class="body"><span class="pill green">TERSEDIA</span><h3>${esc(a.asset_name)}</h3><p>${esc(a.asset_tag)}<br>${esc([a.brand,a.model].filter(Boolean).join(' ')||a.category)}<br>${esc(a.location||'')}</p><button class="btn btn-primary btn-sm" style="margin-top:9px" onclick="chooseAsset('${attr(a.asset_id)}')">Pilih untuk Pinjam</button></div>
+      <div class="body"><span class="pill green">TERSEDIA</span><h3>${esc(a.asset_name)}</h3><p>${esc(a.asset_tag)}<br>${esc([a.brand,a.model].filter(Boolean).join(' ')||a.category)}<br>${esc(a.location||'')}</p><div class="asset-card-actions">${a.image_url?`<a class="btn btn-sm asset-view-image" href="${attr(a.image_url)}" target="_blank" rel="noopener">🖼 Lihat Gambar</a>`:''}<button class="btn btn-primary btn-sm" onclick="chooseAsset('${attr(a.asset_id)}')">Pilih untuk Pinjam</button></div></div>
     </div>
   `).join(''):'<div class="empty" style="grid-column:1/-1">Tiada peralatan sepadan.</div>';
 }
