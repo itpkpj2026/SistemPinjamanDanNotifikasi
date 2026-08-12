@@ -1605,7 +1605,7 @@ table{max-width:none}
 
 
 /* =========================================================
-   V6.9 - FAST ENTRY + CENTERED PKPJ BRAND
+   V7.0 - FAST ENTRY + CENTERED PKPJ BRAND
    ========================================================= */
 .compact-login-card>.pkpj-login-logo{margin-left:auto!important;margin-right:auto!important;display:grid!important}
 .compact-login-card>h2,.compact-login-card>.compact-sub{text-align:center!important}
@@ -1617,7 +1617,7 @@ table{max-width:none}
 
 
 /* =========================================================
-   V6.9 - MANUAL FALLBACK + SILENT API + PRETTY LOADER + MOBILE
+   V7.0 - MANUAL FALLBACK + SILENT API + PRETTY LOADER + MOBILE
    ========================================================= */
 .hidden-technical,.api-chip{display:none!important}
 .manual-name-help{
@@ -1703,7 +1703,7 @@ table{max-width:none}
 }
 
 
-/* V6.9 - PILIH PERKAKASAN DAHULU */
+/* V7.0 - PILIH PERKAKASAN DAHULU */
 .apply-equipment-toolbar{
   display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:13px;
   padding:10px;border:1px solid #dce8f1;border-radius:14px;background:#fff
@@ -2036,7 +2036,7 @@ const $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const PORTAL_CACHE_TTL=10*60*1000;
 
 function portalCacheKey(userId){
-  return 'ict_applicant_bootstrap_v67_'+String(userId||'');
+  return 'ict_applicant_bootstrap_v70_'+String(userId||'');
 }
 
 function readPortalCache(userId){
@@ -2984,6 +2984,41 @@ function chooseAsset(id){
 }
 
 
+async function confirmApplicantLoanCreated(requestId,who,timeoutMs=14000){
+  const marker='[REQ:'+String(requestId)+']';
+  const started=Date.now();
+  let pause=450;
+  let lastData=null;
+
+  while(Date.now()-started<timeoutMs){
+    try{
+      const data=await jsonp('applicant.bootstrap',{
+        user_id:who.user_id||'',
+        name:who.name||'',
+        _t:Date.now()
+      },{timeoutMs:6000,retries:0});
+
+      lastData=data;
+      const found=(data?.loans||[]).find(loan=>String(loan.remarks||'').includes(marker));
+      if(found){
+        return {
+          loan_id:found.loan_id,
+          status:found.status||'MENUNGGU_KELULUSAN',
+          due_date:found.due_date||'',
+          item_count:Number(found.item_count||0),
+          bootstrap:data
+        };
+      }
+    }catch(err){}
+
+    await new Promise(r=>setTimeout(r,pause));
+    pause=Math.min(1100,pause+120);
+  }
+
+  return {loan_id:'',bootstrap:lastData};
+}
+
+
 async function submitApplication(){
   const due=$('#loanModalDue').value;
   const purpose=$('#loanModalPurpose').value.trim();
@@ -3068,111 +3103,67 @@ async function submitApplication(){
   btn.disabled=true;
   btn.textContent='Menghantar...';
 
-  showPrettyLoader(
-    'Menghantar permohonan',
-    'Menyimpan rekod dan menempah peralatan untuk anda…'
-  );
+  showPrettyLoader('Menghantar permohonan','Sedang menyimpan permohonan anda…');
 
   try{
     const who=identity();
+    if(!who.name) throw new Error('Nama pemohon belum ditetapkan.');
 
+    const requestId=makeApplicantRequestId();
+    const requestMarker='[REQ:'+requestId+']';
     const payload={
       identity_user_id:who.user_id,
       identity_name:who.name,
+      client_request_id:requestId,
       due_date:due,
       purpose,
-      remarks:detailLines.join('\n'),
-      items:selected.map(asset_id=>({
-        asset_id,
-        condition_out:'BAIK'
-      }))
+      remarks:requestMarker+'\n'+detailLines.join('\n'),
+      items:selected.map(asset_id=>({asset_id,condition_out:'BAIK'}))
     };
 
-    const pendingAttachment=state.imagePayload
-      ? {...state.imagePayload}
-      : null;
+    const pendingAttachment=state.imagePayload?{...state.imagePayload}:null;
 
-    updatePrettyLoader(
-      'Sedang menyimpan',
-      'Menyimpan rekod pinjaman…'
-    );
+    await postApi('applicant.loan.create',payload,{requestId});
 
-    const saved=await postApi(
-      'applicant.loan.create',
-      payload,
-      {maxWait:60000}
-    );
+    updatePrettyLoader('Mengesahkan rekod','Hampir siap… semak nombor permohonan.');
 
-    if(!saved?.loan_id){
-      throw new Error(
-        'Backend belum mengesahkan ID pinjaman.'
-      );
+    const confirmed=await confirmApplicantLoanCreated(requestId,who,14000);
+    if(!confirmed?.loan_id){
+      throw new Error('Permohonan telah dihantar tetapi rekod belum dapat disahkan. Jangan tekan Hantar kali kedua; buka Permohonan Saya sebentar lagi.');
     }
 
-    updatePrettyLoader(
-      'Berjaya direkod',
-      'Menyiapkan paparan permohonan anda…'
-    );
-
-    // Jangan tunggu bootstrap kedua. Backend sudah sahkan loan_id.
-    if(!state.loans.some(x=>String(x.loan_id)===String(saved.loan_id))){
-      state.loans.unshift({
-        loan_id:saved.loan_id,
-        request_date:new Date().toISOString(),
-        due_date:due,
-        purpose,
-        status:saved.status||'MENUNGGU_KELULUSAN',
-        item_count:selected.length,
-        items:selected.map(asset_id=>{
-          const asset=(state.assets||[]).find(a=>String(a.asset_id)===String(asset_id))||{};
-          return {
-            asset_id,
-            asset_name:asset.asset_name||asset_id,
-            asset_tag:asset.asset_tag||'',
-            category:asset.category||''
-          };
-        })
-      });
+    if(confirmed.bootstrap){
+      applyBootstrap(confirmed.bootstrap);
+      savePortalCache(confirmed.bootstrap);
     }
+
+    const saved={
+      loan_id:confirmed.loan_id,
+      status:confirmed.status||'MENUNGGU_KELULUSAN',
+      due_date:confirmed.due_date||due,
+      item_count:confirmed.item_count||selected.length
+    };
 
     state.imagePayload=null;
     closeLoanRequestModal();
     hidePrettyLoader();
-
-    toast(
-      'Permohonan berjaya direkod',
-      `No. permohonan: ${saved.loan_id}`,
-      'ok'
-    );
-
+    toast('Permohonan berjaya dihantar',`No. permohonan: ${saved.loan_id}`,'ok');
     showView('myloans');
     renderMyLoans();
 
-    // Sync server selepas UI sudah bebas digunakan.
-    setTimeout(()=>refreshPortal(true),350);
-
-    // Fail besar tidak lagi menahan proses permohonan.
     if(pendingAttachment?.dataUrl){
-      uploadApplicantAttachmentInBackground(
-        saved.loan_id,
-        pendingAttachment
-      );
+      uploadApplicantAttachmentInBackground(saved.loan_id,pendingAttachment);
     }
 
+    setTimeout(()=>refreshPortal(true),1200);
   }catch(err){
     hidePrettyLoader();
-    toast(
-      'Permohonan belum selesai',
-      friendlyPortalError(err,'Sila cuba semula.'),
-      'err'
-    );
-
+    toast('Permohonan belum disahkan',friendlyPortalError(err,'Sila semak Permohonan Saya dan cuba semula jika rekod masih tiada.'),'err');
   }finally{
     btn.disabled=false;
     btn.textContent='Hantar Permohonan →';
   }
 }
-
 
 
 async function uploadApplicantAttachmentInBackground(loanId,filePayload){
@@ -3344,59 +3335,61 @@ async function applicantWriteStatus(requestId){
 
 
 async function postApi(action,data,options={}){
-  const requestId=makeApplicantRequestId();
+  const requestId=String(
+    options.requestId ||
+    data?.client_request_id ||
+    makeApplicantRequestId()
+  );
 
-  // Permohonan dan batal ialah payload kecil: guna satu JSONP yang
-  // hanya pulangkan success selepas Google Sheet benar-benar selesai ditulis.
-  if(action!=='applicant.file.attach'){
-    return jsonp(
-      'applicant.write',
-      {
-        write_action:action,
-        request_id:requestId,
-        data:JSON.stringify(data),
-        _t:Date.now()
-      },
-      {
-        timeoutMs:options.timeoutMs||18000,
-        retries:0
+  if(action==='applicant.file.attach'){
+    const body=new URLSearchParams();
+    body.set('action',action);
+    body.set('token',SYSTEM_CONFIG.APPLICANT_TOKEN);
+    body.set('request_id',requestId);
+    body.set('data',JSON.stringify(data));
+
+    fetch(SYSTEM_CONFIG.API_URL,{method:'POST',mode:'no-cors',body}).catch(()=>{});
+
+    const maxWait=options.maxWait||120000;
+    const started=Date.now();
+    let pause=850;
+
+    while(Date.now()-started<maxWait){
+      await new Promise(r=>setTimeout(r,pause));
+      try{
+        const status=await applicantWriteStatus(requestId);
+        if(status?.state==='done'){
+          if(status.ok) return status.data||{};
+          throw new Error(status?.error?.message||'Dokumen tidak dapat disimpan.');
+        }
+      }catch(err){
+        if(!/timeout|terlalu lama|sambung|API/i.test(err?.message||'')) throw err;
       }
-    );
+      pause=Math.min(1800,pause+150);
+    }
+
+    throw new Error('Dokumen belum dapat disahkan. Rekod pinjaman tidak terjejas.');
   }
 
-  // Fail besar kekal POST di belakang selepas loan_id sudah wujud.
+  // Laluan create/cancel paling serasi: POST terus ke action asal.
   const body=new URLSearchParams();
   body.set('action',action);
   body.set('token',SYSTEM_CONFIG.APPLICANT_TOKEN);
   body.set('request_id',requestId);
   body.set('data',JSON.stringify(data));
 
-  fetch(
-    SYSTEM_CONFIG.API_URL,
-    {method:'POST',mode:'no-cors',body}
-  ).catch(()=>{});
-
-  const maxWait=options.maxWait||120000;
-  const started=Date.now();
-  let pause=850;
-
-  while(Date.now()-started<maxWait){
-    await new Promise(r=>setTimeout(r,pause));
-
-    try{
-      const status=await applicantWriteStatus(requestId);
-      if(status?.state==='done'){
-        if(status.ok) return status.data||{};
-        throw new Error(status?.error?.message||'Dokumen tidak dapat disimpan.');
-      }
-    }catch(err){
-      if(!/timeout|terlalu lama|sambung|API/i.test(err?.message||'')) throw err;
-    }
-
-    pause=Math.min(1800,pause+150);
+  try{
+    await fetch(SYSTEM_CONFIG.API_URL,{
+      method:'POST',
+      mode:'no-cors',
+      body,
+      cache:'no-store'
+    });
+  }catch(err){
+    console.warn('POST transport:',err);
   }
 
-  throw new Error('Dokumen belum dapat disahkan. Rekod pinjaman tidak terjejas.');
+  return {accepted:true,request_id:requestId};
 }
 
 
@@ -3423,7 +3416,7 @@ function friendlyPortalError(err, fallback='Proses belum selesai. Sila cuba semu
   if(!msg) return fallback;
 
   if(/apps script|deployment|api|token|sambung|timeout|terlalu lama/i.test(msg)){
-    return 'Sambungan sedang perlahan. Rekod tidak akan ditanda berjaya sehingga sistem mengesahkannya.';
+    return 'Sambungan sedang perlahan. Sila semak Permohonan Saya sebelum cuba hantar semula.';
   }
 
   return msg;
