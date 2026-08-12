@@ -1531,6 +1531,60 @@ table{max-width:none}
 @media(max-width:720px){.loan-category-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.loan-category-card{min-height:145px;padding:14px}.loan-category-icon{margin-bottom:14px}.loan-modal-assets{grid-template-columns:1fr}.loan-modal-card{max-height:95vh;border-radius:18px}}
 @media(max-width:430px){.loan-category-grid{grid-template-columns:1fr 1fr;gap:9px}.loan-category-card{min-height:132px}.loan-category-intro{padding:13px}.loan-category-total{min-width:76px}.loan-request-modal{padding:7px}.loan-modal-head{padding:14px}.loan-modal-body{padding:14px 14px 7px}.loan-modal-foot{padding:10px 14px 13px}.loan-modal-title-wrap{gap:9px}.loan-modal-icon{width:43px;height:43px;min-width:43px}.loan-modal-head h2{font-size:17px}}
 
+
+/* =========================================================
+   PEMOHON V6.1 - PC BESAR + HP FIT
+   ========================================================= */
+.login-overlay{padding:18px!important}
+.compact-login-shell{
+  width:min(1500px,94vw)!important;
+  max-width:none!important;
+  min-height:0!important;
+  max-height:none!important;
+  grid-template-columns:minmax(0,2.15fr) minmax(410px,.92fr)!important;
+}
+.compact-video-panel{
+  width:100%!important;
+  min-height:0!important;
+  height:auto!important;
+  aspect-ratio:16/9!important;
+}
+.compact-bg-video{width:100%!important;height:100%!important;object-fit:cover!important;object-position:center center!important}
+.compact-login-panel{min-height:0!important;padding:36px 38px!important}
+.compact-login-card{width:min(100%,440px)!important}
+.compact-login-card h2{font-size:34px!important;line-height:1.04!important}
+.compact-sub{font-size:12.5px!important;margin:12px 0 24px!important}
+.compact-search-box .field{height:54px!important;padding:0 15px!important;font-size:13.5px!important}
+.compact-search-icon{display:none!important}
+.compact-enter-btn{min-height:54px!important;font-size:13.5px!important}
+.compact-video-caption h1{font-size:34px!important}
+.compact-video-caption p{font-size:12px!important}
+
+@media(max-width:1050px){
+  .compact-login-shell{width:min(820px,96vw)!important;grid-template-columns:1fr!important}
+  .compact-video-panel{aspect-ratio:16/9!important}
+  .compact-login-panel{padding:28px 30px 32px!important}
+  .compact-login-card{max-width:560px!important}
+}
+
+@media(max-width:600px){
+  .login-overlay{padding:0!important;align-items:flex-start!important}
+  .compact-login-shell{width:100%!important;min-height:100vh!important;border-radius:0!important;border:0!important;display:block!important}
+  .compact-video-panel{width:100%!important;height:auto!important;aspect-ratio:16/9!important;min-height:0!important;max-height:none!important}
+  .compact-video-caption{left:16px!important;right:16px!important;bottom:13px!important}
+  .compact-video-caption h1{font-size:23px!important;margin-bottom:4px!important}
+  .compact-video-caption p{display:none!important}
+  .compact-badge{font-size:7.5px!important;padding:4px 7px!important;margin-bottom:6px!important}
+  .compact-login-panel{padding:23px 18px 30px!important;display:block!important}
+  .compact-login-card{width:100%!important;max-width:none!important}
+  .compact-app-icon,.pkpj-login-logo{width:48px!important;height:48px!important;margin-bottom:15px!important}
+  .compact-login-card h2{font-size:27px!important;line-height:1.08!important}
+  .compact-sub{font-size:11.5px!important;margin:9px 0 19px!important}
+  .compact-search-box .field{height:50px!important;font-size:13px!important;border-radius:11px!important;padding:0 13px!important}
+  .compact-enter-btn{min-height:50px!important;font-size:12.5px!important}
+  .suggestions{max-height:210px!important}
+}
+
 </style>
 </head>
 <body>
@@ -1572,12 +1626,12 @@ table{max-width:none}
           <label>Nama Pemohon</label>
 
           <div class="name-search compact-search-box">
-            <span class="compact-search-icon">⌕</span>
+            
             <input
               class="field"
               id="loginName"
               autocomplete="off"
-              placeholder="Taip nama atau sebahagian nama...">
+              placeholder="Cari nama pemohon...">
           </div>
 
           <div class="suggestions hidden" id="staffSuggestions"></div>
@@ -1803,11 +1857,53 @@ const state={profile:null,kpi:{},assets:[],loans:[],staffList:[],selectedUserId:
 const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>[...r.querySelectorAll(s)];
 
+
+const PORTAL_CACHE_TTL=10*60*1000;
+
+function portalCacheKey(userId){
+  return 'ict_applicant_bootstrap_'+String(userId||'');
+}
+
+function readPortalCache(userId){
+  try{
+    const raw=localStorage.getItem(portalCacheKey(userId));
+    if(!raw) return null;
+    const item=JSON.parse(raw);
+    if(!item?.savedAt || Date.now()-item.savedAt>PORTAL_CACHE_TTL) return null;
+    return item.data||null;
+  }catch(err){return null}
+}
+
+function savePortalCache(data){
+  try{
+    const id=data?.profile?.user_id;
+    if(!id) return;
+    localStorage.setItem(portalCacheKey(id),JSON.stringify({savedAt:Date.now(),data}));
+  }catch(err){}
+}
+
+function readStaffCache(){
+  try{
+    const raw=localStorage.getItem('ict_applicant_staff_cache_v61');
+    if(!raw) return [];
+    const item=JSON.parse(raw);
+    if(Date.now()-(item.savedAt||0)>6*60*60*1000) return [];
+    return Array.isArray(item.data)?item.data:[];
+  }catch(err){return []}
+}
+
+function saveStaffCache(list){
+  try{localStorage.setItem('ict_applicant_staff_cache_v61',JSON.stringify({savedAt:Date.now(),data:list}));}catch(err){}
+}
+
 document.addEventListener('DOMContentLoaded',init);
 
 function init(){
   bindUI();
   initPemohonHeroVideo();
+
+  const cachedStaff=readStaffCache();
+  if(cachedStaff.length) state.staffList=cachedStaff;
   loadStaffNames();
 
   const savedId=localStorage.getItem('ict_applicant_user_id')||'';
@@ -1816,6 +1912,14 @@ function init(){
   if(savedId && savedName){
     state.selectedUserId=savedId;
     $('#loginName').value=savedName;
+
+    const cached=readPortalCache(savedId);
+    if(cached){
+      applyBootstrap(cached);
+      $('#loginOverlay').classList.add('hidden');
+      setPemohonVideoActive(false);
+    }
+
     loginApplicant(true);
   }
 }
@@ -1929,6 +2033,7 @@ async function loadStaffNames(){
   try{
     const list=await jsonp('applicant.staff_list',{_t:Date.now()});
     state.staffList=Array.isArray(list)?list:[];
+    saveStaffCache(state.staffList);
   }catch(err){
     setConnected(false);
     toast('Senarai staff belum dapat dimuatkan',err.message,'err');
@@ -2064,6 +2169,7 @@ function applyBootstrap(data){
   state.assets=data.available_assets||[];
   state.loans=data.loans||[];
   state.lastSync=Date.now();
+  savePortalCache(data);
 
   setConnected(true);
   renderShell();
