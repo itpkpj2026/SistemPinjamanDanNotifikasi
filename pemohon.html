@@ -1605,7 +1605,7 @@ table{max-width:none}
 
 
 /* =========================================================
-   V6.8 - FAST ENTRY + CENTERED PKPJ BRAND
+   V6.9 - FAST ENTRY + CENTERED PKPJ BRAND
    ========================================================= */
 .compact-login-card>.pkpj-login-logo{margin-left:auto!important;margin-right:auto!important;display:grid!important}
 .compact-login-card>h2,.compact-login-card>.compact-sub{text-align:center!important}
@@ -1617,7 +1617,7 @@ table{max-width:none}
 
 
 /* =========================================================
-   V6.8 - MANUAL FALLBACK + SILENT API + PRETTY LOADER + MOBILE
+   V6.9 - MANUAL FALLBACK + SILENT API + PRETTY LOADER + MOBILE
    ========================================================= */
 .hidden-technical,.api-chip{display:none!important}
 .manual-name-help{
@@ -1700,6 +1700,48 @@ table{max-width:none}
   .compact-video-panel{max-height:220px!important}
   .pretty-loader-card{width:min(310px,92vw);padding:24px 18px 20px}
   .loan-modal-card{width:calc(100vw - 12px)!important;max-height:96dvh!important}
+}
+
+
+/* V6.9 - PILIH PERKAKASAN DAHULU */
+.apply-equipment-toolbar{
+  display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:13px;
+  padding:10px;border:1px solid #dce8f1;border-radius:14px;background:#fff
+}
+.apply-equipment-toolbar .search{flex:1;min-width:230px}
+.apply-count{
+  display:inline-flex;align-items:center;gap:4px;padding:7px 10px;border-radius:999px;
+  background:#eaf8f2;color:#24785f;font-size:9px;font-weight:800
+}
+.apply-count b{font-size:12px}
+.equipment-choice-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+.equipment-choice-card{
+  border:1px solid #dce8f1;border-radius:17px;background:#fff;overflow:hidden;
+  cursor:pointer;text-align:left;padding:0;transition:.15s;box-shadow:0 6px 16px rgba(34,78,109,.045)
+}
+.equipment-choice-card:hover{transform:translateY(-2px);border-color:#aed2e8;box-shadow:0 14px 28px rgba(28,82,119,.10)}
+.equipment-choice-photo{
+  height:128px;background:#edf5fa;display:grid;place-items:center;overflow:hidden;position:relative
+}
+.equipment-choice-photo img{width:100%;height:100%;object-fit:cover;display:block}
+.equipment-choice-photo .asset-thumb-fallback{font-size:38px}
+.equipment-choice-body{padding:12px 13px 13px}
+.equipment-choice-category{display:flex;align-items:center;gap:5px;color:#5f7b90;font-size:8px;font-weight:900;margin-bottom:5px}
+.equipment-choice-body h3{margin:0;color:#21445e;font-size:12px;line-height:1.3}
+.equipment-choice-model{margin-top:4px;color:#70879a;font-size:9px;line-height:1.35;min-height:24px}
+.equipment-choice-select{margin-top:9px;color:#1581bd;font-size:9px;font-weight:900}
+@media(max-width:1000px){.equipment-choice-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+@media(max-width:700px){
+  .equipment-choice-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .equipment-choice-photo{height:112px}
+  .apply-equipment-toolbar .search{min-width:100%;width:100%}
+  #applyAssetCategory{flex:1!important;min-width:0}
+}
+@media(max-width:420px){
+  .equipment-choice-grid{grid-template-columns:1fr 1fr!important;gap:9px!important}
+  .equipment-choice-photo{height:96px}
+  .equipment-choice-body{padding:10px}
+  .equipment-choice-body h3{font-size:10.5px}
 }
 
 </style>
@@ -1815,27 +1857,20 @@ table{max-width:none}
   <div class="page-head">
     <div>
       <h1>Mohon Pinjaman ICT</h1>
-      <p>Pilih kategori peralatan. Borang permohonan akan dibuka secara popup.</p>
+      <p>Pilih gambar atau model perkakasan dahulu. Borang maklumat permohonan hanya dibuka selepas item dipilih.</p>
     </div>
   </div>
 
-  <div class="loan-category-intro">
-    <div>
-      <strong>Pilih jenis peralatan yang diperlukan</strong>
-      <span>Hanya aset berstatus TERSEDIA boleh dipohon.</span>
-    </div>
-    <div class="loan-category-total">
-      <b id="applyAvailableCount">0</b>
-      <small>aset tersedia</small>
-    </div>
+  <div class="apply-equipment-toolbar">
+    <div class="search">⌕ <input id="applyAssetSearch" placeholder="Cari model, nama atau kategori perkakasan..."></div>
+    <select class="field" id="applyAssetCategory" style="width:auto"><option value="">Semua kategori</option></select>
+    <span class="apply-count"><b id="applyAvailableCount">0</b> tersedia</span>
   </div>
 
-  <div class="loan-category-grid" id="loanCategoryGrid"></div>
+  <div class="loan-category-grid equipment-choice-grid" id="loanCategoryGrid"></div>
 
   <div class="loan-category-note">
-    <b>Aliran permohonan:</b>
-    Pilih kategori → lengkapkan popup → hantar → tunggu kelulusan ICT →
-    ambil peralatan → pulangkan sebelum tarikh ditetapkan.
+    <b>Cara mohon:</b> tekan gambar/model perkakasan → popup maklumat permohonan → isi butiran → Hantar.
   </div>
 </section>
 
@@ -2105,6 +2140,8 @@ function bindUI(){
   $('#loanFilter').addEventListener('change',renderMyLoans);
   $('#assetSearch').addEventListener('input',renderAvailableAssets);
   $('#assetCategory').addEventListener('change',renderAvailableAssets);
+  $('#applyAssetSearch')?.addEventListener('input',renderApplyCategories);
+  $('#applyAssetCategory')?.addEventListener('change',renderApplyCategories);
 
   $('#loginName').addEventListener('input',handleNameSearch);
   $('#loginName').addEventListener('focus',handleNameSearch);
@@ -2664,34 +2701,45 @@ function renderApplyCategories(){
   const grid=$('#loanCategoryGrid');
   if(!grid) return;
 
-  const config=loanCategoryConfig();
-  const counts={laptop:0,wifi:0,printer:0,extension:0,other:0};
+  const assets=(state.assets||[]).slice();
+  const search=($('#applyAssetSearch')?.value||'').trim().toLowerCase();
+  const category=($('#applyAssetCategory')?.value||'').trim();
 
-  (state.assets||[]).forEach(asset=>{
-    counts[normalizeLoanCategory(asset.category)]++;
+  const select=$('#applyAssetCategory');
+  if(select && select.options.length<=1){
+    const categories=[...new Set(assets.map(x=>String(x.category||'').trim()).filter(Boolean))]
+      .sort((a,b)=>a.localeCompare(b));
+    select.innerHTML='<option value="">Semua kategori</option>'+categories.map(x=>`<option value="${attr(x)}">${esc(x)}</option>`).join('');
+  }
+
+  const filtered=assets.filter(asset=>{
+    const hay=[asset.asset_name,asset.category,asset.brand,asset.model,asset.asset_tag,asset.location]
+      .join(' ').toLowerCase();
+    return (!search||hay.includes(search)) && (!category||String(asset.category||'')===category);
   });
 
-  $('#applyAvailableCount').textContent=(state.assets||[]).length;
+  $('#applyAvailableCount').textContent=filtered.length;
 
-  grid.innerHTML=Object.keys(config).map(key=>{
-    const item=config[key];
-    const count=counts[key]||0;
+  grid.innerHTML=filtered.length?filtered.map(asset=>{
+    const key=normalizeLoanCategory(asset.category);
+    const icon=assetIcon(asset.category);
+    const model=[asset.brand,asset.model].filter(Boolean).join(' ')||'Model tidak dinyatakan';
 
     return `
-      <button
-        type="button"
-        class="loan-category-card ${count?'':'disabled'}"
-        onclick="openLoanRequestModal('${key}')"
-        style="--cat-color:${item.color};--cat-bg:${item.bg};--cat-glow:${item.glow}">
-        <div class="loan-category-icon">${item.icon}</div>
-        <h3>${esc(item.label)}</h3>
-        <p>${esc(item.description)}</p>
-        <span class="loan-category-stock ${count?'available':''}">
-          ${count} tersedia
-        </span>
+      <button class="equipment-choice-card" type="button"
+        onclick="openLoanRequestModal('${key}','${attr(asset.asset_id)}')">
+        <div class="equipment-choice-photo">
+          ${assetThumbHtml(asset,true)}
+        </div>
+        <div class="equipment-choice-body">
+          <div class="equipment-choice-category"><span>${icon}</span>${esc(asset.category||'Peralatan ICT')}</div>
+          <h3>${esc(asset.asset_name||asset.asset_tag||asset.asset_id)}</h3>
+          <div class="equipment-choice-model">${esc(model)}</div>
+          <div class="equipment-choice-select">Tekan untuk mohon →</div>
+        </div>
       </button>
     `;
-  }).join('');
+  }).join(''):`<div class="empty" style="grid-column:1/-1">Tiada peralatan yang sepadan.</div>`;
 }
 
 
@@ -2705,16 +2753,22 @@ function assetsForLoanCategory(key){
 function openLoanRequestModal(categoryKey,preselectAssetId=''){
   const config=loanCategoryConfig();
   const item=config[categoryKey]||config.other;
-  const assets=assetsForLoanCategory(categoryKey);
+  const assets=preselectAssetId
+    ? (state.assets||[]).filter(x=>String(x.asset_id)===String(preselectAssetId))
+    : assetsForLoanCategory(categoryKey);
+  const singleMode=!!preselectAssetId;
 
   state.loanCategory=categoryKey;
   state.loanCategoryLabel=item.label;
   state.imagePayload=null;
 
   $('#loanModalIcon').textContent=item.icon;
-  $('#loanModalTitle').textContent=item.label;
-  $('#loanModalSubtitle').textContent=item.description;
-  $('#loanModalStockText').textContent=`${assets.length} aset tersedia`;
+  const chosen=singleMode?assets[0]:null;
+  $('#loanModalTitle').textContent=chosen?.asset_name||item.label;
+  $('#loanModalSubtitle').textContent=chosen
+    ? [chosen.category,chosen.brand,chosen.model].filter(Boolean).join(' • ')
+    : item.description;
+  $('#loanModalStockText').textContent=singleMode?'Peralatan dipilih':`${assets.length} aset tersedia`;
 
   $('#laptopTypeGroup').classList.toggle('hidden',categoryKey!=='laptop');
   $('#wifiNoGroup').classList.toggle('hidden',categoryKey!=='wifi');
@@ -2747,6 +2801,7 @@ function openLoanRequestModal(categoryKey,preselectAssetId=''){
               class="loan-modal-asset-check"
               value="${attr(asset.asset_id)}"
               ${checked?'checked':''}
+              ${singleMode?'disabled':''}
               onchange="syncLoanModalSelection()">
             <div class="loan-modal-asset-icon linked-photo">${assetThumbHtml(asset,true)}</div>
             <div>
@@ -3039,7 +3094,7 @@ async function submitApplication(){
 
     updatePrettyLoader(
       'Sedang menyimpan',
-      'Jangan tutup halaman. Sistem sedang mengesahkan rekod pinjaman…'
+      'Menyimpan rekod pinjaman…'
     );
 
     const saved=await postApi(
@@ -3055,13 +3110,11 @@ async function submitApplication(){
     }
 
     updatePrettyLoader(
-      'Hampir siap',
-      'Permohonan telah direkod. Menyegerakkan paparan anda…'
+      'Berjaya direkod',
+      'Menyiapkan paparan permohonan anda…'
     );
 
-    // Refresh sekali; jika cache lambat, tambahkan rekod minimum secara optimistik.
-    const refreshed=await refreshPortal(true);
-
+    // Jangan tunggu bootstrap kedua. Backend sudah sahkan loan_id.
     if(!state.loans.some(x=>String(x.loan_id)===String(saved.loan_id))){
       state.loans.unshift({
         loan_id:saved.loan_id,
@@ -3094,6 +3147,9 @@ async function submitApplication(){
 
     showView('myloans');
     renderMyLoans();
+
+    // Sync server selepas UI sudah bebas digunakan.
+    setTimeout(()=>refreshPortal(true),350);
 
     // Fail besar tidak lagi menahan proses permohonan.
     if(pendingAttachment?.dataUrl){
@@ -3289,8 +3345,27 @@ async function applicantWriteStatus(requestId){
 
 async function postApi(action,data,options={}){
   const requestId=makeApplicantRequestId();
-  const body=new URLSearchParams();
 
+  // Permohonan dan batal ialah payload kecil: guna satu JSONP yang
+  // hanya pulangkan success selepas Google Sheet benar-benar selesai ditulis.
+  if(action!=='applicant.file.attach'){
+    return jsonp(
+      'applicant.write',
+      {
+        write_action:action,
+        request_id:requestId,
+        data:JSON.stringify(data),
+        _t:Date.now()
+      },
+      {
+        timeoutMs:options.timeoutMs||18000,
+        retries:0
+      }
+    );
+  }
+
+  // Fail besar kekal POST di belakang selepas loan_id sudah wujud.
+  const body=new URLSearchParams();
   body.set('action',action);
   body.set('token',SYSTEM_CONFIG.APPLICANT_TOKEN);
   body.set('request_id',requestId);
@@ -3301,39 +3376,27 @@ async function postApi(action,data,options={}){
     {method:'POST',mode:'no-cors',body}
   ).catch(()=>{});
 
-  const maxWait=options.maxWait||50000;
+  const maxWait=options.maxWait||120000;
   const started=Date.now();
-  let pause=650;
+  let pause=850;
 
   while(Date.now()-started<maxWait){
     await new Promise(r=>setTimeout(r,pause));
 
     try{
       const status=await applicantWriteStatus(requestId);
-
       if(status?.state==='done'){
-        if(status.ok){
-          return status.data||{};
-        }
-
-        throw new Error(
-          status?.error?.message||
-          'Permohonan tidak dapat disimpan.'
-        );
+        if(status.ok) return status.data||{};
+        throw new Error(status?.error?.message||'Dokumen tidak dapat disimpan.');
       }
     }catch(err){
-      // Timeout status sementara tidak bermaksud POST gagal.
-      if(!/timeout|terlalu lama|sambung|API/i.test(err?.message||'')){
-        throw err;
-      }
+      if(!/timeout|terlalu lama|sambung|API/i.test(err?.message||'')) throw err;
     }
 
-    pause=Math.min(1400,pause+120);
+    pause=Math.min(1800,pause+150);
   }
 
-  throw new Error(
-    'Rekod belum dapat disahkan. Sila tunggu sebentar dan semak Permohonan Saya.'
-  );
+  throw new Error('Dokumen belum dapat disahkan. Rekod pinjaman tidak terjejas.');
 }
 
 
