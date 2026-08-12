@@ -1603,6 +1603,18 @@ table{max-width:none}
 .linked-asset-photo .asset-linked-thumb{width:100%;height:100%}
 .linked-asset-photo .asset-thumb-fallback{font-size:40px}
 
+
+/* =========================================================
+   V6.7 - FAST ENTRY + CENTERED PKPJ BRAND
+   ========================================================= */
+.compact-login-card>.pkpj-login-logo{margin-left:auto!important;margin-right:auto!important;display:grid!important}
+.compact-login-card>h2,.compact-login-card>.compact-sub{text-align:center!important}
+.compact-login-card>h2{max-width:520px;margin-left:auto!important;margin-right:auto!important}
+.compact-login-card>.compact-sub{max-width:430px;margin-left:auto!important;margin-right:auto!important}
+.portal-fast-status{min-height:16px;margin-top:7px;text-align:center;font-size:9px;color:#7990a4}
+.portal-fast-status.ready{color:#22805f}.portal-fast-status.loading{color:#47789d}
+@media(max-width:600px){.compact-login-card>.pkpj-login-logo{width:58px!important;height:58px!important}.compact-login-card>h2{font-size:25px!important}}
+
 </style>
 </head>
 <body>
@@ -1616,10 +1628,9 @@ table{max-width:none}
         muted
         loop
         playsinline
-        autoplay
-        preload="metadata"
-        poster="pemohon-ict-poster.jpg">
-        <source src="pemohon-ict.mp4" type="video/mp4">
+        preload="none"
+        poster="pemohon-ict-poster.jpg"
+        data-src="pemohon-ict.mp4">
       </video>
 
       <div class="compact-video-shade"></div>
@@ -1635,7 +1646,7 @@ table{max-width:none}
       <div class="compact-login-card">
         <div class="compact-app-icon pkpj-login-logo"><img src="pkpj-premium.png" alt="PKPJ"></div>
 
-        <h2>Selamat Datang ke Portal Permohonan Inventori ICT</h2>
+        <h2>Selamat Datang ke Portal Permohonan Peminjaman Inventori ICT</h2>
         <p class="compact-sub">
           Pilih nama anda daripada senarai staff untuk masuk.
         </p>
@@ -1653,6 +1664,7 @@ table{max-width:none}
           </div>
 
           <div class="suggestions hidden" id="staffSuggestions"></div>
+          <div class="portal-fast-status loading" id="staffLoadStatus">Memuatkan senarai nama…</div>
         </div>
 
         <button class="btn btn-primary compact-enter-btn" id="loginBtn">
@@ -1660,7 +1672,7 @@ table{max-width:none}
         </button>
 
         <div class="compact-help">
-          <span>Portal Inventori ICT</span>
+          <span>Portal Permohonan Peminjaman Inventori ICT</span>
         </div>
       </div>
     </section>
@@ -1871,7 +1883,7 @@ const SYSTEM_CONFIG={
   APPLICANT_TOKEN:'4E52A3842E482E9B56766B10FDE318AD'
 };
 
-const state={profile:null,kpi:{},assets:[],loans:[],staffList:[],selectedUserId:'',connected:false,currentView:'home',imagePayload:null,lastSync:0,syncTimer:null,refreshPromise:null,loanCategory:'',loanCategoryLabel:'',qrAssetId:''};
+const state={profile:null,kpi:{},assets:[],loans:[],staffList:[],selectedUserId:'',connected:false,currentView:'home',imagePayload:null,lastSync:0,syncTimer:null,refreshPromise:null,loanCategory:'',loanCategoryLabel:'',qrAssetId:'',videoScheduled:false};
 const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>[...r.querySelectorAll(s)];
 
@@ -1879,16 +1891,25 @@ const $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const PORTAL_CACHE_TTL=10*60*1000;
 
 function portalCacheKey(userId){
-  return 'ict_applicant_bootstrap_v65_'+String(userId||'');
+  return 'ict_applicant_bootstrap_v67_'+String(userId||'');
 }
 
 function readPortalCache(userId){
   try{
-    const raw=localStorage.getItem(portalCacheKey(userId));
-    if(!raw) return null;
-    const item=JSON.parse(raw);
-    if(!item?.savedAt || Date.now()-item.savedAt>PORTAL_CACHE_TTL) return null;
-    return item.data||null;
+    const keys=[
+      portalCacheKey(userId),
+      'ict_applicant_bootstrap_v66_'+String(userId||'')
+    ];
+
+    for(const key of keys){
+      const raw=localStorage.getItem(key);
+      if(!raw) continue;
+      const item=JSON.parse(raw);
+      if(!item?.savedAt || Date.now()-item.savedAt>PORTAL_CACHE_TTL) continue;
+      return item.data||null;
+    }
+
+    return null;
   }catch(err){return null}
 }
 
@@ -1902,16 +1923,16 @@ function savePortalCache(data){
 
 function readStaffCache(){
   try{
-    const raw=localStorage.getItem('ict_applicant_staff_cache_v65');
+    const raw=localStorage.getItem('ict_applicant_staff_cache_v66');
     if(!raw) return [];
     const item=JSON.parse(raw);
-    if(Date.now()-(item.savedAt||0)>6*60*60*1000) return [];
+    if(Date.now()-(item.savedAt||0)>7*24*60*60*1000) return [];
     return Array.isArray(item.data)?item.data:[];
   }catch(err){return []}
 }
 
 function saveStaffCache(list){
-  try{localStorage.setItem('ict_applicant_staff_cache_v65',JSON.stringify({savedAt:Date.now(),data:list}));}catch(err){}
+  try{localStorage.setItem('ict_applicant_staff_cache_v66',JSON.stringify({savedAt:Date.now(),data:list}));}catch(err){}
 }
 
 document.addEventListener('DOMContentLoaded',init);
@@ -1921,16 +1942,21 @@ function init(){
   bindUI();
   initPemohonHeroVideo();
 
+  // Nama staff diberi keutamaan berbanding video.
   const cachedStaff=readStaffCache();
   if(cachedStaff.length){
     state.staffList=cachedStaff;
+    setStaffLoadStatus(`Senarai nama sedia • ${cachedStaff.length} staff`,'ready');
+    schedulePemohonVideo(1800);
+
     const refreshStaff=()=>loadStaffNames(true);
     if('requestIdleCallback' in window){
-      requestIdleCallback(refreshStaff,{timeout:3500});
+      requestIdleCallback(refreshStaff,{timeout:5000});
     }else{
-      setTimeout(refreshStaff,2500);
+      setTimeout(refreshStaff,3500);
     }
   }else{
+    setStaffLoadStatus('Memuatkan senarai nama…','loading');
     loadStaffNames();
   }
 
@@ -1944,16 +1970,16 @@ function init(){
     const cached=readPortalCache(savedId);
     if(cached){
       applyBootstrap(cached);
-      $('#loginOverlay').classList.add('hidden');
-      setPemohonVideoActive(false);
-      setTimeout(()=>maybeOpenQrAsset(false),50);
+    }else{
+      enterPortalShell(savedId,savedName);
     }
 
-    if(cached){
-      setTimeout(()=>loginApplicant(true),900);
-    }else{
-      loginApplicant(true);
-    }
+    $('#loginOverlay').classList.add('hidden');
+    setPemohonVideoActive(false);
+    setTimeout(()=>maybeOpenQrAsset(false),40);
+
+    // Refresh data selepas portal sudah terbuka; jangan tahan skrin login.
+    setTimeout(()=>refreshPortal(true),250);
   }
 }
 
@@ -2012,8 +2038,33 @@ function setPemohonVideoActive(active){
 
   if(document.visibilityState!=='visible') return;
 
+  if(video.dataset.loaded!=='1'){
+    const src=video.dataset.src;
+    if(!src) return;
+    video.dataset.loaded='1';
+    video.src=src;
+    video.load();
+  }
+
   const p=video.play();
   if(p && typeof p.catch==='function') p.catch(()=>{});
+}
+
+
+function schedulePemohonVideo(delay=1800){
+  if(state.videoScheduled) return;
+  state.videoScheduled=true;
+
+  const start=()=>{
+    const loginVisible=!$('#loginOverlay')?.classList.contains('hidden');
+    if(loginVisible) setPemohonVideoActive(true);
+  };
+
+  if('requestIdleCallback' in window){
+    requestIdleCallback(start,{timeout:delay+1200});
+  }else{
+    setTimeout(start,delay);
+  }
 }
 
 
@@ -2021,14 +2072,13 @@ function initPemohonHeroVideo(){
   const video=$('#pemohonHeroVideo');
   if(!video) return;
 
-  setPemohonVideoActive(true);
-
+  // Jangan load video di sini. Staff/API diberi keutamaan dahulu.
   document.addEventListener('visibilitychange',()=>{
     const loginVisible=!$('#loginOverlay')?.classList.contains('hidden');
 
     if(document.visibilityState==='hidden'){
       video.pause();
-    }else if(loginVisible){
+    }else if(loginVisible && state.videoScheduled){
       setPemohonVideoActive(true);
     }
   });
@@ -2056,19 +2106,32 @@ function showView(name){
   if(
     state.profile &&
     ['home','apply','myloans','assets'].includes(name) &&
-    Date.now()-(state.lastSync||0)>45000
+    Date.now()-(state.lastSync||0)>90000
   ){
     refreshPortal(true);
   }
 }
 
+function setStaffLoadStatus(message,stateName='loading'){
+  const el=$('#staffLoadStatus');
+  if(!el) return;
+  el.textContent=message||'';
+  el.classList.remove('ready','loading');
+  el.classList.add(stateName);
+}
+
 async function loadStaffNames(silent=false){
   try{
-    const list=await jsonp('applicant.staff_list',{_t:Date.now()});
+    const list=await jsonp('applicant.staff_list',{}, {timeoutMs:10000,retries:0});
     state.staffList=Array.isArray(list)?list:[];
     saveStaffCache(state.staffList);
+    setStaffLoadStatus(state.staffList.length?`Senarai nama sedia • ${state.staffList.length} staff`:'Tiada nama staff','ready');
+    schedulePemohonVideo(1000);
   }catch(err){
-    if(!state.staffList.length) setConnected(false);
+    if(!state.staffList.length){
+      setConnected(false);
+      setStaffLoadStatus('Senarai nama belum dapat dimuatkan','loading');
+    }
     if(!silent && !state.staffList.length){
       toast('Senarai staff belum dapat dimuatkan',err.message,'err');
     }else{
@@ -2143,6 +2206,26 @@ function identity(){
   };
 }
 
+function enterPortalShell(userId,name){
+  const user=state.staffList.find(x=>String(x.user_id)===String(userId))||{};
+
+  state.profile={
+    user_id:String(userId||''),
+    name:String(user.name||name||'Pemohon'),
+    department:user.department||'',
+    unit:user.unit||'',
+    role:'PEMOHON'
+  };
+
+  // Kekalkan data cache yang sudah ada; jika belum ada, paparkan shell dahulu.
+  state.kpi=state.kpi||{};
+  state.assets=state.assets||[];
+  state.loans=state.loans||[];
+
+  renderShell();
+  renderHomeView();
+}
+
 async function loginApplicant(silent=false){
   const name=($('#loginName').value||'').trim();
 
@@ -2152,40 +2235,56 @@ async function loginApplicant(silent=false){
   }
 
   if(!state.selectedUserId){
-    return toast('Pilih nama','Taip huruf awal dan pilih nama daripada senarai.','err');
+    return toast('Pilih nama','Taip sebahagian nama dan pilih nama daripada senarai.','err');
   }
 
   const btn=$('#loginBtn');
   btn.disabled=true;
   btn.textContent='Membuka portal...';
 
+  const userId=state.selectedUserId;
+  const selected=state.staffList.find(x=>String(x.user_id)===String(userId));
+  const finalName=selected?.name||name;
+
+  // MASUK TERUS: jangan tunggu bootstrap penuh untuk menutup skrin login.
+  localStorage.setItem('ict_applicant_user_id',userId);
+  localStorage.setItem('ict_applicant_name',finalName);
+
+  const cached=readPortalCache(userId);
+  if(cached){
+    applyBootstrap(cached);
+  }else{
+    enterPortalShell(userId,finalName);
+  }
+
+  $('#loginOverlay').classList.add('hidden');
+  setPemohonVideoActive(false);
+  btn.disabled=false;
+  btn.textContent='Masuk Portal Pemohon';
+  setTimeout(()=>maybeOpenQrAsset(false),30);
+
+  if(!silent){
+    toast('Selamat datang',finalName||'Pemohon','ok');
+  }
+
+  // Data sebenar disegerakkan selepas portal sudah boleh digunakan.
   try{
     const data=await jsonp('applicant.bootstrap',{
-      user_id:state.selectedUserId,
-      name:name
-    });
-
-    localStorage.setItem('ict_applicant_user_id',state.selectedUserId);
-    localStorage.setItem('ict_applicant_name',name);
+      user_id:userId,
+      name:finalName,
+      _t:Date.now()
+    },{timeoutMs:15000,retries:0});
 
     applyBootstrap(data);
-    $('#loginOverlay').classList.add('hidden');
-    setPemohonVideoActive(false);
-    setTimeout(()=>maybeOpenQrAsset(true),50);
+    savePortalCache(data);
+    setTimeout(()=>maybeOpenQrAsset(true),30);
 
-    if(!silent){
-      toast('Selamat datang',data.profile?.name||'Pemohon','ok');
-    }
   }catch(err){
     if(!state.profile) setConnected(false);
-    if(!silent || !state.profile){
-      toast('Tak dapat masuk',err.message,'err');
-    }else{
-      console.warn('Refresh sesi pemohon tertangguh:',err);
+    console.warn('Sync selepas login tertangguh:',err);
+    if(!cached && !silent){
+      toast('Portal dibuka','Data sedang cuba disegerakkan semula. Anda boleh terus menggunakan menu portal.','ok');
     }
-  }finally{
-    btn.disabled=false;
-    btn.textContent='Masuk Portal Pemohon';
   }
 }
 
@@ -2829,7 +2928,7 @@ function startPortalSync(){
     ){
       refreshPortal(true);
     }
-  },90000);
+  },120000);
 }
 
 
@@ -2849,7 +2948,7 @@ function loanProgress(status){
   return `<div class="loan-progress-mini">${steps.map((_,i)=>`<i class="${i<=index?'done':''}"></i>`).join('')}<small>${index===0?'Menunggu ICT':index===1?'Sedia untuk diambil':index===2?'Sedang dipinjam':'Selesai'}</small></div>`;
 }
 
-function jsonpOnce(action,params={},timeoutMs=32000){
+function jsonpOnce(action,params={},timeoutMs=18000){
   return new Promise((resolve,reject)=>{
     const cb='__pemohon_'+Date.now()+'_'+Math.floor(Math.random()*99999);
     const q=new URLSearchParams({action,token:SYSTEM_CONFIG.APPLICANT_TOKEN,callback:cb,...Object.fromEntries(Object.entries(params).filter(([,v])=>v!==undefined&&v!==null&&v!==''))});
@@ -2863,8 +2962,8 @@ function jsonpOnce(action,params={},timeoutMs=32000){
 }
 
 async function jsonp(action,params={},options={}){
-  const timeoutMs=options.timeoutMs||32000;
-  const retries=Number.isFinite(options.retries)?options.retries:1;
+  const timeoutMs=options.timeoutMs||18000;
+  const retries=Number.isFinite(options.retries)?options.retries:0;
   let lastErr=null;
 
   for(let attempt=0;attempt<=retries;attempt++){
