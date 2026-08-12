@@ -560,6 +560,12 @@ html,body{max-width:100%;overflow-x:hidden}
   .asset-actions{min-width:180px}
 }
 
+
+/* V7.2 PERFORMANCE + INVENTORI API */
+.asset-actions{display:grid!important;grid-template-columns:repeat(3,max-content);gap:5px!important;align-items:center}
+.asset-action-btn{min-height:30px!important;padding:6px 8px!important;font-size:9.5px!important;white-space:nowrap}
+@media(max-width:1180px){.asset-actions{grid-template-columns:1fr!important}.asset-action-btn{width:100%}}
+
 </style></head>
 <body><div class="app">
 <aside class="sidebar" id="sidebar"><div class="sidebar-media" aria-hidden="true"><video id="sidebarVideo" class="sidebar-bg-video" muted loop playsinline autoplay preload="none" poster="sidebar-celcom-poster.jpg" data-src="sidebar-celcom.mp4"></video></div><div class="sidebar-overlay" aria-hidden="true"></div><div class="brand"><div class="brand-mark pkpj-brand-mark"><img src="pkpj-premium.png" alt="PKPJ"></div><div><strong>Sistem ICT</strong><span>Langganan & Pinjaman</span></div></div><nav class="nav">
@@ -742,11 +748,14 @@ function init(){
   }
 
   // Start media after first paint so video cannot block initial UI.
+  // Beri API/dashboard keutamaan penuh; video hanya mula selepas UI stabil.
   requestAnimationFrame(function(){
     setTimeout(function(){
       try{ initHeroVideo(); }catch(err){ console.warn(err); }
+    }, 1200);
+    setTimeout(function(){
       try{ initSidebarVideo(); }catch(err){ console.warn(err); }
-    }, 120);
+    }, 2200);
   });
 
   // Fetch fresh data in background without blocking navigation.
@@ -985,13 +994,34 @@ function jsonp(action, params={}){
 }
 
 /* =========================================================
-   API: POST
-   mode:no-cors = browser hantar request tanpa perlu baca response.
-   Selepas POST, UI reload data melalui JSONP.
+   API WRITE V2
+   - data biasa: JSONP admin.write -> response/error boleh dibaca
+   - payload besar/gambar: POST no-cors hanya untuk upload binary
 ========================================================= */
 async function postApi(action, data={}){
   if(!cfg.apiUrl) throw new Error('API URL belum ditetapkan.');
 
+  const payload={
+    ...data,
+    actor_email:data.actor_email || cfg.actorEmail
+  };
+
+  const serialized=JSON.stringify(payload);
+  const hasImage=!!payload.image_data_url;
+
+  // Reliable path: kita boleh baca success/error sebenar dari Apps Script.
+  if(!hasImage && serialized.length < 6500){
+    return jsonp('admin.write',{
+      write_action:action,
+      data:serialized,
+      _t:Date.now()
+    });
+  }
+
+  return postApiLarge(action,payload);
+}
+
+async function postApiLarge(action, data={}){
   const body=new URLSearchParams();
   body.set('action',action);
   body.set('token',cfg.token);
@@ -1006,7 +1036,17 @@ async function postApi(action, data={}){
     body
   });
 
-  return true;
+  return {queued:true};
+}
+
+async function checkApiHealth(){
+  try{
+    const health=await jsonp('admin.health',{_t:Date.now()});
+    return health;
+  }catch(err){
+    console.warn('API health check gagal:',err);
+    return null;
+  }
 }
 
 function requireConfig(){
@@ -1330,7 +1370,8 @@ Aset akan kekal dalam rekod Admin tetapi tidak akan dipaparkan kepada pemohon.`)
     });
 
     toast('Aset dinyahaktifkan','Rekod kekal, tetapi aset tidak lagi tersedia untuk pemohon.','ok');
-    setTimeout(()=>{loadAssets(true);loadDashboard(true)},750);
+    await loadAssets(true);
+    loadDashboard(true);
   }catch(err){handleError(err)}
 }
 
@@ -1348,7 +1389,8 @@ async function setAssetActive(assetId){
     });
 
     toast('Aset diaktifkan','Aset akan kembali dipaparkan kepada pemohon jika tersedia.','ok');
-    setTimeout(()=>{loadAssets(true);loadDashboard(true)},750);
+    await loadAssets(true);
+    loadDashboard(true);
   }catch(err){handleError(err)}
 }
 
@@ -1359,28 +1401,26 @@ async function deleteAssetPermanent(assetId){
 
   const label=asset.asset_tag||asset.asset_name||assetId;
 
-  if(!confirm(`DELETE KEKAL ${label}?
-
-Tindakan ini hanya sesuai untuk item testing / tersalah daftar. Jika aset pernah ada pinjaman atau maintenance, backend akan menolak delete dan anda perlu guna Tidak Aktif.`)) return;
+  if(!confirm(`DELETE KEKAL ${label}?\n\nGunakan Delete untuk item testing / tersalah daftar. Jika aset mempunyai sejarah pinjaman atau maintenance, sistem akan terangkan sebab ia tidak boleh dipadam dan anda boleh gunakan Tidak Aktif.`)) return;
 
   try{
-    await postApi('asset.delete',{asset_id:assetId});
+    const result=await postApi('asset.delete',{asset_id:assetId});
 
-    toast('Arahan delete dihantar','Sistem sedang mengesahkan sama ada aset boleh dipadam kekal.','ok');
+    await loadAssets(true);
 
-    setTimeout(async()=>{
-      await loadAssets(true);
-      const stillExists=state.assets.some(x=>String(x.asset_id)===String(assetId));
+    const stillExists=state.assets.some(x=>String(x.asset_id)===String(assetId));
 
-      if(stillExists){
-        toast('Delete tidak dilaksanakan','Aset masih wujud. Jika ada sejarah pinjaman/maintenance, gunakan Tidak Aktif.','err');
-      }else{
-        toast('Aset dipadam','Rekod ujian telah dipadam kekal.','ok');
-        loadDashboard(true);
-      }
-    },1000);
+    if(stillExists){
+      throw new Error('Aset masih wujud selepas proses delete. Sila cuba refresh atau semak deployment backend terbaru.');
+    }
 
-  }catch(err){handleError(err)}
+    toast('Aset dipadam',`${label} telah dipadam kekal.`,'ok');
+    loadDashboard(true);
+    return result;
+
+  }catch(err){
+    toast('Delete tidak berjaya',err.message,'err');
+  }
 }
 
 /* =========================================================
@@ -1811,19 +1851,26 @@ async function submitModal(){
         throw new Error('Lengkapkan field bertanda *.');
       }
 
-      Object.assign(data,await prepareImagePayload('sub_image'));
+      const imagePayload=await prepareImagePayload('sub_image');
 
       btn.textContent='Menyimpan...';
-      await postApi('subscription.create',data);
+      const saved=await postApi('subscription.create',data);
+
+      if(imagePayload.image_data_url && saved?.subscription_id){
+        btn.textContent='Menyimpan gambar...';
+        await postApiLarge('image.attach',{
+          entity_type:'subscription',
+          entity_id:saved.subscription_id,
+          ...imagePayload
+        });
+      }
 
       closeModal();
       markDataStale();
-      toast('Langganan disimpan','Rekod dan gambar sedang disegerakkan ke Google Sheets / Drive.','ok');
+      toast('Langganan disimpan','Rekod berjaya disimpan.','ok');
 
-      setTimeout(()=>{
-        loadSubscriptions(true);
-        loadDashboard(true);
-      },850);
+      await loadSubscriptions(true);
+      loadDashboard(true);
     }
 
     if(state.modalType==='asset' || state.modalType==='asset_edit'){
@@ -1851,19 +1898,27 @@ async function submitModal(){
         throw new Error('Lengkapkan field bertanda *.');
       }
 
-      Object.assign(data,await prepareImagePayload('asset_image'));
+      const imagePayload=await prepareImagePayload('asset_image');
 
       btn.textContent=editing?'Mengemaskini...':'Menyimpan...';
-      await postApi(editing?'asset.update':'asset.create',data);
+      const saved=await postApi(editing?'asset.update':'asset.create',data);
+      const targetId=editing ? data.asset_id : saved?.asset_id;
+
+      if(imagePayload.image_data_url && targetId){
+        btn.textContent='Menyimpan gambar...';
+        await postApiLarge('image.attach',{
+          entity_type:'asset',
+          entity_id:targetId,
+          ...imagePayload
+        });
+      }
 
       closeModal();
       markDataStale();
-      toast(editing?'Aset dikemaskini':'Aset disimpan',editing?'Perubahan inventori telah dihantar.':'Rekod inventori telah ditambah.','ok');
+      toast(editing?'Aset dikemaskini':'Aset disimpan',editing?'Perubahan inventori berjaya disimpan.':'Rekod inventori berjaya ditambah.','ok');
 
-      setTimeout(()=>{
-        loadAssets(true);
-        loadDashboard(true);
-      },750);
+      await loadAssets(true);
+      loadDashboard(true);
     }
 
     if(state.modalType==='loan'){
@@ -1885,10 +1940,14 @@ async function submitModal(){
         throw new Error('Pilih peminjam, due date dan sekurang-kurangnya satu aset.');
       }
 
-      Object.assign(data,await prepareImagePayload('loan_image'));
+      const loanImagePayload=await prepareImagePayload('loan_image');
 
       btn.textContent='Menyimpan...';
-      await postApi('loan.create',data);
+      const savedLoan=await postApi('loan.create',data);
+
+      if(loanImagePayload?.image_data_url && savedLoan?.loan_id){
+        await postApiLarge('image.attach',{entity_type:'loan',entity_id:savedLoan.loan_id,...loanImagePayload});
+      }
 
       closeModal();
       markDataStale();
