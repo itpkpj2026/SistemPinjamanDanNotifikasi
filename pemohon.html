@@ -1592,6 +1592,17 @@ table{max-width:none}
 .asset-view-image{color:#176fae!important;background:#eef8ff!important;border-color:#c8e2f2!important;text-decoration:none!important}
 .popup-view-image{display:inline-flex;margin-top:5px;padding:3px 6px;border-radius:7px;background:#edf8ff;color:#176fae;text-decoration:none;font-size:8px;font-weight:850}
 
+
+/* V6.4 - GAMBAR INVENTORI TERUS LINK KE PORTAL PEMOHON */
+.asset-linked-thumb{width:100%;height:100%;display:grid;place-items:center;overflow:hidden;background:#edf6fc}
+.asset-linked-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.asset-linked-thumb.compact{border-radius:9px}
+.asset-thumb-fallback{width:100%;height:100%;display:grid;place-items:center;font-size:inherit}
+.loan-modal-asset-icon.linked-photo{overflow:hidden;padding:0;background:#edf6fc}
+.loan-modal-asset-icon.linked-photo .asset-thumb-fallback{font-size:18px}
+.linked-asset-photo .asset-linked-thumb{width:100%;height:100%}
+.linked-asset-photo .asset-thumb-fallback{font-size:40px}
+
 </style>
 </head>
 <body>
@@ -1868,7 +1879,7 @@ const $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const PORTAL_CACHE_TTL=10*60*1000;
 
 function portalCacheKey(userId){
-  return 'ict_applicant_bootstrap_'+String(userId||'');
+  return 'ict_applicant_bootstrap_v64_'+String(userId||'');
 }
 
 function readPortalCache(userId){
@@ -1891,7 +1902,7 @@ function savePortalCache(data){
 
 function readStaffCache(){
   try{
-    const raw=localStorage.getItem('ict_applicant_staff_cache_v61');
+    const raw=localStorage.getItem('ict_applicant_staff_cache_v64');
     if(!raw) return [];
     const item=JSON.parse(raw);
     if(Date.now()-(item.savedAt||0)>6*60*60*1000) return [];
@@ -1900,7 +1911,7 @@ function readStaffCache(){
 }
 
 function saveStaffCache(list){
-  try{localStorage.setItem('ict_applicant_staff_cache_v61',JSON.stringify({savedAt:Date.now(),data:list}));}catch(err){}
+  try{localStorage.setItem('ict_applicant_staff_cache_v64',JSON.stringify({savedAt:Date.now(),data:list}));}catch(err){}
 }
 
 document.addEventListener('DOMContentLoaded',init);
@@ -2244,6 +2255,32 @@ function renderCategories(){
   $('#categoryGrid').innerHTML=entries.length?entries.map(([cat,count])=>`<div class="cat-card"><div class="cat-icon">${icon[cat]||'▣'}</div><label>${esc(cat)}</label><strong>${count}</strong></div>`).join(''):'<div class="empty" style="grid-column:1/-1">Tiada aset tersedia.</div>';
 }
 
+function assetImagePreviewUrl(asset){
+  if(!asset) return '';
+  if(asset.image_preview_url) return String(asset.image_preview_url);
+  if(asset.image_file_id){
+    return 'https://drive.google.com/thumbnail?id='+encodeURIComponent(asset.image_file_id)+'&sz=w1200';
+  }
+  return String(asset.image_url||'');
+}
+
+function assetImageOpenUrl(asset){
+  if(!asset) return '';
+  if(asset.image_open_url) return String(asset.image_open_url);
+  if(asset.image_file_id){
+    return 'https://drive.google.com/file/d/'+encodeURIComponent(asset.image_file_id)+'/view';
+  }
+  return String(asset.image_url||'');
+}
+
+function assetThumbHtml(asset,compact=false){
+  const preview=assetImagePreviewUrl(asset);
+  const fallback=assetIcon(asset?.category);
+  if(!preview) return `<span class="asset-thumb-fallback">${fallback}</span>`;
+  const cls=compact?'asset-linked-thumb compact':'asset-linked-thumb';
+  return `<span class="${cls}"><img src="${attr(preview)}" alt="${attr(asset?.asset_name||'Gambar aset')}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'"><span class="asset-thumb-fallback" style="display:none">${fallback}</span></span>`;
+}
+
 function normalizeLoanCategory(category){
   const s=String(category||'').toLowerCase();
 
@@ -2399,7 +2436,7 @@ function openLoanRequestModal(categoryKey,preselectAssetId=''){
               value="${attr(asset.asset_id)}"
               ${checked?'checked':''}
               onchange="syncLoanModalSelection()">
-            <div class="loan-modal-asset-icon">${assetIcon(asset.category)}</div>
+            <div class="loan-modal-asset-icon linked-photo">${assetThumbHtml(asset,true)}</div>
             <div>
               <strong>${esc(asset.asset_name||asset.asset_tag||asset.asset_id)}</strong>
               <small>
@@ -2407,7 +2444,7 @@ function openLoanRequestModal(categoryKey,preselectAssetId=''){
                 ${asset.model?` • ${esc(asset.model)}`:''}
                 ${asset.location?` • ${esc(asset.location)}`:''}
               </small>
-              ${asset.image_url?`<a class="popup-view-image" href="${attr(asset.image_url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Lihat Gambar</a>`:''}
+              ${assetImageOpenUrl(asset)?`<a class="popup-view-image" href="${attr(assetImageOpenUrl(asset))}" target="_blank" rel="noopener" onclick="event.stopPropagation()">🖼 Lihat Gambar</a>`:''}
             </div>
           </label>
         `;
@@ -2541,8 +2578,8 @@ function renderAvailableAssets(){
   });
   $('#availableAssetGrid').innerHTML=rows.length?rows.map(a=>`
     <div class="card asset-card">
-      <div class="photo">${a.image_url?`<img src="${attr(a.image_url)}" alt="" loading="lazy" decoding="async">`:assetIcon(a.category)}</div>
-      <div class="body"><span class="pill green">TERSEDIA</span><h3>${esc(a.asset_name)}</h3><p>${esc(a.asset_tag)}<br>${esc([a.brand,a.model].filter(Boolean).join(' ')||a.category)}<br>${esc(a.location||'')}</p><div class="asset-card-actions">${a.image_url?`<a class="btn btn-sm asset-view-image" href="${attr(a.image_url)}" target="_blank" rel="noopener">🖼 Lihat Gambar</a>`:''}<button class="btn btn-primary btn-sm" onclick="chooseAsset('${attr(a.asset_id)}')">Pilih untuk Pinjam</button></div></div>
+      <div class="photo linked-asset-photo">${assetThumbHtml(a,false)}</div>
+      <div class="body"><span class="pill green">TERSEDIA</span><h3>${esc(a.asset_name)}</h3><p>${esc(a.asset_tag)}<br>${esc([a.brand,a.model].filter(Boolean).join(' ')||a.category)}<br>${esc(a.location||'')}</p><div class="asset-card-actions">${assetImageOpenUrl(a)?`<a class="btn btn-sm asset-view-image" href="${attr(assetImageOpenUrl(a))}" target="_blank" rel="noopener">🖼 Lihat Gambar</a>`:''}<button class="btn btn-primary btn-sm" onclick="chooseAsset('${attr(a.asset_id)}')">Pilih untuk Pinjam</button></div></div>
     </div>
   `).join(''):'<div class="empty" style="grid-column:1/-1">Tiada peralatan sepadan.</div>';
 }
