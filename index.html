@@ -620,6 +620,120 @@ html,body{max-width:100%;overflow-x:hidden}
 .qr-backdrop{position:fixed;inset:0;z-index:240;background:rgba(13,38,62,.48);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:18px}.qr-backdrop.show{display:flex}.qr-card{width:min(460px,94vw);background:#fff;border-radius:22px;box-shadow:0 30px 80px rgba(12,39,67,.28);overflow:hidden}.qr-head{display:flex;justify-content:space-between;align-items:flex-start;padding:16px 18px;border-bottom:1px solid #e4edf4}.qr-head strong{display:block;color:#173652}.qr-head span{display:block;font-size:9px;color:#8193a3;margin-top:3px}.qr-body{text-align:center;padding:20px}.qr-asset-name{font-weight:900;color:#193956;margin-bottom:10px}.qr-body img{width:280px;height:280px;max-width:80vw;border:1px solid #e2ebf2;border-radius:14px;background:#fff}.qr-body code{display:block;margin:12px auto;padding:8px;max-width:100%;overflow-wrap:anywhere;border-radius:9px;background:#f6f9fb;color:#60768a;font-size:9px}.qr-actions{display:flex;justify-content:center;gap:7px;flex-wrap:wrap;margin-top:10px}
 @media(max-width:600px){.qr-body img{width:235px;height:235px}}
 
+
+/* =========================================================
+   V7.7 - INVENTORI MINIMAL + ONE PORTAL QR + PROFILE VIEW
+   ========================================================= */
+.portal-qr-strip{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  margin:12px 0 14px;
+  padding:11px 14px;
+  border:1px solid #dce8f1;
+  border-radius:16px;
+  background:linear-gradient(120deg,#ffffff,#f4faff);
+  box-shadow:0 8px 22px rgba(30,74,112,.055);
+}
+.portal-qr-copy{display:flex;align-items:center;gap:11px;min-width:0}
+.portal-qr-copy>div:last-child{min-width:0}
+.portal-qr-copy strong{display:block;color:#173955;font-size:12px}
+.portal-qr-copy span{display:block;margin-top:2px;color:#71879a;font-size:9.5px;line-height:1.4}
+.portal-qr-icon{
+  width:38px;height:38px;min-width:38px;display:grid;place-items:center;
+  border-radius:11px;background:#eaf6ff;color:#147bc0;font-size:20px
+}
+.portal-qr-right{display:flex;align-items:center;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+.portal-qr-thumb{
+  width:58px;height:58px;padding:4px;border:1px solid #d8e5ee;border-radius:10px;
+  background:#fff;cursor:pointer;box-shadow:0 5px 12px rgba(32,77,112,.06)
+}
+.portal-qr-thumb img{width:100%;height:100%;object-fit:contain;display:block}
+
+.asset-admin-table th,.asset-admin-table td{vertical-align:middle}
+.asset-admin-table .actions-head{width:126px;text-align:center}
+.asset-admin-table td:last-child{width:126px}
+.asset-admin-table td:nth-child(2){width:74px}
+
+.asset-list-thumb{
+  width:54px;height:42px;border-radius:9px;overflow:hidden;
+  border:1px solid #dce7ef;background:#f4f8fb;
+  display:grid;place-items:center;cursor:pointer;
+  box-shadow:0 4px 10px rgba(30,72,105,.045)
+}
+.asset-list-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.asset-list-thumb.no-image{cursor:default;color:#9aabb9;font-size:16px}
+.asset-list-thumb:hover:not(.no-image){border-color:#a9cee6;box-shadow:0 7px 15px rgba(30,84,124,.10)}
+
+.asset-actions-minimal{
+  display:flex;align-items:center;justify-content:center;gap:5px;white-space:nowrap
+}
+.asset-icon-btn{
+  width:31px;height:31px;padding:0;display:grid;place-items:center;
+  border:1px solid #dce7ef;border-radius:9px;background:#fff;color:#45677f;
+  cursor:pointer;font-size:14px;transition:.14s
+}
+.asset-icon-btn:hover{transform:translateY(-1px);background:#f4faff;border-color:#b9d7e9}
+.asset-icon-btn.view{color:#116fae}
+.asset-icon-btn.edit{color:#6b52bd}
+.asset-icon-btn.inactive{color:#b67619}
+.asset-icon-btn.activate{color:#18805d}
+.asset-icon-btn:disabled{opacity:.35;cursor:not-allowed;transform:none}
+
+.asset-manual-details{
+  grid-column:1/-1;border:1px solid #dce7ef;border-radius:12px;background:#f8fbfd;overflow:hidden
+}
+.asset-manual-details summary{
+  list-style:none;cursor:pointer;padding:11px 13px;font-size:10px;font-weight:900;
+  color:#43637c;display:flex;align-items:center;justify-content:space-between
+}
+.asset-manual-details summary::-webkit-details-marker{display:none}
+.asset-manual-details summary:after{content:'＋';font-size:15px;color:#6f8ba1}
+.asset-manual-details[open] summary:after{content:'−'}
+.asset-manual-inner{padding:0 12px 12px}
+.asset-manual-inner .form-group{margin:0}
+.asset-manual-hint{font-size:9px;color:#8295a5;margin-top:6px}
+
+.asset-edit-danger{
+  grid-column:1/-1;margin-top:4px;padding:11px 12px;border:1px solid #f0d0d6;
+  border-radius:12px;background:#fff9fa;display:flex;align-items:center;
+  justify-content:space-between;gap:12px
+}
+.asset-edit-danger strong{display:block;font-size:10px;color:#9f3850}
+.asset-edit-danger span{display:block;font-size:8.8px;color:#96717a;margin-top:2px}
+.asset-edit-danger .btn{white-space:nowrap}
+
+.asset-profile{
+  display:grid;grid-template-columns:190px minmax(0,1fr);gap:18px
+}
+.asset-profile-photo{
+  width:100%;height:150px;border-radius:16px;overflow:hidden;border:1px solid #dce8f0;
+  background:#f5f9fc;display:grid;place-items:center;color:#91a4b3
+}
+.asset-profile-photo img{width:100%;height:100%;object-fit:cover}
+.asset-profile-info{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.asset-profile-field{
+  padding:9px 10px;border:1px solid #e1e9ef;border-radius:10px;background:#fbfdff;min-width:0
+}
+.asset-profile-field.full{grid-column:1/-1}
+.asset-profile-field small{display:block;color:#8193a2;font-size:8px;font-weight:900;letter-spacing:.03em;margin-bottom:3px}
+.asset-profile-field b{display:block;color:#294a63;font-size:10.5px;overflow-wrap:anywhere}
+.asset-profile-buttons{grid-column:1/-1;display:flex;gap:7px;flex-wrap:wrap;margin-top:2px}
+
+@media(max-width:760px){
+  .portal-qr-strip{align-items:flex-start}
+  .portal-qr-right{min-width:130px}
+  .asset-profile{grid-template-columns:1fr}
+  .asset-profile-photo{height:190px}
+}
+@media(max-width:560px){
+  .portal-qr-strip{flex-direction:column}
+  .portal-qr-right{width:100%;justify-content:flex-start}
+  .asset-profile-info{grid-template-columns:1fr}
+  .asset-profile-field.full{grid-column:auto}
+}
+
 </style></head>
 <body><div class="app">
 <aside class="sidebar" id="sidebar"><div class="sidebar-media" aria-hidden="true"><video id="sidebarVideo" class="sidebar-bg-video" muted loop playsinline autoplay preload="none" poster="sidebar-celcom-poster.jpg" data-src="sidebar-celcom.mp4"></video></div><div class="sidebar-overlay" aria-hidden="true"></div><div class="brand"><div class="brand-mark pkpj-brand-mark"><img src="pkpj-premium.png" alt="PKPJ"></div><div><strong>Sistem ICT</strong><span>Langganan & Pinjaman</span></div></div><nav class="nav">
@@ -632,6 +746,22 @@ html,body{max-width:100%;overflow-x:hidden}
 </nav><div class="sidebar-bottom"><div class="connection-mini"><div class="connection-row"><span class="dot" id="sideDot"></span><strong id="sideStatus">Belum disambung</strong></div><div class="mini-muted" id="sideHint">Tetapkan sambungan di Tetapan.</div></div></div></aside>
 <main class="main"><header class="topbar" id="topbar"><div style="display:flex;align-items:center;gap:12px"><button class="btn mobile-menu" id="mobileMenu">☰</button><div class="page-title"><h1 id="pageHeading">Paparan Utama</h1><p id="pageSubtitle">Ringkasan keseluruhan langganan, inventori dan pinjaman sistem.</p></div></div><div class="top-actions"><button class="btn desktop-only" id="refreshBtn">↻ Muat Semula</button><button class="btn btn-primary" id="quickAddBtn">＋ Tambah Rekod</button></div></header>
 <section class="view active" id="view-dashboard"><div class="hero" id="dashboardHero"><div class="hero-media"><video id="heroVideo" class="hero-video" muted loop playsinline autoplay preload="none" poster="hero-ict-poster.jpg" data-src="hero-ict.mp4" aria-hidden="true"></video></div><div class="hero-shade" aria-hidden="true"></div><div class="hero-copy"><h2>Urus ICT dengan lebih efisien, lebih teratur, operasi lebih lancar.</h2><p>Pantau langganan, inventori dan pinjaman dalam satu sistem yang kemas dan mudah digunakan.</p><button class="btn btn-primary" data-go="assets">Lihat Ringkasan Penuh →</button></div><div class="hero-video-fallback">Video latar dijeda</div></div>
+<div class="portal-qr-strip">
+  <div class="portal-qr-copy">
+    <div class="portal-qr-icon">▦</div>
+    <div>
+      <strong>QR Portal Pemohon</strong>
+      <span>Tunjukkan QR ini kepada staff untuk terus buka Portal Permohonan Inventori ICT.</span>
+    </div>
+  </div>
+  <div class="portal-qr-right">
+    <button class="portal-qr-thumb" type="button" id="portalQrThumbBtn" title="Besarkan QR Portal Pemohon">
+      <img id="portalQrThumb" alt="QR Portal Pemohon" loading="lazy">
+    </button>
+    <button class="btn btn-sm" type="button" id="portalQrOpenBtn">Besarkan</button>
+    <a class="btn btn-sm" id="portalDirectLink" target="_blank" rel="noopener">Buka Portal</a>
+  </div>
+</div>
 <div class="kpis"><div class="card kpi" style="--accent:var(--blue)"><div class="kpi-head"><span>LANGGANAN AKTIF</span><span class="kpi-icon">▤</span></div><div class="kpi-value" id="kpiSubscriptions">—</div><div class="kpi-foot"><span class="pill green">AKTIF</span> langganan semasa</div></div><div class="card kpi" style="--accent:var(--purple)"><div class="kpi-head"><span>AKAN DATANG (30 HARI)</span><span class="kpi-icon">◷</span></div><div class="kpi-value" id="kpiRenewal">—</div><div class="kpi-foot"><span class="pill yellow">PERLU TINDAKAN</span> pembaharuan hampir tamat</div></div><div class="card kpi" style="--accent:var(--green)"><div class="kpi-head"><span>PINJAMAN AKTIF</span><span class="kpi-icon">♙</span></div><div class="kpi-value" id="kpiLoans">—</div><div class="kpi-foot"><span class="pill blue">DIPINJAM</span> peralatan sedang digunakan</div></div><div class="card kpi" style="--accent:var(--red)"><div class="kpi-head"><span>PINJAMAN LEWAT</span><span class="kpi-icon">!</span></div><div class="kpi-value" id="kpiOverdue">—</div><div class="kpi-foot"><span class="pill red">LEWAT</span> perlu dipulangkan segera</div></div></div>
 <div class="dashboard-grid"><div class="card panel"><div class="panel-head"><div><div class="panel-title">Trend Pembaharuan Langganan</div><div class="panel-sub">12 bulan terkini</div></div><span class="pill blue">12 Bulan</span></div><div class="chart-wrap"><svg id="trendSvg" viewBox="0 0 900 270" preserveAspectRatio="none"></svg></div></div><div class="card panel"><div class="panel-head"><div><div class="panel-title">Pembaharuan Akan Datang</div><div class="panel-sub">Disusun mengikut tarikh tamat</div></div><button class="btn btn-sm" data-go="subscriptions">Lihat Semua</button></div><div class="table-wrap"><table><thead><tr><th>LANGGANAN</th><th>VENDOR</th><th>TAMAT</th><th>BAKI</th><th>KOS</th><th>STATUS</th></tr></thead><tbody id="renewalRows"><tr><td colspan="6" class="empty">Belum ada data.</td></tr></tbody></table></div></div><div class="card panel"><div class="panel-head"><div><div class="panel-title">Status Inventori ICT</div><div class="panel-sub">Ringkasan kategori aset</div></div><button class="btn btn-sm" data-go="assets">Lihat Semua</button></div><div class="inventory-grid" id="inventoryGrid"><div class="empty" style="grid-column:1/-1">Belum ada data aset.</div></div></div></div>
 <div class="card panel"><div class="panel-head"><div><div class="panel-title">Status Penggunaan Inventori</div><div class="panel-sub">Ketersediaan aset berkait terus dengan rekod pinjaman</div></div></div><div class="status-strip"><div class="status-box"><div class="status-number"><strong style="color:var(--green)" id="statusAvailable">—</strong><span style="color:var(--green)">TERSEDIA</span></div><div class="equipment-mini"><span>💻 Laptop</span><span>📶 WiFi</span><span>📽 Projektor</span></div></div><div class="status-box"><div class="status-number"><strong style="color:var(--blue)" id="statusUnavailable">—</strong><span style="color:var(--blue)">DIGUNAKAN</span></div><div class="equipment-mini"><span id="statusBorrowedNote">0 dipinjam</span><span id="statusReservedNote">0 reserved</span></div></div><div class="status-box"><div class="status-number"><strong style="color:var(--red)" id="statusOverdue">—</strong><span style="color:var(--red)">LEWAT</span></div><div class="equipment-mini"><span>Perlu tindakan segera</span></div></div></div></div></section>
@@ -654,16 +784,16 @@ html,body{max-width:100%;overflow-x:hidden}
   <div class="asset-admin-note">
     <span><b>TERSEDIA</b> = dipaparkan kepada pemohon.</span>
     <span><b>ROSAK / DALAM_SERVIS / TIDAK_AKTIF</b> = tidak dipaparkan dalam barangan tersedia.</span>
-    <span><b>Delete</b> = padam kekal untuk rekod ujian yang belum pernah digunakan.</span>
+    <span><b>Tag Aset</b> disorok daripada senarai; buka Kemaskini → Medan Manual jika perlu.</span>
   </div>
 
   <div class="table-wrap">
     <table class="asset-admin-table">
       <thead>
         <tr>
-          <th>ID</th><th>GAMBAR</th><th>TAG ASET</th><th>NAMA ASET</th>
+          <th>ID</th><th>GAMBAR</th><th>NAMA ASET</th>
           <th>KATEGORI</th><th>MODEL</th><th>LOKASI</th><th>KEADAAN</th>
-          <th>STATUS</th><th>TINDAKAN</th>
+          <th>STATUS</th><th class="actions-head">TINDAKAN</th>
         </tr>
       </thead>
       <tbody id="assetsRows"></tbody>
@@ -758,10 +888,16 @@ html,body{max-width:100%;overflow-x:hidden}
 </div>
 <div class="qr-backdrop" id="qrBackdrop">
   <div class="qr-card">
-    <div class="qr-head"><div><strong>QR Inventori ICT</strong><span>Scan untuk terus buka aset di Portal Pemohon</span></div><button class="btn btn-sm" id="qrClose">✕</button></div>
+    <div class="qr-head">
+      <div>
+        <strong>QR Portal Pemohon</strong>
+        <span>Scan untuk terus buka Portal Permohonan Inventori ICT</span>
+      </div>
+      <button class="btn btn-sm" id="qrClose">✕</button>
+    </div>
     <div class="qr-body">
-      <div class="qr-asset-name" id="qrAssetName">Aset</div>
-      <img id="qrImage" alt="QR Inventori ICT" loading="lazy">
+      <div class="qr-asset-name" id="qrAssetName">Portal Pemohon Inventori ICT</div>
+      <img id="qrImage" alt="QR Portal Pemohon" loading="lazy">
       <code id="qrAssetLink"></code>
       <div class="qr-actions">
         <button class="btn" type="button" id="qrCopyBtn">Salin Link</button>
@@ -819,7 +955,7 @@ const $$ = (s, root=document) => [...root.querySelectorAll(s)];
 document.addEventListener('DOMContentLoaded', init);
 
 
-const ADMIN_FAST_CACHE_KEY='ict_admin_lists_v76';
+const ADMIN_FAST_CACHE_KEY='ict_admin_lists_v77';
 
 function readAdminFastCache(){
   try{
@@ -860,6 +996,7 @@ function init(){
   bindNavigation();
   bindActions();
   hydrateAdminFastCache();
+  initPortalQr();
 
   // Fixed embedded config tersedia pada semua PC; status Connected hanya selepas API berjaya menjawab.
   state.connected = false;
@@ -1017,6 +1154,8 @@ function bindActions(){
   $('#qrBackdrop').addEventListener('click',e=>{if(e.target.id==='qrBackdrop') closeAssetQr();});
   $('#qrCopyBtn').onclick=copyAssetQrLink;
   $('#qrPrintBtn').onclick=printAssetQr;
+  $('#portalQrThumbBtn').onclick=openPortalQr;
+  $('#portalQrOpenBtn').onclick=openPortalQr;
   $('#movementCloseBtn').onclick=closeMovementRegister;
   $('#movementPrintBtn').onclick=()=>window.print();
   $('#movementPdfBtn').onclick=openMovementPdf;
@@ -1511,6 +1650,44 @@ async function loadAssets(force=false){
   return state.inFlight.assets;
 }
 
+function assetImagePreviewUrl(record){
+  if(!record) return '';
+  if(record.image_preview_url) return String(record.image_preview_url);
+  if(record.image_file_id){
+    return 'https://drive.google.com/thumbnail?id='+
+      encodeURIComponent(String(record.image_file_id))+
+      '&sz=w320';
+  }
+  return record.image_url || '';
+}
+
+
+function assetListThumbnail(record){
+  const preview=assetImagePreviewUrl(record);
+  const openUrl=record?.image_url || preview;
+
+  if(!preview){
+    return `<div class="asset-list-thumb no-image" title="Tiada gambar">▧</div>`;
+  }
+
+  return `
+    <button class="asset-list-thumb" type="button"
+      onclick="openAssetImage('${attr(openUrl)}')"
+      title="Lihat gambar">
+      <img src="${attr(preview)}" alt="${attr(record.image_name||record.asset_name||'Gambar aset')}"
+        loading="lazy" decoding="async"
+        onerror="this.parentElement.classList.add('no-image');this.style.display='none';this.parentElement.innerHTML='▧'">
+    </button>
+  `;
+}
+
+
+function openAssetImage(url){
+  if(!url) return toast('Tiada gambar','Aset ini belum mempunyai gambar.','err');
+  window.open(url,'_blank','noopener');
+}
+
+
 function renderAssets(){
   const q=($('#assetSearch').value||'').toLowerCase();
   const st=$('#assetStatusFilter').value;
@@ -1528,69 +1705,182 @@ function renderAssets(){
     return `
       <tr class="${inactive?'asset-inactive':''}">
         <td class="tiny">${esc(x.asset_id)}</td>
-        <td>${photoCell(x,'asset')}</td>
-        <td class="strong">${esc(x.asset_tag)}</td>
-        <td>${esc(x.asset_name)}</td>
-        <td>${esc(x.category)}</td>
+        <td>${assetListThumbnail(x)}</td>
+        <td>${esc(x.asset_name||'—')}</td>
+        <td>${esc(x.category||'—')}</td>
         <td>${esc([x.brand,x.model].filter(Boolean).join(' ')||'—')}</td>
         <td>${esc(x.location||'—')}</td>
         <td>${esc(x.condition||'—')}</td>
         <td>${statusPill(x.status)}</td>
         <td>
-          <div class="asset-actions">
-            <button class="asset-action-btn qr" onclick="openAssetQr('${attr(x.asset_id)}')">▦ QR</button>
-            <button class="asset-action-btn edit" onclick="openAssetEditModal('${attr(x.asset_id)}')">✎ Kemaskini</button>
+          <div class="asset-actions-minimal">
+            <button class="asset-icon-btn view" type="button"
+              title="Lihat Profil Aset" aria-label="Lihat Profil Aset"
+              onclick="openAssetProfile('${attr(x.asset_id)}')">👁</button>
+            <button class="asset-icon-btn edit" type="button"
+              title="Kemaskini Aset" aria-label="Kemaskini Aset"
+              onclick="openAssetEditModal('${attr(x.asset_id)}')">✎</button>
             ${inactive
-              ? `<button class="asset-action-btn activate" onclick="setAssetActive('${attr(x.asset_id)}')">✓ Aktifkan</button>`
-              : `<button class="asset-action-btn inactive" ${busy?'disabled title="Selesaikan pinjaman dahulu"':''} onclick="setAssetInactive('${attr(x.asset_id)}')">◌ Tidak Aktif</button>`
+              ? `<button class="asset-icon-btn activate" type="button"
+                   title="Aktifkan Aset" aria-label="Aktifkan Aset"
+                   onclick="setAssetActive('${attr(x.asset_id)}')">✓</button>`
+              : `<button class="asset-icon-btn inactive" type="button"
+                   title="${busy?'Selesaikan pinjaman dahulu':'Jadikan Tidak Aktif'}"
+                   aria-label="Jadikan Tidak Aktif"
+                   ${busy?'disabled':''}
+                   onclick="setAssetInactive('${attr(x.asset_id)}')">◌</button>`
             }
-            <button class="asset-action-btn delete" onclick="deleteAssetPermanent('${attr(x.asset_id)}')">🗑 Delete</button>
           </div>
         </td>
       </tr>
     `;
-  }).join(''):'<tr><td colspan="10" class="empty">Tiada rekod.</td></tr>';
+  }).join(''):'<tr><td colspan="9" class="empty">Tiada rekod.</td></tr>';
 }
 
 
-function assetPortalUrl(assetId){
+function portalApplicantUrl(){
   const url=new URL('pemohon.html',window.location.href);
-  url.searchParams.set('asset',String(assetId));
+  url.search='';
+  url.hash='';
   return url.href;
 }
 
-function openAssetQr(assetId){
-  const asset=state.assets.find(x=>String(x.asset_id)===String(assetId));
-  if(!asset) return toast('Aset tidak ditemui','Muat semula Inventori dan cuba lagi.','err');
 
-  const portalUrl=assetPortalUrl(assetId);
-  const qrUrl='https://quickchart.io/qr?size=320&margin=2&text='+encodeURIComponent(portalUrl);
+function portalQrUrl(){
+  return 'https://quickchart.io/qr?size=320&margin=2&text='+
+    encodeURIComponent(portalApplicantUrl());
+}
 
-  $('#qrAssetName').textContent=[asset.asset_tag,asset.asset_name].filter(Boolean).join(' — ')||assetId;
+
+function initPortalQr(){
+  const link=portalApplicantUrl();
+  const qr=portalQrUrl();
+
+  const thumb=$('#portalQrThumb');
+  const direct=$('#portalDirectLink');
+
+  if(thumb) thumb.src=qr;
+  if(direct) direct.href=link;
+}
+
+
+function openPortalQr(){
+  const portalUrl=portalApplicantUrl();
+  $('#qrAssetName').textContent='Portal Pemohon Inventori ICT';
   $('#qrAssetLink').textContent=portalUrl;
-  $('#qrImage').src=qrUrl;
+  $('#qrImage').src=portalQrUrl();
   $('#qrOpenPortal').href=portalUrl;
   $('#qrBackdrop').classList.add('show');
 }
+
 
 function closeAssetQr(){
   $('#qrBackdrop').classList.remove('show');
 }
 
+
 async function copyAssetQrLink(){
-  const text=$('#qrAssetLink').textContent||'';
-  try{await navigator.clipboard.writeText(text);toast('Link disalin','Link QR aset telah disalin.','ok')}
-  catch(err){toast('Salin gagal',text,'err')}
+  const link=portalApplicantUrl();
+
+  try{
+    await navigator.clipboard.writeText(link);
+    toast('Link disalin','Link Portal Pemohon telah disalin.','ok');
+  }catch(err){
+    toast('Salin gagal',link,'err');
+  }
 }
 
+
 function printAssetQr(){
-  const name=$('#qrAssetName').textContent||'Aset ICT';
-  const link=$('#qrAssetLink').textContent||'';
-  const src=$('#qrImage').src||'';
+  const name='Portal Pemohon Inventori ICT';
+  const link=portalApplicantUrl();
+  const src=portalQrUrl();
   const w=window.open('','_blank','width=520,height=680');
-  if(!w) return toast('Popup disekat','Benarkan popup untuk cetak QR.','err');
-  w.document.write(`<!doctype html><html><head><title>QR ${esc(name)}</title><style>body{font-family:Arial;text-align:center;padding:35px;color:#17324d}img{width:320px;height:320px}h2{margin:12px 0 6px}p{font-size:12px;color:#60788e;word-break:break-all}@media print{button{display:none}}</style></head><body><img src="${attr(src)}"><h2>${esc(name)}</h2><p>${esc(link)}</p><button onclick="window.print()">Cetak</button></body></html>`);
+
+  if(!w){
+    return toast('Popup disekat','Benarkan popup untuk cetak QR.','err');
+  }
+
+  w.document.write(`<!doctype html>
+    <html><head><title>QR Portal Pemohon</title>
+    <style>
+      body{font-family:Arial;text-align:center;padding:35px;color:#17324d}
+      img{width:320px;height:320px}
+      h2{margin:12px 0 6px}
+      p{font-size:12px;color:#60788e;word-break:break-all}
+      .box{max-width:420px;margin:auto;padding:22px;border:1px solid #dce7ef;border-radius:18px}
+      @media print{button{display:none}}
+    </style></head>
+    <body>
+      <div class="box">
+        <img src="${attr(src)}">
+        <h2>${esc(name)}</h2>
+        <p>Scan QR untuk membuka Portal Permohonan Inventori ICT.</p>
+        <p>${esc(link)}</p>
+        <button onclick="window.print()">Cetak</button>
+      </div>
+    </body></html>`);
   w.document.close();
+}
+
+
+
+function openAssetProfile(assetId){
+  const asset=state.assets.find(x=>String(x.asset_id)===String(assetId));
+
+  if(!asset){
+    return toast('Aset tidak ditemui','Muat semula Inventori dan cuba lagi.','err');
+  }
+
+  const preview=assetImagePreviewUrl(asset);
+  const openUrl=asset.image_url||preview;
+
+  const photo=preview
+    ? `<div class="asset-profile-photo">
+         <img src="${attr(preview)}" alt="${attr(asset.asset_name||'Gambar aset')}" loading="lazy" decoding="async">
+       </div>`
+    : `<div class="asset-profile-photo">Tiada gambar</div>`;
+
+  const f=(label,value,full=false)=>`
+    <div class="asset-profile-field ${full?'full':''}">
+      <small>${esc(label)}</small>
+      <b>${esc(value||'—')}</b>
+    </div>
+  `;
+
+  openModal('asset_profile','Profil Aset ICT',`
+    <div class="asset-profile">
+      ${photo}
+      <div class="asset-profile-info">
+        ${f('Nama Aset',asset.asset_name)}
+        ${f('Kategori',asset.category)}
+        ${f('Brand / Model',[asset.brand,asset.model].filter(Boolean).join(' '))}
+        ${f('Serial Number',asset.serial_no)}
+        ${f('Lokasi',asset.location)}
+        ${f('Jabatan',asset.department)}
+        ${f('Keadaan',asset.condition)}
+        ${f('Status',asset.status)}
+        ${f('Warranty Tamat',fmtDate(asset.warranty_end_date))}
+        ${f('Tag Aset / Kod Manual',asset.asset_tag)}
+        ${f('ID Sistem',asset.asset_id)}
+        ${f('Catatan',asset.notes,true)}
+        <div class="asset-profile-buttons">
+          ${openUrl?`<a class="btn btn-sm" href="${attr(openUrl)}" target="_blank" rel="noopener">🖼 Lihat Gambar</a>`:''}
+          <button class="btn btn-sm btn-primary" type="button" onclick="openAssetEditModal('${attr(asset.asset_id)}')">✎ Kemaskini</button>
+        </div>
+      </div>
+    </div>
+  `);
+
+  $('#modalSubmit').style.display='none';
+  $('#modalCancel').textContent='Tutup';
+}
+
+
+async function deleteAssetFromEdit(assetId){
+  if(!assetId) return;
+
+  await deleteAssetPermanent(assetId);
 }
 
 
@@ -1663,6 +1953,10 @@ async function deleteAssetPermanent(assetId){
       `Delete selesai. Loan item dibersihkan: ${result?.deleted_loan_items||0}; loan kosong dibuang: ${result?.deleted_loans||0}.`,
       'ok'
     );
+
+    if(state.modalAssetId && String(state.modalAssetId)===String(assetId)){
+      closeModal();
+    }
 
     loadAssets(true);
     loadLoans(true);
@@ -1893,12 +2187,32 @@ function openModal(type,title,html){
   state.modalType=type;
   $('#modalTitle').textContent=title;
   $('#modalBody').innerHTML=html;
+
+  const submit=$('#modalSubmit');
+  const cancel=$('#modalCancel');
+  if(submit){
+    submit.style.display='';
+    submit.textContent='Simpan';
+  }
+  if(cancel){
+    cancel.textContent='Batal';
+  }
+
   $('#modalBackdrop').classList.add('show');
 }
 
 function closeModal(){
   state.modalType=null;
   state.modalAssetId=null;
+  const submit=$('#modalSubmit');
+  const cancel=$('#modalCancel');
+  if(submit){
+    submit.style.display='';
+    submit.textContent='Simpan';
+  }
+  if(cancel){
+    cancel.textContent='Batal';
+  }
   $('#modalBackdrop').classList.remove('show');
 }
 
@@ -1946,12 +2260,36 @@ async function deleteRecordImage(entityType,entityId){
 
 function assetFormHtml(editing=false,current=null){
   const currentImage=current?.image_url
-    ? `<div class="asset-edit-current existing-image-actions"><span>Gambar semasa</span><a class="btn btn-sm" href="${attr(current.image_url)}" target="_blank" rel="noopener">👁 Lihat Gambar</a><button class="btn btn-sm btn-danger" type="button" onclick="deleteRecordImage('asset','${attr(current.asset_id)}')">🗑 Delete Gambar</button><small>Pilih gambar baru hanya jika mahu menggantikannya.</small></div>`
+    ? `<div class="asset-edit-current existing-image-actions">
+         <span>Gambar semasa</span>
+         <a class="btn btn-sm" href="${attr(current.image_url)}" target="_blank" rel="noopener">👁 Lihat Gambar</a>
+         <button class="btn btn-sm btn-danger" type="button" onclick="deleteRecordImage('asset','${attr(current.asset_id)}')">🗑 Delete Gambar</button>
+         <small>Pilih gambar baru hanya jika mahu menggantikannya.</small>
+       </div>`
+    : '';
+
+  const manualTag=`
+    <details class="asset-manual-details">
+      <summary>Medan Manual / Kod Dalaman</summary>
+      <div class="asset-manual-inner">
+        ${field('asset_tag','Tag Aset')}
+        <div class="asset-manual-hint">Pilihan. Buka ruangan ini hanya jika anda mahu menetapkan tag/kod aset secara manual.</div>
+      </div>
+    </details>
+  `;
+
+  const dangerZone=editing
+    ? `<div class="asset-edit-danger">
+         <div>
+           <strong>Delete rekod aset</strong>
+           <span>Gunakan untuk rekod testing / rekod yang memang mahu dipadam kekal.</span>
+         </div>
+         <button class="btn btn-sm btn-danger" type="button" onclick="deleteAssetFromEdit('${attr(current?.asset_id||'')}')">🗑 Delete Aset</button>
+       </div>`
     : '';
 
   return `
     <div class="form-grid">
-      ${field('asset_tag','Tag Aset *')}
       ${field('asset_name','Nama Aset *')}
       ${selectField('asset_category','Kategori *',['Laptop','Desktop','Monitor','WiFi/MiFi','Projector','Extension','Charger/Adapter','Printer','Camera','Audio','Network Device','Storage Device','Accessory','Other'])}
       ${field('asset_brand','Brand')}
@@ -1962,9 +2300,11 @@ function assetFormHtml(editing=false,current=null){
       ${selectField('asset_condition','Keadaan',['BARU','BAIK','MEMUASKAN','PERLU_SERVIS','ROSAK_RINGAN','ROSAK_TERUK'],'BAIK')}
       ${editing?selectField('asset_status','Status',['TERSEDIA','RESERVED','DIPINJAM','DALAM_SERVIS','ROSAK','TIDAK_AKTIF'],current?.status||'TERSEDIA'):''}
       ${field('asset_warranty','Warranty Tamat','date')}
+      ${manualTag}
       ${currentImage}
       ${imageField('asset_image',editing?'Ganti gambar aset (pilihan)':'Gambar aset / peralatan')}
       <div class="form-group full"><label>Catatan</label><textarea class="field" id="asset_notes" placeholder="Aksesori, spesifikasi atau nota..."></textarea></div>
+      ${dangerZone}
     </div>
   `;
 }
