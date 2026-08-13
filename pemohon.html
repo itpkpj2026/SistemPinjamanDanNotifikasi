@@ -1605,7 +1605,7 @@ table{max-width:none}
 
 
 /* =========================================================
-   V7.0 - FAST ENTRY + CENTERED PKPJ BRAND
+   V7.1 - FAST ENTRY + CENTERED PKPJ BRAND
    ========================================================= */
 .compact-login-card>.pkpj-login-logo{margin-left:auto!important;margin-right:auto!important;display:grid!important}
 .compact-login-card>h2,.compact-login-card>.compact-sub{text-align:center!important}
@@ -1617,7 +1617,7 @@ table{max-width:none}
 
 
 /* =========================================================
-   V7.0 - MANUAL FALLBACK + SILENT API + PRETTY LOADER + MOBILE
+   V7.1 - MANUAL FALLBACK + SILENT API + PRETTY LOADER + MOBILE
    ========================================================= */
 .hidden-technical,.api-chip{display:none!important}
 .manual-name-help{
@@ -1703,7 +1703,7 @@ table{max-width:none}
 }
 
 
-/* V7.0 - PILIH PERKAKASAN DAHULU */
+/* V7.1 - PILIH PERKAKASAN DAHULU */
 .apply-equipment-toolbar{
   display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:13px;
   padding:10px;border:1px solid #dce8f1;border-radius:14px;background:#fff
@@ -1745,6 +1745,48 @@ table{max-width:none}
 }
 
 </style>
+
+<style>
+/* V7.1 - mesej sentiasa di hadapan popup */
+.toast-wrap{
+  z-index:30050!important;
+  top:14px!important;
+  bottom:auto!important;
+  right:14px!important;
+  left:auto!important;
+  pointer-events:none!important;
+}
+.toast{
+  pointer-events:auto!important;
+  box-shadow:0 18px 55px rgba(13,45,72,.24)!important;
+}
+.loan-modal-inline-message{
+  margin:0 20px 10px;
+  padding:11px 13px;
+  border-radius:12px;
+  font-size:10.5px;
+  line-height:1.5;
+  border:1px solid #efb8c4;
+  background:#fff5f7;
+  color:#9f3851;
+}
+.loan-modal-inline-message.ok{
+  border-color:#a7dbc8;
+  background:#f0fbf6;
+  color:#18765a;
+}
+.loan-modal-inline-message.hidden{display:none!important}
+@media(max-width:600px){
+  .toast-wrap{
+    left:10px!important;
+    right:10px!important;
+    top:10px!important;
+  }
+  .toast{width:100%!important;max-width:none!important}
+  .loan-modal-inline-message{margin:0 14px 8px}
+}
+</style>
+
 </head>
 <body>
 <div class="login-overlay" id="loginOverlay">
@@ -1995,6 +2037,7 @@ table{max-width:none}
       </label>
     </div>
 
+    <div class="loan-modal-inline-message hidden" id="loanModalInlineMessage"></div>
     <div class="loan-modal-foot">
       <button class="btn" type="button" id="loanModalCancel">Batal</button>
       <button class="btn btn-primary" type="button" id="submitApplicationBtn">
@@ -2036,7 +2079,7 @@ const $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const PORTAL_CACHE_TTL=10*60*1000;
 
 function portalCacheKey(userId){
-  return 'ict_applicant_bootstrap_v70_'+String(userId||'');
+  return 'ict_applicant_bootstrap_v71_'+String(userId||'');
 }
 
 function readPortalCache(userId){
@@ -2984,6 +3027,66 @@ function chooseAsset(id){
 }
 
 
+
+function clearLoanModalMessage(){
+  const box=$('#loanModalInlineMessage');
+  if(!box) return;
+  box.className='loan-modal-inline-message hidden';
+  box.textContent='';
+}
+
+function showLoanModalMessage(title,message,type='err'){
+  const box=$('#loanModalInlineMessage');
+  if(!box) return;
+  box.className='loan-modal-inline-message'+(type==='ok'?' ok':'');
+  box.innerHTML=`<b>${esc(title||'Makluman')}</b><br>${esc(message||'')}`;
+
+  const card=box.closest('.loan-modal-card');
+  if(card){
+    const body=card.querySelector('.loan-modal-body');
+    if(body) body.scrollTop=body.scrollHeight;
+  }
+}
+
+async function applicantPostFallback(action,data,requestId,maxWait=18000){
+  const body=new URLSearchParams();
+  body.set('action',action);
+  body.set('token',SYSTEM_CONFIG.APPLICANT_TOKEN);
+  body.set('request_id',requestId);
+  body.set('data',JSON.stringify(data));
+
+  fetch(
+    SYSTEM_CONFIG.API_URL,
+    {method:'POST',mode:'no-cors',body,cache:'no-store'}
+  ).catch(()=>{});
+
+  const started=Date.now();
+  let pause=550;
+
+  while(Date.now()-started<maxWait){
+    await new Promise(r=>setTimeout(r,pause));
+
+    try{
+      const status=await applicantWriteStatus(requestId);
+
+      if(status?.state==='done'){
+        if(status.ok) return status.data||{};
+        throw new Error(status?.error?.message||'Permohonan gagal disimpan.');
+      }
+    }catch(err){
+      const msg=String(err?.message||'');
+      if(!/timeout|terlalu lama|sambung|api|deployment|dihubungi/i.test(msg)){
+        throw err;
+      }
+    }
+
+    pause=Math.min(1000,pause+100);
+  }
+
+  return null;
+}
+
+
 async function confirmApplicantLoanCreated(requestId,who,timeoutMs=14000){
   const marker='[REQ:'+String(requestId)+']';
   const started=Date.now();
@@ -3100,6 +3203,7 @@ async function submitApplication(){
   }
 
   const btn=$('#submitApplicationBtn');
+  clearLoanModalMessage();
   btn.disabled=true;
   btn.textContent='Menghantar...';
 
@@ -3123,26 +3227,49 @@ async function submitApplication(){
 
     const pendingAttachment=state.imagePayload?{...state.imagePayload}:null;
 
-    await postApi('applicant.loan.create',payload,{requestId});
+    clearLoanModalMessage();
 
-    updatePrettyLoader('Mengesahkan rekod','Hampir siap… semak nombor permohonan.');
+    let saved=await postApi(
+      'applicant.loan.create',
+      payload,
+      {
+        requestId,
+        timeoutMs:12000,
+        maxWait:18000
+      }
+    );
 
-    const confirmed=await confirmApplicantLoanCreated(requestId,who,14000);
-    if(!confirmed?.loan_id){
-      throw new Error('Permohonan telah dihantar tetapi rekod belum dapat disahkan. Jangan tekan Hantar kali kedua; buka Permohonan Saya sebentar lagi.');
+    // Laluan normal terus dapat loan_id dari backend.
+    // Confirmation bootstrap hanya fallback, bukan laluan utama.
+    if(!saved?.loan_id){
+      updatePrettyLoader('Mengesahkan rekod','Semakan akhir nombor permohonan…');
+
+      const confirmed=await confirmApplicantLoanCreated(
+        requestId,
+        who,
+        6500
+      );
+
+      if(confirmed?.loan_id){
+        saved={
+          loan_id:confirmed.loan_id,
+          status:confirmed.status||'MENUNGGU_KELULUSAN',
+          due_date:confirmed.due_date||due,
+          item_count:confirmed.item_count||selected.length
+        };
+
+        if(confirmed.bootstrap){
+          applyBootstrap(confirmed.bootstrap);
+          savePortalCache(confirmed.bootstrap);
+        }
+      }
     }
 
-    if(confirmed.bootstrap){
-      applyBootstrap(confirmed.bootstrap);
-      savePortalCache(confirmed.bootstrap);
+    if(!saved?.loan_id){
+      throw new Error(
+        'Rekod belum disahkan oleh server. Sila semak Permohonan Saya sebelum cuba hantar semula.'
+      );
     }
-
-    const saved={
-      loan_id:confirmed.loan_id,
-      status:confirmed.status||'MENUNGGU_KELULUSAN',
-      due_date:confirmed.due_date||due,
-      item_count:confirmed.item_count||selected.length
-    };
 
     state.imagePayload=null;
     closeLoanRequestModal();
@@ -3158,7 +3285,23 @@ async function submitApplication(){
     setTimeout(()=>refreshPortal(true),1200);
   }catch(err){
     hidePrettyLoader();
-    toast('Permohonan belum disahkan',friendlyPortalError(err,'Sila semak Permohonan Saya dan cuba semula jika rekod masih tiada.'),'err');
+
+    const message=friendlyPortalError(
+      err,
+      'Sila semak Permohonan Saya dan cuba semula jika rekod masih tiada.'
+    );
+
+    showLoanModalMessage(
+      'Permohonan belum disimpan',
+      message,
+      'err'
+    );
+
+    toast(
+      'Permohonan belum disimpan',
+      message,
+      'err'
+    );
   }finally{
     btn.disabled=false;
     btn.textContent='Hantar Permohonan →';
@@ -3341,55 +3484,56 @@ async function postApi(action,data,options={}){
     makeApplicantRequestId()
   );
 
+  // Fail besar: kekal POST sebab JSONP/URL tak sesuai untuk base64.
   if(action==='applicant.file.attach'){
-    const body=new URLSearchParams();
-    body.set('action',action);
-    body.set('token',SYSTEM_CONFIG.APPLICANT_TOKEN);
-    body.set('request_id',requestId);
-    body.set('data',JSON.stringify(data));
+    const result=await applicantPostFallback(
+      action,
+      data,
+      requestId,
+      options.maxWait||120000
+    );
 
-    fetch(SYSTEM_CONFIG.API_URL,{method:'POST',mode:'no-cors',body}).catch(()=>{});
-
-    const maxWait=options.maxWait||120000;
-    const started=Date.now();
-    let pause=850;
-
-    while(Date.now()-started<maxWait){
-      await new Promise(r=>setTimeout(r,pause));
-      try{
-        const status=await applicantWriteStatus(requestId);
-        if(status?.state==='done'){
-          if(status.ok) return status.data||{};
-          throw new Error(status?.error?.message||'Dokumen tidak dapat disimpan.');
-        }
-      }catch(err){
-        if(!/timeout|terlalu lama|sambung|API/i.test(err?.message||'')) throw err;
-      }
-      pause=Math.min(1800,pause+150);
-    }
-
+    if(result) return result;
     throw new Error('Dokumen belum dapat disahkan. Rekod pinjaman tidak terjejas.');
   }
 
-  // Laluan create/cancel paling serasi: POST terus ke action asal.
-  const body=new URLSearchParams();
-  body.set('action',action);
-  body.set('token',SYSTEM_CONFIG.APPLICANT_TOKEN);
-  body.set('request_id',requestId);
-  body.set('data',JSON.stringify(data));
-
+  // LALUAN UTAMA:
+  // applicant.write ialah GET/JSONP dan browser boleh baca jawapan sebenar.
+  // Backend hanya pulangkan selepas Google Sheet selesai ditulis.
   try{
-    await fetch(SYSTEM_CONFIG.API_URL,{
-      method:'POST',
-      mode:'no-cors',
-      body,
-      cache:'no-store'
-    });
-  }catch(err){
-    console.warn('POST transport:',err);
+    const result=await jsonp(
+      'applicant.write',
+      {
+        write_action:action,
+        request_id:requestId,
+        data:JSON.stringify(data),
+        _t:Date.now()
+      },
+      {
+        timeoutMs:options.timeoutMs||12000,
+        retries:0
+      }
+    );
+
+    if(result) return result;
+
+  }catch(primaryErr){
+    console.warn('Direct applicant.write fallback:',primaryErr);
   }
 
-  return {accepted:true,request_id:requestId};
+  // Fallback jika deployment lama / JSONP terganggu.
+  const fallback=await applicantPostFallback(
+    action,
+    data,
+    requestId,
+    options.maxWait||18000
+  );
+
+  if(fallback) return fallback;
+
+  throw new Error(
+    'Server belum mengesahkan simpanan. Sila semak Permohonan Saya sebelum cuba semula.'
+  );
 }
 
 
@@ -3446,7 +3590,23 @@ function fmtDate(v){if(!v)return'—';const d=new Date(String(v).length===10?v+'
 function statusPill(s){s=String(s||'—');let c='gray';if(['DIPULANGKAN'].includes(s))c='green';if(['PERMOHONAN_BARU','MENUNGGU_KELULUSAN'].includes(s))c='yellow';if(['LEWAT','DITOLAK'].includes(s))c='red';if(['DILULUSKAN','DIPINJAM','HAMPIR_DUE'].includes(s))c='blue';if(['DIBATALKAN'].includes(s))c='gray';return `<span class="pill ${c}">${esc(s)}</span>`}
 function esc(v){return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;')}
 function attr(v){return esc(v)} function cssEscape(v){return String(v).replace(/["\\]/g,'\\$&')}
-function toast(title,msg='',type=''){const el=document.createElement('div');el.className='toast '+type;el.innerHTML=`<div class="strong">${esc(title)}</div><div class="muted" style="margin-top:3px">${esc(msg)}</div>`;$('#toastWrap').appendChild(el);setTimeout(()=>el.remove(),4300)}
+function toast(title,msg='',type=''){
+  const modal=$('#loanRequestModal');
+  if(
+    type==='err' &&
+    modal &&
+    !modal.classList.contains('hidden') &&
+    typeof showLoanModalMessage==='function'
+  ){
+    showLoanModalMessage(title,msg,type);
+  }
+
+  const el=document.createElement('div');
+  el.className='toast '+type;
+  el.innerHTML=`<div class="strong">${esc(title)}</div><div class="muted" style="margin-top:3px">${esc(msg)}</div>`;
+  $('#toastWrap').appendChild(el);
+  setTimeout(()=>el.remove(),6500);
+}
 </script>
 </body>
 </html>
