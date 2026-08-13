@@ -736,7 +736,7 @@ html,body{max-width:100%;overflow-x:hidden}
 
 
 /* =========================================================
-   V8.2 - INVENTORI CATEGORY FIRST
+   V8.3 - INVENTORI CATEGORY FIRST
    ========================================================= */
 .asset-category-heading{display:flex;justify-content:space-between;align-items:center;gap:14px;margin:1px 0 10px;padding:0 2px}
 .asset-category-heading strong{display:block;color:#173955;font-size:14px}
@@ -760,7 +760,7 @@ html,body{max-width:100%;overflow-x:hidden}
 
 
 /* =========================================================
-   V8.2 - OPERATOR LOGIN + DEEP SETTINGS + CLEAN STATUS
+   V8.3 - OPERATOR LOGIN + DEEP SETTINGS + CLEAN STATUS
    ========================================================= */
 .hidden-technical,.connection-mini{display:none!important}
 .operator-mini{
@@ -816,7 +816,7 @@ html,body{max-width:100%;overflow-x:hidden}
 }
 
 
-/* V8.2 - SETTINGS COLLAPSED */
+/* V8.3 - SETTINGS COLLAPSED */
 .settings-accordion-stack{display:grid;gap:10px}
 .settings-accordion{
   border:1px solid #dce7ef;border-radius:16px;background:#fff;overflow:hidden;
@@ -849,7 +849,17 @@ html,body{max-width:100%;overflow-x:hidden}
   .settings-accordion-body.settings-staff-grid{display:grid!important;grid-template-columns:1fr!important}
 }
 
-</style></head>
+</style>
+<style>
+/* V8.3 - makluman sentiasa kelihatan */
+.toast-wrap{z-index:30050!important;top:14px!important;bottom:auto!important}
+@media(max-width:600px){
+  .toast-wrap{left:10px!important;right:10px!important;top:10px!important}
+  .toast{width:100%!important;max-width:none!important}
+}
+</style>
+
+</head>
 <body>
 <div class="admin-login-overlay" id="adminLoginOverlay">
   <div class="admin-login-card">
@@ -1137,7 +1147,7 @@ const $$ = (s, root=document) => [...root.querySelectorAll(s)];
 document.addEventListener('DOMContentLoaded', init);
 
 
-const ADMIN_FAST_CACHE_KEY='ict_admin_lists_v82';
+const ADMIN_FAST_CACHE_KEY='ict_admin_lists_v83';
 
 function readAdminFastCache(){
   try{
@@ -1249,7 +1259,7 @@ function startApprovalAutoRefresh(){
 
   window.__approvalRefreshTimer=setInterval(()=>{
     if(
-      state.currentView==='loans' &&
+      state.view==='loans' &&
       document.visibilityState==='visible' &&
       state.operator
     ){
@@ -1350,7 +1360,7 @@ function showView(name){
   if(name==='dashboard') loadDashboard(false);
   if(name==='subscriptions') loadSubscriptions(false);
   if(name==='assets') loadAssets(false);
-  if(name==='loans') loadLoans(false);
+  if(name==='loans') loadLoans(true);
   if(name==='notifications') loadNotifications(false);
   if(name==='reports') loadDashboard(false);
   if(name==='settings'){
@@ -2276,7 +2286,7 @@ async function deleteAssetPermanent(assetId){
 async function loadLoans(force=false){
   if(!requireConfig()) return;
   if(state.loans.length) renderLoans();
-  if(!force && state.loans.length && isFresh('loans',60000)){
+  if(!force && state.loans.length && isFresh('loans',15000)){
     renderLoans();
     return;
   }
@@ -2285,7 +2295,7 @@ async function loadLoans(force=false){
   state.inFlight.loans=(async()=>{
     try{
       const [loanRes,userRes]=await Promise.all([
-        jsonp('loans',{pageSize:200,sort:'request_date',order:'desc'}),
+        jsonp('loans',{pageSize:200,sort:'request_date',order:'desc',_t:Date.now()}),
         state.users.length?Promise.resolve({items:state.users}):jsonp('users',{pageSize:200})
       ]);
       state.loans=loanRes?.items||[];
