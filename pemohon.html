@@ -4,6 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#f5f9ff">
+<link rel="preconnect" href="https://script.google.com">
+<link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
+<link rel="dns-prefetch" href="//script.google.com">
+<link rel="dns-prefetch" href="//script.googleusercontent.com">
 <title>Portal Pemohon | Sistem ICT</title>
 <style>
 :root{
@@ -2071,7 +2075,7 @@ const SYSTEM_CONFIG={
   APPLICANT_TOKEN:'4E52A3842E482E9B56766B10FDE318AD'
 };
 
-const state={profile:null,kpi:{},assets:[],loans:[],staffList:[],selectedUserId:'',connected:false,currentView:'home',imagePayload:null,lastSync:0,syncTimer:null,refreshPromise:null,loanCategory:'',loanCategoryLabel:'',qrAssetId:new URLSearchParams(location.search).get('asset')||'',videoScheduled:false,manualNameMode:false,publicSettings:{}};
+const state={profile:null,kpi:{},assets:[],loans:[],staffList:[],selectedUserId:'',connected:false,currentView:'home',imagePayload:null,lastSync:0,syncTimer:null,refreshPromise:null,loanCategory:'',loanCategoryLabel:'',qrAssetId:new URLSearchParams(location.search).get('asset')||'',videoScheduled:false,manualNameMode:false,publicSettings:{},staffLoadingPromise:null,staffRetryTimer:null};
 const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>[...r.querySelectorAll(s)];
 
@@ -2109,18 +2113,65 @@ function savePortalCache(data){
   }catch(err){}
 }
 
+const STAFF_CACHE_KEY='ict_applicant_staff_cache_v72';
+const STAFF_CACHE_MAX_AGE=90*24*60*60*1000;
+
+function normalizeStaffList(input){
+  const raw=Array.isArray(input)
+    ? input
+    : Array.isArray(input?.items)
+      ? input.items
+      : Array.isArray(input?.data)
+        ? input.data
+        : [];
+
+  const seen=new Set();
+
+  return raw
+    .map(x=>({
+      user_id:String(x?.user_id||x?.id||'').trim(),
+      name:String(x?.name||'').trim(),
+      department:String(x?.department||'').trim(),
+      unit:String(x?.unit||'').trim()
+    }))
+    .filter(x=>{
+      if(!x.user_id||!x.name||seen.has(x.user_id)) return false;
+      seen.add(x.user_id);
+      return true;
+    })
+    .sort((a,b)=>a.name.localeCompare(b.name,'ms',{sensitivity:'base'}));
+}
+
 function readStaffCache(){
   try{
-    const raw=localStorage.getItem('ict_applicant_staff_cache_v66');
-    if(!raw) return [];
-    const item=JSON.parse(raw);
-    if(Date.now()-(item.savedAt||0)>7*24*60*60*1000) return [];
-    return Array.isArray(item.data)?item.data:[];
+    const keys=[STAFF_CACHE_KEY,'ict_applicant_staff_cache_v66'];
+
+    for(const key of keys){
+      const raw=localStorage.getItem(key);
+      if(!raw) continue;
+
+      const item=JSON.parse(raw);
+      const list=normalizeStaffList(item?.data);
+      if(!list.length) continue;
+
+      // Cache lama masih boleh digunakan untuk paparan segera.
+      // API akan refresh senyap-senyap selepas portal dibuka.
+      const age=Date.now()-Number(item?.savedAt||0);
+      if(age<=STAFF_CACHE_MAX_AGE || key==='ict_applicant_staff_cache_v66'){
+        return list;
+      }
+    }
+
+    return [];
   }catch(err){return []}
 }
 
 function saveStaffCache(list){
-  try{localStorage.setItem('ict_applicant_staff_cache_v66',JSON.stringify({savedAt:Date.now(),data:list}));}catch(err){}
+  try{
+    const clean=normalizeStaffList(list);
+    if(!clean.length) return;
+    localStorage.setItem(STAFF_CACHE_KEY,JSON.stringify({savedAt:Date.now(),data:clean}));
+  }catch(err){}
 }
 
 document.addEventListener('DOMContentLoaded',init);
@@ -2231,10 +2282,15 @@ function setPemohonVideoActive(active){
 
   if(video.dataset.loaded!=='1'){
     const source=video.querySelector('source[data-src]');
-    if(!source?.dataset?.src) return;
+    const src=source?.dataset?.src||video.dataset.src||'';
+    if(!src) return;
 
     video.dataset.loaded='1';
-    source.setAttribute('src',source.dataset.src);
+    if(source){
+      source.setAttribute('src',src);
+    }else{
+      video.setAttribute('src',src);
+    }
     video.load();
   }
 
@@ -2322,76 +2378,111 @@ function enableManualNameMode(){
 }
 
 
-async function loadStaffNames(silent=false){
-  // Cache browser ialah laluan paling pantas.
-  const cached=readStaffCache();
+async function fetchStaffListFast(){
+  let firstError=null;
 
-  if(cached?.length){
-    state.staffList=cached;
-    setStaffLoadStatus(`Senarai nama sedia • ${cached.length} staff`,'ready');
-  }else{
-    setStaffLoadStatus('Taip nama anda atau gunakan nama manual.','ready');
+  // Laluan utama: JSONP stabil untuk Apps Script walaupun portal berada di domain lain.
+  try{
+    return await jsonp(
+      'applicant.staff_list',
+      {_t:Date.now()},
+      {timeoutMs:12000,retries:1}
+    );
+  }catch(err){
+    firstError=err;
   }
 
-  // Jangan tahan UI lebih dari beberapa saat semata-mata untuk autocomplete.
+  // Fallback: cuba GET biasa jika hosting/browser membenarkan CORS.
   try{
-    const list=await jsonp(
-      'applicant.staff_list',
-      {},
-      {timeoutMs:4500,retries:0}
-    );
-
-    if(Array.isArray(list) && list.length){
-      state.staffList=list;
-      saveStaffCache(list);
-      setStaffLoadStatus(`Senarai nama sedia • ${list.length} staff`,'ready');
-    }
+    const q=new URLSearchParams({
+      action:'applicant.staff_list',
+      token:SYSTEM_CONFIG.APPLICANT_TOKEN,
+      _t:String(Date.now())
+    });
+    const res=await fetch(SYSTEM_CONFIG.API_URL+'?'+q.toString(),{cache:'no-store'});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const payload=await res.json();
+    if(payload?.ok) return payload.data;
+    throw new Error(payload?.error?.message||'API error');
   }catch(err){
-    // Sengaja senyap. Pengguna terus boleh guna nama manual.
-    console.warn('Staff list background refresh skipped.');
-    if(!state.staffList.length){
-      enableManualNameMode();
-      setStaffLoadStatus('Nama manual tersedia.','ready');
-    }
-  }finally{
-    schedulePemohonVideo(1600);
+    throw firstError||err;
   }
 }
 
+async function loadStaffNames(silent=false){
+  // Elak beberapa request serentak jika focus/input berlaku ketika API masih berjalan.
+  if(state.staffLoadingPromise) return state.staffLoadingPromise;
 
-function handleNameSearch(){
-  const input=$('#loginName');
-  const q=(input.value||'').trim().toLowerCase();
+  state.staffLoadingPromise=(async()=>{
+    const cached=readStaffCache();
 
-  state.selectedUserId='';
+    if(cached.length){
+      state.staffList=cached;
+      setStaffLoadStatus(`Senarai nama sedia • ${cached.length} staff`,'ready');
+      // Jika kotak sedang fokus, terus paparkan nama dari cache.
+      if(document.activeElement===$('#loginName')) handleNameSearch();
+    }else if(!silent){
+      setStaffLoadStatus('Memuatkan senarai nama…','loading');
+    }
 
-  if(!q){
-    hideSuggestions();
+    try{
+      const raw=await fetchStaffListFast();
+      const list=normalizeStaffList(raw);
+
+      if(list.length){
+        state.staffList=list;
+        saveStaffCache(list);
+        state.manualNameMode=false;
+        $('#manualNameNote')?.classList.add('hidden');
+        setStaffLoadStatus(`Senarai nama sedia • ${list.length} staff`,'ready');
+
+        // PENTING: jika pengguna sudah menaip sebelum API siap,
+        // render semula suggestion serta-merta tanpa perlu menaip kali kedua.
+        handleNameSearch();
+        return list;
+      }
+
+      throw new Error('Senarai staf kosong.');
+    }catch(err){
+      console.warn('Staff list refresh skipped:',err?.message||err);
+
+      if(!state.staffList.length){
+        setStaffLoadStatus('Senarai nama sedang dicuba semula…','loading');
+
+        // Retry senyap sekali lagi untuk cold-start Apps Script.
+        if(!state.staffRetryTimer){
+          state.staffRetryTimer=setTimeout(()=>{
+            state.staffRetryTimer=null;
+            loadStaffNames(true);
+          },7000);
+        }
+      }else{
+        setStaffLoadStatus(`Senarai nama sedia • ${state.staffList.length} staff`,'ready');
+      }
+
+      return state.staffList;
+    }finally{
+      state.staffLoadingPromise=null;
+      schedulePemohonVideo(1600);
+    }
+  })();
+
+  return state.staffLoadingPromise;
+}
+
+
+function renderStaffSuggestions(matches,message=''){
+  const box=$('#staffSuggestions');
+  if(!box) return;
+
+  if(message){
+    box.innerHTML=`<div class="empty" style="padding:12px">${esc(message)}</div>`;
+    box.classList.remove('hidden');
     return;
   }
 
-  const matches=state.staffList
-    .filter(x=>{
-      const name=String(x.name||'')
-        .toLowerCase()
-        .replace(/\s+/g,' ')
-        .trim();
-
-      const terms=q
-        .replace(/\s+/g,' ')
-        .trim()
-        .split(' ')
-        .filter(Boolean);
-
-      return terms.every(term=>name.includes(term));
-    })
-    .slice(0,12);
-
-  const box=$('#staffSuggestions');
-
   if(!matches.length){
-    box.innerHTML='<div class="empty" style="padding:12px">Tiada nama yang sepadan dengan carian tersebut.</div>';
-    box.classList.remove('hidden');
+    hideSuggestions();
     return;
   }
 
@@ -2405,12 +2496,69 @@ function handleNameSearch(){
   box.classList.remove('hidden');
 }
 
+function handleNameSearch(){
+  const input=$('#loginName');
+  if(!input) return;
+
+  const q=(input.value||'')
+    .toLowerCase()
+    .replace(/\s+/g,' ')
+    .trim();
+
+  state.selectedUserId='';
+
+  // Klik/fokus kotak kosong: terus tunjuk nama pertama supaya pengguna
+  // nampak bahawa senarai memang tersedia, bukan perlu meneka huruf dahulu.
+  if(!q){
+    if(document.activeElement===input && state.staffList.length){
+      renderStaffSuggestions(state.staffList.slice(0,18));
+    }else{
+      hideSuggestions();
+    }
+    return;
+  }
+
+  if(!state.staffList.length){
+    renderStaffSuggestions([], 'Senarai nama sedang dimuatkan…');
+    loadStaffNames(true);
+    return;
+  }
+
+  const terms=q.split(' ').filter(Boolean);
+
+  const ranked=state.staffList
+    .map(x=>{
+      const name=String(x.name||'')
+        .toLowerCase()
+        .replace(/\s+/g,' ')
+        .trim();
+      if(!terms.every(term=>name.includes(term))) return null;
+
+      // Nama yang bermula dengan carian diletakkan dahulu.
+      const score=name.startsWith(q)?0:(name.includes(q)?1:2);
+      return {x,score,name};
+    })
+    .filter(Boolean)
+    .sort((a,b)=>a.score-b.score || a.name.localeCompare(b.name,'ms',{sensitivity:'base'}))
+    .slice(0,18)
+    .map(row=>row.x);
+
+  if(!ranked.length){
+    renderStaffSuggestions([], 'Tiada nama yang sepadan dengan carian tersebut.');
+    return;
+  }
+
+  renderStaffSuggestions(ranked);
+}
+
 function selectStaff(userId){
   const user=state.staffList.find(x=>String(x.user_id)===String(userId));
   if(!user) return;
 
   state.selectedUserId=String(user.user_id);
+  state.manualNameMode=false;
   $('#loginName').value=user.name;
+  $('#manualNameNote')?.classList.add('hidden');
   hideSuggestions();
 }
 
