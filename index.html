@@ -779,6 +779,9 @@ html,body{max-width:100%;overflow-x:hidden}
   background:linear-gradient(135deg,#eaf5fb,#f9fcfe)
 }
 .admin-login-overlay.hidden{display:none!important}
+/* PORTAL BERSEPADU: akses admin dipercayai, tiada skrin log masuk dalaman */
+.admin-login-overlay{display:none!important}
+#operatorSwitchBtn{display:none!important}
 .admin-login-card{
   width:min(430px,94vw);padding:30px 28px;border-radius:26px;background:#fff;
   border:1px solid #dbe8f1;box-shadow:0 28px 80px rgba(21,64,96,.18)
@@ -893,7 +896,7 @@ html,body{max-width:100%;overflow-x:hidden}
 <button class="nav-btn" data-view="settings"><span class="nav-ico">⚙</span>Tetapan</button>
 </nav><div class="sidebar-bottom">
       <div class="operator-mini" id="operatorMini">
-        <div><strong id="operatorName">Belum log masuk</strong><span id="operatorRole">—</span></div>
+        <div><strong id="operatorName">Portal Bersepadu</strong><span id="operatorRole">Super Admin</span></div>
         <button type="button" id="operatorSwitchBtn" title="Tukar pengguna">⇄</button>
       </div><div class="connection-mini hidden-technical"><span class="dot" id="sideDot"></span><strong id="sideStatus"></strong><div id="sideHint"></div></div></div></aside>
 <main class="main"><header class="topbar" id="topbar"><div style="display:flex;align-items:center;gap:12px"><button class="btn mobile-menu" id="mobileMenu">☰</button><div class="page-title"><h1 id="pageHeading">Paparan Utama</h1><p id="pageSubtitle">Ringkasan keseluruhan langganan, inventori dan pinjaman sistem.</p></div></div><div class="top-actions"><button class="btn desktop-only" id="refreshBtn">↻ Muat Semula</button><button class="btn btn-primary" id="quickAddBtn">＋ Tambah Rekod</button></div></header>
@@ -1021,10 +1024,10 @@ html,body{max-width:100%;overflow-x:hidden}
       </div>
     </details>
 
-    <details class="settings-accordion super-admin-only">
+    <details class="settings-accordion super-admin-only hidden-system" aria-hidden="true">
       <summary>
         <span class="settings-acc-icon">🔐</span>
-        <span><b>Akses Pentadbir & Staf IT</b><small>Urus siapa boleh log masuk ke portal Admin.</small></span>
+        <span><b>Akses Pentadbir & Staf IT</b><small>Akses dikawal oleh Portal Bersepadu.</small></span>
         <i>＋</i>
       </summary>
       <div class="settings-accordion-body">
@@ -3134,42 +3137,30 @@ function applyOperatorSession(operator){
 
 
 async function initOperatorSession(){
-  const stored=readStoredOperator();
+  // Portal ini dibuka dari Portal Bersepadu yang telah mengurus akses.
+  // Tiada login dalaman diperlukan.
+  const integratedOperator={
+    user_id:'',
+    name:'Portal Bersepadu',
+    role:'SUPER_ADMIN'
+  };
 
-  if(stored?.user_id && stored?.name){
-    applyOperatorSession(stored);
-  }else{
-    applyOperatorSession(null);
-  }
+  applyOperatorSession(integratedOperator);
 
-  await loadOperatorOptions(true);
-
-  if(stored?.user_id){
-    const current=(state.users||[]).find(
-      x=>String(x.user_id)===String(stored.user_id) &&
-        ['SUPER_ADMIN','STAFF_IT'].includes(String(x.role||'')) &&
-        String(x.active||'Ya').toLowerCase()==='ya'
-    );
-
-    if(current){
-      applyOperatorSession({
-        user_id:current.user_id,
-        name:current.name,
-        role:current.role
-      });
-      return;
-    }
-  }
-
-  if(!state.operator){
-    showOperatorLogin();
-  }
+  // Senarai pengguna dimuat di belakang untuk paparan nama sahaja.
+  loadOperatorOptions(false).catch(err=>{
+    console.warn('Operator list background refresh skipped.',err);
+  });
 }
 
 
 function showOperatorLogin(){
-  $('#adminLoginOverlay').classList.remove('hidden');
-  loadOperatorOptions(true);
+  // Login dalaman dinyahaktifkan; kekalkan sesi trusted daripada Portal Bersepadu.
+  applyOperatorSession({
+    user_id:'',
+    name:'Portal Bersepadu',
+    role:'SUPER_ADMIN'
+  });
 }
 
 
