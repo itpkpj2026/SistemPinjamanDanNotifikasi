@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
 <link rel="dns-prefetch" href="//script.google.com">
 <link rel="dns-prefetch" href="//script.googleusercontent.com">
-<title>Portal Pemohon | Sistem ICT</title>
+<title>Portal Pemohon | Sistem ICT V9</title>
 <style>
 :root{
   --bg:#f4f8fc;--panel:#fff;--panel2:#f8fbff;--line:#dce7f1;
@@ -1886,33 +1886,36 @@ table{max-width:none}
 }
 </style>
 
+<style>
+/* V9: no video, larger polished character, accessible name results in document flow. */
+#loginOverlay:not(.hidden) ~ .app{display:none!important}
+.logo-fallback-v9 img{display:none!important}.logo-fallback-v9:after{content:'PKPJ';color:#16517a;font:bold 16px Arial,sans-serif;letter-spacing:-.03em}
+
+#loginOverlay{background:radial-gradient(ellipse at 20% 12%,#e0f1fa,transparent 50%),radial-gradient(ellipse at 88% 85%,#d9eee9,transparent 48%),#f4f7fb!important}
+#loginOverlay .compact-login-shell{grid-template-columns:1fr!important;width:min(900px,96vw)!important;background:#f7fbff!important}
+#loginOverlay .compact-login-panel{min-height:650px!important;padding:26px 42px 30px!important;background:radial-gradient(circle at 15% 45%,#daeefa,transparent 45%),linear-gradient(135deg,#f7fbfe,#edf5fa)!important}
+.pkpj-pull-stage{--actor-space:226px;max-width:716px;min-height:510px;padding-top:6px}
+.pkpj-actor-caption{width:190px;font-size:11px;bottom:38px;color:#52748a}
+#loginOverlay .compact-login-card{max-width:none!important;min-height:465px!important;padding:30px!important;box-shadow:0 22px 55px #173d5c10!important}
+#loginOverlay .compact-login-card h2{font-size:32px!important;line-height:1.12!important}
+#loginOverlay .compact-sub{font-size:12.5px!important;color:#667f90!important}
+#loginOverlay .suggestions{position:static!important;max-height:210px!important;margin-top:8px!important;box-shadow:none!important;border-radius:12px!important}
+#loginOverlay .suggestion{padding:10px 11px;border-bottom:1px solid #edf3f7}
+#loginOverlay .suggestion b{font-size:12px}#loginOverlay .suggestion small{font-size:9px}
+#loginOverlay .portal-fast-status{font-size:10px!important;text-align:left!important;white-space:normal;overflow-wrap:anywhere;min-height:18px}
+#loginOverlay .portal-fast-status.error{color:#ad3e50!important;background:#fff4f4;border-radius:8px;padding:8px}
+.staff-retry-v9{font-size:10px;border:1px solid #c9dfed;color:#216a90;background:#f3faff;border-radius:8px;padding:7px 10px;margin-top:6px}
+.staff-retry-v9:disabled{opacity:.5;cursor:wait}
+#loginOverlay .manual-name-help{margin-top:9px}.pkpj-intro-label{font-size:10px;letter-spacing:.13em}
+@media(max-width:700px){#loginOverlay .compact-login-panel{padding:21px 18px!important;min-height:100dvh!important}.pkpj-pull-stage{--actor-space:120px}.pkpj-actor-caption{width:108px;font-size:9px}#loginOverlay .compact-login-card{padding:24px 20px!important}#loginOverlay .compact-login-card h2{font-size:26px!important}}
+@media(max-width:450px){#loginOverlay .compact-login-shell{width:100%!important}.pkpj-pull-stage{--actor-space:70px}.pkpj-actor-caption{width:66px;font-size:8px}#loginOverlay .compact-login-panel{padding:17px 10px!important}#loginOverlay .compact-login-card{padding:24px 16px!important}#loginOverlay .compact-login-card h2{font-size:24px!important}}
+</style>
 </head>
 <body>
 <div class="login-overlay" id="loginOverlay">
   <div class="compact-login-shell">
 
-    <section class="compact-video-panel">
-      <video
-        id="pemohonHeroVideo"
-        class="compact-bg-video"
-        muted
-        loop
-        playsinline
-        preload="none"
-        poster="pemohon-ict-poster.jpg"
-        data-src="pemohon-ict.mp4">
-      </video>
-
-      <div class="compact-video-shade"></div>
-
-      <div class="compact-video-caption">
-        <div class="compact-badge">PORTAL INVENTORI ICT</div>
-        <h1>Permohonan inventori<br>lebih mudah.</h1>
-        <p>Semak peralatan, hantar permohonan dan pantau status dalam satu portal.</p>
-      </div>
-    </section>
-
-    <section class="compact-login-panel" aria-label="Log masuk Portal Pemohon">
+<section class="compact-login-panel" aria-label="Log masuk Portal Pemohon">
       <div class="pkpj-intro-bar">
         <span class="pkpj-intro-label">AKSES WARGA PKPJ</span>
         <button type="button" class="pkpj-intro-control" id="pkpjIntroControl">Langkau intro &#8594;</button>
@@ -1920,64 +1923,62 @@ table{max-width:none}
       <div class="pkpj-pull-stage" id="pkpjPullStage">
         <div class="pkpj-pull-rig" id="pkpjPullRig">
           <div class="pkpj-login-actor" id="pkpjLoginActor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 360" aria-hidden="true" focusable="false">
-  <defs>
-    <linearGradient id="pullSkin" x1="0" x2="1" y2=".3"><stop stop-color="#b8693b"/><stop offset=".46" stop-color="#e9a36c"/><stop offset="1" stop-color="#b96538"/></linearGradient>
-    <radialGradient id="pullFace" cx=".36" cy=".34" r=".72"><stop stop-color="#f6ba83"/><stop offset=".66" stop-color="#dd8c55"/><stop offset="1" stop-color="#a95331"/></radialGradient>
-    <linearGradient id="pullHair" x1=".1" y1="0" x2=".7" y2="1"><stop stop-color="#496178"/><stop offset=".42" stop-color="#243a52"/><stop offset="1" stop-color="#102137"/></linearGradient>
-    <linearGradient id="pullShirt" x1="0" y1=".2" x2="1" y2=".8"><stop stop-color="#eaa023"/><stop offset=".4" stop-color="#ffe180"/><stop offset=".72" stop-color="#ffc741"/><stop offset="1" stop-color="#d9911c"/></linearGradient>
-    <linearGradient id="pullJeans" x1="0" y1="0" x2="1" y2=".2"><stop stop-color="#438bc6"/><stop offset=".48" stop-color="#83c6ef"/><stop offset="1" stop-color="#2e75b5"/></linearGradient>
-    <linearGradient id="pullShoe" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#ffffff"/><stop offset="1" stop-color="#cbdbe8"/></linearGradient>
-  </defs>
-  <ellipse data-part="shadow" cx="100" cy="346" rx="67" ry="8" fill="#0b466d" opacity=".12"/>
-  <g data-part="legBack"><path data-part="legBackPath" d="M86 207 Q66 254 61 325" fill="none" stroke="#3a7db6" stroke-width="21" stroke-linecap="round" stroke-linejoin="round"/>
-    <g data-part="shoeBack" transform="translate(61 330)"><path d="M-10-10 Q0-15 9-8 L14-2 29 1 Q35 3 31 10 L-11 10Q-15 5-10-10" fill="#d4e3eb" stroke="#90acc1" stroke-width="1"/><path d="M-12 7H32" stroke="#fff" stroke-width="4" stroke-linecap="round"/><path d="M5-5L13 0M9-7L17-2" stroke="#7394ad" stroke-width="2"/></g>
-  </g>
-  <g data-part="legFront"><path data-part="legFrontPath" d="M101 209 Q130 261 121 331" fill="none" stroke="url(#pullJeans)" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/>
-    <g data-part="shoeFront" transform="translate(121 332)"><path d="M-10-11 Q0-16 10-8 L15-2 29 1 Q36 3 32 10 L-12 10Q-15 4-10-11" fill="url(#pullShoe)" stroke="#9eb9ce" stroke-width="1"/><path d="M-12 7H32" stroke="#fff" stroke-width="4" stroke-linecap="round"/><path d="M5-5L13 0M9-7L17-2" stroke="#7d9bb2" stroke-width="2"/><path d="M-8-5L-1-4" stroke="#f4b941" stroke-width="4"/></g>
-  </g>
-  <path data-part="armBack" d="M86 130 Q119 165 147 189" fill="none" stroke="#bb7047" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
-  <path data-part="sleeveBack" d="M86 130 L100 147" fill="none" stroke="#e5a229" stroke-width="22" stroke-linecap="round"/>
-  <g data-part="upper">
-    <path d="M84 108 Q102 103 123 113 Q131 117 130 137 L116 193 Q100 212 76 198 L73 147 Q69 119 84 108Z" fill="url(#pullShirt)" stroke="#d99725" stroke-width="1.2"/>
-    <path d="M79 190 Q96 196 118 189 L118 209 Q98 220 76 209Z" fill="url(#pullJeans)"/>
-    <path d="M82 203 Q96 208 113 202" fill="none" stroke="#aedafa" stroke-width="1.5" opacity=".8"/>
-    <path d="M108 107L99 128 94 106" fill="none" stroke="#1e7bab" stroke-width="2.4"/>
-    <rect x="91" y="126" width="18" height="22" rx="3" fill="#fff" stroke="#ead08c" stroke-width="1"/>
-    <rect x="95" y="130" width="10" height="3" rx="1" fill="#46a2d1"/>
-    <text x="100" y="141" font-family="Arial,sans-serif" font-size="6.5" font-weight="bold" text-anchor="middle" fill="#174c73">ICT</text>
-    <path d="M98 89L115 91 115 109Q108 119 99 108Z" fill="url(#pullSkin)"/>
-    <path d="M95 103L106 113 98 119 89 109M115 103L106 113 115 118 121 111" fill="#ffedb4" stroke="#e7b044" stroke-width=".8"/>
-    <path d="M107 115L107 125" stroke="#cd911e" stroke-width="1.2"/>
-    <circle cx="109" cy="120" r="1" fill="#fff"/>
-    <g data-part="head">
-      <ellipse cx="106" cy="67" rx="31" ry="36" fill="url(#pullFace)"/>
-      <ellipse cx="77" cy="71" rx="7.5" ry="10.5" fill="#d58b58"/>
-      <path d="M75 68Q81 65 81 74" fill="none" stroke="#a65c39" stroke-width="2"/>
-      <path d="M78 67 Q68 52 75 37 Q84 14 111 23 Q142 23 142 52 L135 68 131 53 Q114 55 99 44 Q86 44 84 68Z" fill="url(#pullHair)"/>
-      <path d="M80 41Q102 20 128 34M86 38Q104 25 117 30" stroke="#5f7488" stroke-width="2.2" opacity=".55" fill="none" stroke-linecap="round"/>
-      <path d="M92 61Q97 57 104 61M117 59Q123 57 128 61" fill="none" stroke="#573528" stroke-width="2.6" stroke-linecap="round"/>
-      <g data-part="eyes"><ellipse cx="100" cy="68" rx="6" ry="7" fill="#fffaf0"/><ellipse cx="122" cy="67" rx="5.6" ry="6.5" fill="#fffaf0"/><ellipse cx="102" cy="68" rx="3.4" ry="4.5" fill="#26374a"/><ellipse cx="124" cy="67" rx="3.2" ry="4.2" fill="#26374a"/><circle cx="102" cy="66" r="1.3" fill="#fff"/><circle cx="124" cy="65" r="1.1" fill="#fff"/></g>
-      <path d="M114 68Q123 76 116 78" fill="none" stroke="#b76e42" stroke-width="2.2" stroke-linecap="round"/>
-      <ellipse cx="91" cy="79" rx="7" ry="3.5" fill="#e77860" opacity=".27"/>
-      <path d="M103 85Q112 91 124 83Q120 97 111 95Q106 93 103 85Z" fill="#7f3d31"/>
-      <path d="M105 86Q114 89 121 85L119 89Q112 92 107 89Z" fill="#fff8e9"/>
-      <path d="M86 53Q85 56 84 60" stroke="#708297" stroke-width="1.5" fill="none" opacity=".5"/>
-    </g>
-    <path d="M80 176Q87 182 92 183M77 181Q85 188 89 188" stroke="#d29421" fill="none" stroke-width="1.2" opacity=".4"/>
-  </g>
-  <path data-part="armFront" d="M120 132 Q131 172 149 192" fill="none" stroke="url(#pullSkin)" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
-  <path data-part="armHighlight" d="M124 144 Q137 174 149 190" fill="none" stroke="#ffd0a0" stroke-width="2.5" stroke-linecap="round" opacity=".38"/>
-  <path data-part="sleeveFront" d="M120 132 L127 151" fill="none" stroke="url(#pullShirt)" stroke-width="24" stroke-linecap="round"/>
-  <g data-part="handBack" transform="translate(147 189)"><ellipse rx="8" ry="6.5" fill="#c58455"/><path d="M-3-4Q3-13 5-8L4-2" stroke="#c58455" stroke-width="4" fill="none" stroke-linecap="round"/></g>
-  <g data-part="handFront" transform="translate(149 192)"><ellipse rx="9" ry="7.5" fill="url(#pullFace)"/><path d="M-4-4Q1-14 5-9L4-2" stroke="#e9a371" stroke-width="4.5" fill="none" stroke-linecap="round"/><path d="M3-4L8-3M3-1L9 0" stroke="#b77b52" stroke-width=".8" fill="none" opacity=".6"/></g>
+<defs>
+ <linearGradient id="p9Suit" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#2c89b9"/><stop offset=".55" stop-color="#155278"/><stop offset="1" stop-color="#102e51"/></linearGradient>
+ <linearGradient id="p9Pants" x1="0" x2="1"><stop stop-color="#162b45"/><stop offset=".55" stop-color="#314f6b"/><stop offset="1" stop-color="#20334f"/></linearGradient>
+ <linearGradient id="p9Skin"><stop stop-color="#d69269"/><stop offset=".55" stop-color="#f0bc94"/><stop offset="1" stop-color="#d99770"/></linearGradient>
+ <radialGradient id="p9Face" cx=".33" cy=".32" r=".9"><stop stop-color="#f9d0ad"/><stop offset=".65" stop-color="#eab189"/><stop offset="1" stop-color="#c88861"/></radialGradient>
+ <linearGradient id="p9Hair" x1="0" y1="0" x2=".75" y2="1"><stop stop-color="#425169"/><stop offset=".55" stop-color="#263244"/><stop offset="1" stop-color="#131d2b"/></linearGradient>
+ <linearGradient id="p9Shoe" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#35495e"/><stop offset="1" stop-color="#152237"/></linearGradient>
+</defs>
+<ellipse data-part="shadow" cx="104" cy="346" rx="59" ry="7" fill="#234962" opacity=".14"/>
+<path data-part="legBackPath" d="M85 208L74 331" fill="none" stroke="#1d354c" stroke-width="23" stroke-linecap="round" stroke-linejoin="round"/>
+<g data-part="shoeBack" transform="translate(74 332)"><path d="M-11-12Q0-14 10-8L16-3 28 0Q35 3 32 10H-13Q-16 3-11-12Z" fill="#16283c"/><path d="M-13 8H32" stroke="#a6b7c3" stroke-width="3" stroke-linecap="round"/><path d="M4-4L14-1" stroke="#6e8193" stroke-width="1.8"/></g>
+<path data-part="legFrontPath" d="M101 209L118 332" fill="none" stroke="url(#p9Pants)" stroke-width="26" stroke-linecap="round" stroke-linejoin="round"/>
+<g data-part="shoeFront" transform="translate(118 332)"><path d="M-12-12Q0-15 10-8L16-3 28 0Q36 3 32 10H-13Q-17 3-12-12Z" fill="url(#p9Shoe)"/><path d="M-13 8H32" stroke="#ced7dc" stroke-width="3" stroke-linecap="round"/><path d="M0-6L10-3M4-8L14-4" stroke="#8298a9" stroke-width="1.7"/><path d="M18 0Q26-1 30 3" fill="none" stroke="#6e869a" stroke-width="1.8" opacity=".6"/></g>
+<path data-part="armBack" fill="none" stroke="#ca8e68" stroke-width="13" stroke-linecap="round"/>
+<path data-part="sleeveBack" fill="none" stroke="#1f5777" stroke-width="23" stroke-linecap="round"/>
+<g data-part="upper">
+ <path d="M78 192Q99 197 119 191L121 212Q101 222 75 211Z" fill="url(#p9Pants)"/>
+ <path d="M78 199Q100 205 118 198" fill="none" stroke="#1c2a3d" stroke-width="4"/><rect x="98" y="200" width="8" height="5" rx="1" fill="#c2b488"/>
+ <path d="M82 108Q98 100 121 110Q135 116 133 135L124 195Q101 209 75 197L71 142Q69 119 82 108Z" fill="url(#p9Suit)" stroke="#133952" stroke-width="1.1"/>
+ <path d="M92 106H116L113 169 102 186 94 156Z" fill="#f7fafc"/>
+ <path d="M103 115L111 115 108 124 112 151 106 158 100 151 104 124Z" fill="#d5ad60"/>
+ <path d="M92 105L103 184 87 156 91 143 81 126Z" fill="#347795"/><path d="M117 106L106 186 122 151 115 141 128 124Z" fill="#184864"/>
+ <path d="M90 115L98 153M118 116L111 153" fill="none" stroke="#83bdce" stroke-width="1.2" opacity=".5"/>
+ <path d="M111 157L110 190" stroke="#102f49" stroke-width="1.2"/><circle cx="111" cy="168" r="2" fill="#99aab1"/><circle cx="111" cy="183" r="2" fill="#99aab1"/>
+ <path d="M79 175L90 176M116 174L124 171" stroke="#76a4b6" stroke-width="1.4"/>
+ <path d="M98 89L116 89 117 107Q108 121 98 107Z" fill="url(#p9Skin)"/>
+ <path d="M97 103L107 113 101 123 92 109M116 103L107 113 113 122 121 110" fill="#fff" stroke="#cfdee5" stroke-width="1"/>
+ <rect x="79" y="135" width="15" height="17" rx="2" fill="#eaf4f9"/><rect x="83" y="132" width="7" height="4" rx="1" fill="#dcb864"/><circle cx="86.5" cy="140" r="2.3" fill="#1b729e"/><path d="M82 145Q86.5 141 91 145" fill="#1b729e"/><text x="86.5" y="150" font-family="Arial,sans-serif" font-size="3.8" font-weight="700" text-anchor="middle" fill="#315573">ICT</text>
+ <g data-part="head">
+  <path d="M75 64Q73 34 102 30Q133 28 139 55L136 80Q132 101 112 106Q86 105 80 84Z" fill="url(#p9Face)"/>
+  <ellipse cx="77" cy="70" rx="7.5" ry="10.5" fill="#e8ac83"/><path d="M75 67Q82 64 80 75" fill="none" stroke="#bc7d5a" stroke-width="1.6" stroke-linecap="round"/>
+  <path d="M78 68Q69 57 71 44Q69 31 79 24Q83 19 92 20Q106 8 123 23Q145 20 147 39Q150 51 138 61L132 53Q113 54 100 41Q90 43 87 55L84 71Z" fill="url(#p9Hair)"/>
+  <path d="M80 37Q97 18 118 31Q130 38 139 32" fill="none" stroke="#64748a" stroke-width="3" stroke-linecap="round" opacity=".6"/>
+  <path d="M78 46Q85 35 94 34" fill="none" stroke="#6b7d8f" stroke-width="2" stroke-linecap="round" opacity=".35"/>
+  <path d="M93 61Q100 57 107 61M118 60Q125 56 130 61" fill="none" stroke="#573e33" stroke-width="2.6" stroke-linecap="round"/>
+  <g data-part="eyes"><ellipse cx="101" cy="69" rx="5.7" ry="6.3" fill="#fffdf8"/><ellipse cx="124" cy="68" rx="5.2" ry="6" fill="#fffdf8"/><ellipse cx="103" cy="69.5" rx="3.2" ry="4.4" fill="#3e4c56"/><ellipse cx="126" cy="68.5" rx="3" ry="4.2" fill="#3e4c56"/><circle cx="104" cy="68" r="1.2" fill="#fff"/><circle cx="126" cy="67" r="1.15" fill="#fff"/></g>
+  <path d="M114 69L118 77Q116 79 112 78" fill="none" stroke="#bf825e" stroke-width="1.7" stroke-linecap="round"/>
+  <ellipse cx="93" cy="80" rx="6" ry="3" fill="#cf7c69" opacity=".2"/><ellipse cx="131" cy="77" rx="4" ry="2.7" fill="#cf7c69" opacity=".16"/>
+  <path d="M103 87Q113 93 125 85Q121 97 112 97Q106 95 103 87Z" fill="#925649"/>
+  <path d="M106 88Q114 91 122 87L120 91Q113 94 108 91Z" fill="#fff9ef"/>
+  <path d="M111 100Q117 100 120 98" fill="none" stroke="#d39471" stroke-width="1.1" stroke-linecap="round"/>
+ </g>
+</g>
+<path data-part="armFront" fill="none" stroke="url(#p9Skin)" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+<path data-part="armHighlight" fill="none" stroke="#ffdbb6" stroke-width="2.5" stroke-linecap="round" opacity=".45"/>
+<path data-part="sleeveFront" fill="none" stroke="url(#p9Suit)" stroke-width="25" stroke-linecap="round"/>
+<g data-part="handBack"><ellipse rx="8.5" ry="7" fill="#da9e78"/><path d="M-3-4Q3-12 5-8L4-2" fill="none" stroke="#da9e78" stroke-width="4" stroke-linecap="round"/></g>
+<g data-part="handFront"><ellipse rx="9" ry="7.5" fill="url(#p9Face)"/><path d="M-4-4Q1-14 5-9L4-2" stroke="#edb993" stroke-width="4.5" fill="none" stroke-linecap="round"/><path d="M3-4L8-3M3-1L9 0" stroke="#bc805e" stroke-width=".9" fill="none" opacity=".65"/></g>
 </svg>
 </div>
       <div class="compact-login-card" id="pkpjPullCard">
-        <div class="compact-app-icon pkpj-login-logo"><img src="pkpj-premium.png" alt="PKPJ"></div>
+        <div class="compact-app-icon pkpj-login-logo"><img src="pkpj-premium.png" alt="PKPJ" onerror="this.hidden=true;this.parentElement.classList.add('logo-fallback-v9');this.parentElement.setAttribute('aria-label','PKPJ')"></div>
 
-        <h2>Selamat Datang ke Portal Permohonan Peminjaman Inventori ICT</h2>
+        <h2>Selamat datang<br>ke Portal Pemohon.</h2>
         <p class="compact-sub">
-          Pilih nama anda daripada senarai staff untuk masuk.
+          Pilih nama anda untuk memohon peralatan ICT dan menyemak status pinjaman.
         </p>
 
         <div class="form-group autocomplete-wrap compact-name-field">
@@ -1998,9 +1999,10 @@ table{max-width:none}
             <button type="button" id="manualNameBtn">Guna nama manual</button>
           </div>
           <div class="manual-name-note hidden" id="manualNameNote">
-            Taip nama penuh anda dan tekan <b>Masuk Portal Pemohon</b>. Senarai nama akan terus dicuba di belakang.
+            Taip nama penuh anda dan tekan <b>Masuk Portal Pemohon</b>. Guna nama berdaftar; kebenaran nama manual tertakluk kepada tetapan server.
           </div>
-          <div class="portal-fast-status loading" id="staffLoadStatus">Memuatkan senarai nama…</div>
+          <div class="portal-fast-status loading" id="staffLoadStatus" role="status" aria-live="polite">Memuatkan senarai nama...</div>
+          <button type="button" class="staff-retry-v9" id="staffRetryBtn">Muat semula nama</button>
         </div>
 
         <button class="btn btn-primary compact-enter-btn" id="loginBtn">
@@ -2013,7 +2015,7 @@ table{max-width:none}
       </div>
 
         </div>
-        <div class="pkpj-actor-caption" aria-hidden="true">Jom, masuk<br>portal kita.</div>
+        <div class="pkpj-actor-caption" aria-hidden="true">Pembantu ICT<br><span style="font-weight:400">Sedia membantu anda.</span></div>
         <div class="pkpj-intro-foot">Inventori &#183; Permohonan &#183; Semakan status</div>
       </div>
     </section>
@@ -2023,7 +2025,7 @@ table{max-width:none}
 
 <div class="app">
 <aside class="sidebar" id="sidebar">
-  <div class="brand"><div class="brand-mark pkpj-sidebar-logo"><img src="pkpj-premium.png" alt="PKPJ"></div><div><strong>Portal Pemohon</strong><span>Sistem Pinjaman ICT</span></div></div>
+  <div class="brand"><div class="brand-mark pkpj-sidebar-logo"><img src="pkpj-premium.png" alt="PKPJ" onerror="this.hidden=true;this.parentElement.classList.add('logo-fallback-v9');this.parentElement.setAttribute('aria-label','PKPJ')"></div><div><strong>Portal Pemohon</strong><span>Sistem Pinjaman ICT</span></div></div>
   <div class="profile"><div class="profile-name" id="sideName">Pemohon</div><div class="profile-meta" id="sideMeta">—</div></div>
   <nav class="nav">
     <button class="nav-btn active" data-view="home"><span class="nav-ico">⌂</span>Utama</button>
@@ -2248,33 +2250,21 @@ const SYSTEM_CONFIG={
   jadi array ini sengaja tidak mereka-reka nama. Sistem tetap zero-block
   melalui snapshot/cache dan manual fallback sehingga snapshot tersedia.
 */
-const EMBEDDED_STAFF=Object.freeze([
-  // Contoh format sahaja (jangan aktifkan tanpa data sebenar):
-  // {user_id:'USR0001',name:'Nama Staff',department:'Bahagian',unit:'Unit'}
-]);
+const EMBEDDED_STAFF=Object.freeze(/* STAFF_EMBED_START_V9 */ [] /* STAFF_EMBED_END_V9 */);
 const STAFF_SHARED_SNAPSHOT_KEY='ict_staff_directory_shared_v1';
 
 function readAdminStaffSnapshot(){
-  const sources=[];
-
-  if(Array.isArray(EMBEDDED_STAFF) && EMBEDDED_STAFF.length){
-    sources.push(...EMBEDDED_STAFF);
-  }
-
-  try{
-    const shared=JSON.parse(localStorage.getItem(STAFF_SHARED_SNAPSHOT_KEY)||'null');
-    if(Array.isArray(shared?.data)) sources.push(...shared.data);
-  }catch(err){}
-
-  try{
-    const admin=JSON.parse(localStorage.getItem('ict_admin_lists_v84')||localStorage.getItem('ict_admin_lists_v83')||'null');
-    if(Array.isArray(admin?.users)) sources.push(...admin.users);
-  }catch(err){}
-
-  return normalizeStaffList(sources);
+ try{
+  const own=JSON.parse(localGetV9(STAFF_CACHE_KEY)||'null');
+  const shared=JSON.parse(localGetV9(STAFF_SHARED_SNAPSHOT_KEY)||'null');
+  if(own?.authoritative&&Array.isArray(own.data)&&Date.now()-Number(own.savedAt||0)<86400000)return normalizeStaffList(own.data);
+  if(Array.isArray(shared?.data)&&Date.now()-Number(shared.savedAt||0)<86400000)return normalizeStaffList(shared.data);
+ }catch(e){}
+ const embedded=normalizeStaffList(EMBEDDED_STAFF);if(embedded.length)return embedded;
+ return readStaffCache();
 }
 
-const state={profile:null,kpi:{},assets:[],loans:[],staffList:[],selectedUserId:'',connected:false,currentView:'home',imagePayload:null,lastSync:0,syncTimer:null,refreshPromise:null,loanCategory:'',loanCategoryLabel:'',qrAssetId:new URLSearchParams(location.search).get('asset')||'',videoScheduled:false,manualNameMode:false,publicSettings:{},staffLoadingPromise:null,staffRetryTimer:null};
+const state={profile:null,kpi:{},assets:[],loans:[],staffList:[],selectedUserId:'',connected:false,currentView:'home',imagePayload:null,lastSync:0,syncTimer:null,refreshPromise:null,loanCategory:'',loanCategoryLabel:'',qrAssetId:new URLSearchParams(location.search).get('asset')||'',manualNameMode:false,publicSettings:{},staffLoadingPromise:null,staffRetryTimer:null};
 const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>[...r.querySelectorAll(s)];
 
@@ -2293,7 +2283,7 @@ function readPortalCache(userId){
     ];
 
     for(const key of keys){
-      const raw=localStorage.getItem(key);
+      const raw=localGetV9(key);
       if(!raw) continue;
       const item=JSON.parse(raw);
       if(!item?.savedAt || Date.now()-item.savedAt>PORTAL_CACHE_TTL) continue;
@@ -2308,7 +2298,7 @@ function savePortalCache(data){
   try{
     const id=data?.profile?.user_id;
     if(!id) return;
-    localStorage.setItem(portalCacheKey(id),JSON.stringify({savedAt:Date.now(),data}));
+    localSetV9(portalCacheKey(id),JSON.stringify({savedAt:Date.now(),data}));
   }catch(err){}
 }
 
@@ -2316,28 +2306,11 @@ const STAFF_CACHE_KEY='ict_applicant_staff_cache_v72';
 const STAFF_CACHE_MAX_AGE=90*24*60*60*1000;
 
 function normalizeStaffList(input){
-  const raw=Array.isArray(input)
-    ? input
-    : Array.isArray(input?.items)
-      ? input.items
-      : Array.isArray(input?.data)
-        ? input.data
-        : [];
-
+  const raw=Array.isArray(input)?input:Array.isArray(input?.items)?input.items:Array.isArray(input?.data)?input.data:[];
   const seen=new Set();
-
-  return raw
-    .map(x=>({
-      user_id:String(x?.user_id||x?.id||'').trim(),
-      name:String(x?.name||'').trim(),
-      department:String(x?.department||'').trim(),
-      unit:String(x?.unit||'').trim()
-    }))
-    .filter(x=>{
-      if(!x.user_id||!x.name||seen.has(x.user_id)) return false;
-      seen.add(x.user_id);
-      return true;
-    })
+  return raw.filter(x=>x&&activeFlagV9(x.active)).map(x=>({user_id:String(x.user_id||x.id||'').trim(),
+    name:String(x.name||'').trim(),department:String(x.department||'').trim(),unit:String(x.unit||'').trim()}))
+    .filter(x=>{if(!x.user_id||!x.name||seen.has(x.user_id))return false;seen.add(x.user_id);return true;})
     .sort((a,b)=>a.name.localeCompare(b.name,'ms',{sensitivity:'base'}));
 }
 
@@ -2346,7 +2319,7 @@ function readStaffCache(){
     const keys=[STAFF_CACHE_KEY,'ict_applicant_staff_cache_v66'];
 
     for(const key of keys){
-      const raw=localStorage.getItem(key);
+      const raw=localGetV9(key);
       if(!raw) continue;
 
       const item=JSON.parse(raw);
@@ -2369,7 +2342,7 @@ function saveStaffCache(list){
   try{
     const clean=normalizeStaffList(list);
     if(!clean.length) return;
-    localStorage.setItem(STAFF_CACHE_KEY,JSON.stringify({savedAt:Date.now(),data:clean}));
+    localSetV9(STAFF_CACHE_KEY,JSON.stringify({savedAt:Date.now(),data:clean}));
   }catch(err){}
 }
 
@@ -2378,36 +2351,28 @@ document.addEventListener('DOMContentLoaded',init);
 function init(){
   state.qrAssetId=new URLSearchParams(window.location.search).get('asset')||'';
   bindUI();
-  initPemohonHeroVideo();
 
   // V8: login tidak lagi menunggu API. Gunakan sumber tempatan dahulu.
   const embeddedOrAdmin=readAdminStaffSnapshot();
   const cachedStaff=readStaffCache();
-  const localStaff=normalizeStaffList([...embeddedOrAdmin,...cachedStaff]);
+  const localStaff=embeddedOrAdmin;
 
   if(localStaff.length){
     state.staffList=localStaff;
-    saveStaffCache(localStaff);
+
     setStaffLoadStatus(`Senarai tempatan sedia • ${localStaff.length} staff`,'local');
   }else{
     // Tiada data tempatan: manual login terus boleh digunakan.
     state.manualNameMode=true;
-    setStaffLoadStatus('Taip nama anda • semakan staff berjalan di belakang','local');
+    setStaffLoadStatus('Mengambil senarai staf daripada server...','loading');
     $('#manualNameNote')?.classList.remove('hidden');
   }
 
-  schedulePemohonVideo(1200);
+  // Start exactly one roster request immediately, independently of the intro.
+  loadStaffNames(false,localStaff.length===0);
 
-  // Refresh staff hanya selepas UI stabil; tidak menahan login/autocomplete.
-  const refreshStaff=()=>loadStaffNames(true);
-  if('requestIdleCallback' in window){
-    requestIdleCallback(refreshStaff,{timeout:8000});
-  }else{
-    setTimeout(refreshStaff,5000);
-  }
-
-  const savedId=localStorage.getItem('ict_applicant_user_id')||'';
-  const savedName=localStorage.getItem('ict_applicant_name')||'';
+  const savedId=localGetV9('ict_applicant_user_id')||'';
+  const savedName=localGetV9('ict_applicant_name')||'';
 
   if(savedId && savedName){
     state.selectedUserId=savedId;
@@ -2421,7 +2386,7 @@ function init(){
     }
 
     $('#loginOverlay').classList.add('hidden');
-    setPemohonVideoActive(false);
+
     setTimeout(()=>maybeOpenQrAsset(false),40);
 
     // Refresh data selepas portal sudah terbuka; jangan tahan skrin login.
@@ -2476,68 +2441,13 @@ function bindUI(){
 }
 
 
-function setPemohonVideoActive(active){
-  const video=$('#pemohonHeroVideo');
-  if(!video) return;
-
-  if(!active){
-    video.pause();
-    return;
-  }
-
-  if(document.visibilityState!=='visible') return;
-
-  if(video.dataset.loaded!=='1'){
-    const source=video.querySelector('source[data-src]');
-    const src=source?.dataset?.src||video.dataset.src||'';
-    if(!src) return;
-
-    video.dataset.loaded='1';
-    if(source){
-      source.setAttribute('src',src);
-    }else{
-      video.setAttribute('src',src);
-    }
-    video.load();
-  }
-
-  const p=video.play();
-  if(p && typeof p.catch==='function') p.catch(()=>{});
-}
 
 
-function schedulePemohonVideo(delay=1800){
-  if(state.videoScheduled) return;
-  state.videoScheduled=true;
-
-  const start=()=>{
-    const loginVisible=!$('#loginOverlay')?.classList.contains('hidden');
-    if(loginVisible) setPemohonVideoActive(true);
-  };
-
-  if('requestIdleCallback' in window){
-    requestIdleCallback(start,{timeout:delay+1200});
-  }else{
-    setTimeout(start,delay);
-  }
-}
 
 
-function initPemohonHeroVideo(){
-  const video=$('#pemohonHeroVideo');
-  if(!video) return;
 
-  // Jangan load video di sini. Staff/API diberi keutamaan dahulu.
-  document.addEventListener('visibilitychange',()=>{
-    const loginVisible=!$('#loginOverlay')?.classList.contains('hidden');
 
-    if(document.visibilityState==='hidden'){
-      video.pause();
-    }else if(loginVisible && state.videoScheduled){
-      setPemohonVideoActive(true);
-    }
-  });
-}
+
 
 
 function showView(name){
@@ -2568,11 +2478,8 @@ function showView(name){
 }
 
 function setStaffLoadStatus(message,stateName='loading'){
-  const el=$('#staffLoadStatus');
-  if(!el) return;
-  el.textContent=message||'';
-  el.classList.remove('ready','loading');
-  el.classList.add(stateName);
+ const el=$('#staffLoadStatus');if(!el)return;
+ el.textContent=message||'';el.className='portal-fast-status '+stateName;
 }
 
 
@@ -2585,94 +2492,53 @@ function enableManualNameMode(){
 }
 
 
-async function fetchStaffListFast(){
-  // Satu request sahaja. Elak JSONP + fetch berganda ketika Apps Script cold-start.
-  return jsonp(
-    'applicant.staff_list',
-    {_t:Date.now()},
-    {timeoutMs:7500,retries:0}
-  );
+async function fetchStaffListFast(force=false){
+ return jsonp('applicant.staff_list',{refresh:force?'1':'',_t:Date.now()},{timeoutMs:30000,retries:0});
 }
 
-async function loadStaffNames(silent=false){
-  // Elak beberapa request serentak jika focus/input berlaku ketika API masih berjalan.
-  if(state.staffLoadingPromise) return state.staffLoadingPromise;
-
-  state.staffLoadingPromise=(async()=>{
-    const cached=readStaffCache();
-
-    if(cached.length){
-      state.staffList=cached;
-      setStaffLoadStatus(`Senarai nama sedia • ${cached.length} staff`,'ready');
-      // Jika kotak sedang fokus, terus paparkan nama dari cache.
-      if(document.activeElement===$('#loginName')) handleNameSearch();
-    }else if(!silent){
-      setStaffLoadStatus('Memuatkan senarai nama…','loading');
-    }
-
-    try{
-      const raw=await fetchStaffListFast();
-      const list=normalizeStaffList(raw);
-
-      if(list.length){
-        state.staffList=list;
-        saveStaffCache(list);
-        state.manualNameMode=false;
-        $('#manualNameNote')?.classList.add('hidden');
-        setStaffLoadStatus(`Senarai nama sedia • ${list.length} staff`,'ready');
-
-        // PENTING: jika pengguna sudah menaip sebelum API siap,
-        // render semula suggestion serta-merta tanpa perlu menaip kali kedua.
-        handleNameSearch();
-        return list;
-      }
-
-      throw new Error('Senarai staf kosong.');
-    }catch(err){
-      console.warn('Staff list refresh skipped:',err?.message||err);
-
-      if(!state.staffList.length){
-        state.manualNameMode=true;
-        $('#manualNameNote')?.classList.remove('hidden');
-        setStaffLoadStatus('API perlahan • guna nama manual sementara','local');
-      }else{
-        setStaffLoadStatus(`Senarai tempatan sedia • ${state.staffList.length} staff`,'local');
-      }
-
-      return state.staffList;
-    }finally{
-      state.staffLoadingPromise=null;
-      schedulePemohonVideo(1600);
-    }
-  })();
-
-  return state.staffLoadingPromise;
+async function loadStaffNames(silent=false,force=false){
+ if(state.staffLoadingPromise)return state.staffLoadingPromise;
+ const btn=$('#staffRetryBtn');if(btn)btn.disabled=true;
+ setStaffLoadStatus(state.staffList.length?`${state.staffList.length} nama sedia; menyemak kemas kini...`:'Memuatkan nama staf...','loading');
+ const task=(async()=>{
+  try{
+   const raw=await fetchStaffListFast(force),list=normalizeStaffList(raw);
+   state.staffList=list;
+   // Empty is authoritative, not a successful non-empty local directory.
+   localSetV9(STAFF_CACHE_KEY,JSON.stringify({savedAt:Date.now(),data:list,authoritative:true}));
+   if(!list.length){
+    state.selectedUserId='';hideSuggestions();
+    setStaffLoadStatus('Server memulangkan 0 staf aktif. Admin: buka Tetapan > Semak Direktori Staf.','error');
+    return [];
+   }
+   state.manualNameMode=false;$('#manualNameNote')?.classList.add('hidden');
+   setStaffLoadStatus(`${list.length} nama staf sedia. Klik atau taip untuk mencari.`,'ready');
+   if(document.activeElement===$('#loginName'))handleNameSearch();
+   return list;
+  }catch(error){
+   const message=staffFetchErrorV9(error);
+   setStaffLoadStatus(state.staffList.length?`${state.staffList.length} nama tempatan tersedia. Kemas kini server gagal: ${message}`:message,'error');
+   if(!state.staffList.length&&document.activeElement===$('#loginName'))renderStaffSuggestions([], 'Nama belum dapat dimuatkan. Tekan Muat semula nama.');
+   return state.staffList;
+  }
+ })();
+ state.staffLoadingPromise=task;
+ try{return await task;}finally{state.staffLoadingPromise=null;if(btn)btn.disabled=false;}
 }
 
 
 function renderStaffSuggestions(matches,message=''){
-  const box=$('#staffSuggestions');
-  if(!box) return;
-
-  if(message){
-    box.innerHTML=`<div class="empty" style="padding:12px">${esc(message)}</div>`;
-    box.classList.remove('hidden');
-    return;
-  }
-
-  if(!matches.length){
-    hideSuggestions();
-    return;
-  }
-
-  box.innerHTML=matches.map(x=>`
-    <button class="suggestion" type="button" onclick="selectStaff('${attr(x.user_id)}')">
-      <b>${esc(x.name)}</b>
-      <small>${esc([x.unit,x.department].filter(Boolean).join(' • ')||'Staff')}</small>
-    </button>
-  `).join('');
-
-  box.classList.remove('hidden');
+ const box=$('#staffSuggestions');if(!box)return;
+ box.replaceChildren();
+ if(message){const hint=document.createElement('div');hint.className='empty';hint.textContent=message;box.append(hint);}
+ else for(const user of matches){
+   const button=document.createElement('button');button.type='button';button.className='suggestion';
+   const label=document.createElement('b');label.textContent=user.name;
+   const meta=document.createElement('small');meta.textContent=[user.unit,user.department,user.user_id].filter(Boolean).join(' | ');
+   button.append(label,meta);button.addEventListener('click',()=>selectStaff(user.user_id));box.append(button);
+ }
+ box.classList.toggle('hidden',!message&&!matches.length);
+ $('#loginName')?.setAttribute('aria-expanded',String(!box.classList.contains('hidden')));
 }
 
 function handleNameSearch(){
@@ -2698,9 +2564,7 @@ function handleNameSearch(){
   }
 
   if(!state.staffList.length){
-    state.manualNameMode=true;
-    hideSuggestions();
-    setStaffLoadStatus('Taip nama penuh dan terus masuk • API disemak di belakang','local');
+    renderStaffSuggestions([],state.staffLoadingPromise?'Sedang mengambil nama staf...':'Senarai belum tersedia. Tekan Muat semula nama.');
     return;
   }
 
@@ -2748,8 +2612,8 @@ function hideSuggestions(){
 
 function identity(){
   return {
-    user_id:String(state.profile?.user_id||state.selectedUserId||localStorage.getItem('ict_applicant_user_id')||''),
-    name:String(state.profile?.name||$('#loginName')?.value||localStorage.getItem('ict_applicant_name')||'').trim()
+    user_id:String(state.profile?.user_id||state.selectedUserId||localGetV9('ict_applicant_user_id')||''),
+    name:String(state.profile?.name||$('#loginName')?.value||localGetV9('ict_applicant_name')||'').trim()
   };
 }
 
@@ -2781,10 +2645,9 @@ async function loginApplicant(silent=false){
   }
 
   if(!state.selectedUserId){
-    const exact=state.staffList.find(
-      x=>String(x.name||'').trim().toLowerCase()===name.toLowerCase()
-    );
-    if(exact) state.selectedUserId=String(exact.user_id);
+    const matches=state.staffList.filter(x=>String(x.name||'').trim().toLowerCase()===name.toLowerCase());
+    if(matches.length>1){handleNameSearch();return toast('Nama berulang','Pilih akaun yang betul dalam senarai.','err');}
+    if(matches.length===1)state.selectedUserId=String(matches[0].user_id);
   }
 
   const userId=state.selectedUserId||'';
@@ -2797,8 +2660,8 @@ async function loginApplicant(silent=false){
   btn.disabled=true;
   btn.textContent='Membuka portal...';
 
-  localStorage.setItem('ict_applicant_user_id',userId);
-  localStorage.setItem('ict_applicant_name',finalName);
+  localSetV9('ict_applicant_user_id',userId);
+  localSetV9('ict_applicant_name',finalName);
 
   const cached=userId ? readPortalCache(userId) : null;
 
@@ -2810,7 +2673,7 @@ async function loginApplicant(silent=false){
 
   // Masuk segera. API/bootstrap dibuat di belakang.
   $('#loginOverlay').classList.add('hidden');
-  setPemohonVideoActive(false);
+
   btn.disabled=false;
   btn.textContent='Masuk Portal Pemohon';
   setTimeout(()=>maybeOpenQrAsset(false),30);
@@ -2830,7 +2693,7 @@ async function loginApplicant(silent=false){
         name:finalName,
         _t:Date.now()
       },
-      {timeoutMs:8000,retries:0}
+      {timeoutMs:30000,retries:0}
     );
 
     clearTimeout(loaderTimer);
@@ -2839,10 +2702,10 @@ async function loginApplicant(silent=false){
     applyBootstrap(data);
 
     if(data?.profile?.user_id){
-      localStorage.setItem('ict_applicant_user_id',String(data.profile.user_id));
+      localSetV9('ict_applicant_user_id',String(data.profile.user_id));
     }
     if(data?.profile?.name){
-      localStorage.setItem('ict_applicant_name',String(data.profile.name));
+      localSetV9('ict_applicant_name',String(data.profile.name));
     }
 
     savePortalCache(data);
@@ -2861,9 +2724,9 @@ async function loginApplicant(silent=false){
     // dan permohonan akan resolve nama di backend apabila dihantar.
     if(!silent){
       toast(
-        'Portal dibuka',
-        'Anda boleh terus menggunakan portal. Data akan disegerakkan semula secara automatik.',
-        'ok'
+        'Data portal belum disahkan',
+        'Sambungan server gagal. Jangan hantar semula rekod sehingga status disemak. '+String(err?.message||''),
+        'err'
       );
     }
   }
@@ -2898,8 +2761,8 @@ function maybeOpenQrAsset(finalCheck=false){
 
 
 function logoutApplicant(){
-  localStorage.removeItem('ict_applicant_user_id');
-  localStorage.removeItem('ict_applicant_name');
+  localRemoveV9('ict_applicant_user_id');
+  localRemoveV9('ict_applicant_name');
   state.profile=null;
   state.assets=[];
   state.loans=[];
@@ -2910,7 +2773,7 @@ function logoutApplicant(){
   $('#sidebar').classList.remove('open');
   $('#loginName').value='';
   hideSuggestions();
-  setPemohonVideoActive(true);
+
 }
 
 function applyBootstrap(data){
@@ -3742,21 +3605,22 @@ function loanProgress(status){
   return `<div class="loan-progress-mini">${steps.map((_,i)=>`<i class="${i<=index?'done':''}"></i>`).join('')}<small>${index===0?'Menunggu ICT':index===1?'Sedia untuk diambil':index===2?'Sedang dipinjam':'Selesai'}</small></div>`;
 }
 
-function jsonpOnce(action,params={},timeoutMs=12000){
-  return new Promise((resolve,reject)=>{
-    const cb='__pemohon_'+Date.now()+'_'+Math.floor(Math.random()*99999);
-    const q=new URLSearchParams({action,token:SYSTEM_CONFIG.APPLICANT_TOKEN,callback:cb,...Object.fromEntries(Object.entries(params).filter(([,v])=>v!==undefined&&v!==null&&v!==''))});
-    const s=document.createElement('script');
-    const timer=setTimeout(()=>{clean();reject(new Error('API mengambil masa terlalu lama. Sistem akan cuba sekali lagi.'));},timeoutMs);
-    function clean(){clearTimeout(timer);delete window[cb];s.remove();}
-    window[cb]=(payload)=>{clean();if(payload?.ok){setConnected(true);resolve(payload.data)}else{reject(new Error(payload?.error?.message||'API error'))}};
-    s.onerror=()=>{clean();reject(new Error('Gagal sambung Apps Script.'))};
-    s.src=SYSTEM_CONFIG.API_URL+'?'+q.toString();document.head.appendChild(s);
-  });
+function jsonpOnce(action,params={},timeoutMs=30000){
+ return new Promise((resolve,reject)=>{
+  const cb='__pemohon_'+Date.now()+'_'+Math.random().toString(36).slice(2),script=document.createElement('script');
+  let settled=false,timer;
+  function clean(){clearTimeout(timer);script.remove();window[cb]=()=>{};setTimeout(()=>{delete window[cb];},120000);}
+  function fail(message,code){if(settled)return;settled=true;clean();const error=new Error(message);error.code=code;reject(error);}
+  window[cb]=payload=>{if(settled)return;settled=true;clean();if(payload?.ok){setConnected(true);resolve(payload.data);}else{const error=new Error(payload?.error?.message||'API error');error.code='API';reject(error);}};
+  const q=new URLSearchParams({action,token:SYSTEM_CONFIG.APPLICANT_TOKEN,callback:cb,...Object.fromEntries(Object.entries(params).filter(([,v])=>v!==undefined&&v!==null&&v!==''))});
+  timer=setTimeout(()=>fail('API timeout: tiada jawapan daripada server.','TIMEOUT'),timeoutMs);
+  script.onerror=()=>fail('Sambungan Apps Script gagal. Semak internet, URL /exec dan akses deployment.','NETWORK');
+  script.src=SYSTEM_CONFIG.API_URL+'?'+q;document.head.append(script);
+ });
 }
 
 async function jsonp(action,params={},options={}){
-  const timeoutMs=options.timeoutMs||12000;
+  const timeoutMs=options.timeoutMs||30000;
   const retries=Number.isFinite(options.retries)?options.retries:0;
   let lastErr=null;
 
@@ -4061,7 +3925,7 @@ async function handleImage(event){
       card.style.transform='none';actor.style.transform='none';
       const r=rig.getBoundingClientRect(),c=card.getBoundingClientRect(),f=input.getBoundingClientRect();
       const small=window.innerWidth<=600;
-      const width=window.innerWidth<=360?112:small?130:window.innerWidth<=1120?179:194;
+      const width=window.innerWidth<=360?92:window.innerWidth<=450?100:small?146:window.innerWidth<=700?170:235;
       const height=width*1.5;
       actor.style.width=width+'px';actor.style.height=height+'px';
       actor.style.left=(c.left-r.left-231/240*width)+'px';
@@ -4160,6 +4024,41 @@ async function handleImage(event){
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initPullIntro,{once:true});
   else initPullIntro();
 })();
+
+</script>
+<script>
+/* V9: local display preferences may be unavailable in embedded browsers. */
+function localGetV9(key){try{return window.localStorage.getItem(key);}catch(e){return null;}}
+function localSetV9(key,value){try{window.localStorage.setItem(key,value);}catch(e){}}
+function localRemoveV9(key){try{window.localStorage.removeItem(key);}catch(e){}}
+function activeFlagV9(value){return value===undefined||value===null||value===''||value===true||value===1||['ya','yes','true','1','aktif','active'].includes(String(value).trim().toLowerCase());}
+function staffFetchErrorV9(error){
+ const msg=String(error?.message||'Sambungan gagal.');
+ if(/token|akses|access|auth/i.test(msg))return 'Akses senarai staf ditolak. Semak token dan deployment Code.gs. '+msg;
+ if(/timeout|lama/i.test(msg))return 'Senarai staf belum diterima selepas 30 saat. Tekan Muat semula nama; semak deployment jika masih gagal.';
+ return msg;
+}
+function bindStaffToolsV9(){
+ $('#staffRetryBtn')?.addEventListener('click',()=>loadStaffNames(false,true));
+ $('#loginName')?.addEventListener('keydown',event=>{
+   if(event.key==='Escape'){hideSuggestions();return;}
+   const buttons=$$('#staffSuggestions .suggestion');
+   if(event.key==='ArrowDown'&&buttons.length){event.preventDefault();buttons[0].focus();}
+   if(event.key==='Enter'&&state.selectedUserId){event.preventDefault();loginApplicant(false);}
+ });
+ $('#staffSuggestions')?.addEventListener('keydown',event=>{
+   const buttons=$$('#staffSuggestions .suggestion'),at=buttons.indexOf(document.activeElement);
+   if(event.key==='ArrowDown'||event.key==='ArrowUp'){
+     event.preventDefault();buttons[(at+(event.key==='ArrowDown'?1:-1)+buttons.length)%buttons.length]?.focus();
+   }
+ });
+ window.addEventListener('storage',event=>{
+   if([STAFF_SHARED_SNAPSHOT_KEY,STAFF_CACHE_KEY].includes(event.key)&&!state.staffLoadingPromise){
+     const list=readAdminStaffSnapshot();if(list.length){state.staffList=list;handleNameSearch();}
+   }
+ });
+}
+document.addEventListener('DOMContentLoaded',bindStaffToolsV9,{once:true});
 
 </script>
 </body>
