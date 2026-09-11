@@ -863,6 +863,62 @@ html,body{max-width:100%;overflow-x:hidden}
 }
 </style>
 
+<style>
+/* Dedicated audit print styles; never copy the application's global print rules. */
+.audit-doc-v9{font-family:Arial,Helvetica,sans-serif;color:#111;background:white;font-size:9pt;line-height:1.3}
+.audit-doc-v9 *{box-sizing:border-box}
+.audit-doc-v9 .audit-sheet-v9{width:281mm;max-width:none;margin:0 auto 8mm;padding:0;background:#fff;position:relative;break-after:page;page-break-after:always}
+.audit-doc-v9 .audit-sheet-v9:last-child{break-after:auto;page-break-after:auto}
+.audit-doc-v9 .audit-heading-v9{position:relative;padding:5mm 28mm 3mm 4mm;text-align:center;min-height:16mm}
+.audit-doc-v9 .audit-heading-v9 h1{font-family:Georgia,'Times New Roman',serif;font-size:13pt;line-height:1.2;letter-spacing:0;margin:0;font-weight:700;color:#111}
+.audit-doc-v9 .audit-code-v9{position:absolute;right:1mm;top:3mm;font-family:Georgia,'Times New Roman',serif;font-size:10pt;font-weight:700;text-align:right}
+.audit-doc-v9 .audit-sub-v9{font-size:7.5pt;margin-top:2mm;color:#333}
+.audit-doc-v9 table.audit-table-v9{width:100%;min-width:0;table-layout:fixed;border-collapse:collapse;border-spacing:0;margin:0;font-size:9pt;color:#111}
+.audit-doc-v9 .audit-table-v9 th,.audit-doc-v9 .audit-table-v9 td{border:.25mm solid #222;padding:1.3mm 1.4mm;vertical-align:middle;color:#111;background:#fff;font-size:8.5pt;line-height:1.27;text-align:center;white-space:normal;overflow-wrap:anywhere}
+.audit-doc-v9 .audit-table-v9 thead{display:table-header-group}
+.audit-doc-v9 .audit-table-v9 th{font-family:Georgia,'Times New Roman',serif;font-weight:700;font-size:9pt}
+.audit-doc-v9 .audit-table-v9 .meta-label-v9{text-align:left;font-size:8.2pt;padding:1mm 1.5mm}
+.audit-doc-v9 .audit-table-v9 .meta-value-v9{text-align:left;font:8.2pt Arial,Helvetica,sans-serif;padding:1mm 1.5mm}
+.audit-doc-v9 .audit-table-v9 tbody tr{break-inside:avoid;page-break-inside:avoid}
+.audit-doc-v9 .audit-table-v9 tbody td{height:15mm}
+.audit-doc-v9 .audit-table-v9 .borrower-v9{text-align:left;font-weight:700;font-size:9pt}
+.audit-doc-v9 .borrower-v9 small{display:block;margin-top:1mm;font-size:7pt;font-weight:400;color:#333}
+.audit-doc-v9 .audit-table-v9 .signature-v9{vertical-align:bottom;font-size:7pt;padding-top:9mm}
+.audit-doc-v9 .audit-table-v9 .notes-v9{text-align:left;font-size:7.8pt}
+.audit-doc-v9 .notes-v9 .row-status-v9{font-size:7.8pt;font-weight:bold;margin-bottom:1mm}
+.audit-doc-v9 .notes-v9 .asset-note-v9{margin-bottom:1mm}
+.audit-doc-v9 .notes-v9 .data-gap-v9{margin-top:1mm;font-style:italic}
+.audit-doc-v9 .audit-footer-v9{display:flex;gap:5mm;justify-content:space-between;padding:2mm 0 1mm;font-size:7pt;line-height:1.3;color:#333}
+.audit-doc-v9 .audit-footer-v9 .page-number-v9{white-space:nowrap}
+.audit-doc-v9 .audit-footnote-v9{font-size:7pt;color:#333;margin:1mm 0}
+@page{size:A4 landscape;margin:8mm}
+@media print{
+ html,body{margin:0!important;padding:0!important;background:#fff!important}
+ .audit-doc-v9{padding:0;margin:0}
+ .audit-doc-v9 .audit-sheet-v9{margin:0!important;box-shadow:none!important}
+ .audit-doc-v9 tr:hover td{background:#fff!important}
+}
+
+
+.audit-tools-v9{margin-bottom:16px;padding:23px;border-top:4px solid #137ba9}
+.audit-eyebrow-v9{font-size:10px;letter-spacing:.13em;color:#147e9f;font-weight:900;margin-bottom:7px}
+.audit-help-v9{font-size:11px;line-height:1.6;background:#f1f8fc;border:1px solid #d7e9f4;border-radius:11px;padding:11px 13px;margin-bottom:14px;color:#3c647b}
+.audit-controls-v9{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:11px;margin-bottom:11px}
+.audit-controls-v9 label{font-size:10px;font-weight:800;color:#587183;line-height:2}.audit-controls-v9 .field{font-size:12px}
+.audit-load-v9{font-size:11px;color:#245c78;line-height:1.5}.audit-load-v9.error{color:#b03d52}
+.audit-summary-v9{font-size:11px;font-weight:700;margin-top:8px;color:#284c68}
+.audit-link-v9{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;margin-bottom:12px;background:#f3f9fc;border-radius:12px;font-size:11px;color:#4b697e}
+.staff-publish-v9{padding:16px;margin-top:13px;background:#f1f8fc;border:1px solid #d4e6f0;border-radius:12px}.staff-publish-v9 strong{font-size:12px}.staff-publish-v9 p,#staffDiagnosticV9{font-size:11px;line-height:1.6;color:#547186}
+#movementPrintArea{background:#dde5eb;padding:18px;overflow:auto}
+#movementPrintArea .audit-sheet-v9{box-shadow:0 4px 25px #20354520;margin-bottom:18px;padding:0}
+@media(max-width:850px){.audit-controls-v9{grid-template-columns:1fr 1fr}.audit-tools-v9 .panel-head{align-items:flex-start;flex-direction:column}.audit-link-v9{flex-wrap:wrap}}
+@media print{
+ body:has(#movementModal.show)>*{display:none!important}
+ body:has(#movementModal.show)>#movementModal{display:block!important;position:static!important}
+ #movementModal .audit-doc-v9,#movementModal .audit-doc-v9 *{visibility:visible!important}
+ #movementModal .audit-sheet-v9{box-shadow:none!important;margin:0!important}
+}
+</style>
 </head>
 <body>
 <div class="admin-login-overlay" id="adminLoginOverlay">
@@ -972,8 +1028,22 @@ html,body{max-width:100%;overflow-x:hidden}
     </table>
   </div>
 </div></section>
-<section class="view" id="view-loans"><div class="mini-hero green"><div class="copy"><h2>Kelulusan Pinjaman</h2><p>Urus permohonan, kelulusan, check-out dan pemulangan peralatan ICT.</p></div><div class="art"><svg viewBox="0 0 420 140"><g transform="translate(54,12)"><path d="M48 15v105M35 42h26M28 62h40M21 83h54" stroke="#fff" stroke-width="5" opacity=".75"/><circle cx="20" cy="34" r="12" fill="none" stroke="#fff" stroke-width="5" opacity=".7"/><rect x="112" y="36" width="105" height="66" rx="7" fill="#18253b"/><rect x="121" y="44" width="87" height="49" rx="3" fill="#6fbaff"/><path d="M95 103h138l17 13H78z" fill="#e3e8ef"/><rect x="255" y="54" width="80" height="54" rx="8" fill="#f5f6f8"/><circle cx="295" cy="81" r="21" fill="#123e73"/><circle cx="295" cy="81" r="12" fill="#26b1ff"/></g></svg></div></div><div class="info-banner"><span>🔄</span><div><b>Inventori & Pinjaman disambungkan.</b> Aset yang direkod untuk pinjaman akan terus berstatus RESERVED, kemudian DIPINJAM selepas check-out, dan kembali TERSEDIA selepas dipulangkan.</div></div><div class="card panel"><div class="toolbar"><div class="search">⌕ <input id="loanSearch" placeholder="Cari ID pinjaman, peminjam, tujuan..."/></div><select class="field" id="loanStatusFilter" style="width:auto"><option value="">Semua status</option><option>MENUNGGU_KELULUSAN</option><option>DILULUSKAN</option><option>DIPINJAM</option><option>HAMPIR_DUE</option><option>LEWAT</option><option>DIPULANGKAN</option></select><button class="btn btn-green" id="addLoanBtn">＋ Pinjaman Baru</button></div><div class="table-wrap"><table><thead><tr><th>ID PINJAMAN</th><th>GAMBAR</th><th>PEMINJAM</th><th>ITEM</th><th>DUE</th><th>TUJUAN</th><th>STATUS</th><th>DILULUSKAN OLEH</th><th>TINDAKAN</th></tr></thead><tbody id="loansRows"></tbody></table></div></div></section>
-<section class="view" id="view-reports"><div class="mini-hero orange"><div class="copy"><h2>Laporan</h2><p>Ringkasan prestasi inventori dan pinjaman dalam satu paparan.</p></div><div class="art"><svg viewBox="0 0 420 140"><g transform="translate(70,18)"><rect x="0" y="0" width="280" height="98" rx="15" fill="#fff" opacity=".94"/><path d="M32 73l42-27 38 12 48-36 44 18 43-23" fill="none" stroke="#6f8fff" stroke-width="6" stroke-linecap="round"/><path d="M35 86V55M87 86V40M139 86V66M191 86V34M243 86V20" stroke="#cbd8ea" stroke-width="11" stroke-linecap="round"/></g></svg></div></div><div class="kpis"><div class="card kpi" style="--accent:var(--green)"><div class="kpi-head">ASET TERSEDIA</div><div class="kpi-value" id="reportAvailable">—</div><div class="kpi-foot">Inventori sedia dipinjam</div></div><div class="card kpi" style="--accent:var(--blue)"><div class="kpi-head">ASET DIPINJAM</div><div class="kpi-value" id="reportBorrowed">—</div><div class="kpi-foot">Inventori sedang digunakan</div></div><div class="card kpi" style="--accent:var(--purple)"><div class="kpi-head">PINJAMAN AKTIF</div><div class="kpi-value" id="reportActiveLoans">—</div><div class="kpi-foot">Rekod pinjaman aktif</div></div><div class="card kpi" style="--accent:var(--red)"><div class="kpi-head">PINJAMAN LEWAT</div><div class="kpi-value" id="reportOverdue">—</div><div class="kpi-foot">Perlu dipulangkan</div></div></div><div class="card panel"><div class="panel-head"><div><div class="panel-title">Eksport Data</div><div class="panel-sub">Muat turun rekod semasa dalam format CSV.</div></div></div><div class="toolbar"><button class="btn" onclick="exportCSV('assets')">Export Inventori CSV</button><button class="btn" onclick="exportCSV('loans')">Export Pinjaman CSV</button></div></div></section>
+<section class="view" id="view-loans"><div class="mini-hero green"><div class="copy"><h2>Kelulusan Pinjaman</h2><p>Urus permohonan, kelulusan, check-out dan pemulangan peralatan ICT.</p></div><div class="art"><svg viewBox="0 0 420 140"><g transform="translate(54,12)"><path d="M48 15v105M35 42h26M28 62h40M21 83h54" stroke="#fff" stroke-width="5" opacity=".75"/><circle cx="20" cy="34" r="12" fill="none" stroke="#fff" stroke-width="5" opacity=".7"/><rect x="112" y="36" width="105" height="66" rx="7" fill="#18253b"/><rect x="121" y="44" width="87" height="49" rx="3" fill="#6fbaff"/><path d="M95 103h138l17 13H78z" fill="#e3e8ef"/><rect x="255" y="54" width="80" height="54" rx="8" fill="#f5f6f8"/><circle cx="295" cy="81" r="21" fill="#123e73"/><circle cx="295" cy="81" r="12" fill="#26b1ff"/></g></svg></div></div><div class="info-banner"><span>🔄</span><div><b>Inventori & Pinjaman disambungkan.</b> Aset yang direkod untuk pinjaman akan terus berstatus RESERVED, kemudian DIPINJAM selepas check-out, dan kembali TERSEDIA selepas dipulangkan.</div></div><div class="audit-link-v9"><span>Perlu cetakan untuk audit? Semua status dan sejarah digabungkan dalam Laporan.</span><button class="btn btn-sm" data-go="reports">Buka Laporan Audit</button></div><div class="card panel"><div class="toolbar"><div class="search">⌕ <input id="loanSearch" placeholder="Cari ID pinjaman, peminjam, tujuan..."/></div><select class="field" id="loanStatusFilter" style="width:auto"><option value="">Semua status</option><option>MENUNGGU_KELULUSAN</option><option>DILULUSKAN</option><option>DIPINJAM</option><option>HAMPIR_DUE</option><option>LEWAT</option><option>DIPULANGKAN</option></select><button class="btn btn-green" id="addLoanBtn">＋ Pinjaman Baru</button></div><div class="table-wrap"><table><thead><tr><th>ID PINJAMAN</th><th>GAMBAR</th><th>PEMINJAM</th><th>ITEM</th><th>DUE</th><th>TUJUAN</th><th>STATUS</th><th>DILULUSKAN OLEH</th><th>TINDAKAN</th></tr></thead><tbody id="loansRows"></tbody></table></div></div></section>
+<section class="view" id="view-reports"><div class="mini-hero orange"><div class="copy"><h2>Laporan</h2><p>Ringkasan prestasi inventori dan pinjaman dalam satu paparan.</p></div><div class="art"><svg viewBox="0 0 420 140"><g transform="translate(70,18)"><rect x="0" y="0" width="280" height="98" rx="15" fill="#fff" opacity=".94"/><path d="M32 73l42-27 38 12 48-36 44 18 43-23" fill="none" stroke="#6f8fff" stroke-width="6" stroke-linecap="round"/><path d="M35 86V55M87 86V40M139 86V66M191 86V34M243 86V20" stroke="#cbd8ea" stroke-width="11" stroke-linecap="round"/></g></svg></div></div><div class="card panel audit-tools-v9">
+ <div class="panel-head"><div><div class="audit-eyebrow-v9">DAFTAR AUDIT / KEW.PA-6</div><div class="panel-title">Semua sejarah pinjaman, satu cetakan.</div><div class="panel-sub">Termasuk selesai, aktif, menunggu kelulusan, diluluskan, lewat, ditolak dan dibatalkan.</div></div><button class="btn btn-primary" id="auditLoadV9">Muat semua sejarah</button></div>
+ <div class="audit-help-v9">Format berdasarkan borang contoh anda. Setiap baris mewakili satu item bagi satu pinjaman. Ruang tandatangan dikekalkan kosong. Rekod yang telah dipadam kekal tidak dapat dipulihkan melalui laporan ini.</div>
+ <div class="audit-controls-v9">
+  <label>Susunan cetakan<select class="field" id="auditLayoutV9"><option value="combined">Gabungan semua aset</option><option value="asset">Mengikut aset (kepala borang asal)</option></select></label>
+  <label>Status<select class="field" id="auditStatusV9"><option value="">Semua status</option><option value="selesai">Selesai dipulangkan</option><option value="belum">Belum selesai</option><option value="DITOLAK">Ditolak</option><option value="DIBATALKAN">Dibatalkan</option></select></label>
+  <label>Tarikh mula<input class="field" type="date" id="auditFromV9"></label><label>Tarikh akhir<input class="field" type="date" id="auditToV9"></label>
+ </div>
+ <input class="field" id="auditSearchV9" placeholder="Cari peminjam, ID pinjaman, nama aset atau nombor siri...">
+ <p class="tiny muted">Tarikh kosong = semua sejarah. Penapis tarikh menggunakan tarikh dikeluarkan; tarikh permohonan digunakan jika belum dikeluarkan.</p>
+ <div id="auditLoadStatusV9" class="audit-load-v9" role="status">Belum dimuatkan. Tekan Muat semua sejarah; sistem akan mengambil semua halaman, bukan senarai pada skrin sahaja.</div>
+ <div id="auditSummaryV9" class="audit-summary-v9"></div>
+ <div class="toolbar" style="margin-top:14px;margin-bottom:0"><button class="btn" id="auditPreviewV9" disabled>Pratonton paparan</button><button class="btn" id="auditPrintFilteredV9" disabled>Cetak paparan ditapis</button><button class="btn btn-green" id="auditPrintAllV9" disabled>Cetak semua sejarah / Simpan PDF</button></div>
+</div>
+<div class="kpis"><div class="card kpi" style="--accent:var(--green)"><div class="kpi-head">ASET TERSEDIA</div><div class="kpi-value" id="reportAvailable">—</div><div class="kpi-foot">Inventori sedia dipinjam</div></div><div class="card kpi" style="--accent:var(--blue)"><div class="kpi-head">ASET DIPINJAM</div><div class="kpi-value" id="reportBorrowed">—</div><div class="kpi-foot">Inventori sedang digunakan</div></div><div class="card kpi" style="--accent:var(--purple)"><div class="kpi-head">PINJAMAN AKTIF</div><div class="kpi-value" id="reportActiveLoans">—</div><div class="kpi-foot">Rekod pinjaman aktif</div></div><div class="card kpi" style="--accent:var(--red)"><div class="kpi-head">PINJAMAN LEWAT</div><div class="kpi-value" id="reportOverdue">—</div><div class="kpi-foot">Perlu dipulangkan</div></div></div><div class="card panel"><div class="panel-head"><div><div class="panel-title">Eksport Data</div><div class="panel-sub">Muat turun rekod semasa dalam format CSV.</div></div></div><div class="toolbar"><button class="btn" onclick="exportCSV('assets')">Export Inventori CSV</button><button class="btn" onclick="exportCSV('loans')">Export Pinjaman CSV</button></div></div></section>
 
 <section class="view" id="view-settings">
   <div class="mini-hero">
@@ -1018,7 +1088,7 @@ html,body{max-width:100%;overflow-x:hidden}
             <div class="search">⌕ <input id="staffSearch" placeholder="Cari nama staff..."/></div>
             <select class="field" id="staffActiveFilter" style="width:auto"><option value="">Semua</option><option value="Ya">Aktif</option><option value="Tidak">Tidak Aktif</option></select>
           </div>
-          <div class="table-wrap"><table><thead><tr><th>NAMA STAFF</th><th>UNIT / JABATAN</th><th>STATUS</th><th>TINDAKAN</th></tr></thead><tbody id="staffRows"></tbody></table></div>
+          <div class="table-wrap"><table><thead><tr><th>NAMA STAFF</th><th>UNIT / JABATAN</th><th>STATUS</th><th>TINDAKAN</th></tr></thead><tbody id="staffRows"></tbody></table></div><div class="staff-publish-v9"><strong>Nama staf untuk semua peranti</strong><p>Eksport fail Portal Pemohon lengkap dengan nama staf berdaftar. Terbitkan semula pemohon.html supaya nama boleh muncul tanpa menunggu API.</p><div class="toolbar"><button type="button" class="btn btn-sm" id="staffDiagnoseV9">Semak Direktori Staf</button><button type="button" class="btn btn-primary btn-sm" id="staffExportPortalV9">Jana Portal dengan Nama Staf (.txt)</button></div><div id="staffDiagnosticV9" role="status"></div></div>
         </div>
       </div>
     </details>
@@ -2974,7 +3044,7 @@ function showOperatorLogin(){
 async function loadOperatorOptions(force=false){
   if(force || !state.users.length){
     try{
-      const res=await jsonp('users',{pageSize:500,sort:'name',order:'asc'},{timeoutMs:9000,retries:0});
+      const res={items:await loadEveryPageV9('users',{sort:'name',order:'asc'})};state.usersCompleteV9=true;
       state.users=res?.items||state.users||[];
       state.loadedAt.users=Date.now();
       saveAdminFastCache();
@@ -3282,26 +3352,13 @@ function updateConnectionUI(){
    ADMIN SETTINGS - STAFF LIST
 ========================================================= */
 async function loadStaffSettings(force=false){
-  if(!requireConfig()) return;
-  if(!force && state.users.length && isFresh('users',30000)){
-    renderStaffSettings();
-    return;
-  }
-  if(state.inFlight.users) return state.inFlight.users;
-
-  state.inFlight.users=(async()=>{
-    try{
-      const res=await jsonp('users',{pageSize:500,sort:'name',order:'asc'});
-      state.users=res?.items||[];
-      state.loadedAt.users=Date.now();
-      saveAdminFastCache();
-      saveAdminFastCache();
-      renderStaffSettings();
-    }catch(err){handleError(err)}
-    finally{state.inFlight.users=null}
-  })();
-
-  return state.inFlight.users;
+ if(!requireConfig())return;
+ if(!force&&state.usersCompleteV9&&isFresh('users',30000)){renderStaffSettings();return;}
+ if(state.inFlight.users)return state.inFlight.users;
+ const job=(async()=>{try{
+  state.users=await loadEveryPageV9('users',{sort:'name',order:'asc'});state.usersCompleteV9=true;state.loadedAt.users=Date.now();saveAdminFastCache();renderStaffSettings();
+ }catch(error){handleError(error);}})();
+ state.inFlight.users=job;try{return await job;}finally{state.inFlight.users=null;}
 }
 
 function renderStaffSettings(){
@@ -3474,55 +3531,9 @@ async function toggleStaff(userId,newStatus){
 ========================================================= */
 let currentMovementRegisterData=null;
 
-function movementPdfDocumentHtml(data){
-  const pages=data?.pages||[];
-  const content=pages.length?pages.map((page,pageIndex)=>{
-    const a=page.asset||{};
-    const rows=page.movements||[];
-    const body=rows.length
-      ? rows.map(movementRowHtml).join('')
-      : `<tr class="movement-empty-row"><td>1</td><td colspan="9">Tiada rekod pergerakan.</td></tr>`;
 
-    return `<section class="movement-page">
-      <div class="movement-page-header">
-        <div class="movement-form-code">${esc(data.form_code||'KEW.PA-6')}</div>
-        <h1>${esc(data.title||'DAFTAR PERGERAKAN HARTA MODAL DAN INVENTORI')}</h1>
-      </div>
-      <table class="movement-asset-meta">
-        <tr><td>Jenis</td><td>:</td><td>${esc(a.type||a.asset_name||'')}</td></tr>
-        <tr><td>Jenama dan Model</td><td>:</td><td>${esc(a.brand_model||'')}</td></tr>
-        <tr><td>No. Siri Pembuat</td><td>:</td><td>${esc(a.manufacturer_serial||'')}</td></tr>
-        <tr><td>No. Siri Pendaftaran</td><td>:</td><td>${esc(a.registration_serial||'')}</td></tr>
-      </table>
-      <table class="movement-register">
-        <thead>
-          <tr><th rowspan="3" style="width:35px">Bil.</th><th rowspan="3" style="width:150px">Nama Peminjam</th><th colspan="2">Tarikh</th><th rowspan="3" style="width:85px">Tandatangan<br>Peminjam</th><th colspan="4">Pegawai Pengeluar</th><th rowspan="3" style="width:170px">Catatan</th></tr>
-          <tr><th rowspan="2" style="width:78px">Dikeluarkan</th><th rowspan="2" style="width:88px">Jangka<br>Dipulangkan</th><th colspan="2">Ketika Dikeluarkan</th><th colspan="2">Ketika Dipulangkan</th></tr>
-          <tr><th style="width:90px">Tandatangan</th><th style="width:72px">Tarikh</th><th style="width:90px">Tandatangan</th><th style="width:72px">Tarikh</th></tr>
-        </thead>
-        <tbody>${body}</tbody>
-      </table>
-      <div class="movement-print-foot"><span>Aset: ${esc(a.asset_id||'')}</span><span>Dijana: ${fmtDateTime(data.generated_at)}</span></div>
-    </section>`;
-  }).join(''):'<div>Tiada data.</div>';
 
-  const css=[...document.querySelectorAll('style')].map(x=>x.textContent).join('\n');
-  return `<!doctype html><html><head><meta charset="utf-8"><title>${esc(data?.form_code||'KEW.PA-6')} - Daftar Pergerakan</title><style>${css}\nbody{background:#fff!important;padding:0!important}.movement-page{box-shadow:none!important;border:0!important;margin:0 auto!important}.no-print{display:none!important}@page{size:A4 landscape;margin:8mm}</style></head><body>${content}<script>window.addEventListener('load',()=>setTimeout(()=>window.print(),350));<\/script></body></html>`;
-}
 
-function openMovementPdf(){
-  if(!currentMovementRegisterData){
-    return toast('PDF belum tersedia','Buka Daftar Pergerakan dahulu.','err');
-  }
-  const w=window.open('','_blank');
-  if(!w){
-    return toast('Popup disekat','Benarkan popup browser untuk membuka PDF.','err');
-  }
-  w.document.open();
-  w.document.write(movementPdfDocumentHtml(currentMovementRegisterData));
-  w.document.close();
-  toast('PDF dibuka','Dalam dialog cetak pilih “Save as PDF / Simpan sebagai PDF”.','ok');
-}
 
 async function openMovementRegisterPdf(loanId){
   const w=window.open('','_blank');
@@ -3536,6 +3547,7 @@ async function openMovementRegisterPdf(loanId){
     w.document.open();
     w.document.write(movementPdfDocumentHtml(data));
     w.document.close();
+    setTimeout(()=>{if(!w.closed){w.focus();w.print();}},400);
   }catch(err){
     w.document.open();
     w.document.write(`<div style="font-family:Arial;padding:35px;color:#b73349">${esc(err.message)}</div>`);
@@ -3546,6 +3558,7 @@ async function openMovementRegisterPdf(loanId){
 async function openMovementRegister(loanId){
   const modal=$('#movementModal');
   const area=$('#movementPrintArea');
+  currentMovementRegisterData=null;$('#movementPrintBtn').disabled=true;$('#movementPdfBtn').disabled=true;
   modal.classList.add('show');
   area.innerHTML='<div class="card panel" style="text-align:center;padding:45px">Memuatkan daftar pergerakan...</div>';
 
@@ -3588,63 +3601,7 @@ function movementRowHtml(row,index){
   </tr>`;
 }
 
-function renderMovementRegister(data){
-  const pages=data?.pages||[];
-  $('#movementModalHint').textContent=`${data?.form_code||'KEW.PA-6'} • ${pages.length} aset`;
 
-  $('#movementPrintArea').innerHTML=pages.length?pages.map((page,pageIndex)=>{
-    const a=page.asset||{};
-    const rows=page.movements||[];
-    const body=rows.length
-      ? rows.map(movementRowHtml).join('')
-      : `<tr class="movement-empty-row"><td>1</td><td colspan="9">Tiada rekod pergerakan.</td></tr>`;
-
-    return `<section class="movement-page">
-      <div class="movement-page-header">
-        <div class="movement-form-code">${esc(data.form_code||'KEW.PA-6')}</div>
-        <h1>${esc(data.title||'DAFTAR PERGERAKAN HARTA MODAL DAN INVENTORI')}</h1>
-      </div>
-
-      <table class="movement-asset-meta">
-        <tr><td>Jenis</td><td>:</td><td>${esc(a.type||a.asset_name||'')}</td></tr>
-        <tr><td>Jenama dan Model</td><td>:</td><td>${esc(a.brand_model||'')}</td></tr>
-        <tr><td>No. Siri Pembuat</td><td>:</td><td>${esc(a.manufacturer_serial||'')}</td></tr>
-        <tr><td>No. Siri Pendaftaran</td><td>:</td><td>${esc(a.registration_serial||'')}</td></tr>
-      </table>
-
-      <table class="movement-register">
-        <thead>
-          <tr>
-            <th rowspan="3" style="width:35px">Bil.</th>
-            <th rowspan="3" style="width:150px">Nama Peminjam</th>
-            <th colspan="2">Tarikh</th>
-            <th rowspan="3" style="width:85px">Tandatangan<br>Peminjam</th>
-            <th colspan="4">Pegawai Pengeluar</th>
-            <th rowspan="3" style="width:170px">Catatan</th>
-          </tr>
-          <tr>
-            <th rowspan="2" style="width:78px">Dikeluarkan</th>
-            <th rowspan="2" style="width:88px">Jangka<br>Dipulangkan</th>
-            <th colspan="2">Ketika Dikeluarkan</th>
-            <th colspan="2">Ketika Dipulangkan</th>
-          </tr>
-          <tr>
-            <th style="width:90px">Tandatangan</th>
-            <th style="width:72px">Tarikh</th>
-            <th style="width:90px">Tandatangan</th>
-            <th style="width:72px">Tarikh</th>
-          </tr>
-        </thead>
-        <tbody>${body}</tbody>
-      </table>
-
-      <div class="movement-print-foot">
-        <span>Aset: ${esc(a.asset_id||'')}</span>
-        <span>Dijana: ${fmtDateTime(data.generated_at)}</span>
-      </div>
-    </section>`;
-  }).join(''):'<div class="card panel">Tiada data.</div>';
-}
 
 /* =========================================================
    REPORTS / EXPORT
@@ -3764,5 +3721,225 @@ function handleError(err){
     updateConnectionUI();
   }
 }
-</script></body>
+</script><script>
+const AUDIT_PRINT_CSS_V9="/* Dedicated audit print styles; never copy the application's global print rules. */\n.audit-doc-v9{font-family:Arial,Helvetica,sans-serif;color:#111;background:white;font-size:9pt;line-height:1.3}\n.audit-doc-v9 *{box-sizing:border-box}\n.audit-doc-v9 .audit-sheet-v9{width:281mm;max-width:none;margin:0 auto 8mm;padding:0;background:#fff;position:relative;break-after:page;page-break-after:always}\n.audit-doc-v9 .audit-sheet-v9:last-child{break-after:auto;page-break-after:auto}\n.audit-doc-v9 .audit-heading-v9{position:relative;padding:5mm 28mm 3mm 4mm;text-align:center;min-height:16mm}\n.audit-doc-v9 .audit-heading-v9 h1{font-family:Georgia,'Times New Roman',serif;font-size:13pt;line-height:1.2;letter-spacing:0;margin:0;font-weight:700;color:#111}\n.audit-doc-v9 .audit-code-v9{position:absolute;right:1mm;top:3mm;font-family:Georgia,'Times New Roman',serif;font-size:10pt;font-weight:700;text-align:right}\n.audit-doc-v9 .audit-sub-v9{font-size:7.5pt;margin-top:2mm;color:#333}\n.audit-doc-v9 table.audit-table-v9{width:100%;min-width:0;table-layout:fixed;border-collapse:collapse;border-spacing:0;margin:0;font-size:9pt;color:#111}\n.audit-doc-v9 .audit-table-v9 th,.audit-doc-v9 .audit-table-v9 td{border:.25mm solid #222;padding:1.3mm 1.4mm;vertical-align:middle;color:#111;background:#fff;font-size:8.5pt;line-height:1.27;text-align:center;white-space:normal;overflow-wrap:anywhere}\n.audit-doc-v9 .audit-table-v9 thead{display:table-header-group}\n.audit-doc-v9 .audit-table-v9 th{font-family:Georgia,'Times New Roman',serif;font-weight:700;font-size:9pt}\n.audit-doc-v9 .audit-table-v9 .meta-label-v9{text-align:left;font-size:8.2pt;padding:1mm 1.5mm}\n.audit-doc-v9 .audit-table-v9 .meta-value-v9{text-align:left;font:8.2pt Arial,Helvetica,sans-serif;padding:1mm 1.5mm}\n.audit-doc-v9 .audit-table-v9 tbody tr{break-inside:avoid;page-break-inside:avoid}\n.audit-doc-v9 .audit-table-v9 tbody td{height:15mm}\n.audit-doc-v9 .audit-table-v9 .borrower-v9{text-align:left;font-weight:700;font-size:9pt}\n.audit-doc-v9 .borrower-v9 small{display:block;margin-top:1mm;font-size:7pt;font-weight:400;color:#333}\n.audit-doc-v9 .audit-table-v9 .signature-v9{vertical-align:bottom;font-size:7pt;padding-top:9mm}\n.audit-doc-v9 .audit-table-v9 .notes-v9{text-align:left;font-size:7.8pt}\n.audit-doc-v9 .notes-v9 .row-status-v9{font-size:7.8pt;font-weight:bold;margin-bottom:1mm}\n.audit-doc-v9 .notes-v9 .asset-note-v9{margin-bottom:1mm}\n.audit-doc-v9 .notes-v9 .data-gap-v9{margin-top:1mm;font-style:italic}\n.audit-doc-v9 .audit-footer-v9{display:flex;gap:5mm;justify-content:space-between;padding:2mm 0 1mm;font-size:7pt;line-height:1.3;color:#333}\n.audit-doc-v9 .audit-footer-v9 .page-number-v9{white-space:nowrap}\n.audit-doc-v9 .audit-footnote-v9{font-size:7pt;color:#333;margin:1mm 0}\n@page{size:A4 landscape;margin:8mm}\n@media print{\n html,body{margin:0!important;padding:0!important;background:#fff!important}\n .audit-doc-v9{padding:0;margin:0}\n .audit-doc-v9 .audit-sheet-v9{margin:0!important;box-shadow:none!important}\n .audit-doc-v9 tr:hover td{background:#fff!important}\n}\n";
+/* V9: complete paginated report, kept separate from the filtered UI list. */
+const auditStateV9={rows:[],meta:null,complete:false,loading:null,scope:'all'};
+function auditErrorV9(message){$('#auditLoadStatusV9').textContent=message;$('#auditLoadStatusV9').classList.add('error');}
+function setAuditReadyV9(ready){
+ ['auditPreviewV9','auditPrintAllV9','auditPrintFilteredV9'].forEach(id=>{const e=$('#'+id);if(e)e.disabled=!ready;});
+}
+async function loadAuditHistoryV9(){
+ if(auditStateV9.loading)return auditStateV9.loading;
+ auditStateV9.complete=false;setAuditReadyV9(false);currentMovementRegisterData=null;
+ const button=$('#auditLoadV9');button.disabled=true;
+ const hint=$('#auditLoadStatusV9');hint.classList.remove('error');
+ const job=(async()=>{
+  let snapshot='',meta=null;const rows=[],keys=new Set();
+  for(let page=1;;page++){
+   hint.textContent=`Mengambil semua sejarah: halaman ${page}...`;
+   const response=await jsonp('audit.loan_history',{page,pageSize:120,snapshot_id:snapshot,_t:Date.now()},{timeoutMs:45000,retries:0});
+   if(!response||!Array.isArray(response.items)||!Number.isInteger(response.totalPages)||response.page!==page||!response.snapshot_id)
+     throw new Error('Format laporan tidak sepadan. Kemas kini Code.gs V9 dan deploy versi baharu.');
+   if(!meta){meta=response;snapshot=response.snapshot_id;}
+   if(snapshot!==response.snapshot_id||response.total!==meta.total||response.totalPages!==meta.totalPages)
+     throw new Error('Data berubah semasa laporan dimuatkan. Muat semula sebelum mencetak.');
+   for(const row of response.items){
+    if(!row.row_key||keys.has(row.row_key))throw new Error('ID baris laporan tidak unik. Semak loan_items sebelum mencetak.');
+    keys.add(row.row_key);rows.push(row);
+   }
+   if(page===meta.totalPages)break;
+  }
+  if(rows.length!==meta.total)throw new Error(`Laporan tidak lengkap (${rows.length}/${meta.total}). Cetakan disekat; muat semula.`);
+  auditStateV9.rows=rows;auditStateV9.meta=meta;auditStateV9.complete=true;
+  hint.textContent=`Lengkap: ${meta.total_loans} pinjaman, ${meta.total_assets} aset, ${rows.length} baris pergerakan. Tiada had tarikh atau status semasa muat turun.`;
+  setAuditReadyV9(rows.length>0);updateAuditSummaryV9();return rows;
+ })();
+ auditStateV9.loading=job;
+ try{return await job;}catch(error){
+  auditStateV9.rows=[];auditStateV9.meta=null;auditStateV9.complete=false;
+  auditErrorV9(String(error?.message||error));setAuditReadyV9(false);
+  toast('Laporan belum lengkap','Cetakan tidak dibenarkan sehingga semua halaman berjaya dimuatkan.','err');
+  return null;
+ }finally{auditStateV9.loading=null;button.disabled=false;}
+}
+function auditDateKeyV9(value){
+ if(!value)return '';
+ const text=String(value);if(/^\d{4}-\d{2}-\d{2}$/.test(text))return text;
+ const d=new Date(value);if(isNaN(d))return '';
+ const parts=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Kuala_Lumpur',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(d);
+ const p=Object.fromEntries(parts.map(x=>[x.type,x.value]));return p.year+'-'+p.month+'-'+p.day;
+}
+function auditFiltersV9(){
+ return {from:$('#auditFromV9').value,to:$('#auditToV9').value,status:$('#auditStatusV9').value,q:$('#auditSearchV9').value.trim().toLowerCase()};
+}
+function filteredAuditRowsV9(all=false){
+ if(all)return auditStateV9.rows.slice();const f=auditFiltersV9();
+ if(f.from&&f.to&&f.from>f.to)throw new Error('Tarikh mula mesti sebelum atau sama dengan tarikh akhir.');
+ return auditStateV9.rows.filter(row=>{
+  const date=auditDateKeyV9(row.issued_date||row.request_date);
+  if(f.from&&(!date||date<f.from))return false;if(f.to&&(!date||date>f.to))return false;
+  if(f.status==='selesai'&&row.status!=='DIPULANGKAN')return false;
+  if(f.status==='belum'&&['DIPULANGKAN','DITOLAK','DIBATALKAN'].includes(row.status))return false;
+  if(!['','selesai','belum'].includes(f.status)&&row.status!==f.status)return false;
+  if(f.q&&!([row.loan_id,row.borrower_name,row.asset?.asset_id,row.asset?.asset_name,row.asset?.registration_serial,row.asset?.manufacturer_serial,row.notes].join(' ').toLowerCase().includes(f.q)))return false;
+  return true;
+ });
+}
+function updateAuditSummaryV9(){
+ if(!auditStateV9.complete)return;
+ try{
+  const rows=filteredAuditRowsV9(),loans=new Set(rows.map(r=>r.loan_id)),finished=rows.filter(r=>r.status==='DIPULANGKAN').length;
+  $('#auditSummaryV9').textContent=`Paparan ditapis: ${loans.size} pinjaman | ${rows.length} baris item | ${finished} item dipulangkan | ${rows.length-finished} item berstatus lain.`;
+ }catch(error){$('#auditSummaryV9').textContent=error.message;}
+}
+function auditDataV9(all=false){
+ if(!auditStateV9.complete)throw new Error('Muat semua sejarah dahulu.');
+ const rows=filteredAuditRowsV9(all);if(!rows.length)throw new Error('Tiada rekod dalam paparan ini.');
+ const mode=$('#auditLayoutV9').value;
+ const f=all?{from:'',to:'',status:'',q:''}:auditFiltersV9();
+ const scope=all?'SEMUA SEJARAH - SEMUA STATUS':((f.from||f.to||f.status||f.q)?'PAPARAN DITAPIS':'SEMUA SEJARAH - SEMUA STATUS');
+ return {...auditStateV9.meta,items:rows,layout:mode,scope_label:scope,filters:f,complete:true};
+}
+function movementPagesV9(data){
+ if(Array.isArray(data.items)){
+  if(data.layout!=='asset')return [{asset:{type:'Semua aset ICT - butiran pada Catatan',brand_model:'Rujuk Catatan',manufacturer_serial:'Rujuk Catatan',registration_serial:'Rujuk Catatan'},movements:data.items,combined:true}];
+  const groups=new Map();for(const row of data.items){const k=row.asset?.asset_id||'NO-ASSET';if(!groups.has(k))groups.set(k,{asset:row.asset||{},movements:[],combined:false});groups.get(k).movements.push(row);}
+  return [...groups.values()].sort((a,b)=>String(a.asset.asset_id||'').localeCompare(String(b.asset.asset_id||'')));
+ }
+ return (data.pages||[]).map(p=>({...p,combined:false}));
+}
+function auditDateDisplayV9(value){
+ if(!value)return '';const key=auditDateKeyV9(value);if(!key)return '';
+ const [y,m,d]=key.split('-');return d+'/'+m+'/'+y;
+}
+function auditHeaderV9(group,data){
+ const a=group.asset||{},meta=[['Jenis',[a.type,a.asset_name].filter(Boolean).join(' / ')],['Jenama dan Model',a.brand_model],['No. Siri Pembuat',a.manufacturer_serial],['No. Siri Pendaftaran',a.registration_serial]];
+ const filter=data.filters||{};
+ const scope=[data.scope_label||'SEJARAH ASET',filter.from||filter.to?`Tarikh keluar / mohon: ${filter.from||'awal'} hingga ${filter.to||'terkini'}`:'',filter.status?'Status: '+filter.status:'',filter.q?'Carian: '+filter.q:''].filter(Boolean).join(' | ');
+ return `<div class="audit-heading-v9"><span class="audit-code-v9">KEW. PA-6<br><span style="font-weight:400;font-size:8pt">( ${esc(a.asset_id||'GABUNGAN')} )</span></span><h1>DAFTAR PERGERAKAN HARTA MODAL DAN INVENTORI</h1><div class="audit-sub-v9">${esc(scope)}</div></div>
+ <table class="audit-table-v9"><colgroup>${[3,18,8,8,10,10,8,10,8,17].map(x=>`<col style="width:${x}%">`).join('')}</colgroup><thead>
+ ${meta.map((m,i)=>`<tr><th colspan="2" class="meta-label-v9">${esc(m[0])} :</th><td colspan="3" class="meta-value-v9">${esc(m[1]||'')}</td>${i===0?'<th colspan="4" rowspan="4">Pegawai Pengeluar</th><th rowspan="6">Catatan</th>':''}</tr>`).join('')}
+ <tr><th rowspan="2">Bil.</th><th rowspan="2">Nama Peminjam</th><th colspan="2">Tarikh</th><th rowspan="2">Tandatangan<br>Peminjam</th><th colspan="2">Ketika Dikeluarkan</th><th colspan="2">Ketika Dipulangkan</th></tr>
+ <tr><th>Dikeluarkan</th><th>Jangka<br>Dipulangkan</th><th>Tanda-<br>tangan</th><th>Tarikh</th><th>Tanda-<br>tangan</th><th>Tarikh</th></tr></thead><tbody></tbody></table>`;
+}
+function auditRowV9(row,index,combined){
+ const a=row.asset||{};
+ const assetNote=combined?`<div class="asset-note-v9"><b>${esc(a.asset_name||a.asset_id||'Aset tidak direkod')}</b>${a.type?'<br>Jenis: '+esc(a.type):''}${a.brand_model?'<br>Model: '+esc(a.brand_model):''}${a.manufacturer_serial?'<br>Siri pembuat: '+esc(a.manufacturer_serial):''}${a.registration_serial?'<br>Siri daftar: '+esc(a.registration_serial):''}${a.asset_id?'<br>ID aset: '+esc(a.asset_id):''}</div>`:'';
+ const warnings=(row.warnings||[]).map(esc).join('; ');
+ return `<tr data-report-row="${esc(row.row_key||String(index))}"><td>${index}</td><td class="borrower-v9">${esc(row.borrower_name||'Tidak direkod')}<small>${esc(row.loan_id||'')}${row.request_date?'<br>Mohon: '+auditDateDisplayV9(row.request_date):''}</small></td><td>${auditDateDisplayV9(row.issued_date)}</td><td>${auditDateDisplayV9(row.expected_return_date)}</td><td class="signature-v9"></td><td class="signature-v9">${esc(row.issuing_officer_name||'')}</td><td>${auditDateDisplayV9(row.issue_officer_date)}</td><td class="signature-v9">${esc(row.returning_officer_name||'')}</td><td>${auditDateDisplayV9(row.actual_return_date||row.return_officer_date)}</td><td class="notes-v9"><div class="row-status-v9">${esc(String(row.status||'').replaceAll('_',' '))}</div>${assetNote}${esc(row.notes||'')}${warnings?`<div class="data-gap-v9">${warnings}</div>`:''}</td></tr>`;
+}
+function auditGeneratedTimeV9(value){
+ if(!value)return '';const d=new Date(value);if(isNaN(d))return String(value);
+ return new Intl.DateTimeFormat('ms-MY',{timeZone:'Asia/Kuala_Lumpur',dateStyle:'medium',timeStyle:'short'}).format(d)+' (MYT)';
+}
+function auditFooterV9(data){
+ return `<div class="audit-footer-v9"><span>Dijana: ${esc(auditGeneratedTimeV9(data.generated_at))}<br>Ruang tandatangan untuk pengesahan manual; nama tercetak bukan tandatangan.</span><span class="page-number-v9"></span></div>`;
+}
+function buildAuditSheetsV9(data){
+ const mount=document.createElement('div');mount.className='audit-doc-v9';mount.style.cssText='position:fixed;left:-20000px;top:0;width:281mm;z-index:-1;visibility:hidden;';document.body.append(mount);
+ const pages=[];let number=0;const maxHeight=193*(96/25.4);
+ function create(group){const el=document.createElement('section');el.className='audit-sheet-v9';el.innerHTML=auditHeaderV9(group,data)+auditFooterV9(data);mount.append(el);return el;}
+ try{
+  for(const group of movementPagesV9(data)){
+   let page=create(group),body=page.querySelector('tbody');
+   for(const row of group.movements||[]){
+    number++;const tr=document.createElement('tr');tr.innerHTML=auditRowV9(row,number,group.combined).replace(/^<tr[^>]*>|<\/tr>$/g,'');tr.setAttribute('data-report-row',row.row_key||String(number));body.append(tr);
+    if(page.getBoundingClientRect().height>maxHeight&&body.children.length>1){
+      tr.remove();pages.push(page);page=create(group);body=page.querySelector('tbody');body.append(tr);
+    }
+    if(page.getBoundingClientRect().height>maxHeight)throw new Error('Catatan bagi '+(row.loan_id||'rekod')+' terlalu panjang untuk satu halaman. Gunakan susunan mengikut aset atau semak catatan; tiada teks dipotong.');
+   }
+   if(!body.children.length)body.innerHTML='<tr><td colspan="10">Tiada rekod pergerakan.</td></tr>';
+   pages.push(page);
+  }
+  pages.forEach((page,index)=>{page.querySelector('.page-number-v9').textContent=`Halaman ${index+1} / ${pages.length}`;});
+  return pages.map(p=>p.outerHTML).join('');
+ }finally{mount.remove();}
+}
+function renderMovementRegister(data){
+ const pages=movementPagesV9(data),count=pages.reduce((n,p)=>n+(p.movements||[]).length,0);
+ $('#movementModalHint').textContent=`Format berdasarkan contoh KEW.PA-6 | ${count} baris | ${data.scope_label||'Sejarah aset'} | A4 landskap`;
+ $('#movementPrintArea').innerHTML='<div class="audit-doc-v9">'+buildAuditSheetsV9(data)+'</div>';
+ $('#movementPrintBtn').disabled=count===0;$('#movementPdfBtn').disabled=count===0;
+}
+function movementPdfDocumentHtml(data){
+ // Only this dedicated stylesheet is included: no sidebar, animation, API or tokens.
+ const html=buildAuditSheetsV9(data);
+ return '<!doctype html><html lang="ms"><head><meta charset="utf-8"><title>Daftar Pergerakan - KEW.PA-6</title><style>'+AUDIT_PRINT_CSS_V9+'</style></head><body><main class="audit-doc-v9">'+html+'</main></body></html>';
+}
+function openMovementPdf(){
+ if(!currentMovementRegisterData)return toast('Laporan belum sedia','Muat semua sejarah dahulu.','err');
+ const win=window.open('','_blank');if(!win)return toast('Popup disekat','Benarkan popup untuk cetakan laporan.','err');
+ try{
+  const html=movementPdfDocumentHtml(currentMovementRegisterData);win.document.open();win.document.write(html);win.document.close();
+  setTimeout(()=>{if(!win.closed){win.focus();win.print();}},400);
+ }catch(error){win.close();toast('Cetakan tidak berjaya',error.message,'err');}
+}
+function openAuditPreviewV9(){
+ try{const data=auditDataV9(false);currentMovementRegisterData=data;$('#movementModal').classList.add('show');renderMovementRegister(data);}
+ catch(error){toast('Laporan belum sedia',error.message,'err');}
+}
+function printAuditV9(all){
+ try{currentMovementRegisterData=auditDataV9(all);openMovementPdf();}catch(error){toast('Laporan belum sedia',error.message,'err');}
+}
+async function loadEveryPageV9(action,params={}){
+ const result=[];let total=null;
+ for(let page=1;;page++){
+  const r=await jsonp(action,{...params,page,pageSize:200},{timeoutMs:30000,retries:0});
+  if(!r||!Array.isArray(r.items)||!Number.isInteger(r.total)||!Number.isInteger(r.totalPages)||r.totalPages<0)throw new Error('Senarai tidak sah.');
+  if(total===null)total=r.total;
+  if(total!==r.total)throw new Error('Senarai berubah semasa dimuatkan. Cuba semula.');
+  result.push(...r.items);
+  if(page>=r.totalPages||r.totalPages===0)break;
+ }
+ if(result.length!==total)throw new Error('Senarai belum lengkap.');return result;
+}
+function saveTextDownloadV9(filename,text){
+ const url=URL.createObjectURL(new Blob([text],{type:'text/plain;charset=utf-8'}));const link=document.createElement('a');link.href=url;link.download=filename;document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);
+}
+async function exportEmbeddedPortalV9(){
+ const button=$('#staffExportPortalV9');button.disabled=true;
+ try{
+  const raw=await jsonp('admin.staff_directory',{},{timeoutMs:30000,retries:0});
+  if(!Array.isArray(raw)||!raw.length)throw new Error('Tiada staf aktif. Semak direktori dahulu.');
+  const staff=raw.map(u=>({user_id:String(u.user_id||''),name:String(u.name||''),department:String(u.department||''),unit:String(u.unit||'')}));
+  if(staff.some(u=>!u.user_id||!u.name))throw new Error('Ada nama atau ID staf tidak lengkap.');
+  const target=portalApplicantUrl();if(new URL(target,location.href).origin!==location.origin)throw new Error('Portal mesti berada pada domain sama untuk eksport.');
+  const abort=new AbortController();const timer=setTimeout(()=>abort.abort(),20000);let res;
+  try{res=await fetch(target,{cache:'no-store',signal:abort.signal});}finally{clearTimeout(timer);}
+  if(!res.ok)throw new Error('pemohon.html tidak boleh dibaca. Pastikan fail Portal V9 telah dipasang.');
+  let html=await res.text();const start='/* STAFF_EMBED_START_V9 */',end='/* STAFF_EMBED_END_V9 */',i=html.indexOf(start),j=html.indexOf(end);
+  if(i<0||j<i)throw new Error('Fail pemohon.html bukan V9. Pasang Portal V9 dahulu.');
+  const json=JSON.stringify(staff,null,2).replace(/</g,'\\u003c').replace(/\u2028/g,'\\u2028').replace(/\u2029/g,'\\u2029');
+  html=html.slice(0,i+start.length)+'\n'+json+'\n'+html.slice(j);
+  saveTextDownloadV9('PEMOHON_V9_NAMA_STAF_COPY_PASTE.txt',html);
+  $('#staffDiagnosticV9').textContent=`Fail portal lengkap dengan ${staff.length} nama telah disediakan. Gantikan pemohon.html dengan kandungannya untuk menerbitkan nama kepada semua peranti.`;
+ }catch(error){$('#staffDiagnosticV9').textContent=error.message;toast('Eksport belum berjaya',error.message,'err');}
+ finally{button.disabled=false;}
+}
+async function diagnoseStaffV9(){
+ const button=$('#staffDiagnoseV9');button.disabled=true;
+ try{
+  const r=await jsonp('admin.staff_diagnostics',{},{timeoutMs:30000,retries:0});
+  $('#staffDiagnosticV9').textContent=`Server ${r.version}: ${r.total_rows} baris, ${r.active_staff} staf aktif, ${r.missing_id} tiada ID, ${r.missing_name} tiada nama, ${r.inactive_or_invalid_status} tidak aktif/status tidak sah.${r.missing_headers?.length?' Header tiada: '+r.missing_headers.join(', '):''}`;
+ }catch(error){$('#staffDiagnosticV9').textContent=error.message;}
+ finally{button.disabled=false;}
+}
+function initAuditToolsV9(){
+ $('#auditLoadV9').addEventListener('click',loadAuditHistoryV9);
+ $('#auditPreviewV9').addEventListener('click',openAuditPreviewV9);
+ $('#auditPrintAllV9').addEventListener('click',()=>printAuditV9(true));
+ $('#auditPrintFilteredV9').addEventListener('click',()=>printAuditV9(false));
+ ['auditFromV9','auditToV9','auditStatusV9','auditSearchV9'].forEach(id=>$('#'+id).addEventListener('input',updateAuditSummaryV9));
+ $('#staffExportPortalV9').addEventListener('click',exportEmbeddedPortalV9);
+ $('#staffDiagnoseV9').addEventListener('click',diagnoseStaffV9);
+ $('#movementPrintBtn').onclick=openMovementPdf;
+ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMovementRegister();});
+ setAuditReadyV9(false);
+}
+document.addEventListener('DOMContentLoaded',initAuditToolsV9,{once:true});
+
+</script>
+</body>
 </html>
