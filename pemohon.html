@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
 <link rel="dns-prefetch" href="//script.google.com">
 <link rel="dns-prefetch" href="//script.googleusercontent.com">
-<title>Portal Pemohon | Sistem ICT V9</title>
+<title>Portal Pemohon | Sistem ICT V9.2</title>
 <style>
 :root{
   --bg:#f4f8fc;--panel:#fff;--panel2:#f8fbff;--line:#dce7f1;
@@ -1910,6 +1910,59 @@ table{max-width:none}
 @media(max-width:700px){#loginOverlay .compact-login-panel{padding:21px 18px!important;min-height:100dvh!important}.pkpj-pull-stage{--actor-space:120px}.pkpj-actor-caption{width:108px;font-size:9px}#loginOverlay .compact-login-card{padding:24px 20px!important}#loginOverlay .compact-login-card h2{font-size:26px!important}}
 @media(max-width:450px){#loginOverlay .compact-login-shell{width:100%!important}.pkpj-pull-stage{--actor-space:70px}.pkpj-actor-caption{width:66px;font-size:8px}#loginOverlay .compact-login-panel{padding:17px 10px!important}#loginOverlay .compact-login-card{padding:24px 16px!important}#loginOverlay .compact-login-card h2{font-size:24px!important}}
 </style>
+<style id="pkpjMotionV91Style">
+/* PKPJ_MOTION_V91_STYLE_START */
+/* V9.1: presentation only. Account, roster, API and loan handlers are unchanged. */
+#loginOverlay{align-items:flex-start!important;padding:24px!important;background:radial-gradient(ellipse at 12% 8%,#e5f2f9,transparent 48%),radial-gradient(ellipse at 90% 96%,#e3f1ee,transparent 50%),#f3f7fa!important}
+#loginOverlay .compact-login-shell{margin:auto!important;width:min(980px,96vw)!important;min-height:0!important;border-radius:28px!important;border:1px solid #dbe7ee!important;background:#f6fafc!important;box-shadow:0 26px 70px #20486712!important}
+#loginOverlay .compact-login-panel{padding:26px 34px 24px!important;min-height:0!important;background:radial-gradient(ellipse at 16% 52%,#e4f0f6,transparent 49%),linear-gradient(120deg,#f9fcfe,#f3f8fa)!important;overflow:hidden!important}
+#loginOverlay .pkpj-intro-bar{margin-bottom:16px;min-height:36px}
+#loginOverlay .pkpj-intro-label{color:#476f84;letter-spacing:.14em;font-size:10px}
+#loginOverlay .pkpj-intro-control{font-size:10px;font-weight:650;min-height:35px;color:#456479;border-color:#d3e0e8;background:#ffffffc9}
+#loginOverlay .pkpj-pull-stage{--actor-space:266px;max-width:760px;min-height:560px;margin:0 auto;padding:0 0 24px;isolation:isolate}
+#loginOverlay .pkpj-pull-stage::before{display:none}
+#loginOverlay .pkpj-pull-rig{position:relative;padding-left:var(--actor-space);padding-top:0;min-height:0}
+#loginOverlay .compact-login-card{min-height:0!important;padding:30px 30px 25px!important;border:1px solid #d5e2e9!important;border-radius:23px!important;box-shadow:0 15px 42px #24485c0e!important;transform-origin:center center!important;background:#fff!important;text-align:left!important;transition:none!important}
+#loginOverlay .compact-app-icon.pkpj-login-logo{margin:0 0 20px!important;width:52px!important;height:60px!important}
+#loginOverlay .compact-login-card h2{text-align:left!important;font-size:30px!important;line-height:1.13!important;letter-spacing:-.035em!important;color:#16354f!important}
+#loginOverlay .compact-sub{text-align:left!important;font-size:12px!important;line-height:1.65!important;margin:12px 0 23px!important;max-width:390px}
+#loginOverlay .compact-search-box .field{border-color:#cbdce5!important;background:#fcfdff!important;font-size:14px!important;min-height:50px}
+#loginOverlay .compact-enter-btn{background:linear-gradient(115deg,#126ab2,#158cbb)!important;box-shadow:0 7px 17px #17679c16!important;min-height:50px!important;font-size:12.5px!important}
+#loginOverlay .compact-enter-btn:hover{filter:brightness(1.04);transform:none}
+#loginOverlay .compact-help{line-height:1.6!important;color:#8a9aa7!important}
+#loginOverlay .pkpj-login-actor{position:absolute;pointer-events:none;z-index:5;visibility:visible;filter:none;opacity:1;width:280px;height:460px;top:50px;left:15px;transform:none!important;will-change:auto!important}
+#loginOverlay .pkpj-login-actor svg{overflow:visible;display:block;width:100%;height:100%}
+#loginOverlay .pkpj-actor-caption{position:absolute;left:0;top:510px;bottom:auto;width:250px;text-align:center;font-size:12px;line-height:1.75;color:#31586f;font-weight:650;transition:opacity .2s ease}
+#loginOverlay .pkpj-actor-caption span{font-weight:400!important;color:#8297a5;font-size:10px}
+#loginOverlay .pkpj-intro-foot{padding-left:var(--actor-space);margin:15px 0 0;font-size:9px;letter-spacing:.035em;color:#879ba8}
+#loginOverlay .pkpj-pull-stage.is-animating .pkpj-actor-caption{opacity:1!important}
+#loginOverlay .pkpj-pull-stage.is-animating .compact-login-card{will-change:transform}
+#loginOverlay .pkpj-pull-stage.is-animating .pkpj-login-actor{will-change:auto!important}
+/* A rigid handle gives both hands a visible, stationary contact point. */
+.pkpj-grip-rail{position:absolute;left:-9px;top:222px;width:9px;height:54px;border-radius:7px 0 0 7px;background:linear-gradient(90deg,#acbbc6,#e2e9ee);border:1px solid #acbecb;border-right:0;opacity:0;pointer-events:none;z-index:4}
+@media(max-width:820px) and (min-width:701px){#loginOverlay .compact-login-panel{padding:22px 24px!important}#loginOverlay .pkpj-pull-stage{--actor-space:218px}#loginOverlay .compact-login-card{padding:26px 23px!important}#loginOverlay .compact-login-card h2{font-size:27px!important}}
+@media(max-width:700px){
+ #loginOverlay{padding:12px!important}
+ #loginOverlay .compact-login-shell{width:min(570px,100%)!important;border-radius:22px!important;min-height:0!important}
+ #loginOverlay .compact-login-panel{padding:18px 20px 21px!important;min-height:0!important}
+ #loginOverlay .pkpj-intro-bar{margin-bottom:0;gap:8px}
+ #loginOverlay .pkpj-intro-label{font-size:8.5px;letter-spacing:.1em}
+ #loginOverlay .pkpj-intro-control{font-size:9px;padding:6px 9px;min-height:33px}
+ #loginOverlay .pkpj-pull-stage{--actor-space:0px;max-width:500px;min-height:0!important;padding-bottom:0}
+ #loginOverlay .pkpj-pull-rig{padding:154px 0 0}
+ #loginOverlay .compact-login-card{padding:24px 23px!important;width:100%!important;border-radius:19px!important}
+ #loginOverlay .compact-login-card h2{font-size:27px!important}
+ #loginOverlay .compact-search-box .field{font-size:16px!important}
+ #loginOverlay .compact-sub{margin:11px 0 20px!important}
+ #loginOverlay .pkpj-actor-caption{left:125px!important;top:68px!important;bottom:auto!important;width:calc(100% - 138px)!important;text-align:left;font-size:12px}
+ #loginOverlay .pkpj-actor-caption span{font-size:10px}
+ #loginOverlay .pkpj-intro-foot{padding-left:0;margin-top:14px;font-size:8.5px}
+ #loginOverlay .pkpj-grip-rail{display:none!important}
+}
+@media(max-width:390px){#loginOverlay{padding:7px!important}#loginOverlay .compact-login-panel{padding:14px 13px 19px!important}#loginOverlay .compact-login-card{padding:22px 19px!important}#loginOverlay .compact-login-card h2{font-size:26px!important}.pkpj-intro-label{max-width:150px}}
+@media(prefers-reduced-motion:reduce){#loginOverlay .pkpj-actor-caption{transition:none!important}#loginOverlay .compact-login-card,#loginOverlay .pkpj-login-actor{animation:none!important;transition:none!important;will-change:auto!important}}
+/* PKPJ_MOTION_V91_STYLE_END */
+</style>
 </head>
 <body>
 <div class="login-overlay" id="loginOverlay">
@@ -1922,56 +1975,78 @@ table{max-width:none}
       </div>
       <div class="pkpj-pull-stage" id="pkpjPullStage">
         <div class="pkpj-pull-rig" id="pkpjPullRig">
-          <div class="pkpj-login-actor" id="pkpjLoginActor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 360" aria-hidden="true" focusable="false">
+          <div class="pkpj-login-actor" id="pkpjLoginActor" aria-hidden="true">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 460" aria-hidden="true" focusable="false">
 <defs>
- <linearGradient id="p9Suit" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#2c89b9"/><stop offset=".55" stop-color="#155278"/><stop offset="1" stop-color="#102e51"/></linearGradient>
- <linearGradient id="p9Pants" x1="0" x2="1"><stop stop-color="#162b45"/><stop offset=".55" stop-color="#314f6b"/><stop offset="1" stop-color="#20334f"/></linearGradient>
- <linearGradient id="p9Skin"><stop stop-color="#d69269"/><stop offset=".55" stop-color="#f0bc94"/><stop offset="1" stop-color="#d99770"/></linearGradient>
- <radialGradient id="p9Face" cx=".33" cy=".32" r=".9"><stop stop-color="#f9d0ad"/><stop offset=".65" stop-color="#eab189"/><stop offset="1" stop-color="#c88861"/></radialGradient>
- <linearGradient id="p9Hair" x1="0" y1="0" x2=".75" y2="1"><stop stop-color="#425169"/><stop offset=".55" stop-color="#263244"/><stop offset="1" stop-color="#131d2b"/></linearGradient>
- <linearGradient id="p9Shoe" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#35495e"/><stop offset="1" stop-color="#152237"/></linearGradient>
+ <linearGradient id="p91Jacket" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#397997"/><stop offset=".45" stop-color="#255a75"/><stop offset="1" stop-color="#1c3c55"/></linearGradient>
+ <linearGradient id="p91Sleeve" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#326981"/><stop offset="1" stop-color="#234b66"/></linearGradient>
+ <linearGradient id="p91Pants" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#2d4559"/><stop offset=".5" stop-color="#253d50"/><stop offset="1" stop-color="#1c2f40"/></linearGradient>
+ <linearGradient id="p91SkinFront" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#e2b38e"/><stop offset="1" stop-color="#c59372"/></linearGradient>
+ <linearGradient id="p91SkinBack" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#d3a07b"/><stop offset="1" stop-color="#b67e5c"/></linearGradient>
+ <linearGradient id="p91Face" x1="0" y1="0" x2="1" y2=".25"><stop stop-color="#c89673"/><stop offset=".55" stop-color="#e5b893"/><stop offset="1" stop-color="#d3a17e"/></linearGradient>
+ <linearGradient id="p91Hair" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#394955"/><stop offset="1" stop-color="#1e2c39"/></linearGradient>
+ <linearGradient id="p91Shoes" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#304757"/><stop offset="1" stop-color="#172b3b"/></linearGradient>
 </defs>
-<ellipse data-part="shadow" cx="104" cy="346" rx="59" ry="7" fill="#234962" opacity=".14"/>
-<path data-part="legBackPath" d="M85 208L74 331" fill="none" stroke="#1d354c" stroke-width="23" stroke-linecap="round" stroke-linejoin="round"/>
-<g data-part="shoeBack" transform="translate(74 332)"><path d="M-11-12Q0-14 10-8L16-3 28 0Q35 3 32 10H-13Q-16 3-11-12Z" fill="#16283c"/><path d="M-13 8H32" stroke="#a6b7c3" stroke-width="3" stroke-linecap="round"/><path d="M4-4L14-1" stroke="#6e8193" stroke-width="1.8"/></g>
-<path data-part="legFrontPath" d="M101 209L118 332" fill="none" stroke="url(#p9Pants)" stroke-width="26" stroke-linecap="round" stroke-linejoin="round"/>
-<g data-part="shoeFront" transform="translate(118 332)"><path d="M-12-12Q0-15 10-8L16-3 28 0Q36 3 32 10H-13Q-17 3-12-12Z" fill="url(#p9Shoe)"/><path d="M-13 8H32" stroke="#ced7dc" stroke-width="3" stroke-linecap="round"/><path d="M0-6L10-3M4-8L14-4" stroke="#8298a9" stroke-width="1.7"/><path d="M18 0Q26-1 30 3" fill="none" stroke="#6e869a" stroke-width="1.8" opacity=".6"/></g>
-<path data-part="armBack" fill="none" stroke="#ca8e68" stroke-width="13" stroke-linecap="round"/>
-<path data-part="sleeveBack" fill="none" stroke="#1f5777" stroke-width="23" stroke-linecap="round"/>
-<g data-part="upper">
- <path d="M78 192Q99 197 119 191L121 212Q101 222 75 211Z" fill="url(#p9Pants)"/>
- <path d="M78 199Q100 205 118 198" fill="none" stroke="#1c2a3d" stroke-width="4"/><rect x="98" y="200" width="8" height="5" rx="1" fill="#c2b488"/>
- <path d="M82 108Q98 100 121 110Q135 116 133 135L124 195Q101 209 75 197L71 142Q69 119 82 108Z" fill="url(#p9Suit)" stroke="#133952" stroke-width="1.1"/>
- <path d="M92 106H116L113 169 102 186 94 156Z" fill="#f7fafc"/>
- <path d="M103 115L111 115 108 124 112 151 106 158 100 151 104 124Z" fill="#d5ad60"/>
- <path d="M92 105L103 184 87 156 91 143 81 126Z" fill="#347795"/><path d="M117 106L106 186 122 151 115 141 128 124Z" fill="#184864"/>
- <path d="M90 115L98 153M118 116L111 153" fill="none" stroke="#83bdce" stroke-width="1.2" opacity=".5"/>
- <path d="M111 157L110 190" stroke="#102f49" stroke-width="1.2"/><circle cx="111" cy="168" r="2" fill="#99aab1"/><circle cx="111" cy="183" r="2" fill="#99aab1"/>
- <path d="M79 175L90 176M116 174L124 171" stroke="#76a4b6" stroke-width="1.4"/>
- <path d="M98 89L116 89 117 107Q108 121 98 107Z" fill="url(#p9Skin)"/>
- <path d="M97 103L107 113 101 123 92 109M116 103L107 113 113 122 121 110" fill="#fff" stroke="#cfdee5" stroke-width="1"/>
- <rect x="79" y="135" width="15" height="17" rx="2" fill="#eaf4f9"/><rect x="83" y="132" width="7" height="4" rx="1" fill="#dcb864"/><circle cx="86.5" cy="140" r="2.3" fill="#1b729e"/><path d="M82 145Q86.5 141 91 145" fill="#1b729e"/><text x="86.5" y="150" font-family="Arial,sans-serif" font-size="3.8" font-weight="700" text-anchor="middle" fill="#315573">ICT</text>
- <g data-part="head">
-  <path d="M75 64Q73 34 102 30Q133 28 139 55L136 80Q132 101 112 106Q86 105 80 84Z" fill="url(#p9Face)"/>
-  <ellipse cx="77" cy="70" rx="7.5" ry="10.5" fill="#e8ac83"/><path d="M75 67Q82 64 80 75" fill="none" stroke="#bc7d5a" stroke-width="1.6" stroke-linecap="round"/>
-  <path d="M78 68Q69 57 71 44Q69 31 79 24Q83 19 92 20Q106 8 123 23Q145 20 147 39Q150 51 138 61L132 53Q113 54 100 41Q90 43 87 55L84 71Z" fill="url(#p9Hair)"/>
-  <path d="M80 37Q97 18 118 31Q130 38 139 32" fill="none" stroke="#64748a" stroke-width="3" stroke-linecap="round" opacity=".6"/>
-  <path d="M78 46Q85 35 94 34" fill="none" stroke="#6b7d8f" stroke-width="2" stroke-linecap="round" opacity=".35"/>
-  <path d="M93 61Q100 57 107 61M118 60Q125 56 130 61" fill="none" stroke="#573e33" stroke-width="2.6" stroke-linecap="round"/>
-  <g data-part="eyes"><ellipse cx="101" cy="69" rx="5.7" ry="6.3" fill="#fffdf8"/><ellipse cx="124" cy="68" rx="5.2" ry="6" fill="#fffdf8"/><ellipse cx="103" cy="69.5" rx="3.2" ry="4.4" fill="#3e4c56"/><ellipse cx="126" cy="68.5" rx="3" ry="4.2" fill="#3e4c56"/><circle cx="104" cy="68" r="1.2" fill="#fff"/><circle cx="126" cy="67" r="1.15" fill="#fff"/></g>
-  <path d="M114 69L118 77Q116 79 112 78" fill="none" stroke="#bf825e" stroke-width="1.7" stroke-linecap="round"/>
-  <ellipse cx="93" cy="80" rx="6" ry="3" fill="#cf7c69" opacity=".2"/><ellipse cx="131" cy="77" rx="4" ry="2.7" fill="#cf7c69" opacity=".16"/>
-  <path d="M103 87Q113 93 125 85Q121 97 112 97Q106 95 103 87Z" fill="#925649"/>
-  <path d="M106 88Q114 91 122 87L120 91Q113 94 108 91Z" fill="#fff9ef"/>
-  <path d="M111 100Q117 100 120 98" fill="none" stroke="#d39471" stroke-width="1.1" stroke-linecap="round"/>
- </g>
-</g>
-<path data-part="armFront" fill="none" stroke="url(#p9Skin)" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
-<path data-part="armHighlight" fill="none" stroke="#ffdbb6" stroke-width="2.5" stroke-linecap="round" opacity=".45"/>
-<path data-part="sleeveFront" fill="none" stroke="url(#p9Suit)" stroke-width="25" stroke-linecap="round"/>
-<g data-part="handBack"><ellipse rx="8.5" ry="7" fill="#da9e78"/><path d="M-3-4Q3-12 5-8L4-2" fill="none" stroke="#da9e78" stroke-width="4" stroke-linecap="round"/></g>
-<g data-part="handFront"><ellipse rx="9" ry="7.5" fill="url(#p9Face)"/><path d="M-4-4Q1-14 5-9L4-2" stroke="#edb993" stroke-width="4.5" fill="none" stroke-linecap="round"/><path d="M3-4L8-3M3-1L9 0" stroke="#bc805e" stroke-width=".9" fill="none" opacity=".65"/></g>
-</svg>
+<g data-joint="worldShadow"><ellipse cx="109" cy="446" rx="65" ry="6" fill="#92aab9" opacity=".19"/><ellipse cx="108" cy="445" rx="43" ry="3.5" fill="#637e90" opacity=".12"/></g>
+<g data-joint="characterRoot">
+<g data-limb="BackLeg">
+<g data-joint="BackLegUpper"><path d="M0-12C16-15 71-12 85-10Q93 0 85 10C69 12 15 14 0 12Q-9 0 0-12Z" fill="#203447"/><path d="M5 -9L77 -8" stroke="#526777" stroke-width="1.3" opacity=".5" stroke-linecap="round"/></g>
+<g data-joint="BackLegLower"><path d="M0 -10 C18 -9 73 -8 83 -8 L83 8 C73 8 18 9 0 10 Q-8 0 0 -10Z" fill="#203447"/><path d="M8 -8L71 -7" stroke="#526777" stroke-width="1.2" opacity=".4" stroke-linecap="round"/></g>
+<g data-joint="BackShoe">
+ <path d="M-10-8Q0-10 9-6L14-2 28 1Q35 4 33 10L-13 10Q-16 2-10-8Z" fill="url(#p91Shoes)"/>
+ <path d="M-13 8.5H33" stroke="#7e929f" stroke-width="2" stroke-linecap="round"/>
+ <path d="M1-3L12 0M18 2L25 3" fill="none" stroke="#617885" stroke-width="1.4" stroke-linecap="round"/>
+ </g></g><g data-limb="FrontLeg">
+<g data-joint="FrontLegUpper"><path d="M0-12C16-15 71-12 85-10Q93 0 85 10C69 12 15 14 0 12Q-9 0 0-12Z" fill="url(#p91Pants)"/><path d="M5 -9L77 -8" stroke="#7d91a0" stroke-width="1.3" opacity=".5" stroke-linecap="round"/></g>
+<g data-joint="FrontLegLower"><path d="M0 -10 C18 -9 73 -8 83 -8 L83 8 C73 8 18 9 0 10 Q-8 0 0 -10Z" fill="url(#p91Pants)"/><path d="M8 -8L71 -7" stroke="#7d91a0" stroke-width="1.2" opacity=".4" stroke-linecap="round"/></g>
+<g data-joint="FrontShoe">
+ <path d="M-10-8Q0-10 9-6L14-2 28 1Q35 4 33 10L-13 10Q-16 2-10-8Z" fill="url(#p91Shoes)"/>
+ <path d="M-13 8.5H33" stroke="#7e929f" stroke-width="2" stroke-linecap="round"/>
+ <path d="M1-3L12 0M18 2L25 3" fill="none" stroke="#617885" stroke-width="1.4" stroke-linecap="round"/>
+ </g></g><g data-limb="BackArm">
+<g data-joint="BackArmUpper"><path d="M0-10C16-13 46-10 60-8Q68 0 60 8C44 10 15 12 0 10Q-9 0 0-10Z" fill="#234e65"/><path d="M5 -7L52 -6" stroke="#6c92a4" stroke-width="1.3" opacity=".5" stroke-linecap="round"/></g>
+<g data-joint="BackArmLower"><path d="M0 -8 C18 -7 48 -6 58 -6 L58 6 C48 6 18 7 0 8 Q-8 0 0 -8Z" fill="#234e65"/><path d="M8 -6L46 -5" stroke="#6c92a4" stroke-width="1.2" opacity=".4" stroke-linecap="round"/><path d="M51-6.3L58-5.9V5.9L51 6.3Z" fill="#e4edf0"/><path d="M51-6V6" stroke="#d1dde3" stroke-width="1"/></g>
+<g data-joint="BackHand">
+ <path d="M-1-5C2-6 7-6 10-4L14-2Q16 0 14 2L11 3Q10 6 5 6L-1 5Z" fill="url(#p91SkinBack)"/>
+ <path d="M2-4Q2-9 6-8L9-4" fill="url(#p91SkinBack)" stroke="#bf8967" stroke-width=".65"/>
+ <path d="M9-1H13M8 2H12" fill="none" stroke="#ba805f" stroke-width=".75" stroke-linecap="round"/>
+ </g></g><g data-joint="torso">
+ <!-- Close-cut blazer and structured trousers keep an adult, quiet silhouette. -->
+ <path d="M89 251Q109 248 131 251L132 272Q120 278 108 270Q97 278 84 270Z" fill="url(#p91Pants)"/>
+ <path d="M86 255L132 255" stroke="#1d2c38" stroke-width="5"/><rect x="113" y="252.5" width="7" height="5" rx="1" fill="#9faaa9"/>
+ <path d="M104 136L122 135 128 149Q119 161 106 151Z" fill="url(#p91SkinBack)"/>
+ <path d="M97 148Q107 144 126 146L133 157Q140 164 140 179L135 218 136 260Q124 268 106 263L100 258Q92 266 80 259L85 212 83 173Q80 158 97 148Z" fill="url(#p91Jacket)" stroke="#254b62" stroke-width="1"/>
+ <path d="M104 148L125 148 124 187 114 222 107 190Z" fill="#f0f4f5"/>
+ <path d="M113 156L120 156 120 163 123 194 117 202 112 195 115 163Z" fill="#6f96a4"/>
+ <path d="M102 149L113 222 94 190 98 179 91 164Z" fill="#3f748b"/>
+ <path d="M126 149L117 223 135 188 128 178 135 166Z" fill="#204860"/>
+ <path d="M101 151L112 212M126 151L120 210" fill="none" stroke="#9bb8c7" stroke-width="1" opacity=".45"/>
+ <path d="M116 220L115 259" stroke="#17374c" stroke-width="1.1"/>
+ <circle cx="119" cy="229" r="1.9" fill="#8ca2ac"/><circle cx="118.5" cy="248" r="1.9" fill="#8ca2ac"/>
+ <path d="M87 232L101 233M124 229L133 228" fill="none" stroke="#6390a2" stroke-width="1.4"/>
+ <path d="M103 146L115 155 111 165 101 153M123 145L115 155 121 163 128 153" fill="#fff" stroke="#cfdbdf" stroke-width=".6"/>
+ <rect x="92" y="184" width="11" height="15" rx="1.6" fill="#e8f1f3"/><rect x="96" y="181.5" width="3" height="4" rx=".8" fill="#7697a4"/><circle cx="97.5" cy="188.5" r="2" fill="#588ba0"/><path d="M94 194Q97.5 189.5 101 194" fill="#588ba0"/><path d="M94.5 197H100" stroke="#9bb5c0" stroke-width=".7"/>
+ <g data-joint="head">
+ <path d="M96 99Q94 77 112 72Q131 67 141 84L141 103 146 110Q147 113 141 115L139 128Q135 139 122 139L105 131 100 117Z" fill="url(#p91Face)"/>
+ <path d="M106 124Q115 136 127 137L122 142 105 136Z" fill="#b98060" opacity=".34"/>
+ <path d="M98 113L94 105Q88 91 93 81Q92 72 102 68Q116 59 130 69Q143 68 146 81Q145 89 140 94L133 90Q118 89 111 82Q104 90 104 102L103 114Z" fill="url(#p91Hair)"/>
+ <path d="M98 81Q111 68 124 74L137 80" stroke="#5c6a73" stroke-width="2.2" stroke-linecap="round" fill="none" opacity=".5"/>
+ <path d="M95 91Q98 84 104 81" stroke="#576b76" stroke-width="1.4" fill="none" opacity=".45"/>
+ <ellipse cx="101" cy="111" rx="6" ry="8" fill="#d5a581"/><path d="M100 108Q105 105 105 112L102 115" stroke="#ae7758" stroke-width="1" fill="none" stroke-linecap="round"/>
+ <path d="M116 98Q122 95 127 98M133 98L138 99" stroke="#55504a" stroke-width="1.7" stroke-linecap="round" fill="none"/>
+ <g data-joint="eyes"><path d="M116 104Q121 100 126 104Q122 108 117 106Z" fill="#f4efe7"/><ellipse cx="123" cy="104.5" rx="1.9" ry="2.7" fill="#3c4b51"/><circle cx="123.4" cy="103.4" r=".65" fill="#fff"/><path d="M134 103Q137 101 139 105L134 105Z" fill="#f4efe7"/><ellipse cx="137.3" cy="104" rx="1.3" ry="2.1" fill="#3c4b51"/></g>
+ <path d="M132 105L133 113Q135 116 138 114" fill="none" stroke="#b67f5e" stroke-width="1.1" stroke-linecap="round"/>
+ <path d="M124 123Q130 126 135 122" fill="none" stroke="#925f4e" stroke-width="1.3" stroke-linecap="round"/>
+ <path d="M127 129L133 129" fill="none" stroke="#bd8969" stroke-width=".9" stroke-linecap="round"/>
+ </g></g>
+<g data-limb="FrontArm">
+<g data-joint="FrontArmUpper"><path d="M0-10C16-13 46-10 60-8Q68 0 60 8C44 10 15 12 0 10Q-9 0 0-10Z" fill="url(#p91Sleeve)"/><path d="M5 -7L52 -6" stroke="#83a6b7" stroke-width="1.3" opacity=".5" stroke-linecap="round"/></g>
+<g data-joint="FrontArmLower"><path d="M0 -8 C18 -7 48 -6 58 -6 L58 6 C48 6 18 7 0 8 Q-8 0 0 -8Z" fill="url(#p91Sleeve)"/><path d="M8 -6L46 -5" stroke="#83a6b7" stroke-width="1.2" opacity=".4" stroke-linecap="round"/><path d="M51-6.3L58-5.9V5.9L51 6.3Z" fill="#e4edf0"/><path d="M51-6V6" stroke="#d1dde3" stroke-width="1"/></g>
+<g data-joint="FrontHand">
+ <path d="M-1-5C2-6 7-6 10-4L14-2Q16 0 14 2L11 3Q10 6 5 6L-1 5Z" fill="url(#p91SkinFront)"/>
+ <path d="M2-4Q2-9 6-8L9-4" fill="url(#p91SkinFront)" stroke="#bf8967" stroke-width=".65"/>
+ <path d="M9-1H13M8 2H12" fill="none" stroke="#ba805f" stroke-width=".75" stroke-linecap="round"/>
+ </g></g></g></svg>
 </div>
       <div class="compact-login-card" id="pkpjPullCard">
         <div class="compact-app-icon pkpj-login-logo"><img src="pkpj-premium.png" alt="PKPJ" onerror="this.hidden=true;this.parentElement.classList.add('logo-fallback-v9');this.parentElement.setAttribute('aria-label','PKPJ')"></div>
@@ -3844,186 +3919,188 @@ async function handleImage(event){
 }
 
 /* V8.2: presentation-only intro. Does not call or change the applicant API. */
-(function installPKPJPullIntro(){
-  'use strict';
-  function initPullIntro(){
-    const overlay=document.getElementById('loginOverlay');
-    const stage=document.getElementById('pkpjPullStage');
-    const rig=document.getElementById('pkpjPullRig');
-    const card=document.getElementById('pkpjPullCard');
-    const actor=document.getElementById('pkpjLoginActor');
-    const control=document.getElementById('pkpjIntroControl');
-    const input=document.getElementById('loginName');
-    const app=document.querySelector('body > .app');
-    if(!overlay||!stage||!rig||!card||!actor||!control||!input) return;
-    const parts={};
-    actor.querySelectorAll('[data-part]').forEach(el=>{parts[el.dataset.part]=el;});
-    const reduce=window.matchMedia('(prefers-reduced-motion: reduce)');
-    let playing=false, frame=0, safety=0, startTime=0, geometry=null;
-    let wasVisible=!overlay.classList.contains('hidden');
-    const DURATION=5600;
-    const clamp=x=>Math.max(0,Math.min(1,x));
-    const mix=(a,b,t)=>a+(b-a)*t;
-    const smooth=t=>{t=clamp(t);return t*t*(3-2*t);};
-    const point=(x,y)=>({x,y});
-    const blend=(a,b,t)=>point(mix(a.x,b.x,t),mix(a.y,b.y,t));
-    const xy=p=>p.x.toFixed(2)+' '+p.y.toFixed(2);
-    const visible=()=>!overlay.classList.contains('hidden');
-    function rotate(p,degrees,bob){
-      const r=degrees*Math.PI/180,dx=p.x-94,dy=p.y-208;
-      return point(94+dx*Math.cos(r)-dy*Math.sin(r),208+dx*Math.sin(r)+dy*Math.cos(r)+bob);
-    }
-    function limb(name,shoulder,elbow,hand){
-      parts[name].setAttribute('d','M'+xy(shoulder)+' Q'+xy(elbow)+' '+xy(hand));
-    }
-    function knee(hip,foot){
-      const dx=foot.x-hip.x,dy=foot.y-hip.y,d=Math.max(1,Math.hypot(dx,dy));
-      const a=d/2,h=Math.sqrt(Math.max(0,64.5*64.5-a*a));
-      return point(hip.x+dx*.5+dy/d*h,hip.y+dy*.5-dx/d*h);
-    }
-    function leg(side,hip,foot,shoeTilt){
-      const k=knee(hip,foot);
-      parts['leg'+side+'Path'].setAttribute('d','M'+xy(hip)+' L'+xy(k)+' L'+xy(foot));
-      parts['shoe'+side].setAttribute('transform','translate('+xy(foot)+') rotate('+shoeTilt.toFixed(2)+')');
-    }
-    function pose(t){
-      const walk=t<1.3, pulling=t>=1.65&&t<4.1;
-      const gait=walk?1:pulling?1:0;
-      const phase=t*(walk?9.5:11),stride=walk?22:pulling?27:0;
-      const grip=smooth((t-1.12)/.43)*(1-smooth((t-4.25)/.45));
-      const wave=smooth((t-4.42)/.3)*(1-smooth((t-5.25)/.35));
-      const tilt=mix(3,-12,grip)+(pulling?Math.sin(phase)*1.7:0);
-      const bob=gait?-Math.abs(Math.sin(phase))*2.6:0;
-      parts.upper.setAttribute('transform','translate(0 '+bob.toFixed(2)+') rotate('+tilt.toFixed(2)+' 94 208)');
-      parts.head.setAttribute('transform','rotate('+(wave?-7:-2)+' 107 96)');
-      const hipBack=point(85,208+bob),hipFront=point(101,209+bob);
-      const back=point(82-Math.sin(phase)*stride,332-Math.max(0,Math.cos(phase))*13*gait);
-      const front=point(105+Math.sin(phase)*stride,333-Math.max(0,-Math.cos(phase))*14*gait);
-      if(!gait){back.x=73;front.x=119;back.y=332;front.y=333;}
-      leg('Back',hipBack,back,-Math.max(0,Math.cos(phase))*10*gait);
-      leg('Front',hipFront,front,-Math.max(0,-Math.cos(phase))*10*gait);
-      parts.shadow.setAttribute('rx',String(57+gait*6));
-      const sb=rotate(point(84,129),tilt,bob),sf=rotate(point(120,132),tilt,bob);
-      const swing=Math.sin(phase)*gait;
-      let hb=point(84-22*swing,193),eb=point(77-12*swing,164);
-      let hf=point(133+27*swing,192),ef=point(139+17*swing,163);
-      hb=blend(hb,point(229,131),grip);eb=blend(eb,point(147,150),grip);
-      hf=blend(hf,point(233,151),grip);ef=blend(ef,point(164,173),grip);
-      const waveX=156+Math.sin(t*24)*9;
-      hf=blend(hf,point(waveX,70),wave);ef=blend(ef,point(157,126),wave);
-      limb('armBack',sb,eb,hb);limb('armFront',sf,ef,hf);
-      limb('armHighlight',blend(sf,ef,.35),ef,hf);
-      parts.sleeveBack.setAttribute('d','M'+xy(sb)+' L'+xy(blend(sb,eb,.37)));
-      parts.sleeveFront.setAttribute('d','M'+xy(sf)+' L'+xy(blend(sf,ef,.40)));
-      parts.handBack.setAttribute('transform','translate('+xy(hb)+') rotate('+(grip?-16:30)+')');
-      parts.handFront.setAttribute('transform','translate('+xy(hf)+') rotate('+(wave?Math.sin(t*24)*14:grip?-16:35)+')');
-      const blink=(Math.abs(t-2.35)<.055||Math.abs(t-5.15)<.055)?0.14:1;
-      parts.eyes.setAttribute('transform','translate(0 68) scale(1 '+blink+') translate(0 -68)');
-    }
-    function measure(){
-      // Measure the final layout, never a previously transformed frame.
-      card.style.transform='none';actor.style.transform='none';
-      const r=rig.getBoundingClientRect(),c=card.getBoundingClientRect(),f=input.getBoundingClientRect();
-      const small=window.innerWidth<=600;
-      const width=window.innerWidth<=360?92:window.innerWidth<=450?100:small?146:window.innerWidth<=700?170:235;
-      const height=width*1.5;
-      actor.style.width=width+'px';actor.style.height=height+'px';
-      actor.style.left=(c.left-r.left-231/240*width)+'px';
-      // The hands grip the outside edge beside the name input, not over its text.
-      const anchorY=f.top-r.top+f.height*.5;
-      actor.style.top=(anchorY-151/360*height)+'px';
-      actor.style.visibility='visible';
-      geometry={
-        travel:Math.min(176,Math.max(85,r.width*.27)),
-        hidden:Math.max(r.width+50,window.innerWidth-c.left+55),
-        startActor:small?-8:-24
-      };
-    }
-    function updateControl(){
-      control.disabled=reduce.matches;
-      control.textContent=reduce.matches?'Gerakan diminimumkan':playing?'Langkau intro \u2192':'\u21bb Ulang animasi';
-      control.setAttribute('aria-label',reduce.matches?'Animasi dimatikan mengikut tetapan peranti':playing?'Langkau animasi dan terus isi nama':'Mainkan semula animasi menarik borang login');
-    }
-    function finish(){
-      cancelAnimationFrame(frame);clearTimeout(safety);playing=false;
-      stage.classList.remove('is-animating');stage.dataset.introState='ready';
-      if(visible()) measure();
-      card.style.opacity='1';card.style.transform='none';
-      actor.style.opacity='1';actor.style.transform='none';
-      pose(5.6);updateControl();
-    }
-    function draw(t){
-      let cardX=0,actorX=0,angle=0;
-      if(t<1.3){
-        const p=smooth(t/1.3);
-        actorX=mix(geometry.startActor,geometry.travel,p);
-        cardX=mix(geometry.hidden,geometry.travel,smooth((t-.1)/1.2));
-      }else if(t<1.65){
-        cardX=actorX=geometry.travel;
-      }else if(t<4.1){
-        const p=smooth((t-1.65)/2.45);
-        // Three restrained pulls; both elements share exactly the same displacement.
-        const progress=p-Math.sin(p*6*Math.PI)*.017*Math.sin(p*Math.PI);
-        cardX=actorX=geometry.travel*(1-progress);
-      }else if(t<4.42){
-        const p=(t-4.1)/.32;
-        cardX=actorX=-3*Math.sin(p*Math.PI);
-      }
-      card.style.opacity='1';
-      card.style.transform='translate3d('+cardX.toFixed(2)+'px,0,0) rotate('+angle+'deg)';
-      actor.style.opacity=String(clamp(t/.16));
-      actor.style.transform='translate3d('+actorX.toFixed(2)+'px,0,0)';
-      pose(t);stage.dataset.introTime=t.toFixed(2);
-    }
-    function tick(now){
-      if(!playing)return;
-      if(!visible()||document.hidden){finish();return;}
-      if(!startTime)startTime=now;
-      const elapsed=now-startTime;
-      if(elapsed>=DURATION){finish();return;}
-      draw(elapsed/1000);frame=requestAnimationFrame(tick);
-    }
-    function play(){
-      finish();
-      if(!visible()||reduce.matches||document.hidden)return;
-      measure();playing=true;startTime=0;
-      stage.dataset.introState='playing';stage.classList.add('is-animating');
-      draw(0);updateControl();
-      frame=requestAnimationFrame(tick);
-      // Fail open: the real form must never remain offscreen after an interrupted intro.
-      safety=setTimeout(finish,DURATION+1800);
-    }
-    control.addEventListener('click',()=>{if(playing){finish();input.focus({preventScroll:true});}else play();});
-    card.addEventListener('focusin',()=>{if(playing)finish();});
-    card.addEventListener('pointerdown',()=>{if(playing)finish();},{passive:true});
-    document.addEventListener('keydown',e=>{if(playing&&(e.key==='Escape'||e.key==='Tab'))finish();});
-    document.addEventListener('visibilitychange',()=>{if(document.hidden&&playing)finish();});
-    let oldWidth=window.innerWidth;
-    window.addEventListener('resize',()=>{
-      if(window.innerWidth!==oldWidth){oldWidth=window.innerWidth;finish();}
-    },{passive:true});
-    const onReduce=()=>finish();
-    if(reduce.addEventListener)reduce.addEventListener('change',onReduce);
-    else if(reduce.addListener)reduce.addListener(onReduce);
-    new MutationObserver(()=>{
-      const isVisible=visible();
-      if(app)app.inert=isVisible;
-      if(isVisible&&!wasVisible)play();
-      else if(!isVisible&&wasVisible)finish();
-      wasVisible=isVisible;
-    }).observe(overlay,{attributes:true,attributeFilter:['class']});
-    // Staff API can update helper text. Re-anchor only after the motion has finished.
-    if('ResizeObserver' in window){
-      new ResizeObserver(()=>{if(!playing&&visible())measure();}).observe(card);
-    }
-    if(app)app.inert=visible();
-    if(visible())play();else finish();
-    // Useful for preview/test controls; contains no API or personal data.
-    window.PKPJLoginIntro=Object.freeze({play,skip:finish,isPlaying:()=>playing});
+/* PKPJ_MOTION_V91_SCRIPT_START */
+/* V9.1: UI-only articulated motion. Does not fetch, authorize or change any record.
+   Hands and feet use two constant-length segments, solved at every frame.
+   Feet are held at their world positions during stance; only a swing foot moves.
+   Small displays use a quiet entrance, not a squeezed/distorted full-size walk. */
+(function installPKPJMotionV91(){
+ 'use strict';
+ function initMotion(){
+  if(window.PKPJLoginIntro&&window.PKPJLoginIntro.destroy)window.PKPJLoginIntro.destroy();
+  const byId=id=>document.getElementById(id);
+  const overlay=byId('loginOverlay'),stage=byId('pkpjPullStage'),rig=byId('pkpjPullRig'),card=byId('pkpjPullCard'),actor=byId('pkpjLoginActor'),control=byId('pkpjIntroControl'),input=byId('loginName');
+  if(!overlay||!stage||!rig||!card||!actor||!control||!input)return;
+  const app=document.querySelector('body > .app'),caption=stage.querySelector('.pkpj-actor-caption');
+  const joints={};actor.querySelectorAll('[data-joint]').forEach(x=>joints[x.dataset.joint]=x);
+  const rail=document.createElement('i');rail.className='pkpj-grip-rail';rail.setAttribute('aria-hidden','true');card.appendChild(rail);
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)');
+  let playing=false,frame=0,safety=0,started=null,geometry=null,wasVisible=!overlay.classList.contains('hidden');
+  let destroyed=false,diagnostics=null,currentTime=4.15;
+  const disposers=[];
+  const DURATION=4.15,CONTACT=226,GROUND=430;
+  const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
+  const mix=(a,b,p)=>a+(b-a)*p;
+  const smooth=x=>{x=clamp(x);return x*x*x*(x*(x*6-15)+10);};
+  const ramp=(t,a,b)=>smooth((t-a)/(b-a));
+  const pt=(x,y)=>({x,y});
+  const blend=(a,b,p)=>pt(mix(a.x,b.x,p),mix(a.y,b.y,p));
+  const f=x=>Number(x).toFixed(3);
+  const visible=()=>!overlay.classList.contains('hidden');
+  const transform=(name,value)=>{if(joints[name])joints[name].setAttribute('transform',value);};
+  function rotate(p,deg,bob){
+   const r=deg*Math.PI/180,dx=p.x-110,dy=p.y-264;
+   return pt(110+dx*Math.cos(r)-dy*Math.sin(r),264+dx*Math.sin(r)+dy*Math.cos(r)+bob);
   }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initPullIntro,{once:true});
-  else initPullIntro();
+  function segment(name,a,b){
+   const angle=Math.atan2(b.y-a.y,b.x-a.x)*180/Math.PI;
+   transform(name,'translate('+f(a.x)+' '+f(a.y)+') rotate('+f(angle)+')');
+   return angle;
+  }
+  function solve(a,target,l1,l2,sign){
+   const dx=target.x-a.x,dy=target.y-a.y,dist=Math.max(.0001,Math.hypot(dx,dy));
+   const d=clamp(dist,Math.abs(l1-l2)+.001,l1+l2-.001),ux=dx/dist,uy=dy/dist;
+   const along=(l1*l1-l2*l2+d*d)/(2*d),h=Math.sqrt(Math.max(0,l1*l1-along*along));
+   const elbow=pt(a.x+ux*along-sign*uy*h,a.y+uy*along+sign*ux*h);
+   const end=pt(a.x+ux*d,a.y+uy*d);
+   return {a,b:elbow,c:end,error:Math.abs(dist-d)};
+  }
+  function arm(side,shoulder,target,grip){
+   const v=solve(shoulder,target,60,58,1);
+   segment(side+'ArmUpper',v.a,v.b);
+   const a=segment(side+'ArmLower',v.b,v.c);
+   // The small hand keeps its orientation aligned with the forearm: no wrist flapping.
+   transform(side+'Hand','translate('+f(v.c.x)+' '+f(v.c.y)+') rotate('+f(a)+')');
+   return v;
+  }
+  function leg(side,hip,ankle,lift){
+   const v=solve(hip,ankle,85,83,-1);
+   segment(side+'LegUpper',v.a,v.b);segment(side+'LegLower',v.b,v.c);
+   transform(side+'Shoe','translate('+f(v.c.x)+' '+f(v.c.y)+') rotate('+f(lift*-3)+')');
+   return v;
+  }
+  function sampleFoot(t,start,end,a,b,root,side){
+   const p=clamp((t-a)/(b-a)),q=smooth(p),lift=(p>0&&p<1)?Math.pow(Math.sin(Math.PI*p),2):0;
+   return {p:pt(mix(start,end,q)-root,GROUND-(side==='Back'?9:10)*lift),lift,stance:p===0||p===1,worldX:mix(start,end,q)};
+  }
+  function pose(t,root){
+   const tiny=geometry.mobile;
+   const engaged=tiny?0:ramp(t,.35,1.02)*(1-ramp(t,3.05,3.82));
+   const p=clamp((t-1.12)/1.76),movement=tiny?0:Math.sin(Math.PI*p);
+   const bob=tiny?0:12*movement*movement;
+   const lean=tiny?0:-3.2*ramp(t,.65,1.1)*(1-ramp(t,2.95,3.8));
+   transform('characterRoot','translate('+f(root)+' 0)');
+   transform('worldShadow','translate('+f(root)+' 0)');
+   transform('torso','translate(0 '+f(bob)+') rotate('+f(lean)+' 110 264)');
+   transform('head','rotate(0 116 144)');
+   const back=sampleFoot(t,84+geometry.travel,84,1.12,2.00,root,'Back');
+   const front=sampleFoot(t,126+geometry.travel,126,2.00,2.88,root,'Front');
+   if(tiny){back.p=pt(84,GROUND);front.p=pt(126,GROUND);back.lift=front.lift=0;}
+   const lb=leg('Back',pt(104,264+bob),back.p,back.lift);
+   const lf=leg('Front',pt(121,264+bob),front.p,front.lift);
+   const sb=rotate(pt(114,166),lean,bob),sf=rotate(pt(124,170),lean,bob);
+   const hb=blend(rotate(pt(98,273),lean,bob),pt(217,200),engaged);
+   const hf=blend(rotate(pt(144,278),lean,bob),pt(217,220),engaged);
+   const ab=arm('Back',sb,hb,engaged),af=arm('Front',sf,hf,engaged);
+   // A single quiet blink; no exaggerated wave, head wobble or bouncing body.
+   const blink=tiny?1:1-.9*Math.pow(Math.max(0,1-Math.abs(t-3.94)/.09),2);
+   transform('eyes','translate(0 104) scale(1 '+f(blink)+') translate(0 -104)');
+   diagnostics={time:t,root,grip:engaged,bob,lean,frontArm:af,backArm:ab,frontLeg:lf,backLeg:lb,
+    frontFoot:{x:front.p.x+root,y:front.p.y,stance:front.stance},backFoot:{x:back.p.x+root,y:back.p.y,stance:back.stance},
+    frontHandWorld:{x:af.c.x+root,y:af.c.y},backHandWorld:{x:ab.c.x+root,y:ab.c.y},mobile:tiny};
+  }
+  function measure(){
+   if(!visible())return;
+   card.style.transform='none';
+   const rr=rig.getBoundingClientRect(),cc=card.getBoundingClientRect(),fi=input.getBoundingClientRect();
+   const mobile=innerWidth<=700;
+   const scale=mobile?.43:innerWidth<=820?.88:1.04;
+   const width=280*scale,height=460*scale;
+   actor.style.width=f(width)+'px';actor.style.height=f(height)+'px';
+   const top=mobile?-43:fi.top-rr.top+fi.height*.4-220*scale;
+   const left=mobile?4:cc.left-rr.left-CONTACT*scale;
+   actor.style.left=f(left)+'px';actor.style.top=f(top)+'px';actor.style.visibility='visible';
+   geometry={mobile,scale,top,left,travel:mobile?0:65};
+   rail.style.top=f(top+197*scale-(cc.top-rr.top))+'px';rail.style.height=f(40*scale)+'px';
+   if(!mobile){
+    const min=Math.ceil(Math.max(card.offsetHeight+45,top+485*scale));
+    if(stage.style.minHeight!==min+'px')stage.style.minHeight=min+'px';
+    if(caption){caption.style.top=f(top+457*scale)+'px';caption.style.left=f(left+26*scale)+'px';caption.style.width=f(170*scale)+'px';}
+   }else stage.style.minHeight='0';
+  }
+  function controlState(){
+   control.disabled=reduce.matches;
+   control.textContent=reduce.matches?'Gerakan minimum':playing?'Langkau intro \u2192':'\u21bb Ulang animasi';
+   control.setAttribute('aria-label',reduce.matches?'Animasi dimatikan mengikut tetapan peranti':playing?'Langkau animasi dan isi nama':'Ulang animasi log masuk');
+  }
+  function paint(t){
+   if(!geometry)return;
+   currentTime=clamp(t,0,DURATION);
+   const root=geometry.mobile?0:geometry.travel*(1-ramp(t,1.12,2.88));
+   if(geometry.mobile){
+    card.style.transform='translate3d(0,'+f(10*(1-ramp(t,0,.55)))+'px,0)';
+   }else card.style.transform='translate3d('+f(root*geometry.scale)+'px,0,0)';
+   card.style.opacity='1';actor.style.opacity=String(.75+.25*ramp(t,0,.25));
+   rail.style.opacity=String(geometry.mobile?0:ramp(t,.38,.9)*(1-ramp(t,3.1,3.82)));
+   pose(t,root);stage.dataset.introTime=t.toFixed(2);
+  }
+  function cancel(){cancelAnimationFrame(frame);clearTimeout(safety);frame=0;safety=0;started=null;playing=false;}
+  function finish(){
+   cancel();stage.classList.remove('is-animating');stage.dataset.introState='ready';
+   if(visible())measure();
+   if(geometry)paint(DURATION);
+   card.style.transform='none';card.style.opacity='1';actor.style.opacity='1';rail.style.opacity='0';controlState();
+  }
+  function tick(now){
+   if(!playing||destroyed)return;
+   if(!visible()||document.hidden){finish();return;}
+   if(started===null)started=now;
+   const t=(now-started)/1000,limit=geometry.mobile?.62:DURATION;
+   if(t>=limit){finish();return;}
+   paint(t);frame=requestAnimationFrame(tick);
+  }
+  function play(){
+   finish();if(!visible()||reduce.matches||document.hidden||destroyed)return;
+   measure();playing=true;stage.classList.add('is-animating');stage.dataset.introState='playing';
+   paint(0);controlState();frame=requestAnimationFrame(tick);
+   safety=setTimeout(finish,(geometry.mobile?.62:DURATION)*1000+900);
+  }
+  function on(target,event,fn,options){target.addEventListener(event,fn,options);disposers.push(()=>target.removeEventListener(event,fn,options));}
+  on(control,'click',()=>{if(playing){finish();input.focus({preventScroll:true});}else play();});
+  on(card,'focusin',()=>{if(playing)finish();});
+  on(card,'pointerdown',()=>{if(playing)finish();},{passive:true});
+  on(document,'keydown',e=>{if(playing&&(e.key==='Escape'||e.key==='Tab'))finish();});
+  on(document,'visibilitychange',()=>{if(document.hidden&&playing)finish();});
+  let lastWidth=innerWidth;
+  on(window,'resize',()=>{if(innerWidth!==lastWidth){lastWidth=innerWidth;finish();}},{passive:true});
+  if(reduce.addEventListener)on(reduce,'change',finish);
+  else if(reduce.addListener){reduce.addListener(finish);disposers.push(()=>reduce.removeListener(finish));}
+  const observer=new MutationObserver(()=>{
+   const v=visible();if(app)app.inert=v;
+   if(v&&!wasVisible)play();else if(!v&&wasVisible)finish();wasVisible=v;
+  });observer.observe(overlay,{attributes:true,attributeFilter:['class']});
+  disposers.push(()=>observer.disconnect());
+  if('ResizeObserver' in window){
+   let prev='';const ro=new ResizeObserver(()=>{
+    if(!visible())return;
+    const size=card.offsetWidth+'|'+card.offsetHeight;
+    if(prev===size)return;prev=size;
+    // Freeze safely rather than moving the target underneath a user's typing.
+    if(playing)return;
+    measure();paint(DURATION);card.style.transform='none';
+   });ro.observe(card);disposers.push(()=>ro.disconnect());
+  }
+  const api=Object.freeze({
+   play,skip:finish,isPlaying:()=>playing,
+   preview(seconds){cancel();measure();stage.classList.remove('is-animating');stage.dataset.introState='preview';paint(seconds);controlState();},
+   inspect:()=>diagnostics,
+   destroy(){if(destroyed)return;finish();destroyed=true;disposers.splice(0).forEach(fn=>fn());rail.remove();if(window.PKPJLoginIntro===api)delete window.PKPJLoginIntro;}
+  });
+  window.PKPJLoginIntro=api;if(app)app.inert=visible();if(visible())play();else finish();
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initMotion,{once:true});else initMotion();
 })();
+/* PKPJ_MOTION_V91_SCRIPT_END */
 
 </script>
 <script>
