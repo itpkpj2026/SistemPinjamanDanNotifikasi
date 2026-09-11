@@ -1748,6 +1748,41 @@ table{max-width:none}
   .equipment-choice-body h3{font-size:10.5px}
 }
 
+
+
+/* =========================================================
+   PEMOHON V8 - ZERO-BLOCK LOGIN + "PULL LOGIN" ANIMATION
+   - login UI tidak menunggu API untuk senarai nama
+   - staff cache/admin mirror digunakan dahulu
+   - API hanya refresh senyap di belakang
+   - animasi karakter menarik kad log masuk (desktop)
+   ========================================================= */
+.compact-login-panel{position:relative!important;overflow:visible!important}
+.compact-login-card{position:relative;z-index:4;animation:pkpjCardPullIn .95s cubic-bezier(.18,.82,.22,1) both}
+.login-puller{position:absolute;z-index:5;left:calc(50% - 265px);top:50%;width:64px;height:126px;transform:translate(-130px,-46%);pointer-events:none;animation:pkpjPullerIn .95s cubic-bezier(.18,.82,.22,1) both,pkpjPullerIdle 2.8s ease-in-out 1.15s infinite}
+.login-puller .puller-head{position:absolute;left:19px;top:4px;width:31px;height:31px;border-radius:50%;background:#efc7a8;border:2px solid rgba(20,55,86,.12);box-shadow:0 5px 13px rgba(25,65,100,.12)}
+.login-puller .puller-hair{position:absolute;left:17px;top:1px;width:35px;height:17px;border-radius:20px 20px 8px 8px;background:#163d67;transform:rotate(-4deg)}
+.login-puller .puller-body{position:absolute;left:16px;top:34px;width:38px;height:49px;border-radius:12px 12px 9px 9px;background:linear-gradient(150deg,#126ec8,#22a8d8);box-shadow:0 9px 18px rgba(18,110,200,.18)}
+.login-puller .puller-badge{position:absolute;left:26px;top:45px;width:17px;height:10px;border-radius:3px;background:#fff;box-shadow:inset 0 0 0 1px rgba(9,68,115,.1)}
+.login-puller .puller-arm{position:absolute;height:8px;border-radius:999px;background:#efc7a8;transform-origin:left center}
+.login-puller .puller-arm.back{left:12px;top:48px;width:31px;transform:rotate(132deg)}
+.login-puller .puller-arm.front{left:43px;top:49px;width:47px;transform:rotate(10deg)}
+.login-puller .puller-hand{position:absolute;left:85px;top:52px;width:11px;height:11px;border-radius:50%;background:#efc7a8}
+.login-puller .puller-rope{position:absolute;left:91px;top:55px;width:45px;height:3px;border-radius:999px;background:linear-gradient(90deg,#6f8ba6,#a7bdcf);transform:rotate(2deg);transform-origin:left center;box-shadow:0 1px 2px rgba(22,61,94,.15)}
+.login-puller .puller-leg{position:absolute;top:79px;width:10px;height:39px;border-radius:999px;background:#234a73;transform-origin:top center}
+.login-puller .puller-leg.l1{left:20px;transform:rotate(13deg)}
+.login-puller .puller-leg.l2{left:39px;transform:rotate(-13deg)}
+.login-puller .puller-shoe{position:absolute;top:112px;width:20px;height:8px;border-radius:9px 9px 4px 4px;background:#17324d}
+.login-puller .puller-shoe.s1{left:10px;transform:rotate(-5deg)}
+.login-puller .puller-shoe.s2{left:38px;transform:rotate(5deg)}
+@keyframes pkpjCardPullIn{0%{opacity:.2;transform:translateX(138px) scale(.985)}65%{opacity:1;transform:translateX(-7px) scale(1)}100%{opacity:1;transform:translateX(0) scale(1)}}
+@keyframes pkpjPullerIn{0%{opacity:0;transform:translate(68px,-46%) rotate(4deg)}18%{opacity:1}70%{transform:translate(-138px,-46%) rotate(-3deg)}100%{opacity:1;transform:translate(-130px,-46%) rotate(0)}}
+@keyframes pkpjPullerIdle{0%,100%{margin-top:0}50%{margin-top:-4px}}
+.portal-fast-status.local{color:#176f9f!important}
+@media(max-width:1120px){.login-puller{left:calc(50% - 225px);transform:translate(-96px,-46%)} }
+@media(max-width:960px){.login-puller{display:none!important}.compact-login-card{animation:pkpjCardPullInMobile .55s ease-out both}@keyframes pkpjCardPullInMobile{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}}
+@media(prefers-reduced-motion:reduce){.compact-login-card,.login-puller{animation:none!important}}
+
 </style>
 
 <style>
@@ -1818,6 +1853,14 @@ table{max-width:none}
     </section>
 
     <section class="compact-login-panel">
+      <div class="login-puller" aria-hidden="true">
+        <span class="puller-head"></span><span class="puller-hair"></span>
+        <span class="puller-body"></span><span class="puller-badge"></span>
+        <span class="puller-arm back"></span><span class="puller-arm front"></span>
+        <span class="puller-hand"></span><span class="puller-rope"></span>
+        <span class="puller-leg l1"></span><span class="puller-leg l2"></span>
+        <span class="puller-shoe s1"></span><span class="puller-shoe s2"></span>
+      </div>
       <div class="compact-login-card">
         <div class="compact-app-icon pkpj-login-logo"><img src="pkpj-premium.png" alt="PKPJ"></div>
 
@@ -2075,6 +2118,46 @@ const SYSTEM_CONFIG={
   APPLICANT_TOKEN:'4E52A3842E482E9B56766B10FDE318AD'
 };
 
+
+/*
+  STAFF DIRECTORY LOCAL
+  ---------------------
+  Portal akan guna sumber ini mengikut keutamaan:
+  1) EMBEDDED_STAFF (boleh ditanam terus semasa build/deploy),
+  2) snapshot staff yang disimpan oleh Admin pada origin yang sama,
+  3) cache portal terdahulu,
+  4) API sebagai refresh senyap sahaja.
+
+  Fail sumber yang diterima tidak mengandungi rekod nama staff sebenar,
+  jadi array ini sengaja tidak mereka-reka nama. Sistem tetap zero-block
+  melalui snapshot/cache dan manual fallback sehingga snapshot tersedia.
+*/
+const EMBEDDED_STAFF=Object.freeze([
+  // Contoh format sahaja (jangan aktifkan tanpa data sebenar):
+  // {user_id:'USR0001',name:'Nama Staff',department:'Bahagian',unit:'Unit'}
+]);
+const STAFF_SHARED_SNAPSHOT_KEY='ict_staff_directory_shared_v1';
+
+function readAdminStaffSnapshot(){
+  const sources=[];
+
+  if(Array.isArray(EMBEDDED_STAFF) && EMBEDDED_STAFF.length){
+    sources.push(...EMBEDDED_STAFF);
+  }
+
+  try{
+    const shared=JSON.parse(localStorage.getItem(STAFF_SHARED_SNAPSHOT_KEY)||'null');
+    if(Array.isArray(shared?.data)) sources.push(...shared.data);
+  }catch(err){}
+
+  try{
+    const admin=JSON.parse(localStorage.getItem('ict_admin_lists_v84')||localStorage.getItem('ict_admin_lists_v83')||'null');
+    if(Array.isArray(admin?.users)) sources.push(...admin.users);
+  }catch(err){}
+
+  return normalizeStaffList(sources);
+}
+
 const state={profile:null,kpi:{},assets:[],loans:[],staffList:[],selectedUserId:'',connected:false,currentView:'home',imagePayload:null,lastSync:0,syncTimer:null,refreshPromise:null,loanCategory:'',loanCategoryLabel:'',qrAssetId:new URLSearchParams(location.search).get('asset')||'',videoScheduled:false,manualNameMode:false,publicSettings:{},staffLoadingPromise:null,staffRetryTimer:null};
 const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>[...r.querySelectorAll(s)];
@@ -2181,22 +2264,30 @@ function init(){
   bindUI();
   initPemohonHeroVideo();
 
-  // Nama staff diberi keutamaan berbanding video.
+  // V8: login tidak lagi menunggu API. Gunakan sumber tempatan dahulu.
+  const embeddedOrAdmin=readAdminStaffSnapshot();
   const cachedStaff=readStaffCache();
-  if(cachedStaff.length){
-    state.staffList=cachedStaff;
-    setStaffLoadStatus(`Senarai nama sedia • ${cachedStaff.length} staff`,'ready');
-    schedulePemohonVideo(1800);
+  const localStaff=normalizeStaffList([...embeddedOrAdmin,...cachedStaff]);
 
-    const refreshStaff=()=>loadStaffNames(true);
-    if('requestIdleCallback' in window){
-      requestIdleCallback(refreshStaff,{timeout:5000});
-    }else{
-      setTimeout(refreshStaff,3500);
-    }
+  if(localStaff.length){
+    state.staffList=localStaff;
+    saveStaffCache(localStaff);
+    setStaffLoadStatus(`Senarai tempatan sedia • ${localStaff.length} staff`,'local');
   }else{
-    setStaffLoadStatus('Memuatkan senarai nama…','loading');
-    loadStaffNames();
+    // Tiada data tempatan: manual login terus boleh digunakan.
+    state.manualNameMode=true;
+    setStaffLoadStatus('Taip nama anda • semakan staff berjalan di belakang','local');
+    $('#manualNameNote')?.classList.remove('hidden');
+  }
+
+  schedulePemohonVideo(1200);
+
+  // Refresh staff hanya selepas UI stabil; tidak menahan login/autocomplete.
+  const refreshStaff=()=>loadStaffNames(true);
+  if('requestIdleCallback' in window){
+    requestIdleCallback(refreshStaff,{timeout:8000});
+  }else{
+    setTimeout(refreshStaff,5000);
   }
 
   const savedId=localStorage.getItem('ict_applicant_user_id')||'';
@@ -2379,34 +2470,12 @@ function enableManualNameMode(){
 
 
 async function fetchStaffListFast(){
-  let firstError=null;
-
-  // Laluan utama: JSONP stabil untuk Apps Script walaupun portal berada di domain lain.
-  try{
-    return await jsonp(
-      'applicant.staff_list',
-      {_t:Date.now()},
-      {timeoutMs:12000,retries:1}
-    );
-  }catch(err){
-    firstError=err;
-  }
-
-  // Fallback: cuba GET biasa jika hosting/browser membenarkan CORS.
-  try{
-    const q=new URLSearchParams({
-      action:'applicant.staff_list',
-      token:SYSTEM_CONFIG.APPLICANT_TOKEN,
-      _t:String(Date.now())
-    });
-    const res=await fetch(SYSTEM_CONFIG.API_URL+'?'+q.toString(),{cache:'no-store'});
-    if(!res.ok) throw new Error('HTTP '+res.status);
-    const payload=await res.json();
-    if(payload?.ok) return payload.data;
-    throw new Error(payload?.error?.message||'API error');
-  }catch(err){
-    throw firstError||err;
-  }
+  // Satu request sahaja. Elak JSONP + fetch berganda ketika Apps Script cold-start.
+  return jsonp(
+    'applicant.staff_list',
+    {_t:Date.now()},
+    {timeoutMs:7500,retries:0}
+  );
 }
 
 async function loadStaffNames(silent=false){
@@ -2447,17 +2516,11 @@ async function loadStaffNames(silent=false){
       console.warn('Staff list refresh skipped:',err?.message||err);
 
       if(!state.staffList.length){
-        setStaffLoadStatus('Senarai nama sedang dicuba semula…','loading');
-
-        // Retry senyap sekali lagi untuk cold-start Apps Script.
-        if(!state.staffRetryTimer){
-          state.staffRetryTimer=setTimeout(()=>{
-            state.staffRetryTimer=null;
-            loadStaffNames(true);
-          },7000);
-        }
+        state.manualNameMode=true;
+        $('#manualNameNote')?.classList.remove('hidden');
+        setStaffLoadStatus('API perlahan • guna nama manual sementara','local');
       }else{
-        setStaffLoadStatus(`Senarai nama sedia • ${state.staffList.length} staff`,'ready');
+        setStaffLoadStatus(`Senarai tempatan sedia • ${state.staffList.length} staff`,'local');
       }
 
       return state.staffList;
@@ -2519,8 +2582,9 @@ function handleNameSearch(){
   }
 
   if(!state.staffList.length){
-    renderStaffSuggestions([], 'Senarai nama sedang dimuatkan…');
-    loadStaffNames(true);
+    state.manualNameMode=true;
+    hideSuggestions();
+    setStaffLoadStatus('Taip nama penuh dan terus masuk • API disemak di belakang','local');
     return;
   }
 
@@ -2650,7 +2714,7 @@ async function loginApplicant(silent=false){
         name:finalName,
         _t:Date.now()
       },
-      {timeoutMs:10000,retries:0}
+      {timeoutMs:8000,retries:0}
     );
 
     clearTimeout(loaderTimer);
@@ -3507,7 +3571,8 @@ async function refreshPortal(silent=false){
           user_id:who.user_id,
           name:who.name,
           _t:Date.now()
-        }
+        },
+        {timeoutMs:10000,retries:0}
       );
 
       applyBootstrap(data);
@@ -3541,7 +3606,7 @@ function startPortalSync(){
     ){
       refreshPortal(true);
     }
-  },120000);
+  },180000);
 }
 
 
@@ -3561,7 +3626,7 @@ function loanProgress(status){
   return `<div class="loan-progress-mini">${steps.map((_,i)=>`<i class="${i<=index?'done':''}"></i>`).join('')}<small>${index===0?'Menunggu ICT':index===1?'Sedia untuk diambil':index===2?'Sedang dipinjam':'Selesai'}</small></div>`;
 }
 
-function jsonpOnce(action,params={},timeoutMs=18000){
+function jsonpOnce(action,params={},timeoutMs=12000){
   return new Promise((resolve,reject)=>{
     const cb='__pemohon_'+Date.now()+'_'+Math.floor(Math.random()*99999);
     const q=new URLSearchParams({action,token:SYSTEM_CONFIG.APPLICANT_TOKEN,callback:cb,...Object.fromEntries(Object.entries(params).filter(([,v])=>v!==undefined&&v!==null&&v!==''))});
@@ -3575,7 +3640,7 @@ function jsonpOnce(action,params={},timeoutMs=18000){
 }
 
 async function jsonp(action,params={},options={}){
-  const timeoutMs=options.timeoutMs||18000;
+  const timeoutMs=options.timeoutMs||12000;
   const retries=Number.isFinite(options.retries)?options.retries:0;
   let lastErr=null;
 
