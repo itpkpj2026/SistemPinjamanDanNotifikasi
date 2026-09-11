@@ -1751,37 +1751,97 @@ table{max-width:none}
 
 
 /* =========================================================
-   PEMOHON V8 - ZERO-BLOCK LOGIN + "PULL LOGIN" ANIMATION
-   - login UI tidak menunggu API untuk senarai nama
-   - staff cache/admin mirror digunakan dahulu
-   - API hanya refresh senyap di belakang
-   - animasi karakter menarik kad log masuk (desktop)
+   PEMOHON V8.2 - INTERACTIVE PULL-IN INTRO
+   The real login form moves together with the articulated SVG character.
+   No external animation library, video sprite, or API request is required.
+   Existing applicant logic, endpoint and token are unchanged.
    ========================================================= */
-.compact-login-panel{position:relative!important;overflow:visible!important}
-.compact-login-card{position:relative;z-index:4;animation:pkpjCardPullIn .95s cubic-bezier(.18,.82,.22,1) both}
-.login-puller{position:absolute;z-index:5;left:calc(50% - 265px);top:50%;width:64px;height:126px;transform:translate(-130px,-46%);pointer-events:none;animation:pkpjPullerIn .95s cubic-bezier(.18,.82,.22,1) both,pkpjPullerIdle 2.8s ease-in-out 1.15s infinite}
-.login-puller .puller-head{position:absolute;left:19px;top:4px;width:31px;height:31px;border-radius:50%;background:#efc7a8;border:2px solid rgba(20,55,86,.12);box-shadow:0 5px 13px rgba(25,65,100,.12)}
-.login-puller .puller-hair{position:absolute;left:17px;top:1px;width:35px;height:17px;border-radius:20px 20px 8px 8px;background:#163d67;transform:rotate(-4deg)}
-.login-puller .puller-body{position:absolute;left:16px;top:34px;width:38px;height:49px;border-radius:12px 12px 9px 9px;background:linear-gradient(150deg,#126ec8,#22a8d8);box-shadow:0 9px 18px rgba(18,110,200,.18)}
-.login-puller .puller-badge{position:absolute;left:26px;top:45px;width:17px;height:10px;border-radius:3px;background:#fff;box-shadow:inset 0 0 0 1px rgba(9,68,115,.1)}
-.login-puller .puller-arm{position:absolute;height:8px;border-radius:999px;background:#efc7a8;transform-origin:left center}
-.login-puller .puller-arm.back{left:12px;top:48px;width:31px;transform:rotate(132deg)}
-.login-puller .puller-arm.front{left:43px;top:49px;width:47px;transform:rotate(10deg)}
-.login-puller .puller-hand{position:absolute;left:85px;top:52px;width:11px;height:11px;border-radius:50%;background:#efc7a8}
-.login-puller .puller-rope{position:absolute;left:91px;top:55px;width:45px;height:3px;border-radius:999px;background:linear-gradient(90deg,#6f8ba6,#a7bdcf);transform:rotate(2deg);transform-origin:left center;box-shadow:0 1px 2px rgba(22,61,94,.15)}
-.login-puller .puller-leg{position:absolute;top:79px;width:10px;height:39px;border-radius:999px;background:#234a73;transform-origin:top center}
-.login-puller .puller-leg.l1{left:20px;transform:rotate(13deg)}
-.login-puller .puller-leg.l2{left:39px;transform:rotate(-13deg)}
-.login-puller .puller-shoe{position:absolute;top:112px;width:20px;height:8px;border-radius:9px 9px 4px 4px;background:#17324d}
-.login-puller .puller-shoe.s1{left:10px;transform:rotate(-5deg)}
-.login-puller .puller-shoe.s2{left:38px;transform:rotate(5deg)}
-@keyframes pkpjCardPullIn{0%{opacity:.2;transform:translateX(138px) scale(.985)}65%{opacity:1;transform:translateX(-7px) scale(1)}100%{opacity:1;transform:translateX(0) scale(1)}}
-@keyframes pkpjPullerIn{0%{opacity:0;transform:translate(68px,-46%) rotate(4deg)}18%{opacity:1}70%{transform:translate(-138px,-46%) rotate(-3deg)}100%{opacity:1;transform:translate(-130px,-46%) rotate(0)}}
-@keyframes pkpjPullerIdle{0%,100%{margin-top:0}50%{margin-top:-4px}}
 .portal-fast-status.local{color:#176f9f!important}
-@media(max-width:1120px){.login-puller{left:calc(50% - 225px);transform:translate(-96px,-46%)} }
-@media(max-width:960px){.login-puller{display:none!important}.compact-login-card{animation:pkpjCardPullInMobile .55s ease-out both}@keyframes pkpjCardPullInMobile{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}}
-@media(prefers-reduced-motion:reduce){.compact-login-card,.login-puller{animation:none!important}}
+#loginOverlay{padding:22px!important;overflow-x:hidden!important;overflow-y:auto!important;align-items:center!important;background:radial-gradient(ellipse at 12% 15%,#d9eefa 0,transparent 48%),radial-gradient(ellipse at 90% 88%,#d9f2ed 0,transparent 43%),#f2f7fc!important}
+#loginOverlay .compact-login-shell{width:min(1390px,96vw)!important;max-width:none!important;grid-template-columns:minmax(290px,.83fr) minmax(540px,1.17fr)!important;display:grid!important;align-items:stretch!important;min-height:0!important;border-radius:28px!important;overflow:hidden!important;background:#e5f2fb!important;border:1px solid #d3e3ef!important;box-shadow:0 28px 90px #184b7519!important}
+#loginOverlay .compact-video-panel{align-self:center!important;aspect-ratio:16/9!important;height:auto!important;min-height:0!important;max-height:none!important;overflow:hidden!important}
+#loginOverlay .compact-bg-video{object-fit:contain!important}
+#loginOverlay .compact-video-caption{left:26px!important;right:22px!important;bottom:22px!important}
+#loginOverlay .compact-video-caption h1{font-size:clamp(24px,2.4vw,35px)!important}
+#loginOverlay .compact-login-panel{position:relative!important;display:block!important;padding:22px 26px 24px!important;overflow:hidden!important;background:radial-gradient(ellipse at 80% 12%,#e5f8ff 0,transparent 56%),linear-gradient(155deg,#f6fbff,#edf6fc 58%,#f5fcf9)!important;min-height:625px!important}
+.pkpj-intro-bar{position:relative;z-index:8;display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:33px;margin-bottom:18px}
+.pkpj-intro-label{font-size:9px;letter-spacing:.15em;font-weight:800;color:#597e9a;display:flex;align-items:center;gap:8px}
+.pkpj-intro-label::before{content:"";width:6px;height:6px;border-radius:50%;background:#16a9b4;box-shadow:0 0 0 4px #16a9b412}
+.pkpj-intro-control{min-height:33px;white-space:nowrap;display:inline-flex;align-items:center;gap:6px;background:#ffffffc9;border:1px solid #cfdfed;border-radius:999px;color:#3c627e;padding:7px 11px;font-size:10px;font-weight:700;cursor:pointer}
+.pkpj-intro-control:hover{background:#fff;border-color:#8dbedb}
+.pkpj-intro-control:focus-visible{outline:3px solid #369fc7;outline-offset:3px}
+.pkpj-pull-stage{--actor-space:130px;position:relative;margin:0 auto;max-width:620px;min-height:485px;padding:0 0 17px;isolation:isolate}
+.pkpj-pull-stage::before{content:"";position:absolute;left:0;right:0;bottom:1px;height:1px;background:linear-gradient(90deg,transparent,#bcd4e4,transparent);z-index:-1}
+.pkpj-pull-rig{position:relative;padding-left:var(--actor-space);width:100%;min-width:0}
+#loginOverlay .compact-login-card{position:relative!important;z-index:3!important;width:100%!important;max-width:430px!important;margin:0!important;padding:27px 27px 22px!important;border:1px solid #d4e4ee;border-radius:24px;background:#fffffff2;box-shadow:0 18px 42px #174c7412,inset 0 1px 0 #fff;animation:none!important;transform:none;transform-origin:left 58%;min-height:467px}
+#loginOverlay .compact-login-card h2{font-size:clamp(24px,2.1vw,30px)!important;line-height:1.1!important;letter-spacing:-.038em!important}
+#loginOverlay .compact-sub{font-size:12px!important;margin:11px 0 19px!important;line-height:1.55!important}
+#loginOverlay .compact-app-icon.pkpj-login-logo{width:58px!important;height:65px!important;margin-bottom:19px!important}
+#loginOverlay .compact-search-box .field{height:52px!important;font-size:14px!important;padding:0 13px!important}
+#loginOverlay .compact-name-field label{font-size:11px!important}
+#loginOverlay .compact-enter-btn{min-height:52px!important;font-size:13px!important;margin-top:15px!important}
+#loginOverlay .compact-help{font-size:9px!important;line-height:1.5;margin-top:17px!important;padding-top:13px!important}
+#loginOverlay .portal-fast-status{min-height:28px;line-height:1.45!important;margin-top:8px}
+#loginOverlay .manual-name-help{font-size:10px}
+#loginOverlay .manual-name-note{font-size:10px!important;line-height:1.5!important}
+#loginOverlay .suggestions{z-index:30;max-height:200px!important}
+.pkpj-login-actor{position:absolute;z-index:5;width:194px;height:291px;left:0;top:165px;pointer-events:none;visibility:hidden;filter:drop-shadow(0 6px 5px #34678710)}
+.pkpj-login-actor svg{display:block;width:100%;height:100%;overflow:visible}
+.pkpj-actor-caption{position:absolute;z-index:1;left:0;bottom:22px;width:120px;text-align:center;font-size:9px;font-weight:700;line-height:1.5;color:#6b8ca4;pointer-events:none}
+.pkpj-intro-foot{margin:6px 0 0;padding-left:var(--actor-space);text-align:center;font-size:9px;line-height:1.6;color:#7590a6}
+.pkpj-pull-stage.is-animating .pkpj-actor-caption{opacity:0}
+.pkpj-pull-stage.is-animating .compact-login-card,.pkpj-pull-stage.is-animating .pkpj-login-actor{will-change:transform}
+@media(max-width:1120px){
+  #loginOverlay .compact-login-shell{grid-template-columns:minmax(270px,.68fr) minmax(520px,1.32fr)!important}
+  #loginOverlay .compact-login-panel{padding:21px 20px!important}
+  .pkpj-pull-stage{--actor-space:116px}
+  #loginOverlay .compact-login-card{padding:24px 23px 21px!important}
+  .pkpj-actor-caption{width:108px}
+}
+@media(max-width:940px){
+  #loginOverlay{padding:18px!important}
+  #loginOverlay .compact-login-shell{width:min(730px,96vw)!important;grid-template-columns:1fr!important}
+  #loginOverlay .compact-video-panel{aspect-ratio:16/6!important}
+  #loginOverlay .compact-bg-video{object-fit:contain!important;background:#daedf9!important}
+  #loginOverlay .compact-video-caption{left:25px!important;bottom:17px!important}
+  #loginOverlay .compact-video-caption h1{font-size:25px!important}
+  #loginOverlay .compact-video-caption p{display:none!important}
+  #loginOverlay .compact-login-panel{min-height:0!important;padding:22px 28px 26px!important}
+  .pkpj-pull-stage{--actor-space:148px;max-width:600px}
+  #loginOverlay .compact-login-card{max-width:none!important}
+  .pkpj-actor-caption{width:135px}
+}
+@media(max-width:600px){
+  #loginOverlay{padding:0!important;align-items:flex-start!important}
+  #loginOverlay .compact-login-shell{width:100%!important;min-height:100dvh!important;display:block!important;border:0!important;border-radius:0!important}
+  #loginOverlay .compact-video-panel{aspect-ratio:16/7!important;max-height:220px!important}
+  #loginOverlay .compact-video-caption{left:18px!important;bottom:15px!important}
+  #loginOverlay .compact-video-caption h1{font-size:23px!important}
+  #loginOverlay .compact-badge{font-size:8px!important}
+  #loginOverlay .compact-login-panel{padding:17px 13px 23px!important;overflow:hidden!important}
+  .pkpj-intro-bar{margin-bottom:15px;gap:6px}
+  .pkpj-intro-label{font-size:8px;letter-spacing:.11em;gap:6px}
+  .pkpj-intro-control{font-size:9px;padding:6px 9px}
+  .pkpj-pull-stage{--actor-space:83px;min-height:450px}
+  #loginOverlay .compact-login-card{padding:21px 18px 18px!important;border-radius:20px!important;min-height:442px}
+  #loginOverlay .compact-login-card h2{font-size:23px!important;line-height:1.12!important}
+  #loginOverlay .compact-app-icon.pkpj-login-logo{width:49px!important;height:54px!important;margin-bottom:15px!important}
+  #loginOverlay .compact-sub{font-size:11px!important;margin:10px 0 17px!important}
+  #loginOverlay .compact-search-box .field{font-size:16px!important;height:49px!important}
+  #loginOverlay .compact-enter-btn{font-size:11.5px!important;min-height:50px!important;gap:6px!important}
+  .pkpj-actor-caption{width:76px;font-size:8px;bottom:10px}
+  .pkpj-intro-foot{font-size:8.5px}
+}
+@media(max-width:360px){
+  .pkpj-pull-stage{--actor-space:67px}
+  #loginOverlay .compact-login-panel{padding-left:9px!important;padding-right:9px!important}
+  #loginOverlay .compact-login-card{padding:18px 14px!important}
+  #loginOverlay .compact-login-card h2{font-size:21px!important}
+  .pkpj-actor-caption{width:61px;font-size:7px}
+}
+@media(prefers-reduced-motion:reduce){
+  #loginOverlay .compact-login-card,.pkpj-login-actor{animation:none!important;transition:none!important}
+}
 
 </style>
 
@@ -1852,16 +1912,67 @@ table{max-width:none}
       </div>
     </section>
 
-    <section class="compact-login-panel">
-      <div class="login-puller" aria-hidden="true">
-        <span class="puller-head"></span><span class="puller-hair"></span>
-        <span class="puller-body"></span><span class="puller-badge"></span>
-        <span class="puller-arm back"></span><span class="puller-arm front"></span>
-        <span class="puller-hand"></span><span class="puller-rope"></span>
-        <span class="puller-leg l1"></span><span class="puller-leg l2"></span>
-        <span class="puller-shoe s1"></span><span class="puller-shoe s2"></span>
+    <section class="compact-login-panel" aria-label="Log masuk Portal Pemohon">
+      <div class="pkpj-intro-bar">
+        <span class="pkpj-intro-label">AKSES WARGA PKPJ</span>
+        <button type="button" class="pkpj-intro-control" id="pkpjIntroControl">Langkau intro &#8594;</button>
       </div>
-      <div class="compact-login-card">
+      <div class="pkpj-pull-stage" id="pkpjPullStage">
+        <div class="pkpj-pull-rig" id="pkpjPullRig">
+          <div class="pkpj-login-actor" id="pkpjLoginActor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 360" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="pullSkin" x1="0" x2="1" y2=".3"><stop stop-color="#b8693b"/><stop offset=".46" stop-color="#e9a36c"/><stop offset="1" stop-color="#b96538"/></linearGradient>
+    <radialGradient id="pullFace" cx=".36" cy=".34" r=".72"><stop stop-color="#f6ba83"/><stop offset=".66" stop-color="#dd8c55"/><stop offset="1" stop-color="#a95331"/></radialGradient>
+    <linearGradient id="pullHair" x1=".1" y1="0" x2=".7" y2="1"><stop stop-color="#496178"/><stop offset=".42" stop-color="#243a52"/><stop offset="1" stop-color="#102137"/></linearGradient>
+    <linearGradient id="pullShirt" x1="0" y1=".2" x2="1" y2=".8"><stop stop-color="#eaa023"/><stop offset=".4" stop-color="#ffe180"/><stop offset=".72" stop-color="#ffc741"/><stop offset="1" stop-color="#d9911c"/></linearGradient>
+    <linearGradient id="pullJeans" x1="0" y1="0" x2="1" y2=".2"><stop stop-color="#438bc6"/><stop offset=".48" stop-color="#83c6ef"/><stop offset="1" stop-color="#2e75b5"/></linearGradient>
+    <linearGradient id="pullShoe" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#ffffff"/><stop offset="1" stop-color="#cbdbe8"/></linearGradient>
+  </defs>
+  <ellipse data-part="shadow" cx="100" cy="346" rx="67" ry="8" fill="#0b466d" opacity=".12"/>
+  <g data-part="legBack"><path data-part="legBackPath" d="M86 207 Q66 254 61 325" fill="none" stroke="#3a7db6" stroke-width="21" stroke-linecap="round" stroke-linejoin="round"/>
+    <g data-part="shoeBack" transform="translate(61 330)"><path d="M-10-10 Q0-15 9-8 L14-2 29 1 Q35 3 31 10 L-11 10Q-15 5-10-10" fill="#d4e3eb" stroke="#90acc1" stroke-width="1"/><path d="M-12 7H32" stroke="#fff" stroke-width="4" stroke-linecap="round"/><path d="M5-5L13 0M9-7L17-2" stroke="#7394ad" stroke-width="2"/></g>
+  </g>
+  <g data-part="legFront"><path data-part="legFrontPath" d="M101 209 Q130 261 121 331" fill="none" stroke="url(#pullJeans)" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/>
+    <g data-part="shoeFront" transform="translate(121 332)"><path d="M-10-11 Q0-16 10-8 L15-2 29 1 Q36 3 32 10 L-12 10Q-15 4-10-11" fill="url(#pullShoe)" stroke="#9eb9ce" stroke-width="1"/><path d="M-12 7H32" stroke="#fff" stroke-width="4" stroke-linecap="round"/><path d="M5-5L13 0M9-7L17-2" stroke="#7d9bb2" stroke-width="2"/><path d="M-8-5L-1-4" stroke="#f4b941" stroke-width="4"/></g>
+  </g>
+  <path data-part="armBack" d="M86 130 Q119 165 147 189" fill="none" stroke="#bb7047" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+  <path data-part="sleeveBack" d="M86 130 L100 147" fill="none" stroke="#e5a229" stroke-width="22" stroke-linecap="round"/>
+  <g data-part="upper">
+    <path d="M84 108 Q102 103 123 113 Q131 117 130 137 L116 193 Q100 212 76 198 L73 147 Q69 119 84 108Z" fill="url(#pullShirt)" stroke="#d99725" stroke-width="1.2"/>
+    <path d="M79 190 Q96 196 118 189 L118 209 Q98 220 76 209Z" fill="url(#pullJeans)"/>
+    <path d="M82 203 Q96 208 113 202" fill="none" stroke="#aedafa" stroke-width="1.5" opacity=".8"/>
+    <path d="M108 107L99 128 94 106" fill="none" stroke="#1e7bab" stroke-width="2.4"/>
+    <rect x="91" y="126" width="18" height="22" rx="3" fill="#fff" stroke="#ead08c" stroke-width="1"/>
+    <rect x="95" y="130" width="10" height="3" rx="1" fill="#46a2d1"/>
+    <text x="100" y="141" font-family="Arial,sans-serif" font-size="6.5" font-weight="bold" text-anchor="middle" fill="#174c73">ICT</text>
+    <path d="M98 89L115 91 115 109Q108 119 99 108Z" fill="url(#pullSkin)"/>
+    <path d="M95 103L106 113 98 119 89 109M115 103L106 113 115 118 121 111" fill="#ffedb4" stroke="#e7b044" stroke-width=".8"/>
+    <path d="M107 115L107 125" stroke="#cd911e" stroke-width="1.2"/>
+    <circle cx="109" cy="120" r="1" fill="#fff"/>
+    <g data-part="head">
+      <ellipse cx="106" cy="67" rx="31" ry="36" fill="url(#pullFace)"/>
+      <ellipse cx="77" cy="71" rx="7.5" ry="10.5" fill="#d58b58"/>
+      <path d="M75 68Q81 65 81 74" fill="none" stroke="#a65c39" stroke-width="2"/>
+      <path d="M78 67 Q68 52 75 37 Q84 14 111 23 Q142 23 142 52 L135 68 131 53 Q114 55 99 44 Q86 44 84 68Z" fill="url(#pullHair)"/>
+      <path d="M80 41Q102 20 128 34M86 38Q104 25 117 30" stroke="#5f7488" stroke-width="2.2" opacity=".55" fill="none" stroke-linecap="round"/>
+      <path d="M92 61Q97 57 104 61M117 59Q123 57 128 61" fill="none" stroke="#573528" stroke-width="2.6" stroke-linecap="round"/>
+      <g data-part="eyes"><ellipse cx="100" cy="68" rx="6" ry="7" fill="#fffaf0"/><ellipse cx="122" cy="67" rx="5.6" ry="6.5" fill="#fffaf0"/><ellipse cx="102" cy="68" rx="3.4" ry="4.5" fill="#26374a"/><ellipse cx="124" cy="67" rx="3.2" ry="4.2" fill="#26374a"/><circle cx="102" cy="66" r="1.3" fill="#fff"/><circle cx="124" cy="65" r="1.1" fill="#fff"/></g>
+      <path d="M114 68Q123 76 116 78" fill="none" stroke="#b76e42" stroke-width="2.2" stroke-linecap="round"/>
+      <ellipse cx="91" cy="79" rx="7" ry="3.5" fill="#e77860" opacity=".27"/>
+      <path d="M103 85Q112 91 124 83Q120 97 111 95Q106 93 103 85Z" fill="#7f3d31"/>
+      <path d="M105 86Q114 89 121 85L119 89Q112 92 107 89Z" fill="#fff8e9"/>
+      <path d="M86 53Q85 56 84 60" stroke="#708297" stroke-width="1.5" fill="none" opacity=".5"/>
+    </g>
+    <path d="M80 176Q87 182 92 183M77 181Q85 188 89 188" stroke="#d29421" fill="none" stroke-width="1.2" opacity=".4"/>
+  </g>
+  <path data-part="armFront" d="M120 132 Q131 172 149 192" fill="none" stroke="url(#pullSkin)" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+  <path data-part="armHighlight" d="M124 144 Q137 174 149 190" fill="none" stroke="#ffd0a0" stroke-width="2.5" stroke-linecap="round" opacity=".38"/>
+  <path data-part="sleeveFront" d="M120 132 L127 151" fill="none" stroke="url(#pullShirt)" stroke-width="24" stroke-linecap="round"/>
+  <g data-part="handBack" transform="translate(147 189)"><ellipse rx="8" ry="6.5" fill="#c58455"/><path d="M-3-4Q3-13 5-8L4-2" stroke="#c58455" stroke-width="4" fill="none" stroke-linecap="round"/></g>
+  <g data-part="handFront" transform="translate(149 192)"><ellipse rx="9" ry="7.5" fill="url(#pullFace)"/><path d="M-4-4Q1-14 5-9L4-2" stroke="#e9a371" stroke-width="4.5" fill="none" stroke-linecap="round"/><path d="M3-4L8-3M3-1L9 0" stroke="#b77b52" stroke-width=".8" fill="none" opacity=".6"/></g>
+</svg>
+</div>
+      <div class="compact-login-card" id="pkpjPullCard">
         <div class="compact-app-icon pkpj-login-logo"><img src="pkpj-premium.png" alt="PKPJ"></div>
 
         <h2>Selamat Datang ke Portal Permohonan Peminjaman Inventori ICT</h2>
@@ -1870,7 +1981,7 @@ table{max-width:none}
         </p>
 
         <div class="form-group autocomplete-wrap compact-name-field">
-          <label>Nama Pemohon</label>
+          <label for="loginName">Nama Pemohon</label>
 
           <div class="name-search compact-search-box">
             
@@ -1899,6 +2010,11 @@ table{max-width:none}
         <div class="compact-help">
           <span>Portal Permohonan Peminjaman Inventori ICT</span>
         </div>
+      </div>
+
+        </div>
+        <div class="pkpj-actor-caption" aria-hidden="true">Jom, masuk<br>portal kita.</div>
+        <div class="pkpj-intro-foot">Inventori &#183; Permohonan &#183; Semakan status</div>
       </div>
     </section>
 
@@ -3820,6 +3936,231 @@ function toast(title,msg='',type=''){
   $('#toastWrap').appendChild(el);
   setTimeout(()=>el.remove(),6500);
 }
+</script>
+<script>
+/* V8.2 compatibility fix: the supplied portal bound handleImage but omitted it.
+   This handler restores file selection for the existing attachment upload path. */
+let pkpjAttachmentReadVersion=0;
+async function handleImage(event){
+  const input=event?.target||document.getElementById('loanModalImage');
+  const hint=document.getElementById('loanModalImageHint');
+  const submit=document.getElementById('submitApplicationBtn');
+  const version=++pkpjAttachmentReadVersion;
+  const file=input?.files?.[0];
+  state.imagePayload=null;
+  if(!file){
+    if(hint)hint.textContent='Pilihan. Gambar asal akan dihantar tanpa compression.';
+    if(submit)submit.disabled=false;
+    return;
+  }
+  if(submit)submit.disabled=true;
+  try{
+    if(file.size>15*1024*1024)throw new Error('Saiz maksimum lampiran ialah 15 MB.');
+    const extension=(file.name.split('.').pop()||'').toLowerCase();
+    const types={jpg:'image/jpeg',jpeg:'image/jpeg',png:'image/png',webp:'image/webp',gif:'image/gif',heic:'image/heic',heif:'image/heif',avif:'image/avif',pdf:'application/pdf'};
+    const mime=types[extension]||file.type;
+    if(!/^(image\/(jpeg|jpg|png|webp|gif|heic|heif|avif)|application\/pdf)$/i.test(mime)){
+      throw new Error('Gunakan gambar JPG, PNG, WEBP, GIF, HEIC, HEIF, AVIF atau fail PDF.');
+    }
+    if(hint)hint.textContent='Menyediakan '+file.name+'...';
+    let dataUrl=await fileToDataUrlOriginal(file);
+    if(version!==pkpjAttachmentReadVersion||input.files?.[0]!==file)return;
+    dataUrl=dataUrl.replace(/^data:[^;]*;base64,/, 'data:'+mime+';base64,');
+    state.imagePayload={name:file.name,dataUrl};
+    if(hint)hint.textContent=file.name+' ('+(file.size/1024/1024).toFixed(2)+' MB) - sedia dilampirkan.';
+  }catch(error){
+    if(version!==pkpjAttachmentReadVersion)return;
+    state.imagePayload=null;
+    if(input)input.value='';
+    if(hint)hint.textContent=error?.message||'Fail tidak dapat dibaca.';
+    toast('Lampiran belum sedia',error?.message||'Sila pilih fail semula.','err');
+  }finally{
+    if(version===pkpjAttachmentReadVersion&&submit)submit.disabled=false;
+  }
+}
+
+/* V8.2: presentation-only intro. Does not call or change the applicant API. */
+(function installPKPJPullIntro(){
+  'use strict';
+  function initPullIntro(){
+    const overlay=document.getElementById('loginOverlay');
+    const stage=document.getElementById('pkpjPullStage');
+    const rig=document.getElementById('pkpjPullRig');
+    const card=document.getElementById('pkpjPullCard');
+    const actor=document.getElementById('pkpjLoginActor');
+    const control=document.getElementById('pkpjIntroControl');
+    const input=document.getElementById('loginName');
+    const app=document.querySelector('body > .app');
+    if(!overlay||!stage||!rig||!card||!actor||!control||!input) return;
+    const parts={};
+    actor.querySelectorAll('[data-part]').forEach(el=>{parts[el.dataset.part]=el;});
+    const reduce=window.matchMedia('(prefers-reduced-motion: reduce)');
+    let playing=false, frame=0, safety=0, startTime=0, geometry=null;
+    let wasVisible=!overlay.classList.contains('hidden');
+    const DURATION=5600;
+    const clamp=x=>Math.max(0,Math.min(1,x));
+    const mix=(a,b,t)=>a+(b-a)*t;
+    const smooth=t=>{t=clamp(t);return t*t*(3-2*t);};
+    const point=(x,y)=>({x,y});
+    const blend=(a,b,t)=>point(mix(a.x,b.x,t),mix(a.y,b.y,t));
+    const xy=p=>p.x.toFixed(2)+' '+p.y.toFixed(2);
+    const visible=()=>!overlay.classList.contains('hidden');
+    function rotate(p,degrees,bob){
+      const r=degrees*Math.PI/180,dx=p.x-94,dy=p.y-208;
+      return point(94+dx*Math.cos(r)-dy*Math.sin(r),208+dx*Math.sin(r)+dy*Math.cos(r)+bob);
+    }
+    function limb(name,shoulder,elbow,hand){
+      parts[name].setAttribute('d','M'+xy(shoulder)+' Q'+xy(elbow)+' '+xy(hand));
+    }
+    function knee(hip,foot){
+      const dx=foot.x-hip.x,dy=foot.y-hip.y,d=Math.max(1,Math.hypot(dx,dy));
+      const a=d/2,h=Math.sqrt(Math.max(0,64.5*64.5-a*a));
+      return point(hip.x+dx*.5+dy/d*h,hip.y+dy*.5-dx/d*h);
+    }
+    function leg(side,hip,foot,shoeTilt){
+      const k=knee(hip,foot);
+      parts['leg'+side+'Path'].setAttribute('d','M'+xy(hip)+' L'+xy(k)+' L'+xy(foot));
+      parts['shoe'+side].setAttribute('transform','translate('+xy(foot)+') rotate('+shoeTilt.toFixed(2)+')');
+    }
+    function pose(t){
+      const walk=t<1.3, pulling=t>=1.65&&t<4.1;
+      const gait=walk?1:pulling?1:0;
+      const phase=t*(walk?9.5:11),stride=walk?22:pulling?27:0;
+      const grip=smooth((t-1.12)/.43)*(1-smooth((t-4.25)/.45));
+      const wave=smooth((t-4.42)/.3)*(1-smooth((t-5.25)/.35));
+      const tilt=mix(3,-12,grip)+(pulling?Math.sin(phase)*1.7:0);
+      const bob=gait?-Math.abs(Math.sin(phase))*2.6:0;
+      parts.upper.setAttribute('transform','translate(0 '+bob.toFixed(2)+') rotate('+tilt.toFixed(2)+' 94 208)');
+      parts.head.setAttribute('transform','rotate('+(wave?-7:-2)+' 107 96)');
+      const hipBack=point(85,208+bob),hipFront=point(101,209+bob);
+      const back=point(82-Math.sin(phase)*stride,332-Math.max(0,Math.cos(phase))*13*gait);
+      const front=point(105+Math.sin(phase)*stride,333-Math.max(0,-Math.cos(phase))*14*gait);
+      if(!gait){back.x=73;front.x=119;back.y=332;front.y=333;}
+      leg('Back',hipBack,back,-Math.max(0,Math.cos(phase))*10*gait);
+      leg('Front',hipFront,front,-Math.max(0,-Math.cos(phase))*10*gait);
+      parts.shadow.setAttribute('rx',String(57+gait*6));
+      const sb=rotate(point(84,129),tilt,bob),sf=rotate(point(120,132),tilt,bob);
+      const swing=Math.sin(phase)*gait;
+      let hb=point(84-22*swing,193),eb=point(77-12*swing,164);
+      let hf=point(133+27*swing,192),ef=point(139+17*swing,163);
+      hb=blend(hb,point(229,131),grip);eb=blend(eb,point(147,150),grip);
+      hf=blend(hf,point(233,151),grip);ef=blend(ef,point(164,173),grip);
+      const waveX=156+Math.sin(t*24)*9;
+      hf=blend(hf,point(waveX,70),wave);ef=blend(ef,point(157,126),wave);
+      limb('armBack',sb,eb,hb);limb('armFront',sf,ef,hf);
+      limb('armHighlight',blend(sf,ef,.35),ef,hf);
+      parts.sleeveBack.setAttribute('d','M'+xy(sb)+' L'+xy(blend(sb,eb,.37)));
+      parts.sleeveFront.setAttribute('d','M'+xy(sf)+' L'+xy(blend(sf,ef,.40)));
+      parts.handBack.setAttribute('transform','translate('+xy(hb)+') rotate('+(grip?-16:30)+')');
+      parts.handFront.setAttribute('transform','translate('+xy(hf)+') rotate('+(wave?Math.sin(t*24)*14:grip?-16:35)+')');
+      const blink=(Math.abs(t-2.35)<.055||Math.abs(t-5.15)<.055)?0.14:1;
+      parts.eyes.setAttribute('transform','translate(0 68) scale(1 '+blink+') translate(0 -68)');
+    }
+    function measure(){
+      // Measure the final layout, never a previously transformed frame.
+      card.style.transform='none';actor.style.transform='none';
+      const r=rig.getBoundingClientRect(),c=card.getBoundingClientRect(),f=input.getBoundingClientRect();
+      const small=window.innerWidth<=600;
+      const width=window.innerWidth<=360?112:small?130:window.innerWidth<=1120?179:194;
+      const height=width*1.5;
+      actor.style.width=width+'px';actor.style.height=height+'px';
+      actor.style.left=(c.left-r.left-231/240*width)+'px';
+      // The hands grip the outside edge beside the name input, not over its text.
+      const anchorY=f.top-r.top+f.height*.5;
+      actor.style.top=(anchorY-151/360*height)+'px';
+      actor.style.visibility='visible';
+      geometry={
+        travel:Math.min(176,Math.max(85,r.width*.27)),
+        hidden:Math.max(r.width+50,window.innerWidth-c.left+55),
+        startActor:small?-8:-24
+      };
+    }
+    function updateControl(){
+      control.disabled=reduce.matches;
+      control.textContent=reduce.matches?'Gerakan diminimumkan':playing?'Langkau intro \u2192':'\u21bb Ulang animasi';
+      control.setAttribute('aria-label',reduce.matches?'Animasi dimatikan mengikut tetapan peranti':playing?'Langkau animasi dan terus isi nama':'Mainkan semula animasi menarik borang login');
+    }
+    function finish(){
+      cancelAnimationFrame(frame);clearTimeout(safety);playing=false;
+      stage.classList.remove('is-animating');stage.dataset.introState='ready';
+      if(visible()) measure();
+      card.style.opacity='1';card.style.transform='none';
+      actor.style.opacity='1';actor.style.transform='none';
+      pose(5.6);updateControl();
+    }
+    function draw(t){
+      let cardX=0,actorX=0,angle=0;
+      if(t<1.3){
+        const p=smooth(t/1.3);
+        actorX=mix(geometry.startActor,geometry.travel,p);
+        cardX=mix(geometry.hidden,geometry.travel,smooth((t-.1)/1.2));
+      }else if(t<1.65){
+        cardX=actorX=geometry.travel;
+      }else if(t<4.1){
+        const p=smooth((t-1.65)/2.45);
+        // Three restrained pulls; both elements share exactly the same displacement.
+        const progress=p-Math.sin(p*6*Math.PI)*.017*Math.sin(p*Math.PI);
+        cardX=actorX=geometry.travel*(1-progress);
+      }else if(t<4.42){
+        const p=(t-4.1)/.32;
+        cardX=actorX=-3*Math.sin(p*Math.PI);
+      }
+      card.style.opacity='1';
+      card.style.transform='translate3d('+cardX.toFixed(2)+'px,0,0) rotate('+angle+'deg)';
+      actor.style.opacity=String(clamp(t/.16));
+      actor.style.transform='translate3d('+actorX.toFixed(2)+'px,0,0)';
+      pose(t);stage.dataset.introTime=t.toFixed(2);
+    }
+    function tick(now){
+      if(!playing)return;
+      if(!visible()||document.hidden){finish();return;}
+      if(!startTime)startTime=now;
+      const elapsed=now-startTime;
+      if(elapsed>=DURATION){finish();return;}
+      draw(elapsed/1000);frame=requestAnimationFrame(tick);
+    }
+    function play(){
+      finish();
+      if(!visible()||reduce.matches||document.hidden)return;
+      measure();playing=true;startTime=0;
+      stage.dataset.introState='playing';stage.classList.add('is-animating');
+      draw(0);updateControl();
+      frame=requestAnimationFrame(tick);
+      // Fail open: the real form must never remain offscreen after an interrupted intro.
+      safety=setTimeout(finish,DURATION+1800);
+    }
+    control.addEventListener('click',()=>{if(playing){finish();input.focus({preventScroll:true});}else play();});
+    card.addEventListener('focusin',()=>{if(playing)finish();});
+    card.addEventListener('pointerdown',()=>{if(playing)finish();},{passive:true});
+    document.addEventListener('keydown',e=>{if(playing&&(e.key==='Escape'||e.key==='Tab'))finish();});
+    document.addEventListener('visibilitychange',()=>{if(document.hidden&&playing)finish();});
+    let oldWidth=window.innerWidth;
+    window.addEventListener('resize',()=>{
+      if(window.innerWidth!==oldWidth){oldWidth=window.innerWidth;finish();}
+    },{passive:true});
+    const onReduce=()=>finish();
+    if(reduce.addEventListener)reduce.addEventListener('change',onReduce);
+    else if(reduce.addListener)reduce.addListener(onReduce);
+    new MutationObserver(()=>{
+      const isVisible=visible();
+      if(app)app.inert=isVisible;
+      if(isVisible&&!wasVisible)play();
+      else if(!isVisible&&wasVisible)finish();
+      wasVisible=isVisible;
+    }).observe(overlay,{attributes:true,attributeFilter:['class']});
+    // Staff API can update helper text. Re-anchor only after the motion has finished.
+    if('ResizeObserver' in window){
+      new ResizeObserver(()=>{if(!playing&&visible())measure();}).observe(card);
+    }
+    if(app)app.inert=visible();
+    if(visible())play();else finish();
+    // Useful for preview/test controls; contains no API or personal data.
+    window.PKPJLoginIntro=Object.freeze({play,skip:finish,isPlaying:()=>playing});
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initPullIntro,{once:true});
+  else initPullIntro();
+})();
+
 </script>
 </body>
 </html>
