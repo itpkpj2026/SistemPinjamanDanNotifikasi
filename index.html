@@ -928,7 +928,10 @@ html,body{max-width:100%;overflow-x:hidden}
 </style>
 
 <style id="pkpjAdminV104Style">
-/* V10.4.1 - Login Staf IT + logout + paparan tandatangan audit */
+/* V10.4.2 - Login Staf IT + logout + paparan tandatangan audit */
+/* Override legacy Portal Bersepadu rule that hid the Admin login overlay. */
+.admin-login-overlay{display:grid!important}
+.admin-login-overlay.hidden{display:none!important}
 #operatorSwitchBtn{display:none!important}
 .operator-logout-btn{display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;min-height:34px!important;padding:7px 10px!important;border-radius:10px!important;border:1px solid rgba(255,255,255,.28)!important;background:rgba(255,255,255,.12)!important;color:#fff!important;font-size:9px!important;font-weight:850!important;cursor:pointer!important;white-space:nowrap!important;transition:.15s ease!important}
 .operator-logout-btn:hover{background:rgba(255,255,255,.20)!important;transform:translateY(-1px)}
