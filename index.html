@@ -968,6 +968,52 @@ html,body{max-width:100%;overflow-x:hidden}
 }
 </style>
 
+
+<style id="pkpjAdminV1061FastLoginStyle">
+/* V10.6.2 - clean login state + card masuk dari atas ke tengah */
+.admin-login-info{
+  color:#58748e!important;background:rgba(239,246,253,.86)!important;
+  border:1px solid rgba(170,196,219,.65)!important;box-shadow:none!important;
+  text-align:center!important;border-radius:12px!important;padding:11px 12px!important;
+}
+.admin-operator-retry{
+  width:100%;min-height:42px;margin-top:9px;border:1px solid #c7dbea!important;
+  background:rgba(247,251,255,.9)!important;color:#245d86!important;font-weight:800!important;
+}
+#adminLoginOverlay:not(.hidden) .admin-login-card{
+  animation:pkpjAdminTopInV1061 .58s cubic-bezier(.18,.78,.22,1) both;
+  will-change:transform,opacity;
+}
+@keyframes pkpjAdminTopInV1061{
+  from{opacity:0;transform:translateY(-88px) scale(.985)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+@media(max-width:700px){
+  #adminLoginOverlay:not(.hidden) .admin-login-card{animation-duration:.42s}
+  @keyframes pkpjAdminTopInV1061{from{opacity:0;transform:translateY(-38px)}to{opacity:1;transform:translateY(0)}}
+}
+@media(prefers-reduced-motion:reduce){#adminLoginOverlay:not(.hidden) .admin-login-card{animation:none!important}}
+</style>
+
+
+<style id="pkpjLogoBlendV1062">
+/* V10.6.2 - logo PKPJ blend dengan kad/background login tanpa kotak putih */
+#adminLoginOverlay .admin-login-logo{
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  padding:0!important;
+}
+#adminLoginOverlay .admin-login-logo img{
+  background:transparent!important;
+  mix-blend-mode:multiply;
+  filter:contrast(1.04) saturate(1.04);
+}
+@media(max-width:600px){
+  #adminLoginOverlay .admin-login-logo{width:70px!important;height:70px!important}
+}
+</style>
+
 </head>
 <body>
 <div class="admin-login-overlay" id="adminLoginOverlay">
@@ -985,7 +1031,8 @@ html,body{max-width:100%;overflow-x:hidden}
     </div>
 
     <div class="operator-bootstrap hidden" id="operatorBootstrapBox">
-      <div class="admin-login-info">Senarai Staf IT belum tersedia. Pastikan Code.gs V10.4 telah deploy. Sistem akan menyediakan 4 akses awal secara automatik.</div>
+      <div class="admin-login-info" id="adminOperatorLoadNote">Senarai staf IT sedang dimuatkan. Jika nama masih belum keluar, tekan butang di bawah untuk semak semula.</div>
+      <button class="btn admin-operator-retry" type="button" id="adminOperatorRetryBtn">↻ Cuba Muat Semula</button>
     </div>
   </div>
 </div>
@@ -1596,6 +1643,7 @@ function bindActions(){
   $('#operatorSwitchBtn')?.addEventListener('click',showOperatorLogin);
   $('#operatorLogoutBtn')?.addEventListener('click',operatorLogout);
   $('#operatorLoginBtn')?.addEventListener('click',operatorLogin);
+  $('#adminOperatorRetryBtn')?.addEventListener('click',()=>loadOperatorOptions(true).catch(err=>console.warn(err)));
   $('#addItOperatorBtn')?.addEventListener('click',addItOperator);
   $('#saveCategorySettingsBtn')?.addEventListener('click',saveCategorySettings);
 }
@@ -3130,7 +3178,7 @@ function showOperatorLogin(){
 async function loadOperatorOptions(force=false){
   let operators=[];
   try{
-    const res=await jsonp('admin.operators',{_t:force?Date.now():''},{timeoutMs:12000,retries:0});
+    const res=await jsonp('admin.operators',{_t:force?Date.now():''},{timeoutMs:7500,retries:0});
     operators=Array.isArray(res?.items)?res.items:[];
     const byId=new Map((state.users||[]).map(x=>[String(x.user_id),x]));
     operators.forEach(x=>byId.set(String(x.user_id),{...(byId.get(String(x.user_id))||{}),...x}));
