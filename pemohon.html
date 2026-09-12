@@ -1911,15 +1911,15 @@ table{max-width:none}
 @media(max-width:450px){#loginOverlay .compact-login-shell{width:100%!important}.pkpj-pull-stage{--actor-space:70px}.pkpj-actor-caption{width:66px;font-size:8px}#loginOverlay .compact-login-panel{padding:17px 10px!important}#loginOverlay .compact-login-card{padding:24px 16px!important}#loginOverlay .compact-login-card h2{font-size:24px!important}}
 </style>
 
-<!-- PKPJ V10.2 3D: visible-character fix + pinned runtime. Portal API remains independent. -->
+<!-- PKPJ V10.3 3D: runtime fix. Uses the documented latest loader; no invalid SRI pin. -->
 <script id="pkpj3dRuntime" type="module"
-  src="https://three.ws/agent-3d/1.5.2/agent-3d.js"
-  integrity="sha384-qCG5gH4q2+k2Gsf98zs9RFXyN8iezoklCWt63pA2Xk2YF7Onae4rfUwu+oZSqRzN"
+  src="https://three.ws/agent-3d/latest/agent-3d.js"
   crossorigin="anonymous"
+  onload="document.documentElement.dataset.pkpj3dRuntime='loaded'"
   onerror="document.documentElement.dataset.pkpj3dRuntime='error'"></script>
 <style id="pkpj3dV10Style">
 /* =========================================================
-   PKPJ V10.2 3D LOGIN
+   PKPJ V10.3 3D LOGIN
    - Motion layer only; does not fetch staff/loan data.
    - Form is usable even if 3D fails to load.
    ========================================================= */
@@ -2031,13 +2031,12 @@ table{max-width:none}
       </div>
       <div class="pkpj-pull-stage" id="pkpjPullStage">
         <div class="pkpj-pull-rig" id="pkpjPullRig">
-          <div class="pkpj-login-actor pkpj-login-actor-3d" id="pkpjLoginActor" data-character-version="10.2" aria-hidden="true">
+          <div class="pkpj-login-actor pkpj-login-actor-3d" id="pkpjLoginActor" data-character-version="10.3" aria-hidden="true">
             <div class="pkpj3d-halo" aria-hidden="true"></div>
             <agent-3d
               id="pkpj3DAvatar"
+              responsive
               eager
-              kiosk
-              clip="idle"
               src="https://three.ws/avatars/michelle.glb"
               controls="none"
               aria-label="Pembantu ICT 3D">
@@ -4104,6 +4103,13 @@ document.addEventListener('DOMContentLoaded',bindStaffToolsV9,{once:true});
 
   control.addEventListener('click',()=>{
     userTouched=false;
+    const runtimeState=document.documentElement.dataset.pkpj3dRuntime||'';
+    if(!ready && runtimeState==='error'){
+      const u=new URL(location.href);
+      u.searchParams.set('v3d',Date.now().toString());
+      location.replace(u.toString());
+      return;
+    }
     if(running){finish(true);input.focus({preventScroll:true});}
     else start();
   });
@@ -4111,6 +4117,15 @@ document.addEventListener('DOMContentLoaded',bindStaffToolsV9,{once:true});
   input.addEventListener('pointerdown',markUser,{passive:true});
   card.addEventListener('pointerdown',()=>{if(running)finish(true)},{passive:true});
   document.addEventListener('keydown',e=>{if(running&&(e.key==='Escape'||e.key==='Tab'))finish(true)});
+
+  // V10.3: tunggu runtime mendaftarkan <agent-3d>.
+  if(window.customElements&&typeof customElements.whenDefined==='function'){
+    customElements.whenDefined('agent-3d').then(()=>{
+      document.documentElement.dataset.pkpj3dRuntime='registered';
+      actor.style.visibility='visible';
+      actor.style.opacity='1';
+    }).catch(()=>{});
+  }
 
   avatar.addEventListener('agent:ready',()=>{
     ready=true;
@@ -4131,7 +4146,7 @@ document.addEventListener('DOMContentLoaded',bindStaffToolsV9,{once:true});
   });
 
   // Jangan sesekali block login jika runtime/model 3D lambat atau gagal.
-  later(2600,()=>{
+  later(4500,()=>{
     if(!ready&&!running){
       finalVisual();
       control.textContent='↻ Cuba animasi 3D';
@@ -4139,11 +4154,11 @@ document.addEventListener('DOMContentLoaded',bindStaffToolsV9,{once:true});
         fallback.style.display='grid';
         const s=fallback.querySelector('span');
         const runtimeFailed=document.documentElement.dataset.pkpj3dRuntime==='error';
-        if(s)s.textContent=runtimeFailed?'Runtime 3D gagal dimuatkan':'Memuatkan pembantu 3D…';
+        if(s)s.textContent=runtimeFailed?'Runtime 3D gagal dimuatkan — semak sambungan three.ws':'Memuatkan pembantu 3D…';
       }
     }
   });
-  later(7000,()=>{
+  later(10000,()=>{
     if(!ready&&fallback){
       const s=fallback.querySelector('span');
       if(s)s.textContent='3D belum tersedia — klik Cuba animasi 3D';
