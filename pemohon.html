@@ -1923,9 +1923,8 @@ table{max-width:none}
   padding:24px!important;overflow:auto!important;color:#163b69;
   font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   background:
-    radial-gradient(circle at 2% 2%,rgba(255,255,255,.98) 0 11%,transparent 28%),
-    radial-gradient(circle at 93% 16%,rgba(255,255,255,.55),transparent 26%),
-    linear-gradient(135deg,#edf5ff 0%,#e7f1ff 46%,#dce9f9 100%)!important;
+    linear-gradient(90deg,rgba(236,245,255,.86) 0%,rgba(232,242,253,.72) 44%,rgba(224,238,251,.62) 100%),
+    url('pkpj-login-background.jpg') center center / cover no-repeat!important;
 }
 #loginOverlay.neo-login-overlay.hidden{display:none!important}
 #loginOverlay .neo-scene{position:relative;width:min(1540px,100%);min-height:min(860px,calc(100dvh - 48px));display:flex;align-items:center;justify-content:center;isolation:isolate;overflow:hidden;border-radius:38px}
@@ -1938,9 +1937,9 @@ table{max-width:none}
 #loginOverlay .neo-left-copy strong{display:block;font-size:27px;line-height:1.45;letter-spacing:.13em;font-weight:400;text-transform:uppercase}
 #loginOverlay .neo-left-copy i{display:block;width:48px;height:4px;border-radius:999px;margin:18px 0 28px;background:linear-gradient(90deg,#1cb7ce,#2ba1e5)}
 #loginOverlay .neo-left-copy small{display:block;color:#8ba3c2;font-size:11px;font-weight:800;letter-spacing:.28em;word-spacing:.45em}
-#loginOverlay .neo-building-art{position:absolute;right:-3%;bottom:5%;width:min(37vw,560px);height:auto;opacity:.19;z-index:-1;pointer-events:none;filter:drop-shadow(0 18px 36px rgba(77,118,166,.10))}
+#loginOverlay .neo-building-art{display:none!important}
 #loginOverlay .neo-login-wrap{position:relative;width:min(555px,calc(100% - 36px));z-index:6;margin:auto}
-#loginOverlay .neo-login-card{width:100%;padding:38px 44px 31px;border-radius:34px;text-align:center;color:#1f416f;background:rgba(235,243,253,.78);border:1px solid rgba(255,255,255,.92);backdrop-filter:blur(12px);box-shadow:24px 24px 58px rgba(143,166,196,.33),-18px -18px 44px rgba(255,255,255,.92),inset 1px 1px 0 rgba(255,255,255,.95)}
+#loginOverlay .neo-login-card{width:100%;padding:38px 44px 31px;border-radius:34px;text-align:center;color:#1f416f;background:rgba(238,246,255,.86);border:1px solid rgba(255,255,255,.92);backdrop-filter:blur(12px);box-shadow:24px 24px 58px rgba(143,166,196,.33),-18px -18px 44px rgba(255,255,255,.92),inset 1px 1px 0 rgba(255,255,255,.95)}
 #loginOverlay .neo-logo-bubble{width:86px;height:86px;margin:0 auto 23px;border-radius:26px;display:grid;place-items:center;background:linear-gradient(145deg,#f5f9ff,#dce7f5);box-shadow:10px 10px 24px rgba(147,167,194,.38),-10px -10px 24px #fff;border:1px solid rgba(255,255,255,.92)}
 #loginOverlay .neo-logo-bubble img{display:block;width:70px;height:70px;object-fit:contain}
 #loginOverlay .neo-login-card h1{margin:0;color:#0b2e67;font-size:34px;line-height:1.04;letter-spacing:-.045em;font-weight:900}
@@ -2001,6 +2000,7 @@ table{max-width:none}
  #loginOverlay .neo-page-foot span{display:block}
 }
 @media(max-width:365px){#loginOverlay .neo-scene{padding-left:8px;padding-right:8px}#loginOverlay .neo-login-card{padding:28px 15px 23px}#loginOverlay .neo-login-card h1{font-size:25px}}
+@media(max-width:600px){#loginOverlay.neo-login-overlay{background-position:center top!important;background-attachment:scroll!important}}
 </style>
 
 
