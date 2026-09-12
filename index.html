@@ -928,8 +928,12 @@ html,body{max-width:100%;overflow-x:hidden}
 </style>
 
 <style id="pkpjAdminV104Style">
-/* V10.4 - Login Staf IT + paparan tandatangan audit */
-#operatorSwitchBtn{display:grid!important;place-items:center!important}
+/* V10.4.1 - Login Staf IT + logout + paparan tandatangan audit */
+#operatorSwitchBtn{display:none!important}
+.operator-logout-btn{display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;min-height:34px!important;padding:7px 10px!important;border-radius:10px!important;border:1px solid rgba(255,255,255,.28)!important;background:rgba(255,255,255,.12)!important;color:#fff!important;font-size:9px!important;font-weight:850!important;cursor:pointer!important;white-space:nowrap!important;transition:.15s ease!important}
+.operator-logout-btn:hover{background:rgba(255,255,255,.20)!important;transform:translateY(-1px)}
+.operator-logout-btn:active{transform:translateY(0)}
+@media(max-width:760px){.operator-logout-btn .logout-label{display:none}.operator-logout-btn{width:34px!important;padding:0!important}}
 .admin-login-overlay{background:radial-gradient(circle at 18% 12%,#f8fbff 0 11%,transparent 31%),linear-gradient(135deg,#edf5ff,#e1ecf9)!important}
 .admin-login-card{width:min(470px,calc(100vw - 28px))!important;padding:34px 34px 30px!important;border-radius:28px!important;background:#edf4fc!important;border:1px solid rgba(255,255,255,.94)!important;box-shadow:18px 18px 46px rgba(127,151,183,.32),-16px -16px 42px rgba(255,255,255,.94)!important}
 .admin-login-logo{width:78px!important;height:78px!important;margin:0 auto 18px!important;border-radius:23px!important;background:linear-gradient(145deg,#f9fbff,#dde8f5)!important;box-shadow:8px 8px 18px rgba(139,160,188,.32),-8px -8px 18px #fff!important}
@@ -974,7 +978,8 @@ html,body{max-width:100%;overflow-x:hidden}
 </nav><div class="sidebar-bottom">
       <div class="operator-mini" id="operatorMini">
         <div><strong id="operatorName">Belum log masuk</strong><span id="operatorRole">Staf IT</span></div>
-        <button type="button" id="operatorSwitchBtn" title="Tukar pengguna">⇄</button>
+        <button type="button" id="operatorSwitchBtn" title="Tukar pengguna" aria-hidden="true" tabindex="-1">⇄</button>
+        <button type="button" id="operatorLogoutBtn" class="operator-logout-btn" title="Log keluar daripada Portal Admin" aria-label="Log keluar"><span aria-hidden="true">↪</span><span class="logout-label">Log Keluar</span></button>
       </div><div class="connection-mini hidden-technical"><span class="dot" id="sideDot"></span><strong id="sideStatus"></strong><div id="sideHint"></div></div></div></aside>
 <main class="main"><header class="topbar" id="topbar"><div style="display:flex;align-items:center;gap:12px"><button class="btn mobile-menu" id="mobileMenu">☰</button><div class="page-title"><h1 id="pageHeading">Paparan Utama</h1><p id="pageSubtitle">Ringkasan keseluruhan inventori dan pinjaman sistem.</p></div></div><div class="top-actions"><button class="btn desktop-only" id="refreshBtn">↻ Muat Semula</button><button class="btn btn-primary" id="quickAddBtn">＋ Tambah Rekod</button></div></header>
 <section class="view active" id="view-dashboard"><div class="hero" id="dashboardHero"><div class="hero-media"><video id="heroVideo" class="hero-video" muted loop playsinline autoplay preload="none" poster="hero-ict-poster.jpg" data-src="hero-ict.mp4" aria-hidden="true"></video></div><div class="hero-shade" aria-hidden="true"></div><div class="hero-copy"><h2>Urus ICT dengan lebih efisien, lebih teratur, operasi lebih lancar.</h2><p>Pantau inventori, permohonan dan pinjaman dalam satu sistem yang kemas dan mudah digunakan.</p><button class="btn btn-primary" data-go="assets">Lihat Ringkasan Penuh →</button></div><div class="hero-video-fallback">Video latar dijeda</div></div>
@@ -1569,6 +1574,7 @@ function bindActions(){
   $('#movementPrintBtn').onclick=()=>window.print();
   $('#movementPdfBtn').onclick=openMovementPdf;
   $('#operatorSwitchBtn')?.addEventListener('click',showOperatorLogin);
+  $('#operatorLogoutBtn')?.addEventListener('click',operatorLogout);
   $('#operatorLoginBtn')?.addEventListener('click',operatorLogin);
   $('#addItOperatorBtn')?.addEventListener('click',addItOperator);
   $('#saveCategorySettingsBtn')?.addEventListener('click',saveCategorySettings);
@@ -3087,10 +3093,18 @@ async function initOperatorSession(){
   applyOperatorSession(null);
 }
 
-function showOperatorLogin(){
+function operatorLogout(){
+  const currentName=String(state.operator?.name||'').trim();
   saveStoredOperator(null);
   applyOperatorSession(null);
-  loadOperatorOptions(true).catch(err=>console.warn(err));
+  const sel=$('#adminOperatorSelect');
+  if(sel) sel.value='';
+  loadOperatorOptions(true).catch(err=>console.warn('Senarai Staf IT belum dapat dimuat semula selepas logout.',err));
+  toast('Log keluar berjaya',currentName?currentName+' telah log keluar daripada Portal Admin.':'Sesi Portal Admin telah ditamatkan.','ok');
+}
+
+function showOperatorLogin(){
+  operatorLogout();
 }
 
 async function loadOperatorOptions(force=false){
