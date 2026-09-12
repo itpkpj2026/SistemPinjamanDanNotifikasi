@@ -2003,6 +2003,16 @@ table{max-width:none}
 @media(max-width:365px){#loginOverlay .neo-scene{padding-left:8px;padding-right:8px}#loginOverlay .neo-login-card{padding:28px 15px 23px}#loginOverlay .neo-login-card h1{font-size:25px}}
 </style>
 
+
+<style id="pkpjSignatureV112Style">
+/* V11.2 - Tandatangan peminjam */
+.applicant-action-row{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.signed-pill{display:inline-flex;align-items:center;gap:4px;padding:5px 8px;border-radius:999px;background:#eaf8f2;color:#167d5b;font-size:9px;font-weight:850}
+.signature-modal{position:fixed;inset:0;z-index:40000;display:grid;place-items:center;padding:18px}.signature-modal.hidden{display:none!important}.signature-modal-backdrop{position:absolute;inset:0;background:rgba(18,43,70,.46);backdrop-filter:blur(6px)}
+.signature-card{position:relative;z-index:2;width:min(720px,100%);border-radius:24px;background:#f4f8fd;border:1px solid rgba(255,255,255,.9);box-shadow:0 28px 80px rgba(18,48,82,.25);overflow:hidden}.signature-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:20px 22px 15px;border-bottom:1px solid #dce7f1}.signature-head h2{margin:0;font-size:21px;color:#173b64}.signature-head p{margin:5px 0 0;font-size:10px;color:#71879c;line-height:1.45}.signature-close{border:0;background:transparent;font-size:25px;color:#66809a}
+.signature-body{padding:18px 22px}.signature-instruction{font-size:10px;color:#607991;margin-bottom:10px}.signature-pad-shell{background:#fff;border:1px solid #cddce8;border-radius:17px;padding:9px;box-shadow:inset 3px 3px 8px rgba(155,177,199,.14)}#borrowerSignatureCanvas{display:block;width:100%;height:230px;border-radius:11px;background:#fff;touch-action:none;cursor:crosshair}.signature-line{height:1px;background:#9cb0c1;margin:-42px 34px 34px;pointer-events:none}.signature-caption{text-align:center;font-size:9px;color:#91a2b1;margin-top:7px}.signature-foot{display:flex;justify-content:flex-end;gap:8px;padding:14px 22px 20px}.signature-foot .btn{min-width:105px}
+@media(max-width:600px){.signature-modal{padding:8px}.signature-card{border-radius:19px}.signature-head{padding:17px 16px 13px}.signature-body{padding:14px 15px}.signature-foot{padding:12px 15px 16px;display:grid;grid-template-columns:1fr 1fr}.signature-foot #saveSignatureBtn{grid-column:1/-1}.signature-foot .btn{width:100%}#borrowerSignatureCanvas{height:210px}}
+</style>
+
 </head>
 <body>
 <div class="login-overlay neo-login-overlay" id="loginOverlay">
@@ -2153,7 +2163,7 @@ table{max-width:none}
     <div class="card step"><div class="step-no">1</div><h3>Pilih Peralatan</h3><p>Pilih aset yang berstatus tersedia mengikut keperluan.</p></div>
     <div class="card step"><div class="step-no">2</div><h3>Hantar Permohonan</h3><p>Isi due date, tujuan dan dokumen sokongan jika perlu.</p></div>
     <div class="card step"><div class="step-no">3</div><h3>Tunggu Kelulusan ICT</h3><p>Status akan berubah selepas pihak ICT memproses permohonan.</p></div>
-    <div class="card step"><div class="step-no">4</div><h3>Ambil & Pulangkan</h3><p>Ambil peralatan selepas checkout dan pulangkan sebelum due date.</p></div>
+    <div class="card step"><div class="step-no">4</div><h3>Tandatangan, Ambil & Pulangkan</h3><p>Selepas diluluskan, rekod tandatangan anda sebelum/ketika mengambil peralatan dan pulangkan sebelum due date.</p></div>
   </div>
 </section>
 </main>
@@ -2265,6 +2275,29 @@ table{max-width:none}
 </div>
 
 
+<div class="signature-modal hidden" id="signatureModal" aria-hidden="true">
+  <div class="signature-modal-backdrop" data-close-signature></div>
+  <div class="signature-card" role="dialog" aria-modal="true" aria-labelledby="signatureTitle">
+    <div class="signature-head">
+      <div><h2 id="signatureTitle">Tandatangan Peminjam</h2><p id="signatureLoanText">Sahkan penerimaan / rekod pinjaman dengan tandatangan anda.</p></div>
+      <button type="button" class="signature-close" id="signatureCloseBtn" aria-label="Tutup">×</button>
+    </div>
+    <div class="signature-body">
+      <div class="signature-instruction">Gunakan jari pada telefon atau tetikus pada komputer. Tandatangan ini akan dimasukkan ke ruangan <b>Tandatangan Peminjam</b> dalam Daftar Pergerakan Harta Modal & Inventori.</div>
+      <div class="signature-pad-shell">
+        <canvas id="borrowerSignatureCanvas"></canvas>
+        <div class="signature-line"></div>
+      </div>
+      <div class="signature-caption">Tandatangan pemohon</div>
+    </div>
+    <div class="signature-foot">
+      <button class="btn" type="button" id="clearSignatureBtn">Padam</button>
+      <button class="btn" type="button" id="cancelSignatureBtn">Batal</button>
+      <button class="btn btn-primary" type="button" id="saveSignatureBtn">Simpan Tandatangan ✓</button>
+    </div>
+  </div>
+</div>
+
 <div class="pretty-loader hidden" id="prettyLoader" aria-live="polite">
   <div class="pretty-loader-card">
     <div class="loader-orbit">
@@ -2316,7 +2349,7 @@ function readAdminStaffSnapshot(){
  return readStaffCache();
 }
 
-const state={profile:null,kpi:{},assets:[],loans:[],staffList:[],selectedUserId:'',connected:false,currentView:'home',imagePayload:null,lastSync:0,syncTimer:null,refreshPromise:null,loanCategory:'',loanCategoryLabel:'',qrAssetId:new URLSearchParams(location.search).get('asset')||'',manualNameMode:false,publicSettings:{},staffLoadingPromise:null,staffRetryTimer:null};
+const state={profile:null,kpi:{},assets:[],loans:[],staffList:[],selectedUserId:'',connected:false,currentView:'home',imagePayload:null,lastSync:0,syncTimer:null,refreshPromise:null,loanCategory:'',loanCategoryLabel:'',qrAssetId:new URLSearchParams(location.search).get('asset')||'',manualNameMode:false,publicSettings:{},staffLoadingPromise:null,staffRetryTimer:null,signatureLoanId:''};
 const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>[...r.querySelectorAll(s)];
 
@@ -2464,6 +2497,11 @@ function bindUI(){
   $('#loginName').addEventListener('input',handleNameSearch);
   $('#loginName').addEventListener('focus',handleNameSearch);
   $('#manualNameBtn')?.addEventListener('click',enableManualNameMode);
+  $('#signatureCloseBtn')?.addEventListener('click',closeSignatureModal);
+  $('#cancelSignatureBtn')?.addEventListener('click',closeSignatureModal);
+  $('[data-close-signature]')?.addEventListener('click',closeSignatureModal);
+  $('#clearSignatureBtn')?.addEventListener('click',clearSignaturePad);
+  $('#saveSignatureBtn')?.addEventListener('click',saveBorrowerSignature);
 
   $('#loanModalClose').onclick=closeLoanRequestModal;
   $('#loanModalCancel').onclick=closeLoanRequestModal;
@@ -3177,16 +3215,27 @@ function renderMyLoans(){
       <td>${esc(x.purpose||'—')}</td>
       <td>${fmtDate(x.due_date)}</td>
       <td>${statusPill(x.status)}${loanProgress(x.status)}</td>
-      <td>${cancelButton(x)}</td>
+      <td>${applicantLoanActions(x)}</td>
     </tr>
   `).join(''):'<tr><td colspan="7" class="empty">Tiada rekod.</td></tr>';
 }
 
-function cancelButton(x){
-  if(['PERMOHONAN_BARU','MENUNGGU_KELULUSAN','DILULUSKAN'].includes(String(x.status))){
-    return `<button class="btn btn-sm btn-danger" onclick="cancelApplication('${attr(x.loan_id)}')">Batal</button>`;
+function applicantLoanActions(x){
+  const status=String(x.status||'');
+  const buttons=[];
+  if(['PERMOHONAN_BARU','MENUNGGU_KELULUSAN','DILULUSKAN'].includes(status)){
+    buttons.push(`<button class="btn btn-sm btn-danger" onclick="cancelApplication('${attr(x.loan_id)}')">Batal</button>`);
   }
-  return '<span class="tiny muted">—</span>';
+  const canSign=['DILULUSKAN','DIPINJAM','HAMPIR_DUE','LEWAT','DIPULANGKAN'].includes(status);
+  if(canSign){
+    if(x.borrower_signature_saved||x.borrower_signed_at){
+      buttons.push(`<span class="signed-pill">✓ Ditandatangani</span>`);
+      if(status!=='DIPULANGKAN')buttons.push(`<button class="btn btn-sm" onclick="openSignatureModal('${attr(x.loan_id)}')">Tandatangan semula</button>`);
+    }else{
+      buttons.push(`<button class="btn btn-sm btn-primary" onclick="openSignatureModal('${attr(x.loan_id)}')">✍ Tandatangan</button>`);
+    }
+  }
+  return buttons.length?`<div class="applicant-action-row">${buttons.join('')}</div>`:'<span class="tiny muted">—</span>';
 }
 
 async function cancelApplication(id){
@@ -3735,7 +3784,7 @@ async function postApi(action,data,options={}){
   );
 
   // Fail besar: kekal POST sebab JSONP/URL tak sesuai untuk base64.
-  if(action==='applicant.file.attach'){
+  if(['applicant.file.attach','applicant.signature.save'].includes(action)){
     const result=await applicantPostFallback(
       action,
       data,
@@ -3744,7 +3793,7 @@ async function postApi(action,data,options={}){
     );
 
     if(result) return result;
-    throw new Error('Dokumen belum dapat disahkan. Rekod pinjaman tidak terjejas.');
+    throw new Error(action==='applicant.signature.save'?'Tandatangan belum dapat disahkan. Cuba semula selepas semak status pinjaman.':'Dokumen belum dapat disahkan. Rekod pinjaman tidak terjejas.');
   }
 
   // LALUAN UTAMA:
@@ -3786,6 +3835,79 @@ async function postApi(action,data,options={}){
   );
 }
 
+
+
+let signatureDrawingV112=false,signatureInkV112=false,signatureCtxV112=null;
+
+function setupSignaturePad(){
+  const canvas=$('#borrowerSignatureCanvas');
+  if(!canvas)return;
+  const rect=canvas.getBoundingClientRect();
+  const ratio=Math.max(1,Math.min(2,window.devicePixelRatio||1));
+  canvas.width=Math.max(320,Math.round(rect.width*ratio));
+  canvas.height=Math.max(180,Math.round(rect.height*ratio));
+  const ctx=canvas.getContext('2d');
+  ctx.setTransform(ratio,0,0,ratio,0,0);
+  ctx.lineWidth=2.25;ctx.lineCap='round';ctx.lineJoin='round';ctx.strokeStyle='#17395f';
+  signatureCtxV112=ctx;signatureInkV112=false;
+}
+function signaturePoint(e){
+  const c=$('#borrowerSignatureCanvas'),r=c.getBoundingClientRect();
+  return {x:e.clientX-r.left,y:e.clientY-r.top};
+}
+function startSignatureStroke(e){
+  if(!signatureCtxV112)return;
+  e.preventDefault();signatureDrawingV112=true;signatureInkV112=true;
+  const p=signaturePoint(e);signatureCtxV112.beginPath();signatureCtxV112.moveTo(p.x,p.y);
+  try{$('#borrowerSignatureCanvas').setPointerCapture(e.pointerId)}catch(err){}
+}
+function moveSignatureStroke(e){
+  if(!signatureDrawingV112||!signatureCtxV112)return;
+  e.preventDefault();const p=signaturePoint(e);signatureCtxV112.lineTo(p.x,p.y);signatureCtxV112.stroke();
+}
+function stopSignatureStroke(e){signatureDrawingV112=false;try{$('#borrowerSignatureCanvas')?.releasePointerCapture(e.pointerId)}catch(err){}}
+function clearSignaturePad(){
+  const c=$('#borrowerSignatureCanvas');if(!c||!signatureCtxV112)return;
+  signatureCtxV112.clearRect(0,0,c.width,c.height);signatureInkV112=false;
+}
+function openSignatureModal(loanId){
+  const loan=(state.loans||[]).find(x=>String(x.loan_id)===String(loanId));
+  if(!loan)return toast('Rekod tidak ditemui','Muat semula Permohonan Saya dan cuba lagi.','err');
+  state.signatureLoanId=String(loanId);
+  $('#signatureLoanText').textContent=`Permohonan ${loanId} • ${itemNames(loan)}`;
+  const modal=$('#signatureModal');modal.classList.remove('hidden');modal.setAttribute('aria-hidden','false');
+  requestAnimationFrame(()=>requestAnimationFrame(()=>setupSignaturePad()));
+}
+function closeSignatureModal(){
+  const modal=$('#signatureModal');if(!modal)return;
+  modal.classList.add('hidden');modal.setAttribute('aria-hidden','true');state.signatureLoanId='';signatureDrawingV112=false;
+}
+async function saveBorrowerSignature(){
+  const loanId=state.signatureLoanId,canvas=$('#borrowerSignatureCanvas');
+  if(!loanId||!canvas)return;
+  if(!signatureInkV112)return toast('Tandatangan diperlukan','Sila tandatangan dalam ruangan yang disediakan.','err');
+  const btn=$('#saveSignatureBtn'),old=btn.textContent;btn.disabled=true;btn.textContent='Menyimpan...';
+  try{
+    const who=identity();
+    const result=await postApi('applicant.signature.save',{
+      loan_id:loanId,identity_user_id:who.user_id,identity_name:who.name,
+      signature_data_url:canvas.toDataURL('image/png'),signature_name:`tandatangan_${loanId}.png`
+    },{maxWait:90000});
+    const loan=(state.loans||[]).find(x=>String(x.loan_id)===String(loanId));
+    if(loan){loan.borrower_signature_saved=true;loan.borrower_signed_at=result?.borrower_signed_at||new Date().toISOString();}
+    renderMyLoans();closeSignatureModal();toast('Tandatangan disimpan','Tandatangan akan dipaparkan dalam Daftar Pergerakan Harta Modal & Inventori.','ok');
+    setTimeout(()=>refreshPortal(true),700);
+  }catch(err){toast('Tandatangan belum disimpan',friendlyPortalError(err),'err');}
+  finally{btn.disabled=false;btn.textContent=old;}
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  const c=$('#borrowerSignatureCanvas');if(!c)return;
+  c.addEventListener('pointerdown',startSignatureStroke);
+  c.addEventListener('pointermove',moveSignatureStroke);
+  c.addEventListener('pointerup',stopSignatureStroke);
+  c.addEventListener('pointercancel',stopSignatureStroke);
+},{once:true});
 
 function setConnected(ok){
   state.connected=!!ok;
