@@ -923,7 +923,7 @@ html,body{max-width:100%;overflow-x:hidden}
 /* V9.2 approval feedback */
 .approval-health-v92{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:13px 16px;border:1px solid #d8e7f2;background:#fff;border-radius:15px 15px 0 0}
 .approval-health-v92 strong{display:block;font-size:13px;color:#163b59}.approval-health-v92 span{display:block;font-size:11px;color:#667f92;margin-top:3px}.approval-health-v92>div:last-child{display:flex;gap:7px}
-.loan-message-v92{padding:11px 16px;margin-bottom:13px;background:#edf6ff;color:#205675;border:1px solid #c8dfed;border-top:0;border-radius:0 0 12px 12px;font-size:11px;line-height:1.6;overflow-wrap:anywhere;min-height:42px}.loan-message-v92[data-kind="error"]{background:#fff2f4;color:#923047;border-color:#efc8d1}.loan-message-v92[data-kind="warning"]{background:#fff7e6;color:#805710;border-color:#efddb8}.loan-message-v92[data-kind="ok"]{background:#effaf5;color:#166344;border-color:#c5e7d6}
+.loan-message-v92{padding:11px 16px;margin-bottom:13px;background:#edf6ff;color:#205675;border:1px solid #c8dfed;border-top:0;border-radius:0 0 12px 12px;font-size:11px;line-height:1.6;overflow-wrap:anywhere;min-height:42px}.loan-message-v92:empty{display:none!important}.loan-message-v92[data-kind="error"]{background:#fff2f4;color:#923047;border-color:#efc8d1}.loan-message-v92[data-kind="warning"]{background:#f4f8fc;color:#55718a;border-color:#d9e5ef}.loan-message-v92[data-kind="ok"]{background:#effaf5;color:#166344;border-color:#c5e7d6}
 .loan-task-v92{display:flex;gap:6px;align-items:center;font-size:11px;color:#436b82}.loan-busy-v92{min-width:160px}.loan-spin-v92{width:12px;height:12px;border:2px solid #c3d9e8;border-top-color:#1479bb;border-radius:50%;animation:approvalSpinV92 .8s linear infinite}@keyframes approvalSpinV92{to{transform:rotate(360deg)}}@media(prefers-reduced-motion:reduce){.loan-spin-v92{animation:none}}
 </style>
 
@@ -1014,6 +1014,7 @@ html,body{max-width:100%;overflow-x:hidden}
 }
 </style>
 
+<!-- PKPJ Admin V10.6.3 PERFORMANCE: cache-first, serialized startup, silent background retry -->
 </head>
 <body>
 <div class="admin-login-overlay" id="adminLoginOverlay">
@@ -1122,7 +1123,7 @@ html,body{max-width:100%;overflow-x:hidden}
     </table>
   </div>
 </div></section>
-<section class="view" id="view-loans"><div class="mini-hero green"><div class="copy"><h2>Kelulusan Pinjaman</h2><p>Urus permohonan, kelulusan terus kepada status dipinjam dan pemulangan peralatan ICT.</p></div><div class="art"><svg viewBox="0 0 420 140"><g transform="translate(54,12)"><path d="M48 15v105M35 42h26M28 62h40M21 83h54" stroke="#fff" stroke-width="5" opacity=".75"/><circle cx="20" cy="34" r="12" fill="none" stroke="#fff" stroke-width="5" opacity=".7"/><rect x="112" y="36" width="105" height="66" rx="7" fill="#18253b"/><rect x="121" y="44" width="87" height="49" rx="3" fill="#6fbaff"/><path d="M95 103h138l17 13H78z" fill="#e3e8ef"/><rect x="255" y="54" width="80" height="54" rx="8" fill="#f5f6f8"/><circle cx="295" cy="81" r="21" fill="#123e73"/><circle cx="295" cy="81" r="12" fill="#26b1ff"/></g></svg></div></div><div class="info-banner"><span>🔄</span><div><b>Inventori & Pinjaman disambungkan.</b> Aset yang dipohon berstatus RESERVED. Apabila pegawai menekan Lulus, aset terus bertukar kepada DIPINJAM dan kembali TERSEDIA selepas dipulangkan.</div></div><div class="audit-link-v9"><span>Perlu cetakan untuk audit? Semua status dan sejarah digabungkan dalam Laporan.</span><button class="btn btn-sm" data-go="reports">Buka Laporan Audit</button></div><div class="approval-health-v92"><div><strong>Kelulusan pinjaman</strong><span id="loanListCountV92">Status dikemas kini selepas server mengesahkan simpanan.</span></div><div><button class="btn btn-sm" type="button" id="refreshLoanListV92">Segarkan senarai</button><button class="btn btn-sm" type="button" id="checkApprovalApiV92">Semak API V9.2</button></div></div><div id="loanActionStatusV92" class="loan-message-v92" role="status" aria-live="polite">Tekan Lulus sekali sahaja. Pengesahan dipaparkan di sini.</div><div class="card panel"><div class="toolbar"><div class="search">⌕ <input id="loanSearch" placeholder="Cari ID pinjaman, peminjam, tujuan..."/></div><select class="field" id="loanStatusFilter" style="width:auto"><option value="">Semua status</option><option>MENUNGGU_KELULUSAN</option><option>DILULUSKAN</option><option>DIPINJAM</option><option>HAMPIR_DUE</option><option>LEWAT</option><option>DIPULANGKAN</option></select><button class="btn btn-green" id="addLoanBtn">＋ Pinjaman Baru</button></div><div class="table-wrap"><table><thead><tr><th>ID PINJAMAN</th><th>GAMBAR</th><th>PEMINJAM</th><th>ITEM</th><th>DUE</th><th>TUJUAN</th><th>STATUS</th><th>DILULUSKAN OLEH</th><th>TINDAKAN</th></tr></thead><tbody id="loansRows"></tbody></table></div></div></section>
+<section class="view" id="view-loans"><div class="mini-hero green"><div class="copy"><h2>Kelulusan Pinjaman</h2><p>Urus permohonan, kelulusan terus kepada status dipinjam dan pemulangan peralatan ICT.</p></div><div class="art"><svg viewBox="0 0 420 140"><g transform="translate(54,12)"><path d="M48 15v105M35 42h26M28 62h40M21 83h54" stroke="#fff" stroke-width="5" opacity=".75"/><circle cx="20" cy="34" r="12" fill="none" stroke="#fff" stroke-width="5" opacity=".7"/><rect x="112" y="36" width="105" height="66" rx="7" fill="#18253b"/><rect x="121" y="44" width="87" height="49" rx="3" fill="#6fbaff"/><path d="M95 103h138l17 13H78z" fill="#e3e8ef"/><rect x="255" y="54" width="80" height="54" rx="8" fill="#f5f6f8"/><circle cx="295" cy="81" r="21" fill="#123e73"/><circle cx="295" cy="81" r="12" fill="#26b1ff"/></g></svg></div></div><div class="info-banner"><span>🔄</span><div><b>Inventori & Pinjaman disambungkan.</b> Aset yang dipohon berstatus RESERVED. Apabila pegawai menekan Lulus, aset terus bertukar kepada DIPINJAM dan kembali TERSEDIA selepas dipulangkan.</div></div><div class="audit-link-v9"><span>Perlu cetakan untuk audit? Semua status dan sejarah digabungkan dalam Laporan.</span><button class="btn btn-sm" data-go="reports">Buka Laporan Audit</button></div><div class="approval-health-v92"><div><strong>Kelulusan pinjaman</strong><span id="loanListCountV92">Status dikemas kini selepas server mengesahkan simpanan.</span></div><div><button class="btn btn-sm" type="button" id="refreshLoanListV92">Segarkan senarai</button><button class="btn btn-sm" type="button" id="checkApprovalApiV92">Semak Sambungan</button></div></div><div id="loanActionStatusV92" class="loan-message-v92" role="status" aria-live="polite"></div><div class="card panel"><div class="toolbar"><div class="search">⌕ <input id="loanSearch" placeholder="Cari ID pinjaman, peminjam, tujuan..."/></div><select class="field" id="loanStatusFilter" style="width:auto"><option value="">Semua status</option><option>MENUNGGU_KELULUSAN</option><option>DILULUSKAN</option><option>DIPINJAM</option><option>HAMPIR_DUE</option><option>LEWAT</option><option>DIPULANGKAN</option></select><button class="btn btn-green" id="addLoanBtn">＋ Pinjaman Baru</button></div><div class="table-wrap"><table><thead><tr><th>ID PINJAMAN</th><th>GAMBAR</th><th>PEMINJAM</th><th>ITEM</th><th>DUE</th><th>TUJUAN</th><th>STATUS</th><th>DILULUSKAN OLEH</th><th>TINDAKAN</th></tr></thead><tbody id="loansRows"></tbody></table></div></div></section>
 <section class="view" id="view-reports"><div class="mini-hero orange"><div class="copy"><h2>Laporan</h2><p>Ringkasan prestasi inventori dan pinjaman dalam satu paparan.</p></div><div class="art"><svg viewBox="0 0 420 140"><g transform="translate(70,18)"><rect x="0" y="0" width="280" height="98" rx="15" fill="#fff" opacity=".94"/><path d="M32 73l42-27 38 12 48-36 44 18 43-23" fill="none" stroke="#6f8fff" stroke-width="6" stroke-linecap="round"/><path d="M35 86V55M87 86V40M139 86V66M191 86V34M243 86V20" stroke="#cbd8ea" stroke-width="11" stroke-linecap="round"/></g></svg></div></div><div class="card panel audit-tools-v9">
  <div class="panel-head"><div><div class="audit-eyebrow-v9">DAFTAR AUDIT / KEW.PA-6</div><div class="panel-title">Semua sejarah pinjaman, satu cetakan.</div><div class="panel-sub">Termasuk selesai, aktif, menunggu kelulusan, diluluskan, lewat, ditolak dan dibatalkan.</div></div><button class="btn btn-primary" id="auditLoadV9">Muat semua sejarah</button></div>
  <div class="audit-help-v9">Format berdasarkan borang contoh anda. Setiap baris mewakili satu item bagi satu pinjaman. Ruang tandatangan dikekalkan kosong. Rekod yang telah dipadam kekal tidak dapat dipulihkan melalui laporan ini.</div>
@@ -1508,11 +1509,10 @@ function hydrateAdminFastCache(){
   state.users=cached.users||state.users;
 }
 
-function init(){
+async function init(){
   bindNavigation();
   bindActions();
   hydrateAdminFastCache();
-  initOperatorSession();
 
   state.connected=false;
   updateConnectionUI();
@@ -1520,10 +1520,14 @@ function init(){
   let hasDashboardCache=false;
   try{hasDashboardCache=!!renderCachedDashboard();}catch(err){console.warn(err)}
 
+  // V10.6.3: pulihkan sesi daripada cache dahulu. Elak panggilan dashboard + operator serentak.
+  await initOperatorSession();
+  if(state.operator){
+    setTimeout(()=>{
+      loadDashboard(false).catch(err=>console.warn('Dashboard refresh latar tertangguh:',err));
+    },hasDashboardCache?500:120);
+  }
 
-  setTimeout(()=>{
-    loadDashboard(true).catch(err=>console.warn('Dashboard refresh tertangguh:',err));
-  },hasDashboardCache?650:80);
 
   const lateVisuals=()=>{
     try{initPortalQr()}catch(err){console.warn(err)}
@@ -1671,7 +1675,7 @@ function showView(name){
 
   if(name==='dashboard') loadDashboard(false);
   if(name==='assets') loadAssets(false);
-  if(name==='loans') loadLoans(true);
+  if(name==='loans') loadLoans(false);
   if(name==='notifications') loadNotifications(false);
   if(name==='reports') loadDashboard(false);
   if(name==='settings'){
@@ -1883,7 +1887,7 @@ async function loadDashboard(force=false){
 
   state.inFlight.dashboard=(async()=>{
     try{
-      const data=await jsonp('dashboard');
+      const data=await jsonp('dashboard',{}, {timeoutMs:7000,retries:0});
       state.dashboard=data;
       state.loadedAt.dashboard=Date.now();
 
@@ -1897,7 +1901,11 @@ async function loadDashboard(force=false){
       renderDashboard(data);
       renderReports(data);
     }catch(err){
-      handleError(err);
+      if(state.dashboard || hasVisibleData){
+        console.warn('Dashboard refresh latar tertangguh:',err);
+      }else{
+        handleError(err);
+      }
     }finally{
       setDashboardLoading(false);
       state.inFlight.dashboard=null;
@@ -2077,7 +2085,7 @@ async function loadAssets(force=false){
 
   state.inFlight.assets=(async()=>{
     try{
-      const res=await jsonp('assets',{pageSize:200,sort:'asset_name',order:'asc'});
+      const res=await jsonp('assets',{pageSize:200,sort:'asset_name',order:'asc'},{timeoutMs:7500,retries:0});
       state.assets=res?.items||[];
       state.loadedAt.assets=Date.now();
       saveAdminFastCache();
@@ -2425,23 +2433,45 @@ async function deleteAssetPermanent(assetId){
 /* =========================================================
    LOANS
 ========================================================= */
+let loanRetryTimerV1063=null;
+function scheduleLoanRetryV1063(){
+  if(loanRetryTimerV1063 || document.visibilityState!=='visible' || !state.operator) return;
+  loanRetryTimerV1063=setTimeout(()=>{
+    loanRetryTimerV1063=null;
+    if(state.view==='loans' && !state.inFlight.loans && !approvalBusyV92()){
+      loadLoans(true).catch(()=>{});
+    }
+  },3500);
+}
+
 async function loadLoans(force=false){
  if(!requireConfig())return;
  if(state.loans.length)renderLoans();
  if(approvalBusyV92())return;
- if(!force&&state.loans.length&&isFresh('loans',30000))return;
+ if(!force&&state.loans.length&&isFresh('loans',60000))return;
  if(state.inFlight.loans)return state.inFlight.loans;
  const epoch=loanEpochV92;
  state.inFlight.loans=(async()=>{
   try{
-   const loanRes=await jsonp('loans',{pageSize:200,sort:'request_date',order:'desc',_t:Date.now()},{timeoutMs:15000,retries:0});
-   if(epoch!==loanEpochV92)return; // Do not overwrite a newly confirmed write with an older response.
+   const loanRes=await jsonp('loans',{pageSize:200,sort:'request_date',order:'desc',_t:Date.now()},{timeoutMs:7500,retries:0});
+   if(epoch!==loanEpochV92)return;
    state.loans=overlayConfirmedV92(loanRes?.items||[]);
    state.loadedAt.loans=Date.now();saveAdminFastCache();renderLoans();
    const total=Number(loanRes?.total||state.loans.length);
-   const note=$('#loanListCountV92');if(note)note.textContent='Paparan '+state.loans.length+' / '+total+' pinjaman terkini. Semua sejarah kekal di Laporan.';
-  }catch(e){loanMessageV92('Senarai belum berjaya disegerakkan. '+e.message,'warning');}
-  finally{state.inFlight.loans=null;}
+   const note=$('#loanListCountV92');if(note)note.textContent='Paparan '+state.loans.length+' / '+total+' pinjaman terkini.';
+   loanMessageV92('');
+  }catch(e){
+   console.warn('Penyegerakan pinjaman latar tertangguh:',e);
+   const note=$('#loanListCountV92');
+   if(state.loans.length){
+    if(note)note.textContent='Data terakhir dipaparkan • penyegerakan latar sedang dicuba semula.';
+    loanMessageV92('');
+   }else{
+    if(note)note.textContent='Sedang menyambung ke server…';
+    loanMessageV92('Server belum memberi jawapan. Sistem akan cuba semula secara automatik.','info');
+   }
+   scheduleLoanRetryV1063();
+  } finally{state.inFlight.loans=null;}
  })();return state.inFlight.loans;
 }
 
@@ -3144,31 +3174,47 @@ function applyOperatorSession(operator){
 
 
 async function initOperatorSession(){
+  const stored=readStoredOperator();
+  const cachedLive=stored?.user_id
+    ? (state.users||[]).find(x=>String(x.user_id)===String(stored.user_id))
+    : null;
+
+  if(cachedLive && ['SUPER_ADMIN','STAFF_IT'].includes(String(cachedLive.role||'')) && String(cachedLive.active||'Ya').toLowerCase()==='ya'){
+    applyOperatorSession({user_id:cachedLive.user_id,name:cachedLive.name,role:cachedLive.role});
+    // Sahkan direktori di belakang; jangan tahan dashboard.
+    setTimeout(()=>loadOperatorOptions(true).then(list=>{
+      const live=(list||[]).find(x=>String(x.user_id)===String(cachedLive.user_id));
+      if(!live) operatorLogout(false);
+    }).catch(err=>console.warn('Pengesahan Staf IT latar tertangguh.',err)),900);
+    return true;
+  }
+
   applyOperatorSession(null);
   try{
     await loadOperatorOptions(true);
-    const stored=readStoredOperator();
     if(stored?.user_id){
       const live=(state.users||[]).find(x=>String(x.user_id)===String(stored.user_id));
       if(live && ['SUPER_ADMIN','STAFF_IT'].includes(String(live.role||'')) && String(live.active||'Ya').toLowerCase()==='ya'){
         applyOperatorSession({user_id:live.user_id,name:live.name,role:live.role});
-        return;
+        return true;
       }
     }
   }catch(err){
     console.warn('Senarai Staf IT belum dapat dimuatkan.',err);
   }
   applyOperatorSession(null);
+  return false;
 }
 
-function operatorLogout(){
+function operatorLogout(showToast=true){
   const currentName=String(state.operator?.name||'').trim();
   saveStoredOperator(null);
   applyOperatorSession(null);
   const sel=$('#adminOperatorSelect');
   if(sel) sel.value='';
-  loadOperatorOptions(true).catch(err=>console.warn('Senarai Staf IT belum dapat dimuat semula selepas logout.',err));
-  toast('Log keluar berjaya',currentName?currentName+' telah log keluar daripada Portal Admin.':'Sesi Portal Admin telah ditamatkan.','ok');
+  loadOperatorOptions(false).catch(err=>console.warn('Senarai Staf IT cache belum tersedia.',err));
+  setTimeout(()=>loadOperatorOptions(true).catch(err=>console.warn('Refresh Staf IT latar tertangguh.',err)),1200);
+  if(showToast)toast('Log keluar berjaya',currentName?currentName+' telah log keluar daripada Portal Admin.':'Sesi Portal Admin telah ditamatkan.','ok');
 }
 
 function showOperatorLogin(){
@@ -3176,9 +3222,29 @@ function showOperatorLogin(){
 }
 
 async function loadOperatorOptions(force=false){
-  let operators=[];
+  let operators=(state.users||[])
+    .filter(x=>['SUPER_ADMIN','STAFF_IT'].includes(String(x.role||''))&&String(x.active||'Ya').toLowerCase()==='ya')
+    .sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''),'ms',{sensitivity:'base'}));
+
+  const renderOptions=()=>{
+    const sel=$('#adminOperatorSelect');
+    if(sel){
+      sel.innerHTML=operators.length
+        ? '<option value="">Pilih nama staf IT…</option>'+operators.map(x=>`<option value="${attr(x.user_id)}">${esc(x.name)}</option>`).join('')
+        : '<option value="">Sedang memuatkan senarai staf IT…</option>';
+    }
+    $('#operatorExistingBox')?.classList.remove('hidden');
+    $('#operatorBootstrapBox')?.classList.add('hidden');
+    renderItOperators();
+  };
+
+  if(operators.length && !force){
+    renderOptions();
+    return operators;
+  }
+
   try{
-    const res=await jsonp('admin.operators',{_t:force?Date.now():''},{timeoutMs:7500,retries:0});
+    const res=await jsonp('admin.operators',{_t:force?Date.now():''},{timeoutMs:6000,retries:0});
     operators=Array.isArray(res?.items)?res.items:[];
     const byId=new Map((state.users||[]).map(x=>[String(x.user_id),x]));
     operators.forEach(x=>byId.set(String(x.user_id),{...(byId.get(String(x.user_id))||{}),...x}));
@@ -3186,20 +3252,12 @@ async function loadOperatorOptions(force=false){
     state.loadedAt.users=Date.now();
     saveAdminFastCache();
   }catch(err){
-    operators=(state.users||[]).filter(x=>['SUPER_ADMIN','STAFF_IT'].includes(String(x.role||''))&&String(x.active||'Ya').toLowerCase()==='ya');
-    if(!operators.length)throw err;
+    if(!operators.length) throw err;
   }
+
   operators=operators.filter(x=>['SUPER_ADMIN','STAFF_IT'].includes(String(x.role||''))&&String(x.active||'Ya').toLowerCase()==='ya')
     .sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''),'ms',{sensitivity:'base'}));
-  const sel=$('#adminOperatorSelect');
-  if(sel){
-    sel.innerHTML=operators.length
-      ? '<option value="">Pilih nama staf IT…</option>'+operators.map(x=>`<option value="${attr(x.user_id)}">${esc(x.name)}</option>`).join('')
-      : '<option value="">Akses Staf IT belum tersedia</option>';
-  }
-  $('#operatorExistingBox')?.classList.toggle('hidden',!operators.length);
-  $('#operatorBootstrapBox')?.classList.toggle('hidden',!!operators.length);
-  renderItOperators();
+  renderOptions();
   return operators;
 }
 
@@ -3220,6 +3278,7 @@ function operatorLogin(){
   saveStoredOperator(operator);
   applyOperatorSession(operator);
   toast('Selamat datang',operator.name,'ok');
+  setTimeout(()=>loadDashboard(false).catch(()=>{}),60);
 }
 
 
