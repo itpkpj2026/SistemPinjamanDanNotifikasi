@@ -928,7 +928,7 @@ html,body{max-width:100%;overflow-x:hidden}
 </style>
 
 <style id="pkpjAdminV104Style">
-/* V10.4.2 - Login Staf IT + logout + paparan tandatangan audit */
+/* V10.5 - Login Staf IT + background bangunan + peranan pentadbir tersembunyi */
 /* Override legacy Portal Bersepadu rule that hid the Admin login overlay. */
 .admin-login-overlay{display:grid!important}
 .admin-login-overlay.hidden{display:none!important}
@@ -937,8 +937,8 @@ html,body{max-width:100%;overflow-x:hidden}
 .operator-logout-btn:hover{background:rgba(255,255,255,.20)!important;transform:translateY(-1px)}
 .operator-logout-btn:active{transform:translateY(0)}
 @media(max-width:760px){.operator-logout-btn .logout-label{display:none}.operator-logout-btn{width:34px!important;padding:0!important}}
-.admin-login-overlay{background:radial-gradient(circle at 18% 12%,#f8fbff 0 11%,transparent 31%),linear-gradient(135deg,#edf5ff,#e1ecf9)!important}
-.admin-login-card{width:min(470px,calc(100vw - 28px))!important;padding:34px 34px 30px!important;border-radius:28px!important;background:#edf4fc!important;border:1px solid rgba(255,255,255,.94)!important;box-shadow:18px 18px 46px rgba(127,151,183,.32),-16px -16px 42px rgba(255,255,255,.94)!important}
+.admin-login-overlay{background:linear-gradient(90deg,rgba(236,245,255,.82),rgba(228,240,252,.66)),url('pkpj-login-background.jpg') center center / cover no-repeat!important}
+.admin-login-card{width:min(470px,calc(100vw - 28px))!important;padding:34px 34px 30px!important;border-radius:28px!important;background:rgba(237,244,252,.90)!important;border:1px solid rgba(255,255,255,.94)!important;box-shadow:18px 18px 46px rgba(127,151,183,.32),-16px -16px 42px rgba(255,255,255,.94)!important}
 .admin-login-logo{width:78px!important;height:78px!important;margin:0 auto 18px!important;border-radius:23px!important;background:linear-gradient(145deg,#f9fbff,#dde8f5)!important;box-shadow:8px 8px 18px rgba(139,160,188,.32),-8px -8px 18px #fff!important}
 .admin-login-card h2{text-align:center;margin-bottom:8px!important;color:#123c70!important}.admin-login-card>p{text-align:center!important;line-height:1.55!important;color:#66809e!important;margin-bottom:22px!important}
 .admin-login-card label{font-size:11px;font-weight:850;color:#415f80;display:block;margin:0 0 7px 4px}
@@ -948,6 +948,7 @@ html,body{max-width:100%;overflow-x:hidden}
 .movement-signature{display:block;max-width:82px;max-height:42px;margin:auto;object-fit:contain;filter:contrast(1.08)}
 .sig-status{font-size:8px;color:#9a6b72;line-height:1.25}.sig-role{display:block;margin-top:3px;font-size:7.5px;color:#6684a0;font-weight:600}
 .movement-register .sig-cell{vertical-align:middle;text-align:center}
+@media(max-width:600px){.admin-login-overlay{background-position:center top!important;background-attachment:scroll!important}.admin-login-card{width:min(440px,calc(100vw - 18px))!important;padding:28px 20px 25px!important}}
 </style>
 
 </head>
@@ -1125,17 +1126,16 @@ html,body{max-width:100%;overflow-x:hidden}
     <details class="settings-accordion super-admin-only">
       <summary>
         <span class="settings-acc-icon">🔐</span>
-        <span><b>Akses Portal Admin — Staf IT</b><small>Super Admin boleh tambah, aktif/nyahaktif dan tetapkan peranan staf IT.</small></span>
+        <span><b>Akses Portal Admin — Staf IT</b><small>Tambah, aktifkan atau nyahaktifkan akses staf IT.</small></span>
         <i>＋</i>
       </summary>
       <div class="settings-accordion-body">
         <div class="card panel">
-          <div class="form-grid">
+          <div class="form-grid" style="grid-template-columns:1fr">
             <div class="form-group"><label>Nama</label><input class="field" id="itOperatorName" placeholder="Nama staf IT"></div>
-            <div class="form-group"><label>Peranan</label><select class="field" id="itOperatorRole"><option value="STAFF_IT">Staf IT</option><option value="SUPER_ADMIN">Super Admin</option></select></div>
           </div>
           <button class="btn btn-primary" type="button" id="addItOperatorBtn">＋ Tambah Akses</button>
-          <div class="table-wrap section-gap"><table><thead><tr><th>NAMA</th><th>PERANAN</th><th>STATUS</th><th>TINDAKAN</th></tr></thead><tbody id="itOperatorRows"></tbody></table></div>
+          <div class="table-wrap section-gap"><table><thead><tr><th>NAMA</th><th>STATUS</th><th>TINDAKAN</th></tr></thead><tbody id="itOperatorRows"></tbody></table></div>
         </div>
       </div>
     </details>
@@ -3059,7 +3059,7 @@ function applyOperatorSession(operator){
 
   if(operator){
     $('#operatorName').textContent=operator.name||'Staf IT';
-    $('#operatorRole').textContent=operator.role==='SUPER_ADMIN'?'Super Admin':'Staf IT';
+    $('#operatorRole').textContent='Staf IT';
     $('#adminLoginOverlay').classList.add('hidden');
   }else{
     $('#operatorName').textContent='Belum log masuk';
@@ -3129,7 +3129,7 @@ async function loadOperatorOptions(force=false){
   const sel=$('#adminOperatorSelect');
   if(sel){
     sel.innerHTML=operators.length
-      ? '<option value="">Pilih nama staf IT…</option>'+operators.map(x=>`<option value="${attr(x.user_id)}">${esc(x.name)} — ${x.role==='SUPER_ADMIN'?'Super Admin':'Staf IT'}</option>`).join('')
+      ? '<option value="">Pilih nama staf IT…</option>'+operators.map(x=>`<option value="${attr(x.user_id)}">${esc(x.name)}</option>`).join('')
       : '<option value="">Akses Staf IT belum tersedia</option>';
   }
   $('#operatorExistingBox')?.classList.toggle('hidden',!operators.length);
@@ -3160,7 +3160,7 @@ function operatorLogin(){
 
 async function bootstrapSuperAdmin(){
   const name=($('#operatorBootstrapName')?.value||'').trim();
-  if(!name) return toast('Nama diperlukan','Masukkan nama Super Admin.','err');
+  if(!name) return toast('Nama diperlukan','Masukkan nama staf IT.','err');
 
   try{
     const user=await postApi('user.create',{
@@ -3179,7 +3179,7 @@ async function bootstrapSuperAdmin(){
     saveStoredOperator(operator);
     applyOperatorSession(operator);
     saveAdminFastCache();
-    toast('Super Admin diwujudkan',name,'ok');
+    toast('Akses utama diwujudkan',name,'ok');
 
   }catch(err){
     handleError(err);
@@ -3189,11 +3189,11 @@ async function bootstrapSuperAdmin(){
 
 async function addItOperator(){
   if(!isSuperAdmin()){
-    return toast('Akses terhad','Hanya Super Admin boleh mengurus akses.','err');
+    return toast('Akses terhad','Akaun ini tidak dibenarkan mengurus akses staf IT.','err');
   }
 
   const name=($('#itOperatorName')?.value||'').trim();
-  const role=$('#itOperatorRole')?.value||'STAFF_IT';
+  const role='STAFF_IT';
 
   if(!name) return toast('Nama diperlukan','Masukkan nama staf IT.','err');
 
@@ -3208,7 +3208,7 @@ async function addItOperator(){
     $('#itOperatorName').value='';
     renderItOperators();
     saveAdminFastCache();
-    toast('Akses ditambah',`${name} — ${role==='SUPER_ADMIN'?'Super Admin':'Staf IT'}`,'ok');
+    toast('Akses ditambah',`${name} telah ditambah sebagai Staf IT.`,'ok');
   }catch(err){
     handleError(err);
   }
@@ -3226,7 +3226,6 @@ function renderItOperators(){
   box.innerHTML=rows.length?rows.map(x=>`
     <tr>
       <td class="strong">${esc(x.name)}</td>
-      <td><span class="role-pill ${x.role==='SUPER_ADMIN'?'super':''}">${x.role==='SUPER_ADMIN'?'SUPER ADMIN':'STAF IT'}</span></td>
       <td>${statusPill(String(x.active||'Ya').toLowerCase()==='ya'?'AKTIF':'TIDAK_AKTIF')}</td>
       <td>
         <div class="action-row">
@@ -3238,7 +3237,7 @@ function renderItOperators(){
         </div>
       </td>
     </tr>
-  `).join(''):'<tr><td colspan="4" class="empty">Belum ada akses pentadbir.</td></tr>';
+  `).join(''):'<tr><td colspan="3" class="empty">Belum ada akses staf IT.</td></tr>';
 }
 
 
@@ -3258,7 +3257,7 @@ async function toggleAdminOperator(userId,active){
 
 async function removeAdminOperator(userId){
   if(!isSuperAdmin()){
-    return toast('Akses terhad','Hanya Super Admin boleh menghapus akses log masuk Admin.','err');
+    return toast('Akses terhad','Akaun ini tidak dibenarkan menghapus akses Portal Admin.','err');
   }
 
   const target=(state.users||[]).find(x=>String(x.user_id)===String(userId));
@@ -3342,7 +3341,7 @@ function renderCategorySettings(){
 
 async function saveCategorySettings(){
   if(!isSuperAdmin()){
-    return toast('Akses terhad','Hanya Super Admin boleh ubah tetapan paparan.','err');
+    return toast('Akses terhad','Akaun ini tidak dibenarkan mengubah tetapan paparan.','err');
   }
 
   const map={};
@@ -3377,7 +3376,7 @@ async function saveCategorySettings(){
 
 async function purgeLoanAdmin(loanId){
   if(!isSuperAdmin()){
-    return toast('Akses terhad','Hanya Super Admin boleh batal & hapus rekod pinjaman.','err');
+    return toast('Akses terhad','Akaun ini tidak dibenarkan membatal atau menghapus rekod pinjaman.','err');
   }
 
   if(!confirm(`Batal & hapus ${loanId}? Rekod pinjaman ini akan dikeluarkan dan aset dilepaskan semula.`)) return;
@@ -3394,7 +3393,7 @@ async function purgeLoanAdmin(loanId){
     renderLoans();
     loadAssets(true);
     loadDashboard(true);
-    toast('Pinjaman dibatalkan','Rekod telah dikeluarkan oleh Super Admin.','ok');
+    toast('Pinjaman dibatalkan','Rekod telah dikeluarkan oleh pentadbir yang dibenarkan.','ok');
   }catch(err){handleError(err)}
 }
 
