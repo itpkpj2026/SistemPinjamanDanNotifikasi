@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
 <link rel="dns-prefetch" href="//script.google.com">
 <link rel="dns-prefetch" href="//script.googleusercontent.com">
-<title>Portal Pemohon | Sistem ICT V10.1 3D Responsive</title>
+<title>Portal Pemohon | Sistem ICT V10.2 3D Responsive</title>
 <style>
 :root{
   --bg:#f4f8fc;--panel:#fff;--panel2:#f8fbff;--line:#dce7f1;
@@ -1911,11 +1911,15 @@ table{max-width:none}
 @media(max-width:450px){#loginOverlay .compact-login-shell{width:100%!important}.pkpj-pull-stage{--actor-space:70px}.pkpj-actor-caption{width:66px;font-size:8px}#loginOverlay .compact-login-panel{padding:17px 10px!important}#loginOverlay .compact-login-card{padding:24px 16px!important}#loginOverlay .compact-login-card h2{font-size:24px!important}}
 </style>
 
-<!-- PKPJ V10 3D DEMO: external viewer/runtime. Portal API remains independent. -->
-<script type="module" src="https://three.ws/agent-3d/latest/agent-3d.js"></script>
+<!-- PKPJ V10.2 3D: visible-character fix + pinned runtime. Portal API remains independent. -->
+<script id="pkpj3dRuntime" type="module"
+  src="https://three.ws/agent-3d/1.5.2/agent-3d.js"
+  integrity="sha384-qCG5gH4q2+k2Gsf98zs9RFXyN8iezoklCWt63pA2Xk2YF7Onae4rfUwu+oZSqRzN"
+  crossorigin="anonymous"
+  onerror="document.documentElement.dataset.pkpj3dRuntime='error'"></script>
 <style id="pkpj3dV10Style">
 /* =========================================================
-   PKPJ V10 3D LOGIN DEMO
+   PKPJ V10.2 3D LOGIN
    - Motion layer only; does not fetch staff/loan data.
    - Form is usable even if 3D fails to load.
    ========================================================= */
@@ -1927,7 +1931,7 @@ table{max-width:none}
 #loginOverlay .compact-login-card{position:relative;z-index:8;min-height:0!important;padding:30px 30px 25px!important;border:1px solid #d5e2e9!important;border-radius:23px!important;background:#fff!important;box-shadow:0 18px 45px rgba(36,72,92,.07)!important;transform-origin:center center;will-change:auto}
 #loginOverlay .compact-login-card::before{content:"";position:absolute;left:-9px;top:43%;width:9px;height:58px;border:1px solid #b8cbd7;border-right:0;border-radius:7px 0 0 7px;background:linear-gradient(90deg,#b7c8d3,#eef4f7);opacity:0;transition:opacity .18s ease}
 #loginOverlay .pkpj-pull-stage.v10-pulling .compact-login-card::before{opacity:1}
-#loginOverlay .pkpj-login-actor-3d{position:absolute!important;z-index:10!important;left:0!important;top:20px!important;width:270px!important;height:500px!important;opacity:0;transform:translate3d(calc(-100vw - 320px),0,0);pointer-events:none!important;will-change:transform,opacity!important;transition:none!important;filter:none!important}
+#loginOverlay .pkpj-login-actor-3d{position:absolute!important;z-index:10!important;left:0!important;top:20px!important;width:270px!important;height:500px!important;visibility:visible!important;opacity:0;transform:translate3d(calc(-100vw - 320px),0,0);pointer-events:none!important;will-change:transform,opacity!important;transition:none!important;filter:none!important}
 #loginOverlay .pkpj-login-actor-3d.is-ready{opacity:1}
 #loginOverlay .pkpj-login-actor-3d.is-entering{transform:translate3d(0,0,0);transition:transform 2.25s cubic-bezier(.2,.7,.2,1),opacity .25s ease}
 #loginOverlay .pkpj-login-actor-3d.is-settled{transform:translate3d(0,0,0);opacity:1;transition:none}
@@ -2027,11 +2031,13 @@ table{max-width:none}
       </div>
       <div class="pkpj-pull-stage" id="pkpjPullStage">
         <div class="pkpj-pull-rig" id="pkpjPullRig">
-          <div class="pkpj-login-actor pkpj-login-actor-3d" id="pkpjLoginActor" aria-hidden="true">
+          <div class="pkpj-login-actor pkpj-login-actor-3d" id="pkpjLoginActor" data-character-version="10.2" aria-hidden="true">
             <div class="pkpj3d-halo" aria-hidden="true"></div>
             <agent-3d
               id="pkpj3DAvatar"
               eager
+              kiosk
+              clip="idle"
               src="https://three.ws/avatars/michelle.glb"
               controls="none"
               aria-label="Pembantu ICT 3D">
@@ -3953,7 +3959,7 @@ document.addEventListener('DOMContentLoaded',bindStaffToolsV9,{once:true});
 </script>
 
 <script id="pkpj3dV10Controller">
-/* PKPJ V10.1 3D responsive intro controller.
+/* PKPJ V10.2 3D responsive intro controller.
    Desktop: walk in -> pull form -> dance -> wave -> idle.
    Mobile: walk in -> short dance -> wave -> idle; form stays fixed.
    Presentation-only; portal API/login handlers are untouched. */
@@ -4125,7 +4131,24 @@ document.addEventListener('DOMContentLoaded',bindStaffToolsV9,{once:true});
   });
 
   // Jangan sesekali block login jika runtime/model 3D lambat atau gagal.
-  later(2600,()=>{if(!ready&&!running){finalVisual();control.textContent='↻ Cuba animasi 3D';}});
+  later(2600,()=>{
+    if(!ready&&!running){
+      finalVisual();
+      control.textContent='↻ Cuba animasi 3D';
+      if(fallback){
+        fallback.style.display='grid';
+        const s=fallback.querySelector('span');
+        const runtimeFailed=document.documentElement.dataset.pkpj3dRuntime==='error';
+        if(s)s.textContent=runtimeFailed?'Runtime 3D gagal dimuatkan':'Memuatkan pembantu 3D…';
+      }
+    }
+  });
+  later(7000,()=>{
+    if(!ready&&fallback){
+      const s=fallback.querySelector('span');
+      if(s)s.textContent='3D belum tersedia — klik Cuba animasi 3D';
+    }
+  });
 
   const observer=new MutationObserver(()=>{
     if(!visible()){clearTimers();running=false;return;}
