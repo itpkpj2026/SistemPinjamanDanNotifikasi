@@ -2017,12 +2017,12 @@ table{max-width:none}
 <style id="pkpjV114FlowMobileStyle">
 /* V11.4 - tandatangan dalam borang + login slide + mobile responsive */
 #loginOverlay:not(.hidden) .neo-login-wrap{
-  animation:pkpjLoginSlideV114 .68s cubic-bezier(.18,.78,.22,1) both;
+  animation:pkpjLoginTopV1141 .62s cubic-bezier(.18,.78,.22,1) both;
   will-change:transform,opacity;
 }
-@keyframes pkpjLoginSlideV114{
-  from{opacity:0;transform:translateX(115px)}
-  to{opacity:1;transform:translateX(0)}
+@keyframes pkpjLoginTopV1141{
+  from{opacity:0;transform:translateY(-92px) scale(.99)}
+  to{opacity:1;transform:translateY(0) scale(1)}
 }
 .loan-application-signature{
   margin-top:14px;padding:14px;border:1px solid #d7e4ef;border-radius:16px;
@@ -2039,8 +2039,8 @@ table{max-width:none}
 /* menu Peralatan Tersedia disorok; view dikekalkan untuk compatibility dalaman */
 .nav-btn[data-view="assets"]{display:none!important}
 @media(max-width:700px){
-  #loginOverlay:not(.hidden) .neo-login-wrap{animation-duration:.44s}
-  @keyframes pkpjLoginSlideV114{from{opacity:0;transform:translateX(34px)}to{opacity:1;transform:translateX(0)}}
+  #loginOverlay:not(.hidden) .neo-login-wrap{animation-duration:.40s}
+  @keyframes pkpjLoginTopV1141{from{opacity:0;transform:translateY(-34px)}to{opacity:1;transform:translateY(0)}}
   .loan-modal{padding:7px!important;align-items:flex-end!important}
   .loan-modal-card{width:100%!important;max-height:94dvh!important;border-radius:20px 20px 0 0!important}
   .loan-modal-head{padding:15px 15px 11px!important}
@@ -2062,6 +2062,36 @@ table{max-width:none}
   .loan-modal-foot{grid-template-columns:1fr!important}
 }
 @media(prefers-reduced-motion:reduce){#loginOverlay:not(.hidden) .neo-login-wrap{animation:none!important}}
+</style>
+
+
+<style id="pkpjV1141FastStyle">
+/* V11.4.2 - fast first paint + kemasan mobile */
+#loginOverlay .neo-login-card,#loginOverlay .neo-scene{contain:layout paint style}
+@media(max-width:700px){
+  #loginOverlay.neo-login-overlay{background-attachment:scroll!important}
+  #loginOverlay .neo-login-card{backdrop-filter:blur(7px)!important}
+  .loan-modal-body{overscroll-behavior:contain}
+}
+</style>
+
+
+<style id="pkpjLogoBlendV1142">
+/* V11.4.2 - logo PKPJ blend dengan kad/background login tanpa kotak putih */
+#loginOverlay .neo-logo-bubble{
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  backdrop-filter:none!important;
+}
+#loginOverlay .neo-logo-bubble img{
+  background:transparent!important;
+  mix-blend-mode:multiply;
+  filter:contrast(1.04) saturate(1.04);
+}
+@media(max-width:600px){
+  #loginOverlay .neo-logo-bubble{width:68px!important;height:68px!important}
+}
 </style>
 
 </head>
@@ -2283,10 +2313,6 @@ table{max-width:none}
             <input class="field" id="loanExtensionNo" placeholder="Contoh: EXT-01">
           </div>
 
-          <div class="form-group full hidden" id="otherEquipmentGroup">
-            <label>Peralatan Lain (Nyatakan) *</label>
-            <input class="field" id="loanOtherEquipment" placeholder="Contoh: Projector / Monitor / Kamera / Charger">
-          </div>
 
           <div class="form-group full">
             <label>Catatan</label>
@@ -2504,7 +2530,7 @@ function init(){
   // V8: login tidak lagi menunggu API. Gunakan sumber tempatan dahulu.
   const embeddedOrAdmin=readAdminStaffSnapshot();
   const cachedStaff=readStaffCache();
-  const localStaff=embeddedOrAdmin;
+  const localStaff=embeddedOrAdmin.length?embeddedOrAdmin:cachedStaff;
 
   if(localStaff.length){
     state.staffList=localStaff;
@@ -2517,8 +2543,17 @@ function init(){
     $('#manualNameNote')?.classList.remove('hidden');
   }
 
-  // Start exactly one roster request immediately, independently of the intro.
-  loadStaffNames(false,localStaff.length===0);
+  // Fast start: jika cache/nama tempatan ada, paparkan login dahulu dan refresh senyap ketika browser idle.
+  if(localStaff.length){
+    const refreshRoster=()=>loadStaffNames(true,false);
+    if('requestIdleCallback' in window){
+      requestIdleCallback(refreshRoster,{timeout:2200});
+    }else{
+      setTimeout(refreshRoster,1400);
+    }
+  }else{
+    loadStaffNames(false,true);
+  }
 
   const savedId=localGetV9('ict_applicant_user_id')||'';
   const savedName=localGetV9('ict_applicant_name')||'';
@@ -2539,7 +2574,7 @@ function init(){
     setTimeout(()=>maybeOpenQrAsset(false),40);
 
     // Refresh data selepas portal sudah terbuka; jangan tahan skrin login.
-    setTimeout(()=>refreshPortal(true),250);
+    setTimeout(()=>refreshPortal(true),850);
   }
 }
 
@@ -2650,7 +2685,7 @@ function enableManualNameMode(){
 
 
 async function fetchStaffListFast(force=false){
- return jsonp('applicant.staff_list',{refresh:force?'1':'',_t:Date.now()},{timeoutMs:30000,retries:0});
+ return jsonp('applicant.staff_list',{refresh:force?'1':'',_t:Date.now()},{timeoutMs:10000,retries:0});
 }
 
 async function loadStaffNames(silent=false,force=false){
@@ -2674,7 +2709,7 @@ async function loadStaffNames(silent=false,force=false){
    return list;
   }catch(error){
    const message=staffFetchErrorV9(error);
-   setStaffLoadStatus(state.staffList.length?`${state.staffList.length} nama tempatan tersedia. Kemas kini server gagal: ${message}`:message,'error');
+   setStaffLoadStatus(state.staffList.length?`${state.staffList.length} nama sedia. Kemas kini latar belum selesai.`:message,state.staffList.length?'local':'error');
    if(!state.staffList.length&&document.activeElement===$('#loginName'))renderStaffSuggestions([], 'Nama belum dapat dimuatkan. Gunakan Isian nama manual atau muat semula halaman.');
    return state.staffList;
   }
@@ -2838,13 +2873,7 @@ async function loginApplicant(silent=false){
   btn.textContent='Masuk Portal Pemohon';
   setTimeout(()=>maybeOpenQrAsset(false),30);
 
-  const loaderTimer=setTimeout(()=>{
-    showPrettyLoader(
-      'Menyiapkan portal',
-      'Mengambil inventori dan rekod permohonan anda…'
-    );
-  },250);
-
+  // Data berat dimuat di belakang selepas shell portal sudah dipaparkan.
   try{
     const data=await jsonp(
       'applicant.bootstrap',
@@ -2853,11 +2882,8 @@ async function loginApplicant(silent=false){
         name:finalName,
         _t:Date.now()
       },
-      {timeoutMs:30000,retries:0}
+      {timeoutMs:12000,retries:0}
     );
-
-    clearTimeout(loaderTimer);
-    hidePrettyLoader();
 
     applyBootstrap(data);
 
@@ -2876,8 +2902,6 @@ async function loginApplicant(silent=false){
     }
 
   }catch(err){
-    clearTimeout(loaderTimer);
-    hidePrettyLoader();
     console.warn('Bootstrap portal tertangguh.');
 
     // Tiada mesej teknikal. Portal masih dibuka; nama manual kekal sah
@@ -3153,11 +3177,11 @@ function openLoanRequestModal(categoryKey,preselectAssetId=''){
   const singleMode=!!preselectAssetId;
 
   state.loanCategory=categoryKey;
-  state.loanCategoryLabel=item.label;
   state.imagePayload=null;
 
   $('#loanModalIcon').textContent=item.icon;
   const chosen=singleMode?assets[0]:null;
+  state.loanCategoryLabel=chosen?.category||item.label;
   $('#loanModalTitle').textContent=chosen?.asset_name||item.label;
   $('#loanModalSubtitle').textContent=chosen
     ? [chosen.category,chosen.brand,chosen.model].filter(Boolean).join(' • ')
@@ -3167,12 +3191,10 @@ function openLoanRequestModal(categoryKey,preselectAssetId=''){
   $('#laptopTypeGroup').classList.toggle('hidden',categoryKey!=='laptop');
   $('#wifiNoGroup').classList.toggle('hidden',categoryKey!=='wifi');
   $('#extensionNoGroup').classList.toggle('hidden',categoryKey!=='extension');
-  $('#otherEquipmentGroup').classList.toggle('hidden',categoryKey!=='other');
 
   $('#loanLaptopType').value='';
   $('#loanWifiNo').value='';
   $('#loanExtensionNo').value='';
-  $('#loanOtherEquipment').value='';
   $('#loanModalDue').value='';
   $('#loanModalPurpose').value='';
   $('#loanModalRemarks').value='';
@@ -3539,15 +3561,6 @@ async function submitApplication(){
     detailLines.push(`No. Extension: ${extensionNo}`);
   }
 
-  if(state.loanCategory==='other'){
-    const other=$('#loanOtherEquipment').value.trim();
-
-    if(!other){
-      return toast('Nyatakan peralatan','Sila nyatakan peralatan lain yang dipohon.','err');
-    }
-
-    detailLines.push(`Peralatan Lain: ${other}`);
-  }
 
   if(!$('#loanDeclaration').checked){
     return toast(
@@ -3734,7 +3747,7 @@ async function refreshPortal(silent=false){
           name:who.name,
           _t:Date.now()
         },
-        {timeoutMs:10000,retries:0}
+        {timeoutMs:8000,retries:0}
       );
 
       applyBootstrap(data);
@@ -3768,7 +3781,7 @@ function startPortalSync(){
     ){
       refreshPortal(true);
     }
-  },180000);
+  },300000);
 }
 
 
