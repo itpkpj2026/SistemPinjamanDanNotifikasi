@@ -928,7 +928,7 @@ html,body{max-width:100%;overflow-x:hidden}
 </style>
 
 <style id="pkpjAdminV104Style">
-/* V10.5 - Login Staf IT + background bangunan + peranan pentadbir tersembunyi */
+/* V10.6 - Login Staf IT + background bangunan + peranan pentadbir tersembunyi */
 /* Override legacy Portal Bersepadu rule that hid the Admin login overlay. */
 .admin-login-overlay{display:grid!important}
 .admin-login-overlay.hidden{display:none!important}
@@ -949,6 +949,23 @@ html,body{max-width:100%;overflow-x:hidden}
 .sig-status{font-size:8px;color:#9a6b72;line-height:1.25}.sig-role{display:block;margin-top:3px;font-size:7.5px;color:#6684a0;font-weight:600}
 .movement-register .sig-cell{vertical-align:middle;text-align:center}
 @media(max-width:600px){.admin-login-overlay{background-position:center top!important;background-attachment:scroll!important}.admin-login-card{width:min(440px,calc(100vw - 18px))!important;padding:28px 20px 25px!important}}
+</style>
+
+
+<style id="pkpjAdminV106MobileStyle">
+/* V10.6 - mobile admin actions */
+@media(max-width:700px){
+ .admin-login-overlay{padding:10px!important;align-items:flex-start!important;padding-top:max(16px,env(safe-area-inset-top))!important;overflow:auto!important}
+ .admin-login-card{width:100%!important;max-width:460px!important;padding:25px 18px 22px!important;border-radius:22px!important;margin:auto!important}
+ .admin-login-logo{width:66px!important;height:66px!important}
+ .admin-login-card h2{font-size:21px!important}.admin-login-card>p{font-size:10px!important}
+ #view-loans .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+ #view-loans table{min-width:980px}
+ #view-loans .action-row{gap:5px;flex-wrap:wrap}
+ #view-loans .btn.btn-sm{min-height:34px}
+ .movement-modal .movement-page{min-width:1050px}
+ .movement-modal .movement-scroll,.movement-modal .modal-body{overflow-x:auto!important;-webkit-overflow-scrolling:touch}
+}
 </style>
 
 </head>
@@ -1058,7 +1075,7 @@ html,body{max-width:100%;overflow-x:hidden}
     </table>
   </div>
 </div></section>
-<section class="view" id="view-loans"><div class="mini-hero green"><div class="copy"><h2>Kelulusan Pinjaman</h2><p>Urus permohonan, kelulusan, check-out dan pemulangan peralatan ICT.</p></div><div class="art"><svg viewBox="0 0 420 140"><g transform="translate(54,12)"><path d="M48 15v105M35 42h26M28 62h40M21 83h54" stroke="#fff" stroke-width="5" opacity=".75"/><circle cx="20" cy="34" r="12" fill="none" stroke="#fff" stroke-width="5" opacity=".7"/><rect x="112" y="36" width="105" height="66" rx="7" fill="#18253b"/><rect x="121" y="44" width="87" height="49" rx="3" fill="#6fbaff"/><path d="M95 103h138l17 13H78z" fill="#e3e8ef"/><rect x="255" y="54" width="80" height="54" rx="8" fill="#f5f6f8"/><circle cx="295" cy="81" r="21" fill="#123e73"/><circle cx="295" cy="81" r="12" fill="#26b1ff"/></g></svg></div></div><div class="info-banner"><span>🔄</span><div><b>Inventori & Pinjaman disambungkan.</b> Aset yang direkod untuk pinjaman akan terus berstatus RESERVED, kemudian DIPINJAM selepas check-out, dan kembali TERSEDIA selepas dipulangkan.</div></div><div class="audit-link-v9"><span>Perlu cetakan untuk audit? Semua status dan sejarah digabungkan dalam Laporan.</span><button class="btn btn-sm" data-go="reports">Buka Laporan Audit</button></div><div class="approval-health-v92"><div><strong>Kelulusan pinjaman</strong><span id="loanListCountV92">Status dikemas kini selepas server mengesahkan simpanan.</span></div><div><button class="btn btn-sm" type="button" id="refreshLoanListV92">Segarkan senarai</button><button class="btn btn-sm" type="button" id="checkApprovalApiV92">Semak API V9.2</button></div></div><div id="loanActionStatusV92" class="loan-message-v92" role="status" aria-live="polite">Tekan Lulus sekali sahaja. Pengesahan dipaparkan di sini.</div><div class="card panel"><div class="toolbar"><div class="search">⌕ <input id="loanSearch" placeholder="Cari ID pinjaman, peminjam, tujuan..."/></div><select class="field" id="loanStatusFilter" style="width:auto"><option value="">Semua status</option><option>MENUNGGU_KELULUSAN</option><option>DILULUSKAN</option><option>DIPINJAM</option><option>HAMPIR_DUE</option><option>LEWAT</option><option>DIPULANGKAN</option></select><button class="btn btn-green" id="addLoanBtn">＋ Pinjaman Baru</button></div><div class="table-wrap"><table><thead><tr><th>ID PINJAMAN</th><th>GAMBAR</th><th>PEMINJAM</th><th>ITEM</th><th>DUE</th><th>TUJUAN</th><th>STATUS</th><th>DILULUSKAN OLEH</th><th>TINDAKAN</th></tr></thead><tbody id="loansRows"></tbody></table></div></div></section>
+<section class="view" id="view-loans"><div class="mini-hero green"><div class="copy"><h2>Kelulusan Pinjaman</h2><p>Urus permohonan, kelulusan terus kepada status dipinjam dan pemulangan peralatan ICT.</p></div><div class="art"><svg viewBox="0 0 420 140"><g transform="translate(54,12)"><path d="M48 15v105M35 42h26M28 62h40M21 83h54" stroke="#fff" stroke-width="5" opacity=".75"/><circle cx="20" cy="34" r="12" fill="none" stroke="#fff" stroke-width="5" opacity=".7"/><rect x="112" y="36" width="105" height="66" rx="7" fill="#18253b"/><rect x="121" y="44" width="87" height="49" rx="3" fill="#6fbaff"/><path d="M95 103h138l17 13H78z" fill="#e3e8ef"/><rect x="255" y="54" width="80" height="54" rx="8" fill="#f5f6f8"/><circle cx="295" cy="81" r="21" fill="#123e73"/><circle cx="295" cy="81" r="12" fill="#26b1ff"/></g></svg></div></div><div class="info-banner"><span>🔄</span><div><b>Inventori & Pinjaman disambungkan.</b> Aset yang dipohon berstatus RESERVED. Apabila pegawai menekan Lulus, aset terus bertukar kepada DIPINJAM dan kembali TERSEDIA selepas dipulangkan.</div></div><div class="audit-link-v9"><span>Perlu cetakan untuk audit? Semua status dan sejarah digabungkan dalam Laporan.</span><button class="btn btn-sm" data-go="reports">Buka Laporan Audit</button></div><div class="approval-health-v92"><div><strong>Kelulusan pinjaman</strong><span id="loanListCountV92">Status dikemas kini selepas server mengesahkan simpanan.</span></div><div><button class="btn btn-sm" type="button" id="refreshLoanListV92">Segarkan senarai</button><button class="btn btn-sm" type="button" id="checkApprovalApiV92">Semak API V9.2</button></div></div><div id="loanActionStatusV92" class="loan-message-v92" role="status" aria-live="polite">Tekan Lulus sekali sahaja. Pengesahan dipaparkan di sini.</div><div class="card panel"><div class="toolbar"><div class="search">⌕ <input id="loanSearch" placeholder="Cari ID pinjaman, peminjam, tujuan..."/></div><select class="field" id="loanStatusFilter" style="width:auto"><option value="">Semua status</option><option>MENUNGGU_KELULUSAN</option><option>DILULUSKAN</option><option>DIPINJAM</option><option>HAMPIR_DUE</option><option>LEWAT</option><option>DIPULANGKAN</option></select><button class="btn btn-green" id="addLoanBtn">＋ Pinjaman Baru</button></div><div class="table-wrap"><table><thead><tr><th>ID PINJAMAN</th><th>GAMBAR</th><th>PEMINJAM</th><th>ITEM</th><th>DUE</th><th>TUJUAN</th><th>STATUS</th><th>DILULUSKAN OLEH</th><th>TINDAKAN</th></tr></thead><tbody id="loansRows"></tbody></table></div></div></section>
 <section class="view" id="view-reports"><div class="mini-hero orange"><div class="copy"><h2>Laporan</h2><p>Ringkasan prestasi inventori dan pinjaman dalam satu paparan.</p></div><div class="art"><svg viewBox="0 0 420 140"><g transform="translate(70,18)"><rect x="0" y="0" width="280" height="98" rx="15" fill="#fff" opacity=".94"/><path d="M32 73l42-27 38 12 48-36 44 18 43-23" fill="none" stroke="#6f8fff" stroke-width="6" stroke-linecap="round"/><path d="M35 86V55M87 86V40M139 86V66M191 86V34M243 86V20" stroke="#cbd8ea" stroke-width="11" stroke-linecap="round"/></g></svg></div></div><div class="card panel audit-tools-v9">
  <div class="panel-head"><div><div class="audit-eyebrow-v9">DAFTAR AUDIT / KEW.PA-6</div><div class="panel-title">Semua sejarah pinjaman, satu cetakan.</div><div class="panel-sub">Termasuk selesai, aktif, menunggu kelulusan, diluluskan, lewat, ditolak dan dibatalkan.</div></div><button class="btn btn-primary" id="auditLoadV9">Muat semua sejarah</button></div>
  <div class="audit-help-v9">Format berdasarkan borang contoh anda. Setiap baris mewakili satu item bagi satu pinjaman. Ruang tandatangan dikekalkan kosong. Rekod yang telah dipadam kekal tidak dapat dipulihkan melalui laporan ini.</div>
@@ -1308,7 +1325,7 @@ async function exactLoanStatusV92(id){
  return loan;
 }
 function expectedLoanV92(action){
- return {approve:['DILULUSKAN'],reject:['DITOLAK'],checkout:['DIPINJAM','HAMPIR_DUE','LEWAT'],return:['DIPULANGKAN'],cancel:['DIBATALKAN']}[action]||[];
+ return {approve:['DIPINJAM','HAMPIR_DUE','LEWAT'],reject:['DITOLAK'],checkout:['DIPINJAM','HAMPIR_DUE','LEWAT'],return:['DIPULANGKAN'],cancel:['DIBATALKAN']}[action]||[];
 }
 function finishLoanV92(id,pending,result){
  const loan=cleanLoanV92(result,id);
@@ -1320,7 +1337,7 @@ function finishLoanV92(id,pending,result){
   const h=$('#auditLoadStatusV9');if(h)h.textContent='Ada perubahan pinjaman selepas laporan dimuatkan. Tekan Muat semua sejarah sebelum cetakan baharu.';
   auditStateV9.complete=false;setAuditReadyV9(false);
  }
- const messages={approve:'Pinjaman diluluskan. Aset kekal RESERVED sehingga check-out.',reject:'Permohonan ditolak.',checkout:'Check-out disahkan.',return:'Pemulangan disahkan.',cancel:'Pembatalan disahkan.'};
+ const messages={approve:'Pinjaman diluluskan dan aset terus direkod sebagai DIPINJAM.',reject:'Permohonan ditolak.',checkout:'Pengeluaran disahkan.',return:'Pemulangan disahkan.',cancel:'Pembatalan disahkan.'};
  const message=result?.warning||messages[pending.action]||'Status dikemas kini.';
  const duration=typeof result?.server_ms==='number'?' | Masa server '+(result.server_ms/1000).toFixed(2)+'s':'';
  loanMessageV92(id+': '+message+duration,result?.warning?'warning':'ok');
@@ -2418,7 +2435,7 @@ function loanActionButtons(loan){
  const s=String(loan.status||'').trim().toUpperCase();let primary='';
  if(['MENUNGGU_KELULUSAN','PERMOHONAN_BARU'].includes(s)){
   primary=`<button type="button" class="btn btn-sm btn-green" onclick="loanAction('approve','${attr(id)}')">Lulus</button><button type="button" class="btn btn-sm btn-danger" onclick="loanAction('reject','${attr(id)}')">Tolak</button>`;
- }else if(s==='DILULUSKAN')primary=`<button type="button" class="btn btn-sm btn-primary" onclick="loanAction('checkout','${attr(id)}')">Check-out</button>`;
+ }else if(s==='DILULUSKAN')primary=`<button type="button" class="btn btn-sm btn-green" onclick="loanAction('approve','${attr(id)}')">Lengkapkan Kelulusan</button>`;
  else if(['DIPINJAM','HAMPIR_DUE','LEWAT'].includes(s))primary=`<button type="button" class="btn btn-sm btn-green" onclick="loanAction('return','${attr(id)}')">Pulang Semua</button>`;
  const cancel=isSuperAdmin()?`<button type="button" class="asset-icon-btn inactive" title="Batal dan hapus rekod" onclick="purgeLoanAdmin('${attr(id)}')">&#10005;</button>`:'';
  return `<div class="action-row">${primary}<button type="button" class="btn btn-sm loan-register-btn" onclick="openMovementRegister('${attr(id)}')">Daftar</button><button type="button" class="btn btn-sm loan-pdf-btn" onclick="openMovementRegisterPdf('${attr(id)}')">PDF</button>${cancel}</div>`;
