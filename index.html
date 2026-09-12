@@ -926,13 +926,30 @@ html,body{max-width:100%;overflow-x:hidden}
 .loan-message-v92{padding:11px 16px;margin-bottom:13px;background:#edf6ff;color:#205675;border:1px solid #c8dfed;border-top:0;border-radius:0 0 12px 12px;font-size:11px;line-height:1.6;overflow-wrap:anywhere;min-height:42px}.loan-message-v92[data-kind="error"]{background:#fff2f4;color:#923047;border-color:#efc8d1}.loan-message-v92[data-kind="warning"]{background:#fff7e6;color:#805710;border-color:#efddb8}.loan-message-v92[data-kind="ok"]{background:#effaf5;color:#166344;border-color:#c5e7d6}
 .loan-task-v92{display:flex;gap:6px;align-items:center;font-size:11px;color:#436b82}.loan-busy-v92{min-width:160px}.loan-spin-v92{width:12px;height:12px;border:2px solid #c3d9e8;border-top-color:#1479bb;border-radius:50%;animation:approvalSpinV92 .8s linear infinite}@keyframes approvalSpinV92{to{transform:rotate(360deg)}}@media(prefers-reduced-motion:reduce){.loan-spin-v92{animation:none}}
 </style>
+
+<style id="pkpjAdminV104Style">
+/* V10.4 - Login Staf IT + paparan tandatangan audit */
+#operatorSwitchBtn{display:grid!important;place-items:center!important}
+.admin-login-overlay{background:radial-gradient(circle at 18% 12%,#f8fbff 0 11%,transparent 31%),linear-gradient(135deg,#edf5ff,#e1ecf9)!important}
+.admin-login-card{width:min(470px,calc(100vw - 28px))!important;padding:34px 34px 30px!important;border-radius:28px!important;background:#edf4fc!important;border:1px solid rgba(255,255,255,.94)!important;box-shadow:18px 18px 46px rgba(127,151,183,.32),-16px -16px 42px rgba(255,255,255,.94)!important}
+.admin-login-logo{width:78px!important;height:78px!important;margin:0 auto 18px!important;border-radius:23px!important;background:linear-gradient(145deg,#f9fbff,#dde8f5)!important;box-shadow:8px 8px 18px rgba(139,160,188,.32),-8px -8px 18px #fff!important}
+.admin-login-card h2{text-align:center;margin-bottom:8px!important;color:#123c70!important}.admin-login-card>p{text-align:center!important;line-height:1.55!important;color:#66809e!important;margin-bottom:22px!important}
+.admin-login-card label{font-size:11px;font-weight:850;color:#415f80;display:block;margin:0 0 7px 4px}
+.admin-login-card select.field{min-height:50px;border:0!important;background:#e9f1fa!important;box-shadow:inset 5px 5px 11px rgba(153,174,201,.35),inset -5px -5px 11px #fff!important}
+.admin-login-btn{width:100%;min-height:50px;margin-top:14px!important}
+.admin-login-info{font-size:11px;line-height:1.55;color:#7b5260;background:#fff4f6;border:1px solid #f0ccd4;border-radius:12px;padding:12px}
+.movement-signature{display:block;max-width:82px;max-height:42px;margin:auto;object-fit:contain;filter:contrast(1.08)}
+.sig-status{font-size:8px;color:#9a6b72;line-height:1.25}.sig-role{display:block;margin-top:3px;font-size:7.5px;color:#6684a0;font-weight:600}
+.movement-register .sig-cell{vertical-align:middle;text-align:center}
+</style>
+
 </head>
 <body>
 <div class="admin-login-overlay" id="adminLoginOverlay">
   <div class="admin-login-card">
     <div class="admin-login-logo"><img src="pkpj-premium.png" alt="PKPJ"></div>
     <h2>Log Masuk Pengurusan ICT</h2>
-    <p>Pilih nama staf IT. Nama ini akan direkod sebagai pegawai yang meluluskan pinjaman.</p>
+    <p>Portal ini hanya untuk staf IT. Pegawai yang dipilih akan direkod secara automatik sebagai pegawai yang memproses dan meluluskan pinjaman.</p>
 
     <div id="operatorExistingBox">
       <label>Nama Staf IT</label>
@@ -943,10 +960,7 @@ html,body{max-width:100%;overflow-x:hidden}
     </div>
 
     <div class="operator-bootstrap hidden" id="operatorBootstrapBox">
-      <div class="admin-login-info">Belum ada Super Admin. Daftarkan nama pertama untuk memulakan sistem.</div>
-      <label>Nama Super Admin Pertama</label>
-      <input class="field" id="operatorBootstrapName" placeholder="Contoh: Muhammad Faizal">
-      <button class="btn btn-primary admin-login-btn" type="button" id="operatorBootstrapBtn">Daftar & Masuk</button>
+      <div class="admin-login-info">Senarai Staf IT belum tersedia. Pastikan Code.gs V10.4 telah deploy. Sistem akan menyediakan 4 akses awal secara automatik.</div>
     </div>
   </div>
 </div>
@@ -959,7 +973,7 @@ html,body{max-width:100%;overflow-x:hidden}
 <button class="nav-btn" data-view="settings"><span class="nav-ico">⚙</span>Tetapan</button>
 </nav><div class="sidebar-bottom">
       <div class="operator-mini" id="operatorMini">
-        <div><strong id="operatorName">Portal Bersepadu</strong><span id="operatorRole">Super Admin</span></div>
+        <div><strong id="operatorName">Belum log masuk</strong><span id="operatorRole">Staf IT</span></div>
         <button type="button" id="operatorSwitchBtn" title="Tukar pengguna">⇄</button>
       </div><div class="connection-mini hidden-technical"><span class="dot" id="sideDot"></span><strong id="sideStatus"></strong><div id="sideHint"></div></div></div></aside>
 <main class="main"><header class="topbar" id="topbar"><div style="display:flex;align-items:center;gap:12px"><button class="btn mobile-menu" id="mobileMenu">☰</button><div class="page-title"><h1 id="pageHeading">Paparan Utama</h1><p id="pageSubtitle">Ringkasan keseluruhan inventori dan pinjaman sistem.</p></div></div><div class="top-actions"><button class="btn desktop-only" id="refreshBtn">↻ Muat Semula</button><button class="btn btn-primary" id="quickAddBtn">＋ Tambah Rekod</button></div></header>
@@ -1100,10 +1114,10 @@ html,body{max-width:100%;overflow-x:hidden}
       </div>
     </details>
 
-    <details class="settings-accordion super-admin-only hidden-system" aria-hidden="true">
+    <details class="settings-accordion super-admin-only">
       <summary>
         <span class="settings-acc-icon">🔐</span>
-        <span><b>Akses Pentadbir & Staf IT</b><small>Akses dikawal oleh Portal Bersepadu.</small></span>
+        <span><b>Akses Portal Admin — Staf IT</b><small>Super Admin boleh tambah, aktif/nyahaktif dan tetapkan peranan staf IT.</small></span>
         <i>＋</i>
       </summary>
       <div class="settings-accordion-body">
@@ -1556,7 +1570,6 @@ function bindActions(){
   $('#movementPdfBtn').onclick=openMovementPdf;
   $('#operatorSwitchBtn')?.addEventListener('click',showOperatorLogin);
   $('#operatorLoginBtn')?.addEventListener('click',operatorLogin);
-  $('#operatorBootstrapBtn')?.addEventListener('click',bootstrapSuperAdmin);
   $('#addItOperatorBtn')?.addEventListener('click',addItOperator);
   $('#saveCategorySettingsBtn')?.addEventListener('click',saveCategorySettings);
 }
@@ -2415,7 +2428,11 @@ async function loanAction(action,loanId,alreadyConfirmed=false){
  loanEpochV92++;setLoanPendingV92(id,p);
  loanMessageV92(id+': arahan dihantar sekali. Menunggu pengesahan server...');
  try{
-  const result=await postApi(apiMap[action],{loan_id:id},{requestId:p.requestId});
+  const result=await postApi(apiMap[action],{
+    loan_id:id,
+    actor_user_id:state.operator?.user_id||'',
+    actor_name:state.operator?.name||''
+  },{requestId:p.requestId});
   if(finishLoanV92(id,p,result))return;
   // Compact/legacy receipts may omit the row. Verify this ID once, not the whole list.
   const row=await exactLoanStatusV92(id);
@@ -3010,7 +3027,7 @@ function isSuperAdmin(){
 
 
 function operatorStorageKey(){
-  return 'ict_admin_operator_v80';
+  return 'ict_admin_operator_v104';
 }
 
 
@@ -3053,67 +3070,56 @@ function applyOperatorSession(operator){
 
 
 async function initOperatorSession(){
-  // Portal ini dibuka dari Portal Bersepadu yang telah mengurus akses.
-  // Tiada login dalaman diperlukan.
-  const integratedOperator={
-    user_id:'',
-    name:'Portal Bersepadu',
-    role:'SUPER_ADMIN'
-  };
-
-  applyOperatorSession(integratedOperator);
-
-  // Senarai pengguna dimuat di belakang untuk paparan nama sahaja.
-  loadOperatorOptions(false).catch(err=>{
-    console.warn('Operator list background refresh skipped.',err);
-  });
+  applyOperatorSession(null);
+  try{
+    await loadOperatorOptions(true);
+    const stored=readStoredOperator();
+    if(stored?.user_id){
+      const live=(state.users||[]).find(x=>String(x.user_id)===String(stored.user_id));
+      if(live && ['SUPER_ADMIN','STAFF_IT'].includes(String(live.role||'')) && String(live.active||'Ya').toLowerCase()==='ya'){
+        applyOperatorSession({user_id:live.user_id,name:live.name,role:live.role});
+        return;
+      }
+    }
+  }catch(err){
+    console.warn('Senarai Staf IT belum dapat dimuatkan.',err);
+  }
+  applyOperatorSession(null);
 }
-
 
 function showOperatorLogin(){
-  // Login dalaman dinyahaktifkan; kekalkan sesi trusted daripada Portal Bersepadu.
-  applyOperatorSession({
-    user_id:'',
-    name:'Portal Bersepadu',
-    role:'SUPER_ADMIN'
-  });
+  saveStoredOperator(null);
+  applyOperatorSession(null);
+  loadOperatorOptions(true).catch(err=>console.warn(err));
 }
-
 
 async function loadOperatorOptions(force=false){
-  if(force || !state.users.length){
-    try{
-      const res={items:await loadEveryPageV9('users',{sort:'name',order:'asc'})};state.usersCompleteV9=true;
-      state.users=res?.items||state.users||[];
-      state.loadedAt.users=Date.now();
-      saveAdminFastCache();
-    }catch(err){
-      console.warn('Operator list refresh skipped.');
-    }
+  let operators=[];
+  try{
+    const res=await jsonp('admin.operators',{_t:force?Date.now():''},{timeoutMs:12000,retries:0});
+    operators=Array.isArray(res?.items)?res.items:[];
+    const byId=new Map((state.users||[]).map(x=>[String(x.user_id),x]));
+    operators.forEach(x=>byId.set(String(x.user_id),{...(byId.get(String(x.user_id))||{}),...x}));
+    state.users=[...byId.values()];
+    state.loadedAt.users=Date.now();
+    saveAdminFastCache();
+  }catch(err){
+    operators=(state.users||[]).filter(x=>['SUPER_ADMIN','STAFF_IT'].includes(String(x.role||''))&&String(x.active||'Ya').toLowerCase()==='ya');
+    if(!operators.length)throw err;
   }
-
-  const operators=(state.users||[])
-    .filter(x=>
-      ['SUPER_ADMIN','STAFF_IT'].includes(String(x.role||'')) &&
-      String(x.active||'Ya').toLowerCase()==='ya'
-    )
-    .sort((a,b)=>String(a.name||'').localeCompare(String(b.name||'')));
-
+  operators=operators.filter(x=>['SUPER_ADMIN','STAFF_IT'].includes(String(x.role||''))&&String(x.active||'Ya').toLowerCase()==='ya')
+    .sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''),'ms',{sensitivity:'base'}));
   const sel=$('#adminOperatorSelect');
-
   if(sel){
     sel.innerHTML=operators.length
-      ? '<option value="">Pilih nama…</option>'+
-        operators.map(x=>`<option value="${attr(x.user_id)}">${esc(x.name)} — ${x.role==='SUPER_ADMIN'?'Super Admin':'Staf IT'}</option>`).join('')
-      : '<option value="">Belum ada pengguna pentadbir</option>';
+      ? '<option value="">Pilih nama staf IT…</option>'+operators.map(x=>`<option value="${attr(x.user_id)}">${esc(x.name)} — ${x.role==='SUPER_ADMIN'?'Super Admin':'Staf IT'}</option>`).join('')
+      : '<option value="">Akses Staf IT belum tersedia</option>';
   }
-
   $('#operatorExistingBox')?.classList.toggle('hidden',!operators.length);
   $('#operatorBootstrapBox')?.classList.toggle('hidden',!!operators.length);
-
   renderItOperators();
+  return operators;
 }
-
 
 function operatorLogin(){
   const id=$('#adminOperatorSelect')?.value||'';
@@ -3626,14 +3632,19 @@ function movementDate(v){
 }
 
 function movementRowHtml(row,index){
+  const borrowerSig=row.borrower_signature
+    ? `<img class="movement-signature" src="${attr(row.borrower_signature)}" alt="Tandatangan ${attr(row.borrower_name||'peminjam')}">`
+    : `<span class="sig-status">${row.borrower_signed_at?'Fail tandatangan tidak dapat dipaparkan':'Belum ditandatangani'}</span>`;
+  const officer=row.issuing_officer_name||row.approving_officer_name||'';
+  const officerRole=row.issuing_officer_name?'Pegawai pengeluar':(row.approving_officer_name?'Pegawai meluluskan':'');
   return `<tr>
     <td>${index+1}</td>
     <td class="borrower">${esc(row.borrower_name||'')}</td>
     <td>${movementDate(row.issued_date)}</td>
     <td>${movementDate(row.expected_return_date)}</td>
-    <td class="sig-cell"></td>
-    <td class="sig-cell"><span class="sig-name">${esc(row.issuing_officer_name||'')}</span></td>
-    <td>${movementDate(row.issue_officer_date)}</td>
+    <td class="sig-cell">${borrowerSig}</td>
+    <td class="sig-cell"><span class="sig-name">${esc(officer)}</span>${officerRole?`<span class="sig-role">${esc(officerRole)}</span>`:''}</td>
+    <td>${movementDate(row.issue_officer_date||row.approval_date)}</td>
     <td class="sig-cell"><span class="sig-name">${esc(row.returning_officer_name||'')}</span></td>
     <td>${movementDate(row.return_officer_date)}</td>
     <td class="notes">${esc(row.notes||'')}</td>
