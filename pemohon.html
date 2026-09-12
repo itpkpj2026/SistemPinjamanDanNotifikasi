@@ -2094,6 +2094,7 @@ table{max-width:none}
 }
 </style>
 
+<!-- PKPJ Pemohon V11.4.3 PERFORMANCE: fast-first-paint, deferred roster refresh, cached bootstrap -->
 </head>
 <body>
 <div class="login-overlay neo-login-overlay" id="loginOverlay">
@@ -2547,9 +2548,9 @@ function init(){
   if(localStaff.length){
     const refreshRoster=()=>loadStaffNames(true,false);
     if('requestIdleCallback' in window){
-      requestIdleCallback(refreshRoster,{timeout:2200});
+      requestIdleCallback(refreshRoster,{timeout:5000});
     }else{
-      setTimeout(refreshRoster,1400);
+      setTimeout(refreshRoster,3200);
     }
   }else{
     loadStaffNames(false,true);
@@ -2574,7 +2575,7 @@ function init(){
     setTimeout(()=>maybeOpenQrAsset(false),40);
 
     // Refresh data selepas portal sudah terbuka; jangan tahan skrin login.
-    setTimeout(()=>refreshPortal(true),850);
+    setTimeout(()=>refreshPortal(true),1800);
   }
 }
 
@@ -2623,7 +2624,7 @@ function bindUI(){
     if(
       document.visibilityState==='visible' &&
       state.profile &&
-      Date.now()-(state.lastSync||0)>30000
+      Date.now()-(state.lastSync||0)>180000
     ){
       refreshPortal(true);
     }
@@ -2882,7 +2883,7 @@ async function loginApplicant(silent=false){
         name:finalName,
         _t:Date.now()
       },
-      {timeoutMs:12000,retries:0}
+      {timeoutMs:7000,retries:0}
     );
 
     applyBootstrap(data);
@@ -3357,7 +3358,7 @@ async function cancelApplication(id){
       'ok'
     );
 
-    refreshPortal(true);
+    refreshPortal(true,true);
 
   }catch(err){
     hidePrettyLoader();
@@ -3669,7 +3670,7 @@ async function submitApplication(){
       uploadApplicantAttachmentInBackground(saved.loan_id,pendingAttachment);
     }
 
-    setTimeout(()=>refreshPortal(true),1200);
+    setTimeout(()=>refreshPortal(true,true),650);
   }catch(err){
     hidePrettyLoader();
 
@@ -3729,7 +3730,7 @@ async function uploadApplicantAttachmentInBackground(loanId,filePayload){
 }
 
 
-async function refreshPortal(silent=false){
+async function refreshPortal(silent=false,forceFresh=false){
   const who=identity();
 
   if(!who.user_id && !who.name) return null;
@@ -3745,9 +3746,10 @@ async function refreshPortal(silent=false){
         {
           user_id:who.user_id,
           name:who.name,
+          fresh:forceFresh?'1':'',
           _t:Date.now()
         },
-        {timeoutMs:8000,retries:0}
+        {timeoutMs:6500,retries:0}
       );
 
       applyBootstrap(data);
@@ -3801,7 +3803,7 @@ function loanProgress(status){
   return `<div class="loan-progress-mini">${steps.map((_,i)=>`<i class="${i<=index?'done':''}"></i>`).join('')}<small>${index===0?'Menunggu ICT':index===1?'Sedia untuk diambil':index===2?'Sedang dipinjam':'Selesai'}</small></div>`;
 }
 
-function jsonpOnce(action,params={},timeoutMs=30000){
+function jsonpOnce(action,params={},timeoutMs=12000){
  return new Promise((resolve,reject)=>{
   const cb='__pemohon_'+Date.now()+'_'+Math.random().toString(36).slice(2),script=document.createElement('script');
   let settled=false,timer;
@@ -3816,7 +3818,7 @@ function jsonpOnce(action,params={},timeoutMs=30000){
 }
 
 async function jsonp(action,params={},options={}){
-  const timeoutMs=options.timeoutMs||30000;
+  const timeoutMs=options.timeoutMs||12000;
   const retries=Number.isFinite(options.retries)?options.retries:0;
   let lastErr=null;
 
@@ -4055,7 +4057,7 @@ async function saveBorrowerSignature(){
     const loan=(state.loans||[]).find(x=>String(x.loan_id)===String(loanId));
     if(loan){loan.borrower_signature_saved=true;loan.borrower_signed_at=result?.borrower_signed_at||new Date().toISOString();}
     renderMyLoans();closeSignatureModal();toast('Tandatangan disimpan','Tandatangan akan dipaparkan dalam Daftar Pergerakan Harta Modal & Inventori.','ok');
-    setTimeout(()=>refreshPortal(true),700);
+    setTimeout(()=>refreshPortal(true,true),500);
   }catch(err){toast('Tandatangan belum disimpan',friendlyPortalError(err),'err');}
   finally{btn.disabled=false;btn.textContent=old;}
 }
