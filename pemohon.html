@@ -2123,7 +2123,7 @@ table{max-width:none}
 </style>
 
 <style id="pkpj-v116-premium-popup-ui">
-/* ===== PKPJ V11.6 ICON-FIRST + POPUP + NEUMORPHIC ===== */
+/* ===== PKPJ V11.6 ICON-FIRST + POPUP + NEUMORPHIC + V11.7 PATCH ===== */
 :root{--neo-light:rgba(255,255,255,.96);--neo-dark:rgba(91,124,156,.28)}
 button,.btn,.nav-btn,.equipment-category-launcher-v116,.category-popup-asset-v116{transition:transform .18s cubic-bezier(.2,.75,.25,1),box-shadow .18s ease,border-color .18s ease,filter .18s ease!important}
 .btn,#loginBtn,.manual-name-btn,.nav-btn,.equipment-category-launcher-v116,.category-popup-asset-v116{
@@ -2157,6 +2157,25 @@ button:not(:disabled):active,.btn:not(:disabled):active,.equipment-category-laun
 @media(max-width:430px){.equipment-category-launchers-v116{grid-template-columns:repeat(2,minmax(0,1fr))}.category-popup-grid-v116{grid-template-columns:1fr 1fr}.category-popup-photo-v116{height:112px}.category-popup-info-v116{padding:10px}.category-popup-info-v116 h3{font-size:11px}}
 @media(max-width:720px){button:not(:disabled):hover,.btn:not(:disabled):hover,.equipment-category-launcher-v116:hover,.category-popup-asset-v116:hover{transform:none!important}button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.98)!important}}
 @media(prefers-reduced-motion:reduce){button,.btn,.nav-btn,.equipment-category-launcher-v116,.category-popup-asset-v116{transition:none!important}}
+</style>
+
+
+<style id="pkpj-v117-bulk-guide-success">
+/* ===== PKPJ V11.7 BULK + INFO + CONFIRM SUCCESS ===== */
+/* Panduan hanya ikon i supaya sidebar lebih kemas */
+.nav-btn[data-view="guide"]{width:46px!important;min-height:46px!important;padding:7px!important;justify-content:center!important;margin:6px auto 0!important;border-radius:15px!important}
+.nav-btn[data-view="guide"] .nav-ico{margin:0!important;width:32px!important;height:32px!important;border-radius:50%!important;font-family:Georgia,serif!important;font-size:18px!important;font-weight:900!important}
+.nav-btn[data-view="guide"] .nav-label-v117{display:none!important}
+
+/* Bulk tools */
+.bulk-select-bar-v117{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 10px;padding:9px 10px;border:1px solid #dce8f1;border-radius:13px;background:linear-gradient(145deg,#f9fcff,#eef5fa)}
+.bulk-select-bar-v117.hidden{display:none!important}.bulk-select-count-v117{font-size:10px;font-weight:900;color:#55738a;margin-right:auto}.bulk-select-btn-v117{min-height:36px!important;padding:8px 11px!important;font-size:10px!important}
+.category-bulk-btn-v117{border:0;border-radius:13px;padding:10px 13px;font-size:10px;font-weight:900;color:#fff;background:linear-gradient(145deg,#1479d1,#24b8c8);box-shadow:0 9px 18px rgba(21,122,180,.22);white-space:nowrap}
+.category-bulk-btn-v117.hidden{display:none!important}
+
+/* Success menunggu pengguna tekan OK */
+.submit-success-v115.show{pointer-events:auto!important}.submit-success-ok-v117{width:100%;min-height:46px;margin-top:16px;border:0;border-radius:14px;color:#fff;font-weight:900;font-size:12px;background:linear-gradient(135deg,#168c68,#2ac88f);box-shadow:-4px -4px 11px rgba(255,255,255,.88),7px 8px 18px rgba(24,139,101,.25);cursor:pointer}.submit-success-ok-v117:hover{transform:translateY(-2px)}.submit-success-ok-v117:active{transform:translateY(1px) scale(.985)}
+@media(max-width:720px){.bulk-select-bar-v117{position:sticky;top:0;z-index:3}.category-bulk-btn-v117{padding:9px 10px}.submit-success-ok-v117{min-height:48px;font-size:13px}}
 </style>
 
 </head>
@@ -2240,7 +2259,7 @@ button:not(:disabled):active,.btn:not(:disabled):active,.equipment-category-laun
     <button class="nav-btn" data-view="apply"><span class="nav-ico">＋</span>Mohon Pinjaman</button>
     <button class="nav-btn" data-view="myloans"><span class="nav-ico">▤</span>Permohonan Saya</button>
     <button class="nav-btn" data-view="assets"><span class="nav-ico">▣</span>Peralatan Tersedia</button>
-    <button class="nav-btn" data-view="guide"><span class="nav-ico">?</span>Panduan</button>
+    <button class="nav-btn" data-view="guide" title="Panduan" aria-label="Panduan"><span class="nav-ico">i</span><span class="nav-label-v117">Panduan</span></button>
   </nav>
   <div class="sidebar-foot">
     <div class="api-chip hidden-technical"><span class="dot" id="apiDot"></span><span id="apiText"></span></div>
@@ -2340,7 +2359,7 @@ button:not(:disabled):active,.btn:not(:disabled):active,.equipment-category-laun
             <small id="loanModalStockText">0 aset tersedia</small>
           </div>
         </div>
-        <div class="loan-modal-assets" id="loanModalAssets"></div>
+        <div class="bulk-select-bar-v117 hidden" id="loanBulkBarV117"><span class="bulk-select-count-v117" id="loanBulkCountV117">0 dipilih</span><button class="btn bulk-select-btn-v117" type="button" id="loanSelectAllV117">Pilih Semua</button><button class="btn bulk-select-btn-v117" type="button" id="loanClearAllV117">Kosongkan</button></div><div class="loan-modal-assets" id="loanModalAssets"></div>
       </div>
 
       <div class="loan-modal-section">
@@ -2474,6 +2493,7 @@ button:not(:disabled):active,.btn:not(:disabled):active,.equipment-category-laun
     <strong>Permohonan berjaya dihantar</strong>
     <p>Permohonan telah diterima dan dihantar untuk tujuan kelulusan ICT.</p>
     <span class="submit-success-id-v115" id="submitSuccessIdV115">—</span>
+    <button type="button" class="submit-success-ok-v117" id="submitSuccessOkV117">OK · Lihat Status Permohonan</button>
   </div>
 </div>
 <div class="toast-wrap" id="toastWrap"></div>
@@ -3320,6 +3340,7 @@ function openLoanRequestModal(categoryKey,preselectAssetId=''){
          Tiada aset ${esc(item.label)} berstatus TERSEDIA buat masa ini.
        </div>`;
 
+  const bulkBarV117=$('#loanBulkBarV117');if(bulkBarV117)bulkBarV117.classList.toggle('hidden',singleMode||assets.length<2);
   syncLoanModalSelection();
 
   $('#loanRequestModal').classList.remove('hidden');
@@ -3346,6 +3367,7 @@ function syncLoanModalSelection(){
   });
 
   const selected=$$('.loan-modal-asset-check:checked').map(x=>x.value);
+  const bulkCountV117=$('#loanBulkCountV117');if(bulkCountV117)bulkCountV117.textContent=`${selected.length} dipilih`;
 
   if(selected.length===1){
     const asset=(state.assets||[]).find(x=>
@@ -4387,7 +4409,7 @@ function premiumAssetArtV116(category){
 function orbV116(category){const [a,b]=paletteV116(category);return `<span class="premium-icon-orb-v116" style="--cat-a:${a};--cat-b:${b};background:linear-gradient(145deg,${a},${b})">${premiumAssetArtV116(category)}</span>`}
 function ensureCategoryPopupV116(){
  if(document.getElementById('categoryPopupV116'))return;
- const el=document.createElement('div');el.id='categoryPopupV116';el.className='category-popup-v116';el.setAttribute('aria-hidden','true');el.innerHTML=`<div class="category-popup-card-v116" role="dialog" aria-modal="true" aria-labelledby="categoryPopupTitleV116"><div class="category-popup-head-v116"><div id="categoryPopupIconV116"></div><div class="category-popup-title-v116"><b id="categoryPopupTitleV116">Peralatan</b><small id="categoryPopupCountV116"></small></div><button type="button" class="category-popup-close-v116" aria-label="Tutup" onclick="closeCategoryPopupV116()">×</button></div><div class="category-popup-body-v116"><div class="category-popup-grid-v116" id="categoryPopupGridV116"></div></div></div>`;document.body.appendChild(el);el.addEventListener('click',e=>{if(e.target===el)closeCategoryPopupV116()});
+ const el=document.createElement('div');el.id='categoryPopupV116';el.className='category-popup-v116';el.setAttribute('aria-hidden','true');el.innerHTML=`<div class="category-popup-card-v116" role="dialog" aria-modal="true" aria-labelledby="categoryPopupTitleV116"><div class="category-popup-head-v116"><div id="categoryPopupIconV116"></div><div class="category-popup-title-v116"><b id="categoryPopupTitleV116">Peralatan</b><small id="categoryPopupCountV116"></small></div><button type="button" class="category-bulk-btn-v117 hidden" id="categoryBulkBtnV117">Mohon Pukal</button><button type="button" class="category-popup-close-v116" aria-label="Tutup" onclick="closeCategoryPopupV116()">×</button></div><div class="category-popup-body-v116"><div class="category-popup-grid-v116" id="categoryPopupGridV116"></div></div></div>`;document.body.appendChild(el);el.addEventListener('click',e=>{if(e.target===el)closeCategoryPopupV116()});
 }
 function categoryAssetsV116(category){const assets=(state.assets||[]).filter(a=>String(a.status||'TERSEDIA').toUpperCase()==='TERSEDIA'||!a.status);if(!category)return assets;return assets.filter(a=>String(a.category||'Lain-lain').trim()===String(category).trim())}
 function openCategoryPopupV116(category){
@@ -4402,6 +4424,43 @@ window.renderApplyCategories=function(){
 }
 document.addEventListener('DOMContentLoaded',()=>{
  ensureCategoryPopupV116();document.querySelectorAll('.nav-btn[data-view]').forEach(btn=>{const ico=btn.querySelector('.nav-ico');if(ico)ico.innerHTML=navIconV116(btn.dataset.view)});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#categoryPopupV116')?.classList.contains('show'))closeCategoryPopupV116()});
+},{once:true});
+</script>
+
+
+<script id="pkpj-v117-bulk-success-script">
+function setAllLoanAssetsV117(checked){
+ $$('.loan-modal-asset-check').forEach(cb=>{if(!cb.disabled)cb.checked=!!checked});
+ syncLoanModalSelection();
+}
+function openBulkCategoryV117(category){
+ const assets=categoryAssetsV116(category);
+ if(!category||!assets.length)return;
+ const key=normalizeLoanCategory(category);
+ closeCategoryPopupV116();
+ setTimeout(()=>openLoanRequestModal(key,''),100);
+}
+/* Success card kekal sehingga pemohon tekan OK. Selepas OK, flow asal terus ke Status Permohonan. */
+function showSubmitSuccessV115(loanId){
+ return new Promise(resolve=>{
+  const el=$('#submitSuccessV115');if(!el){resolve();return}
+  const id=$('#submitSuccessIdV115');if(id)id.textContent=loanId||'Berjaya';
+  const ok=$('#submitSuccessOkV117');let done=false;
+  const finish=()=>{if(done)return;done=true;el.classList.remove('show');el.setAttribute('aria-hidden','true');setTimeout(resolve,180)};
+  if(ok)ok.onclick=finish;
+  el.setAttribute('aria-hidden','false');requestAnimationFrame(()=>el.classList.add('show'));
+ });
+}
+document.addEventListener('DOMContentLoaded',()=>{
+ $('#loanSelectAllV117')?.addEventListener('click',()=>setAllLoanAssetsV117(true));
+ $('#loanClearAllV117')?.addEventListener('click',()=>setAllLoanAssetsV117(false));
+ const bulk=$('#categoryBulkBtnV117');
+ // Wrap popup opener once to expose bulk action only for a real category.
+ const originalOpen=window.openCategoryPopupV116;
+ window.openCategoryPopupV116=function(category){
+  originalOpen(category);
+  if(bulk){bulk.classList.toggle('hidden',!category);bulk.onclick=()=>openBulkCategoryV117(category);}
+ };
 },{once:true});
 </script>
 
