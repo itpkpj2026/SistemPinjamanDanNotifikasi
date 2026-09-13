@@ -5123,5 +5123,69 @@ document.addEventListener('DOMContentLoaded',()=>{
 }
 </style>
 
+
+
+<style id="pkpj-v11132-hero-desktop-fit-fix">
+/* ===== V11.13.2 PEMOHON ONLY =====
+   Hero Utama + desktop category-fit. Final override intentionally placed at end.
+*/
+#view-home .hero{
+  isolation:isolate!important;
+  background-color:#dff1ff!important;
+  background-image:
+    linear-gradient(90deg,
+      rgba(242,249,255,.99) 0%,
+      rgba(240,248,255,.97) 28%,
+      rgba(235,246,254,.82) 45%,
+      rgba(226,241,252,.40) 62%,
+      rgba(218,237,250,.08) 100%),
+    url("pkpj-login-background.jpg"),
+    url("pkpj-login-background(2).jpg")!important;
+  background-position:center,center 54%,center 54%!important;
+  background-size:auto,cover,cover!important;
+  background-repeat:no-repeat,no-repeat,no-repeat!important;
+  border-color:rgba(169,207,234,.72)!important;
+  box-shadow:0 12px 34px rgba(31,92,137,.12)!important;
+}
+#view-home .hero::after{display:none!important}
+#view-home .hero-copy{position:relative!important;z-index:3!important}
+#view-home .hero h2{color:#0c315d!important;text-shadow:0 1px 0 rgba(255,255,255,.45)}
+#view-home .hero p{color:#456985!important}
+
+/* Desktop/tablet lebar. Susunan: Semua, Laptop, WiFi/MiFi, Extension, Accessory. */
+@media (min-width:561px){
+  #loanCategoryGrid .equipment-category-launchers-v116>.pkpj-request-showcase-v1111 .pkpj-request-art-v1111{
+    width:100%!important;height:100%!important;display:grid!important;place-items:center!important;overflow:visible!important;
+  }
+  #loanCategoryGrid .equipment-category-launchers-v116>.pkpj-request-showcase-v1111 .pkpj-request-art-v1111 .custom-setting-art-v119,
+  #loanCategoryGrid .equipment-category-launchers-v116>.pkpj-request-showcase-v1111 .pkpj-request-art-v1111 .category-custom-art-v118{
+    width:100%!important;height:100%!important;display:grid!important;place-items:center!important;overflow:visible!important;
+  }
+  #loanCategoryGrid .equipment-category-launchers-v116>.pkpj-request-showcase-v1111 .pkpj-request-art-v1111 img{
+    display:block!important;width:auto!important;height:auto!important;
+    max-width:76%!important;max-height:74%!important;
+    object-fit:contain!important;object-position:center!important;
+    margin:auto!important;background:transparent!important;border-radius:16px!important;
+    mix-blend-mode:multiply!important;
+  }
+  #loanCategoryGrid .equipment-category-launchers-v116>.pkpj-request-showcase-v1111:nth-child(1) .pkpj-request-art-v1111 img{max-width:76%!important;max-height:72%!important}
+  #loanCategoryGrid .equipment-category-launchers-v116>.pkpj-request-showcase-v1111:nth-child(2) .pkpj-request-art-v1111 img{max-width:68%!important;max-height:66%!important}
+  #loanCategoryGrid .equipment-category-launchers-v116>.pkpj-request-showcase-v1111:nth-child(3) .pkpj-request-art-v1111 img{max-width:50%!important;max-height:68%!important}
+  #loanCategoryGrid .equipment-category-launchers-v116>.pkpj-request-showcase-v1111:nth-child(4) .pkpj-request-art-v1111 img{max-width:86%!important;max-height:68%!important}
+  #loanCategoryGrid .equipment-category-launchers-v116>.pkpj-request-showcase-v1111:nth-child(5) .pkpj-request-art-v1111 img{max-width:78%!important;max-height:70%!important}
+}
+
+@media (max-width:560px){
+  #view-home .hero{
+    background-image:
+      linear-gradient(90deg,rgba(242,249,255,.98) 0%,rgba(239,247,255,.94) 48%,rgba(228,242,252,.62) 72%,rgba(218,237,250,.24) 100%),
+      url("pkpj-login-background.jpg"),
+      url("pkpj-login-background(2).jpg")!important;
+    background-position:center,58% 54%,58% 54%!important;
+    background-size:auto,cover,cover!important;
+  }
+}
+</style>
+
 </body>
 </html>
