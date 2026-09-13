@@ -5440,5 +5440,127 @@ document.addEventListener('DOMContentLoaded',()=>{
 })();
 </script>
 
+
+<style id="pkpj-v11136-engine-laptop-style">
+/* V11.13.6 - Jenis Laptop ikut rekod inventori + fast login/API */
+#laptopTypeGroup{display:none!important}
+</style>
+<script id="pkpj-v11136-engine-laptop-script">
+(function(){
+  const VERSION='11.13.6';
+
+  function recordedLaptopLabelV11136(asset){
+    if(!asset)return '';
+    return [asset.brand,asset.model].filter(Boolean).join(' ').trim() || String(asset.asset_name||asset.asset_tag||asset.asset_id||'').trim();
+  }
+  function syncRecordedLaptopTypeV11136(){
+    if(!window.state||state.loanCategory!=='laptop')return;
+    const input=document.querySelector('#loanLaptopType');if(!input)return;
+    const ids=Array.from(document.querySelectorAll('.loan-modal-asset-check:checked')).map(x=>String(x.value));
+    const labels=[];
+    ids.forEach(id=>{
+      const asset=(state.assets||[]).find(x=>String(x.asset_id)===id);
+      const label=recordedLaptopLabelV11136(asset);
+      if(label&&!labels.includes(label))labels.push(label);
+    });
+    input.value=labels.join(' | ');
+  }
+
+  const syncBase=window.syncLoanModalSelection;
+  if(typeof syncBase==='function'){
+    window.syncLoanModalSelection=function(){const r=syncBase.apply(this,arguments);syncRecordedLaptopTypeV11136();return r};
+  }
+  const openBase=window.openLoanRequestModal;
+  if(typeof openBase==='function'){
+    window.openLoanRequestModal=function(){const r=openBase.apply(this,arguments);syncRecordedLaptopTypeV11136();return r};
+  }
+
+  /* Permohonan dengan tandatangan/base64 terus guna POST + receipt polling.
+     Elak URL JSONP terlalu panjang pada telefon. */
+  const postBase=window.postApi;
+  if(typeof postBase==='function'){
+    window.postApi=async function(action,data={},options={}){
+      const requestId=String(options.requestId||data?.client_request_id||makeApplicantRequestId());
+      let serialized='';try{serialized=JSON.stringify(data||{})}catch(e){}
+      const largeLoan=action==='applicant.loan.create' && (serialized.length>1800 || !!data?.signature_data_url || !!data?.image_data_url);
+      if(largeLoan){
+        const result=await applicantPostFallback(action,data,requestId,options.maxWait||30000);
+        if(result)return result;
+        throw new Error('Server masih memproses permohonan. Semak Permohonan Saya; jangan hantar rekod kali kedua.');
+      }
+      return postBase(action,data,{...options,requestId});
+    };
+  }
+
+  /* Login shell dipaparkan dahulu; cache/data berat hydrate selepas frame pertama. */
+  window.loginApplicant=async function(silent=false){
+    const input=document.querySelector('#loginName');
+    const name=String(input?.value||'').trim();
+    if(!name)return toast('Nama diperlukan','Masukkan nama pemohon.','err');
+    if(!state.selectedUserId){
+      const matches=(state.staffList||[]).filter(x=>String(x.name||'').trim().toLowerCase()===name.toLowerCase());
+      if(matches.length>1){handleNameSearch();return toast('Nama berulang','Pilih akaun yang betul dalam senarai.','err')}
+      if(matches.length===1)state.selectedUserId=String(matches[0].user_id);
+    }
+    const userId=String(state.selectedUserId||'');
+    const selected=(state.staffList||[]).find(x=>String(x.user_id)===userId);
+    const finalName=selected?.name||name;
+    const btn=document.querySelector('#loginBtn');
+    if(btn){btn.disabled=true;const span=btn.querySelector('span');if(span)span.textContent='Membuka portal...';else btn.textContent='Membuka portal...'}
+    localSetV9('ict_applicant_user_id',userId);localSetV9('ict_applicant_name',finalName);
+
+    state.profile={user_id:userId,name:finalName,department:selected?.department||'',unit:selected?.unit||'',role:'PEMOHON'};
+    document.querySelector('#loginOverlay')?.classList.add('hidden');
+    document.querySelector('#sidebar')?.classList.remove('open');
+    try{renderShell();renderHomeView()}catch(e){}
+    if(btn){btn.disabled=false;const span=btn.querySelector('span');if(span)span.textContent='Masuk Portal Pemohon';else btn.textContent='Masuk Portal Pemohon'}
+
+    const cached=userId?readPortalCache(userId):null;
+    requestAnimationFrame(()=>{
+      if(cached){try{applyBootstrap(cached)}catch(e){}}
+      setTimeout(()=>{try{maybeOpenQrAsset(false)}catch(e){}},20);
+    });
+
+    try{
+      const data=await jsonp('applicant.bootstrap',{user_id:userId,name:finalName,_t:Date.now()},{timeoutMs:9000,retries:1});
+      applyBootstrap(data);
+      if(data?.profile?.user_id)localSetV9('ict_applicant_user_id',String(data.profile.user_id));
+      if(data?.profile?.name)localSetV9('ict_applicant_name',String(data.profile.name));
+      savePortalCache(data);setTimeout(()=>maybeOpenQrAsset(true),20);
+      if(!silent)toast('Selamat datang',data?.profile?.name||finalName,'ok');
+    }catch(err){
+      console.warn('Bootstrap latar belum selesai',err);
+      setTimeout(()=>refreshPortal(true,true),1200);
+      setTimeout(()=>refreshPortal(true,true),4200);
+    }
+  };
+
+  /* Live keputusan: revision-first, murah ketika tiada perubahan. */
+  async function pollApplicantFastV11136(){
+    if(document.visibilityState!=='visible'||!state?.profile||state.refreshPromise)return;
+    try{
+      const previous=String(state.loanWatchFingerprintV119||'');
+      const w=await jsonp('applicant.loan_watch',{
+        user_id:state.profile.user_id||'',name:state.profile.name||'',rev:previous,_t:Date.now()
+      },{timeoutMs:3500,retries:0});
+      if(!w?.fingerprint)return;
+      if(w.unchanged){state.loanWatchFingerprintV119=w.fingerprint;return}
+      state.loanWatchFingerprintV119=w.fingerprint;
+      if(Array.isArray(w.items))patchApplicantLoanStatusesV119(w);
+    }catch(e){}
+  }
+  function startFastWatchV11136(){
+    if(state.liveStatusTimerV119){clearInterval(state.liveStatusTimerV119);state.liveStatusTimerV119=null}
+    state.liveStatusTimerV119=setInterval(pollApplicantFastV11136,1500);
+    setTimeout(pollApplicantFastV11136,450);
+  }
+  window.pollApplicantLiveV119=pollApplicantFastV11136;
+  window.startApplicantLiveV119=startFastWatchV11136;
+  document.addEventListener('DOMContentLoaded',startFastWatchV11136,{once:true});
+  window.addEventListener('focus',()=>{if(state?.profile)setTimeout(pollApplicantFastV11136,80)});
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&state?.profile)setTimeout(pollApplicantFastV11136,80)});
+})();
+</script>
+
 </body>
 </html>
