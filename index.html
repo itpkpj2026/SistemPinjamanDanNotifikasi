@@ -1165,7 +1165,12 @@ button:not(:disabled):active,.btn:not(:disabled):active,.asset-icon-btn:not(:dis
 <body>
 <div class="admin-login-overlay neo-admin-login-overlay" id="adminLoginOverlay">
   <div class="neo-admin-scene">
-    <div class="neo-admin-access-badge">STAF IT SAHAJA</div>
+    <div class="neo-admin-access-badge"><span></span> STAF IT SAHAJA</div>
+    <div class="neo-admin-left-copy" aria-hidden="true">
+      <strong>Teknologi<br>Untuk<br>Warga PKPJ</strong>
+      <i></i>
+      <small>MUDAH · CEKAP · TERATUR</small>
+    </div>
     <div class="neo-admin-login-wrap">
       <section class="neo-admin-login-card">
         <div class="neo-admin-logo-bubble"><img src="pkpj-premium.png" alt="PKPJ"></div>
@@ -4990,5 +4995,69 @@ document.addEventListener('DOMContentLoaded',()=>{
 })();
 </script>
 
+
+<style id="pkpj-v10141-exact-login-shared-category-fit">
+/* ===== V10.14.1: Admin login visually mirrors Portal Pemohon ===== */
+.neo-admin-login-overlay{
+ position:fixed!important;inset:0!important;z-index:1000!important;display:flex!important;
+ align-items:center!important;justify-content:center!important;padding:24px!important;overflow:auto!important;
+ color:#163b69!important;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
+ background:linear-gradient(90deg,rgba(236,245,255,.86) 0%,rgba(232,242,253,.72) 44%,rgba(224,238,251,.62) 100%),url('pkpj-login-background.jpg') center center/cover no-repeat!important;
+}
+.neo-admin-login-overlay.hidden{display:none!important}
+.neo-admin-scene{position:relative!important;width:min(1540px,100%)!important;min-height:min(860px,calc(100dvh - 48px))!important;display:flex!important;align-items:center!important;justify-content:center!important;isolation:isolate!important;overflow:hidden!important;border-radius:38px!important;padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important}
+.neo-admin-scene::before,.neo-admin-scene::after{content:"";position:absolute;border-radius:50%;border:58px solid rgba(118,155,206,.07);pointer-events:none;z-index:-2}
+.neo-admin-scene::before{width:360px;height:360px;left:-255px;top:-170px}.neo-admin-scene::after{width:315px;height:315px;left:-215px;bottom:-195px}
+.neo-admin-access-badge{position:absolute!important;right:2.5%!important;left:auto!important;top:18px!important;display:flex!important;align-items:center!important;gap:12px!important;color:#55739c!important;font-size:11px!important;font-weight:900!important;letter-spacing:.28em!important;white-space:nowrap!important;z-index:8!important}
+.neo-admin-access-badge span{width:10px;height:10px;border-radius:50%;background:#2f6fd0;box-shadow:0 0 0 6px rgba(47,111,208,.08)}
+.neo-admin-left-copy{position:absolute;left:6.2%;top:50%;transform:translateY(-42%);width:270px;z-index:4;color:#7592bd}
+.neo-admin-left-copy strong{display:block;font-size:27px;line-height:1.45;letter-spacing:.13em;font-weight:400;text-transform:uppercase}
+.neo-admin-left-copy i{display:block;width:48px;height:4px;border-radius:999px;margin:18px 0 28px;background:linear-gradient(90deg,#1cb7ce,#2ba1e5)}
+.neo-admin-left-copy small{display:block;color:#8ba3c2;font-size:11px;font-weight:800;letter-spacing:.28em;word-spacing:.45em}
+.neo-admin-login-wrap{position:relative!important;width:min(555px,calc(100% - 36px))!important;z-index:6!important;margin:auto!important}
+.neo-admin-login-card{width:100%!important;padding:38px 44px 31px!important;border-radius:34px!important;text-align:center!important;color:#1f416f!important;background:rgba(238,246,255,.86)!important;border:1px solid rgba(255,255,255,.92)!important;backdrop-filter:blur(12px)!important;box-shadow:24px 24px 58px rgba(143,166,196,.33),-18px -18px 44px rgba(255,255,255,.92),inset 1px 1px 0 rgba(255,255,255,.95)!important}
+.neo-admin-logo-bubble{width:86px!important;height:86px!important;margin:0 auto 23px!important;border-radius:26px!important;display:grid!important;place-items:center!important;background:linear-gradient(145deg,#f5f9ff,#dce7f5)!important;box-shadow:10px 10px 24px rgba(147,167,194,.38),-10px -10px 24px #fff!important;border:1px solid rgba(255,255,255,.92)!important}
+.neo-admin-logo-bubble img{display:block!important;width:70px!important;height:70px!important;object-fit:contain!important;mix-blend-mode:normal!important}
+.neo-admin-login-card h1{margin:0!important;color:#0b2e67!important;font-size:34px!important;line-height:1.04!important;letter-spacing:-.045em!important;font-weight:900!important}
+.neo-admin-login-card h1 span{display:block!important;margin-top:7px!important;color:#5f7da5!important;font-size:22px!important;font-weight:700!important;letter-spacing:-.025em!important}
+.neo-admin-login-sub{max-width:420px!important;margin:17px auto 28px!important;color:#6885aa!important;font-size:12.5px!important;line-height:1.65!important}
+.neo-admin-name-group{text-align:left!important;position:relative!important}.neo-admin-name-group>label{display:block!important;margin:0 0 8px 5px!important;color:#49688f!important;font-size:10px!important;font-weight:900!important}
+.neo-admin-input-shell{height:59px!important;border-radius:18px!important;display:flex!important;align-items:center!important;gap:11px!important;padding:0 18px!important;background:rgba(233,241,251,.88)!important;box-shadow:inset 7px 7px 14px rgba(161,179,202,.43),inset -7px -7px 14px #fff!important;border:1px solid rgba(255,255,255,.72)!important}
+.neo-admin-input-icon{width:28px!important;height:28px!important;border-radius:50%!important;display:grid!important;place-items:center!important;color:#326fcb!important;background:rgba(255,255,255,.55)!important;box-shadow:3px 3px 7px rgba(154,173,197,.28),-3px -3px 7px #fff!important;flex:0 0 auto!important}
+.neo-admin-input-shell .field{min-width:0!important;width:100%!important;height:auto!important;padding:0!important;margin:0!important;border:0!important;outline:0!important;box-shadow:none!important;background:transparent!important;color:#284d78!important;font-size:14px!important}
+.neo-admin-input-shell:focus-within{box-shadow:inset 6px 6px 12px rgba(153,175,202,.40),inset -6px -6px 12px #fff,0 0 0 3px rgba(42,139,215,.09)!important}
+.neo-admin-enter-btn{width:100%!important;min-height:59px!important;margin:18px 0 0!important;border:0!important;border-radius:18px!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:14px!important;background:linear-gradient(105deg,#2f69e6 0%,#1e9ee5 55%,#2dc7c7 100%)!important;color:#fff!important;font-size:14px!important;font-weight:900!important;box-shadow:9px 9px 22px rgba(88,137,188,.34),-7px -7px 18px rgba(255,255,255,.92)!important}
+.neo-admin-divider{height:1px!important;margin:22px 0 13px!important;background:linear-gradient(90deg,transparent,#b9c8da,transparent)!important}.neo-admin-login-foot{color:#6c83a1!important;font-size:9px!important;line-height:1.45!important}.neo-admin-login-meta{margin-top:4px!important;color:#91a1b6!important;font-size:8.5px!important;letter-spacing:.02em!important}
+.neo-admin-page-foot{position:absolute!important;left:2.5%!important;right:2.5%!important;bottom:17px!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:20px!important;color:#869dbc!important;font-size:9px!important;z-index:5!important}
+@media(max-width:1050px){.neo-admin-left-copy{left:3.5%;opacity:.55}}
+@media(max-width:860px){.neo-admin-login-overlay{padding:18px!important}.neo-admin-scene{min-height:calc(100dvh - 36px)!important;border-radius:28px!important}.neo-admin-left-copy{display:none!important}.neo-admin-access-badge{right:18px!important;top:14px!important}.neo-admin-page-foot{left:18px!important;right:18px!important;bottom:13px!important}}
+@media(max-width:600px){.neo-admin-login-overlay{padding:0!important;align-items:flex-start!important;background-position:center top!important;background-attachment:scroll!important}.neo-admin-scene{width:100%!important;min-height:100dvh!important;border-radius:0!important;padding:60px 13px 58px!important;overflow:auto!important}.neo-admin-login-wrap{width:min(430px,100%)!important}.neo-admin-login-card{padding:31px 20px 25px!important;border-radius:25px!important;box-shadow:15px 15px 34px rgba(142,163,190,.28),-12px -12px 30px rgba(255,255,255,.9)!important}.neo-admin-logo-bubble{width:72px!important;height:72px!important;border-radius:22px!important;margin-bottom:19px!important}.neo-admin-logo-bubble img{width:58px!important;height:58px!important}.neo-admin-login-card h1{font-size:28px!important}.neo-admin-login-card h1 span{font-size:18px!important;margin-top:5px!important}.neo-admin-login-sub{font-size:11px!important;margin:14px auto 22px!important}.neo-admin-input-shell{height:56px!important}.neo-admin-input-shell .field{font-size:16px!important}.neo-admin-enter-btn{min-height:56px!important;font-size:13px!important}.neo-admin-access-badge{left:19px!important;right:auto!important;top:18px!important;font-size:8px!important;letter-spacing:.18em!important}.neo-admin-page-foot{position:static!important;margin-top:22px!important;display:block!important;text-align:center!important;font-size:8px!important;line-height:1.7!important}.neo-admin-page-foot span{display:block!important}}
+
+/* Shared category image fitting profile -- identical to Portal Pemohon. */
+#view-assets .asset-category-menu .cat-card .emoji{padding:8px!important}
+</style>
+<script id="pkpj-v10141-shared-category-fit-script">
+(function(){
+ function fit(img){
+  if(!img||!img.naturalWidth||!img.naturalHeight)return;
+  const card=img.closest('.cat-card,.pkpj-showcase-card');
+  const label=(card?.textContent||'').toLowerCase();
+  const r=img.naturalWidth/img.naturalHeight;
+  let w=78,h=76;
+  if(/wifi|mifi|modem/.test(label)){w=56;h=72}
+  else if(label.includes('laptop')){w=72;h=68}
+  else if(label.includes('extension')){w=86;h=72}
+  else if(label.includes('accessory')){w=80;h=74}
+  else if(label.includes('semua')){w=78;h=72}
+  else if(r<.82){w=56;h=74}
+  else if(r<1.12){w=68;h=72}
+  else if(r>2.15){w=88;h=68}
+  img.style.setProperty('width',w+'%','important');img.style.setProperty('height',h+'%','important');img.style.setProperty('object-fit','contain','important');img.style.setProperty('object-position','center','important');
+ }
+ function apply(root=document){root.querySelectorAll?.('#view-assets .asset-category-menu .cat-card .emoji img,#view-assets .pkpj-showcase-art img').forEach(img=>{if(img.complete)fit(img);else img.addEventListener('load',()=>fit(img),{once:true})})}
+ const boot=()=>{apply();const host=document.querySelector('#view-assets .asset-category-menu');if(host)new MutationObserver(()=>requestAnimationFrame(()=>apply(host))).observe(host,{childList:true,subtree:true})};
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
+})();
+</script>
 </body>
 </html>
