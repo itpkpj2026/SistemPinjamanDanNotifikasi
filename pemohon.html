@@ -4598,5 +4598,140 @@ window.renderApplyCategories=function(){
 document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{if(state.currentView==='apply')renderApplyCategories()},0)},{once:true});
 </script>
 
+
+<style id="pkpj-v11101-asset-focus-patch">
+/* ===== PKPJ PEMOHON V11.10.1: nama aset di atas gambar + gambar/icon lebih besar ===== */
+.category-popup-asset-v116{border-radius:22px!important;overflow:hidden!important}
+.category-popup-title-top-v11101{padding:13px 14px 9px;font-size:14px;font-weight:900;color:#143855;line-height:1.25;min-height:56px;background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(247,251,255,.96))}
+.category-popup-photo-v116{height:245px!important;padding:0!important;background:linear-gradient(145deg,#eef6fc,#f9fcff)!important}
+.category-popup-photo-v116 img{width:100%!important;height:100%!important;object-fit:cover!important;object-position:center center!important;border-radius:0!important;background:transparent!important}
+.category-popup-info-v116{padding:12px 14px 15px!important}
+.category-popup-info-v116 .cat-line{font-size:10px!important}
+.category-popup-info-v116 h3{display:none!important}
+.category-popup-info-v116 p{font-size:11px!important;color:#6f8398!important}
+.category-popup-info-v116 .meta-tag-v11101{display:block;margin-top:4px;font-size:10px;color:#567188;font-weight:900}
+.category-popup-info-v116 span{margin-top:9px!important}
+.equipment-category-launcher-v116{min-height:188px!important;padding:18px 10px!important}
+.equipment-category-launcher-v116>b{font-size:15px!important;color:#103555!important}
+.premium-icon-orb-v116{width:126px!important;height:126px!important;flex:0 0 126px!important;border-radius:30px!important}
+.premium-asset-art-v116{width:66px!important;height:66px!important}
+.custom-setting-art-v119>img,.category-custom-art-v118>img{width:100%!important;height:100%!important;object-fit:contain!important;border-radius:26px!important;mix-blend-mode:normal!important;filter:drop-shadow(0 12px 14px rgba(22,65,110,.14))!important}
+.category-availability-v1110 strong{font-size:40px!important}
+@media(max-width:900px){
+ .equipment-category-launcher-v116{min-height:176px!important;padding:16px 9px!important}
+ .premium-icon-orb-v116{width:102px!important;height:102px!important;flex-basis:102px!important;border-radius:26px!important}
+ .premium-asset-art-v116{width:54px!important;height:54px!important}
+ .category-popup-photo-v116{height:195px!important}
+ .category-availability-v1110 strong{font-size:34px!important}
+}
+@media(max-width:720px){
+ .equipment-category-launcher-v116{min-height:160px!important;padding:14px 8px!important}
+ .premium-icon-orb-v116{width:88px!important;height:88px!important;flex-basis:88px!important;border-radius:24px!important}
+ .premium-asset-art-v116{width:46px!important;height:46px!important}
+ .category-popup-photo-v116{height:170px!important}
+ .category-popup-title-top-v11101{font-size:12.5px!important;min-height:48px!important;padding:11px 12px 8px!important}
+ .category-availability-v1110 strong{font-size:30px!important}
+}
+@media(max-width:430px){
+ .equipment-category-launcher-v116{min-height:152px!important;padding:12px 6px!important}
+ .premium-icon-orb-v116{width:76px!important;height:76px!important;flex-basis:76px!important;border-radius:20px!important}
+ .premium-asset-art-v116{width:40px!important;height:40px!important}
+ .equipment-category-launcher-v116>b{font-size:12px!important}
+ .category-availability-v1110 strong{font-size:26px!important}
+ .category-popup-photo-v116{height:145px!important}
+ .category-popup-title-top-v11101{font-size:11.8px!important;min-height:44px!important}
+}
+</style>
+<script id="pkpj-v11101-asset-focus-script">
+(function(){
+  function renderPopupAssetsV11101(category){
+    ensureCategoryPopupV116();
+    const assets=categoryAssetsV116(category);
+    const label=category||'Semua Peralatan';
+    const popup=$('#categoryPopupV116');
+    $('#categoryPopupIconV116').innerHTML=orbV116(category||'all');
+    $('#categoryPopupTitleV116').textContent=label;
+    $('#categoryPopupCountV116').textContent=`${assets.length} peralatan tersedia`;
+    const bulk=$('#categoryBulkBtnV117');
+    if(bulk){bulk.classList.toggle('hidden',!category); bulk.onclick=()=>openBulkCategoryV117(category);}
+    const grid=$('#categoryPopupGridV116');
+    grid.innerHTML=assets.length?assets.map(asset=>{
+      const assetName=asset.asset_name||asset.asset_tag||asset.asset_id;
+      const model=[asset.brand,asset.model].filter(Boolean).join(' ')||'Model tidak dinyatakan';
+      const tag=asset.asset_tag?`<span class="meta-tag-v11101">${esc(asset.asset_tag)}</span>`:'';
+      return `<button type="button" class="category-popup-asset-v116" onclick="chooseAssetFromPopupV116('${attr(asset.asset_id)}','${attr(normalizeLoanCategory(asset.category))}')"><div class="category-popup-title-top-v11101">${esc(assetName)}</div><div class="category-popup-photo-v116">${assetThumbHtml(asset,true)}</div><div class="category-popup-info-v116"><div class="cat-line">${esc(asset.category||'Peralatan ICT')}</div><p>${esc(model)}</p>${tag}<span>Pilih peralatan →</span></div></button>`;
+    }).join(''):'<div class="empty" style="grid-column:1/-1">Tiada peralatan tersedia dalam kategori ini.</div>';
+    popup.setAttribute('aria-hidden','false');
+    requestAnimationFrame(()=>popup.classList.add('show'));
+    document.body.style.overflow='hidden';
+  }
+  window.openCategoryPopupV116=renderPopupAssetsV11101;
+})();
+</script>
+
+
+<style id="pkpj-v11102-category-image-75pct">
+/* ===== PEMOHON V11.10.2 : kategori visual 3/4 gambar, 1/4 maklumat =====
+   Visual-only additive patch. Bulk, live status, upload icon dan flow sedia ada kekal. */
+.equipment-category-launchers-v116{
+ grid-template-columns:repeat(auto-fit,minmax(220px,1fr))!important;
+ gap:16px!important;
+}
+.equipment-category-launcher-v116{
+ min-height:218px!important;
+ padding:10px 12px 14px!important;
+ justify-content:flex-start!important;
+ overflow:hidden!important;
+}
+/* Default premium icon lebih besar. */
+.premium-icon-orb-v116{
+ width:118px!important;height:118px!important;flex:0 0 118px!important;
+ border-radius:27px!important;margin:8px auto 7px!important;
+}
+.premium-asset-art-v116{width:66px!important;height:66px!important}
+/* Bila gambar custom wujud, gambar guna kira-kira 3/4 kad. */
+.equipment-category-launcher-v116>.premium-icon-orb-v116:has(.custom-setting-art-v119),
+.equipment-category-launcher-v116>.premium-icon-orb-v116:has(.category-custom-art-v118){
+ width:100%!important;height:146px!important;flex:0 0 146px!important;
+ margin:0 0 5px!important;border-radius:20px!important;
+ background:transparent!important;box-shadow:none!important;border:0!important;overflow:hidden!important;
+}
+.equipment-category-launcher-v116>.premium-icon-orb-v116:has(.custom-setting-art-v119)::after,
+.equipment-category-launcher-v116>.premium-icon-orb-v116:has(.category-custom-art-v118)::after{display:none!important}
+.equipment-category-launcher-v116 .custom-setting-art-v119,
+.equipment-category-launcher-v116 .category-custom-art-v118{
+ width:100%!important;height:100%!important;display:grid!important;place-items:center!important;
+}
+.equipment-category-launcher-v116 .custom-setting-art-v119>img,
+.equipment-category-launcher-v116 .category-custom-art-v118>img{
+ width:96%!important;height:96%!important;
+ object-fit:contain!important;object-position:center!important;
+ mix-blend-mode:multiply!important;background:transparent!important;
+ border-radius:18px!important;
+ filter:drop-shadow(0 9px 13px rgba(24,65,105,.13))!important;
+}
+.equipment-category-launcher-v116>b{font-size:14px!important;margin-top:0!important;line-height:1.15!important}
+.category-availability-v1110{margin-top:5px!important;gap:6px!important}
+.category-availability-v1110 strong{font-size:31px!important}
+.category-availability-v1110 span{font-size:11px!important}
+@media(max-width:900px){
+ .equipment-category-launcher-v116{min-height:194px!important;padding:9px 9px 12px!important}
+ .premium-icon-orb-v116{width:98px!important;height:98px!important;flex-basis:98px!important}
+ .premium-asset-art-v116{width:56px!important;height:56px!important}
+ .equipment-category-launcher-v116>.premium-icon-orb-v116:has(.custom-setting-art-v119),
+ .equipment-category-launcher-v116>.premium-icon-orb-v116:has(.category-custom-art-v118){height:126px!important;flex-basis:126px!important}
+ .category-availability-v1110 strong{font-size:27px!important}
+}
+@media(max-width:430px){
+ .equipment-category-launcher-v116{min-height:166px!important;padding:8px 6px 10px!important}
+ .premium-icon-orb-v116{width:76px!important;height:76px!important;flex-basis:76px!important;border-radius:21px!important}
+ .premium-asset-art-v116{width:43px!important;height:43px!important}
+ .equipment-category-launcher-v116>.premium-icon-orb-v116:has(.custom-setting-art-v119),
+ .equipment-category-launcher-v116>.premium-icon-orb-v116:has(.category-custom-art-v118){height:103px!important;flex-basis:103px!important;border-radius:17px!important}
+ .equipment-category-launcher-v116>b{font-size:11.5px!important}
+ .category-availability-v1110 strong{font-size:23px!important}.category-availability-v1110 span{font-size:9px!important}
+}
+</style>
+
 </body>
 </html>
