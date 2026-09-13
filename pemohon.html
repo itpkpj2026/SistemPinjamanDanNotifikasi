@@ -2098,7 +2098,7 @@ table{max-width:none}
 <!-- PKPJ Pemohon V11.5.0 PERFORMANCE: fast-first-paint, deferred roster refresh, cached bootstrap -->
 
 <style id="pkpj-v115-ui">
-/* ===== PKPJ V11.5 CATEGORY TABS + PREMIUM + FAST ===== */
+/* ===== PKPJ V11.6 ICON-FIRST POPUP + PREMIUM + FAST ===== */
 .nav-btn .nav-ico{width:31px!important;height:31px!important;border-radius:10px!important;display:grid!important;place-items:center!important;color:#fff!important;border:1px solid rgba(255,255,255,.42)!important;box-shadow:0 8px 18px rgba(1,61,101,.18),inset 0 1px 0 rgba(255,255,255,.35)!important;font-weight:900!important}
 .nav-btn:nth-child(1) .nav-ico{background:linear-gradient(145deg,#2a8ef5,#55bfff)!important}.nav-btn:nth-child(2) .nav-ico{background:linear-gradient(145deg,#15a581,#46d0a2)!important}.nav-btn:nth-child(3) .nav-ico{background:linear-gradient(145deg,#775bdd,#aa8cff)!important}.nav-btn:nth-child(4) .nav-ico{background:linear-gradient(145deg,#ef8c23,#ffc457)!important}.nav-btn:nth-child(5) .nav-ico{background:linear-gradient(145deg,#e94f82,#ff87ac)!important}
 .nav-btn.active .nav-ico{box-shadow:0 9px 22px rgba(18,109,175,.24),inset 0 1px 0 rgba(255,255,255,.55)!important}
@@ -2121,6 +2121,44 @@ table{max-width:none}
 @media(max-width:720px){.equipment-category-list-v115{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.equipment-choice-photo{height:132px!important}.equipment-category-tab-v115{min-width:112px;padding:9px}.loan-declaration span{font-size:12.5px!important}.submit-success-card-v115{padding:25px 19px 21px}}
 @media(max-width:430px){.equipment-category-list-v115{grid-template-columns:1fr 1fr}.equipment-choice-photo{height:112px!important}.equipment-choice-body h3{font-size:10.5px!important}.equipment-category-tab-v115{min-width:105px}.equipment-category-icon-v115{width:35px;height:35px;flex-basis:35px}}
 </style>
+
+<style id="pkpj-v116-premium-popup-ui">
+/* ===== PKPJ V11.6 ICON-FIRST + POPUP + NEUMORPHIC ===== */
+:root{--neo-light:rgba(255,255,255,.96);--neo-dark:rgba(91,124,156,.28)}
+button,.btn,.nav-btn,.equipment-category-launcher-v116,.category-popup-asset-v116{transition:transform .18s cubic-bezier(.2,.75,.25,1),box-shadow .18s ease,border-color .18s ease,filter .18s ease!important}
+.btn,#loginBtn,.manual-name-btn,.nav-btn,.equipment-category-launcher-v116,.category-popup-asset-v116{
+ box-shadow:-6px -6px 14px var(--neo-light),7px 8px 17px var(--neo-dark),inset 0 1px 0 rgba(255,255,255,.82)!important;
+}
+.btn-primary,#loginBtn{box-shadow:-5px -5px 13px rgba(255,255,255,.84),8px 9px 20px rgba(20,98,173,.28),inset 0 1px 0 rgba(255,255,255,.3)!important}
+button:not(:disabled):hover,.btn:not(:disabled):hover,.equipment-category-launcher-v116:hover,.category-popup-asset-v116:hover{transform:translateY(-5px)!important;filter:saturate(1.04)}
+.btn:not(:disabled):hover,.equipment-category-launcher-v116:hover,.category-popup-asset-v116:hover{box-shadow:-9px -9px 20px rgba(255,255,255,.98),10px 12px 25px rgba(84,119,154,.34),inset 0 1px 0 rgba(255,255,255,.86)!important}
+button:not(:disabled):active,.btn:not(:disabled):active,.equipment-category-launcher-v116:active,.category-popup-asset-v116:active{transform:translateY(1px) scale(.985)!important;box-shadow:inset 4px 4px 10px rgba(112,139,168,.20),inset -4px -4px 10px rgba(255,255,255,.94)!important}
+.premium-nav-svg-v116{width:18px;height:18px;display:block;stroke:#fff;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.nav-btn .nav-ico{position:relative;overflow:hidden!important}
+.nav-btn .nav-ico::after{content:"";position:absolute;inset:1px;border-radius:9px;background:linear-gradient(145deg,rgba(255,255,255,.32),transparent 58%);pointer-events:none}
+
+/* Paparan awal: ikon kategori sahaja */
+#loanCategoryGrid{display:block!important}.equipment-category-tabs-v115,.equipment-category-list-v115{display:none!important}
+.equipment-category-launchers-v116{display:grid;grid-template-columns:repeat(auto-fit,minmax(138px,1fr));gap:16px;padding:7px 3px 12px}
+.equipment-category-launcher-v116{--cat-a:#2d7fe5;--cat-b:#55baff;position:relative;min-height:154px;border:1px solid color-mix(in srgb,var(--cat-a) 18%,#dce7f1);border-radius:24px;background:linear-gradient(145deg,#fafdff,#eef4fb);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:18px 12px;color:#183b5a;text-align:center;overflow:hidden}
+.equipment-category-launcher-v116::before{content:"";position:absolute;width:90px;height:90px;border-radius:50%;right:-35px;top:-38px;background:var(--cat-a);opacity:.08}
+.equipment-category-launcher-v116 b{font-size:12.5px;margin-top:12px;line-height:1.2}.equipment-category-launcher-v116 small{font-size:9px;color:#71869a;margin-top:4px;font-weight:800}
+.premium-icon-orb-v116{width:78px;height:78px;border-radius:24px;display:grid;place-items:center;background:linear-gradient(145deg,var(--cat-a),var(--cat-b));box-shadow:inset 0 1px 0 rgba(255,255,255,.48),0 16px 28px color-mix(in srgb,var(--cat-a) 26%,transparent);position:relative;overflow:hidden}
+.premium-icon-orb-v116::after{content:"";position:absolute;left:8px;top:7px;width:55%;height:34%;border-radius:50%;background:linear-gradient(180deg,rgba(255,255,255,.42),transparent)}
+.premium-asset-art-v116{width:43px;height:43px;display:block;position:relative;z-index:2;filter:drop-shadow(0 5px 8px rgba(0,32,78,.16))}
+
+/* Popup senarai peralatan */
+.category-popup-v116{position:fixed;inset:0;z-index:245;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(8,27,48,.48);backdrop-filter:blur(8px);opacity:0;pointer-events:none;transition:opacity .18s ease}
+.category-popup-v116.show{opacity:1;pointer-events:auto}.category-popup-card-v116{width:min(1050px,96vw);max-height:88vh;display:flex;flex-direction:column;background:rgba(248,252,255,.985);border:1px solid rgba(255,255,255,.88);border-radius:28px;box-shadow:0 34px 100px rgba(12,48,82,.28);transform:translateY(20px) scale(.975);transition:.22s cubic-bezier(.2,.8,.2,1);overflow:hidden}.category-popup-v116.show .category-popup-card-v116{transform:translateY(0) scale(1)}
+.category-popup-head-v116{display:flex;align-items:center;gap:13px;padding:16px 18px;border-bottom:1px solid #dfe9f2;background:linear-gradient(145deg,#fff,#f2f7fb);position:sticky;top:0;z-index:2}.category-popup-head-v116 .premium-icon-orb-v116{width:52px;height:52px;border-radius:17px;flex:0 0 52px}.category-popup-head-v116 .premium-asset-art-v116{width:29px;height:29px}.category-popup-title-v116{min-width:0;flex:1}.category-popup-title-v116 b{display:block;font-size:17px;color:#153b5b}.category-popup-title-v116 small{display:block;font-size:10px;color:#71869a;margin-top:3px}.category-popup-close-v116{width:42px;height:42px;border:0;border-radius:14px;background:#edf3f8;color:#385a72;font-size:21px;font-weight:800;box-shadow:-4px -4px 10px #fff,5px 6px 13px rgba(93,122,151,.22)!important}
+.category-popup-body-v116{overflow:auto;padding:17px}.category-popup-grid-v116{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.category-popup-asset-v116{border:1px solid #dce7f0;border-radius:20px;overflow:hidden;background:#fff;text-align:left;padding:0;color:#173a57}.category-popup-photo-v116{height:190px;background:linear-gradient(145deg,#edf5fb,#f9fcff);display:flex;align-items:center;justify-content:center;padding:8px;overflow:hidden}.category-popup-photo-v116 img{width:100%;height:100%;object-fit:contain;object-position:center;border-radius:12px;background:#f8fbfe}.category-popup-info-v116{padding:13px 14px 15px}.category-popup-info-v116 .cat-line{font-size:9px;font-weight:900;letter-spacing:.04em;color:#67819a}.category-popup-info-v116 h3{font-size:13px;margin:5px 0 3px;color:#143855}.category-popup-info-v116 p{font-size:10px;color:#75899a;margin:0;line-height:1.45}.category-popup-info-v116 span{display:inline-flex;margin-top:10px;font-size:10px;font-weight:900;color:#1476ca}
+@media(max-width:920px){.category-popup-grid-v116{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:720px){.equipment-category-launchers-v116{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.equipment-category-launcher-v116{min-height:128px;padding:14px 8px;border-radius:19px}.premium-icon-orb-v116{width:62px;height:62px;border-radius:19px}.premium-asset-art-v116{width:34px;height:34px}.category-popup-v116{padding:8px;align-items:flex-end}.category-popup-card-v116{width:100%;max-height:86vh;border-radius:24px 24px 0 0}.category-popup-grid-v116{grid-template-columns:1fr 1fr;gap:9px}.category-popup-photo-v116{height:130px}.category-popup-body-v116{padding:11px}.category-popup-head-v116{padding:12px}}
+@media(max-width:430px){.equipment-category-launchers-v116{grid-template-columns:repeat(2,minmax(0,1fr))}.category-popup-grid-v116{grid-template-columns:1fr 1fr}.category-popup-photo-v116{height:112px}.category-popup-info-v116{padding:10px}.category-popup-info-v116 h3{font-size:11px}}
+@media(max-width:720px){button:not(:disabled):hover,.btn:not(:disabled):hover,.equipment-category-launcher-v116:hover,.category-popup-asset-v116:hover{transform:none!important}button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.98)!important}}
+@media(prefers-reduced-motion:reduce){button,.btn,.nav-btn,.equipment-category-launcher-v116,.category-popup-asset-v116{transition:none!important}}
+</style>
+
 </head>
 <body>
 <div class="login-overlay neo-login-overlay" id="loginOverlay">
@@ -4327,5 +4365,45 @@ window.renderApplyCategories=function(){
 function showSubmitSuccessV115(loanId){return new Promise(resolve=>{const el=$('#submitSuccessV115');if(!el){resolve();return}const id=$('#submitSuccessIdV115');if(id)id.textContent=loanId||'Berjaya';el.setAttribute('aria-hidden','false');requestAnimationFrame(()=>el.classList.add('show'));setTimeout(()=>{el.classList.remove('show');el.setAttribute('aria-hidden','true');setTimeout(resolve,180)},1050)})}
 document.addEventListener('DOMContentLoaded',()=>{state.applyCategoryTabV115='';const s=$('#applyAssetCategory');if(s)s.setAttribute('aria-hidden','true')});
 </script>
+
+<script id="pkpj-v116-icon-popup-script">
+function navIconV116(type){
+ const map={home:'<path d="M3.5 10.5L12 3l8.5 7.5"/><path d="M5.5 9.5V21h13V9.5M9.5 21v-6h5v6"/>',apply:'<path d="M12 5v14M5 12h14"/><circle cx="12" cy="12" r="9"/>',myloans:'<path d="M6 3h12v18H6z"/><path d="M9 8h6M9 12h6M9 16h4"/>',guide:'<circle cx="12" cy="12" r="9"/><path d="M9.7 9a2.4 2.4 0 1 1 3.8 1.95c-.9.55-1.5 1-1.5 2.05M12 17h.01"/>',assets:'<path d="M4 7l8-4 8 4-8 4z"/><path d="M4 7v10l8 4 8-4V7M12 11v10"/>'};
+ return `<svg class="premium-nav-svg-v116" viewBox="0 0 24 24" aria-hidden="true">${map[type]||map.home}</svg>`;
+}
+function paletteV116(category){const c=String(category||'').toLowerCase();if(c==='all')return ['#5367e8','#72b7ff'];if(c.includes('laptop')||c.includes('desktop')||c.includes('monitor'))return ['#1d67df','#55b8ff'];if(c.includes('wifi')||c.includes('mifi')||c.includes('network'))return ['#00a4b7','#48d9d0'];if(c.includes('extension')||c.includes('charger')||c.includes('adapter'))return ['#f08022','#ffc456'];if(c.includes('printer'))return ['#6f52d8','#a68cff'];if(c.includes('camera'))return ['#df4e83','#ff8db2'];if(c.includes('audio'))return ['#e44d66','#ff987a'];if(c.includes('storage'))return ['#0f9f7a','#58d9a9'];if(c.includes('access'))return ['#d93f79','#ff83a9'];return ['#178f7a','#55d0ad']}
+function premiumAssetArtV116(category){
+ const c=String(category||'').toLowerCase();let body='';
+ if(c==='all')body='<rect x="5" y="6" width="14" height="12" rx="3" fill="rgba(255,255,255,.18)"/><path d="M8 9h3v3H8zM13 9h3v3h-3zM8 14h3v2H8zM13 14h3v2h-3z" fill="#fff" stroke="none"/>';
+ else if(c.includes('laptop')||c.includes('desktop')||c.includes('monitor'))body='<rect x="4" y="5" width="16" height="11" rx="2.5" fill="rgba(255,255,255,.2)" stroke="#fff" stroke-width="1.7"/><path d="M7 8h10v6H7z" fill="#fff" opacity=".9" stroke="none"/><path d="M2.8 19h18.4" stroke="#fff" stroke-width="2.1" stroke-linecap="round"/>';
+ else if(c.includes('wifi')||c.includes('mifi')||c.includes('network'))body='<rect x="5" y="14" width="14" height="6" rx="2.5" fill="rgba(255,255,255,.22)" stroke="#fff" stroke-width="1.6"/><circle cx="9" cy="17" r="1" fill="#fff"/><path d="M7 10a7.2 7.2 0 0 1 10 0M9.7 12.5a3.5 3.5 0 0 1 4.6 0" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round"/>';
+ else if(c.includes('extension')||c.includes('charger')||c.includes('adapter'))body='<rect x="4" y="8" width="16" height="10" rx="4" fill="rgba(255,255,255,.18)" stroke="#fff" stroke-width="1.7"/><circle cx="8" cy="13" r="1.5" fill="#fff"/><circle cx="12" cy="13" r="1.5" fill="#fff"/><path d="M16 11v4M18 11v4" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/>';
+ else if(c.includes('printer'))body='<path d="M7 8V4h10v4" stroke="#fff" stroke-width="1.7"/><rect x="4" y="8" width="16" height="9" rx="3" fill="rgba(255,255,255,.2)" stroke="#fff" stroke-width="1.7"/><path d="M7 14h10v6H7z" fill="#fff" opacity=".92" stroke="none"/>';
+ else if(c.includes('camera'))body='<path d="M5 8h3l1.4-2h5.2L16 8h3a2 2 0 0 1 2 2v8H3v-8a2 2 0 0 1 2-2z" fill="rgba(255,255,255,.18)" stroke="#fff" stroke-width="1.7"/><circle cx="12" cy="13" r="3" fill="#fff" opacity=".9" stroke="none"/>';
+ else if(c.includes('audio'))body='<path d="M5 14v-3a7 7 0 0 1 14 0v3" stroke="#fff" stroke-width="1.8" fill="none"/><rect x="4" y="13" width="4" height="6" rx="2" fill="#fff"/><rect x="16" y="13" width="4" height="6" rx="2" fill="#fff"/>';
+ else body='<rect x="5" y="5" width="14" height="14" rx="4" fill="rgba(255,255,255,.18)" stroke="#fff" stroke-width="1.7"/><path d="M9 9h6v6H9z" fill="#fff" opacity=".92" stroke="none"/>';
+ return `<svg class="premium-asset-art-v116" viewBox="0 0 24 24" aria-hidden="true">${body}</svg>`;
+}
+function orbV116(category){const [a,b]=paletteV116(category);return `<span class="premium-icon-orb-v116" style="--cat-a:${a};--cat-b:${b};background:linear-gradient(145deg,${a},${b})">${premiumAssetArtV116(category)}</span>`}
+function ensureCategoryPopupV116(){
+ if(document.getElementById('categoryPopupV116'))return;
+ const el=document.createElement('div');el.id='categoryPopupV116';el.className='category-popup-v116';el.setAttribute('aria-hidden','true');el.innerHTML=`<div class="category-popup-card-v116" role="dialog" aria-modal="true" aria-labelledby="categoryPopupTitleV116"><div class="category-popup-head-v116"><div id="categoryPopupIconV116"></div><div class="category-popup-title-v116"><b id="categoryPopupTitleV116">Peralatan</b><small id="categoryPopupCountV116"></small></div><button type="button" class="category-popup-close-v116" aria-label="Tutup" onclick="closeCategoryPopupV116()">×</button></div><div class="category-popup-body-v116"><div class="category-popup-grid-v116" id="categoryPopupGridV116"></div></div></div>`;document.body.appendChild(el);el.addEventListener('click',e=>{if(e.target===el)closeCategoryPopupV116()});
+}
+function categoryAssetsV116(category){const assets=(state.assets||[]).filter(a=>String(a.status||'TERSEDIA').toUpperCase()==='TERSEDIA'||!a.status);if(!category)return assets;return assets.filter(a=>String(a.category||'Lain-lain').trim()===String(category).trim())}
+function openCategoryPopupV116(category){
+ ensureCategoryPopupV116();const assets=categoryAssetsV116(category);const label=category||'Semua Peralatan';const popup=$('#categoryPopupV116');$('#categoryPopupIconV116').innerHTML=orbV116(category||'all');$('#categoryPopupTitleV116').textContent=label;$('#categoryPopupCountV116').textContent=`${assets.length} peralatan tersedia`;
+ const grid=$('#categoryPopupGridV116');grid.innerHTML=assets.length?assets.map(asset=>{const model=[asset.brand,asset.model].filter(Boolean).join(' ')||'Model tidak dinyatakan';return `<button type="button" class="category-popup-asset-v116" onclick="chooseAssetFromPopupV116('${attr(asset.asset_id)}','${attr(normalizeLoanCategory(asset.category))}')"><div class="category-popup-photo-v116">${assetThumbHtml(asset,true)}</div><div class="category-popup-info-v116"><div class="cat-line">${esc(asset.category||'Peralatan ICT')}</div><h3>${esc(asset.asset_name||asset.asset_tag||asset.asset_id)}</h3><p>${esc(model)}</p><span>Pilih peralatan →</span></div></button>`}).join(''):'<div class="empty" style="grid-column:1/-1">Tiada peralatan tersedia dalam kategori ini.</div>';
+ popup.setAttribute('aria-hidden','false');requestAnimationFrame(()=>popup.classList.add('show'));document.body.style.overflow='hidden';
+}
+function closeCategoryPopupV116(){const popup=$('#categoryPopupV116');if(!popup)return;popup.classList.remove('show');popup.setAttribute('aria-hidden','true');document.body.style.overflow='';}
+function chooseAssetFromPopupV116(assetId,key){closeCategoryPopupV116();setTimeout(()=>openLoanRequestModal(key,assetId),110)}
+window.renderApplyCategories=function(){
+ const grid=$('#loanCategoryGrid');if(!grid)return;const assets=(state.assets||[]).filter(a=>String(a.status||'TERSEDIA').toUpperCase()==='TERSEDIA'||!a.status);const search=($('#applyAssetSearch')?.value||'').trim().toLowerCase();const filtered=search?assets.filter(a=>[a.asset_name,a.category,a.brand,a.model,a.asset_tag,a.location].join(' ').toLowerCase().includes(search)):assets;const counts=new Map();filtered.forEach(a=>{const cat=String(a.category||'Lain-lain').trim()||'Lain-lain';counts.set(cat,(counts.get(cat)||0)+1)});const cats=[...counts.keys()].sort((a,b)=>a.localeCompare(b,'ms',{sensitivity:'base'}));const totalEl=$('#applyAvailableCount');if(totalEl)totalEl.textContent=filtered.length;const items=[{name:'',label:'Semua',count:filtered.length},...cats.map(c=>({name:c,label:c,count:counts.get(c)}))];grid.innerHTML=`<div class="equipment-category-launchers-v116">${items.map(t=>{const [a,b]=paletteV116(t.name||'all');return `<button type="button" class="equipment-category-launcher-v116" style="--cat-a:${a};--cat-b:${b}" onclick="openCategoryPopupV116(decodeURIComponent('${encodeURIComponent(t.name)}'))">${orbV116(t.name||'all')}<b>${esc(t.label)}</b><small>${t.count} tersedia</small></button>`}).join('')}</div>`;
+}
+document.addEventListener('DOMContentLoaded',()=>{
+ ensureCategoryPopupV116();document.querySelectorAll('.nav-btn[data-view]').forEach(btn=>{const ico=btn.querySelector('.nav-ico');if(ico)ico.innerHTML=navIconV116(btn.dataset.view)});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#categoryPopupV116')?.classList.contains('show'))closeCategoryPopupV116()});
+},{once:true});
+</script>
+
 </body>
 </html>
