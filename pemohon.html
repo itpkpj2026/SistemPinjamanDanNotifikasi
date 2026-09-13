@@ -2095,7 +2095,32 @@ table{max-width:none}
 }
 </style>
 
-<!-- PKPJ Pemohon V11.4.4 PERFORMANCE: fast-first-paint, deferred roster refresh, cached bootstrap -->
+<!-- PKPJ Pemohon V11.5.0 PERFORMANCE: fast-first-paint, deferred roster refresh, cached bootstrap -->
+
+<style id="pkpj-v115-ui">
+/* ===== PKPJ V11.5 CATEGORY TABS + PREMIUM + FAST ===== */
+.nav-btn .nav-ico{width:31px!important;height:31px!important;border-radius:10px!important;display:grid!important;place-items:center!important;color:#fff!important;border:1px solid rgba(255,255,255,.42)!important;box-shadow:0 8px 18px rgba(1,61,101,.18),inset 0 1px 0 rgba(255,255,255,.35)!important;font-weight:900!important}
+.nav-btn:nth-child(1) .nav-ico{background:linear-gradient(145deg,#2a8ef5,#55bfff)!important}.nav-btn:nth-child(2) .nav-ico{background:linear-gradient(145deg,#15a581,#46d0a2)!important}.nav-btn:nth-child(3) .nav-ico{background:linear-gradient(145deg,#775bdd,#aa8cff)!important}.nav-btn:nth-child(4) .nav-ico{background:linear-gradient(145deg,#ef8c23,#ffc457)!important}.nav-btn:nth-child(5) .nav-ico{background:linear-gradient(145deg,#e94f82,#ff87ac)!important}
+.nav-btn.active .nav-ico{box-shadow:0 9px 22px rgba(18,109,175,.24),inset 0 1px 0 rgba(255,255,255,.55)!important}
+
+/* Category-first applicant catalogue */
+#applyAssetCategory{display:none!important}.apply-equipment-toolbar{margin-bottom:10px!important}
+#loanCategoryGrid{display:block!important}.equipment-category-shell-v115{display:grid;gap:12px}.equipment-category-tabs-v115{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 5px;scrollbar-width:thin}.equipment-category-tab-v115{--cat:#2581dd;min-width:122px;border:1px solid color-mix(in srgb,var(--cat) 24%,#dce8f2);background:linear-gradient(145deg,#fff,color-mix(in srgb,var(--cat) 7%,#fff));border-radius:15px;padding:10px 11px;display:flex;align-items:center;gap:9px;text-align:left;color:#27485f;box-shadow:0 7px 18px rgba(32,79,116,.055);transition:.15s}.equipment-category-tab-v115:hover{transform:translateY(-1px);border-color:var(--cat)}.equipment-category-tab-v115.active{border-color:var(--cat);box-shadow:0 0 0 3px color-mix(in srgb,var(--cat) 11%,transparent),0 10px 24px color-mix(in srgb,var(--cat) 12%,transparent)}
+.equipment-category-icon-v115{flex:0 0 39px;width:39px;height:39px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,var(--cat) 12%,#fff);color:var(--cat);border:1px solid color-mix(in srgb,var(--cat) 18%,#fff)}.equipment-category-icon-v115 svg{width:22px;height:22px}.equipment-category-tab-v115 b{display:block;font-size:10.5px}.equipment-category-tab-v115 small{display:block;font-size:8px;color:#71879a;margin-top:2px}.equipment-category-list-v115{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.equipment-choice-card{border-radius:18px!important;overflow:hidden!important;background:#fff!important;box-shadow:0 8px 24px rgba(28,82,119,.06)!important}.equipment-choice-photo{height:168px!important;background:linear-gradient(145deg,#edf5fb,#f9fcff)!important;padding:6px!important;display:flex!important;align-items:center!important;justify-content:center!important}.equipment-choice-photo img{width:100%!important;height:100%!important;object-fit:contain!important;object-position:center!important;border-radius:11px!important;background:#f7fbff!important}.equipment-choice-body{padding:12px 13px 14px!important}.equipment-choice-category span{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:7px;background:#eef7ff;color:#2681d9}.premium-asset-svg-v115{width:16px;height:16px;display:block}
+
+/* Akuan lebih jelas */
+.loan-declaration{padding:14px 15px!important;border-width:1.5px!important}.loan-declaration span{font-size:13px!important;line-height:1.6!important;font-weight:850!important;color:#173f60!important}.loan-declaration input{width:18px!important;height:18px!important;margin-top:2px!important}
+.loan-application-signature .sig-title{font-size:13px!important;font-weight:900!important}.loan-application-signature .sig-help{font-size:10.5px!important;line-height:1.5!important}
+
+/* Success animation selepas proses server */
+.submit-success-v115{position:fixed;inset:0;z-index:260;display:grid;place-items:center;background:rgba(9,28,49,.42);backdrop-filter:blur(8px);padding:18px;opacity:0;pointer-events:none;transition:opacity .18s}.submit-success-v115.show{opacity:1;pointer-events:auto}.submit-success-card-v115{width:min(390px,92vw);padding:28px 24px 24px;text-align:center;border-radius:25px;background:rgba(255,255,255,.97);border:1px solid #d7e8f2;box-shadow:0 32px 90px rgba(17,62,100,.24);transform:translateY(16px) scale(.96);transition:.28s cubic-bezier(.2,.8,.2,1)}.submit-success-v115.show .submit-success-card-v115{transform:translateY(0) scale(1)}.submit-check-v115{width:78px;height:78px;margin:0 auto 15px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,#15a56e,#42d49a);box-shadow:0 15px 34px rgba(21,165,110,.25);position:relative}.submit-check-v115:before{content:'';width:29px;height:15px;border-left:6px solid #fff;border-bottom:6px solid #fff;transform:rotate(-45deg) translate(2px,-2px);border-radius:2px;animation:checkPopV115 .45s .12s both}.submit-ring-v115{position:absolute;inset:-8px;border-radius:50%;border:2px solid rgba(35,197,137,.28);animation:ringV115 .8s ease-out infinite}.submit-success-card-v115 strong{display:block;font-size:18px;color:#16415f}.submit-success-card-v115 p{margin:7px 0 0;color:#6a8295;font-size:11px;line-height:1.55}.submit-success-id-v115{display:inline-flex;margin-top:12px;padding:6px 10px;border-radius:999px;background:#ebf8f2;color:#14825c;font-size:10px;font-weight:900}
+@keyframes checkPopV115{from{opacity:0;transform:rotate(-45deg) scale(.3) translate(2px,-2px)}to{opacity:1;transform:rotate(-45deg) scale(1) translate(2px,-2px)}}@keyframes ringV115{0%{transform:scale(.82);opacity:.9}100%{transform:scale(1.18);opacity:0}}
+
+@media(max-width:1000px){.equipment-category-list-v115{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:720px){.equipment-category-list-v115{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.equipment-choice-photo{height:132px!important}.equipment-category-tab-v115{min-width:112px;padding:9px}.loan-declaration span{font-size:12.5px!important}.submit-success-card-v115{padding:25px 19px 21px}}
+@media(max-width:430px){.equipment-category-list-v115{grid-template-columns:1fr 1fr}.equipment-choice-photo{height:112px!important}.equipment-choice-body h3{font-size:10.5px!important}.equipment-category-tab-v115{min-width:105px}.equipment-category-icon-v115{width:35px;height:35px;flex-basis:35px}}
+</style>
 </head>
 <body>
 <div class="login-overlay neo-login-overlay" id="loginOverlay">
@@ -2163,7 +2188,7 @@ table{max-width:none}
 
     <div class="neo-page-foot" aria-hidden="true">
       <span>© 2026 PKPJ. Hak Cipta Terpelihara.</span>
-      <span>Sistem ICT &nbsp; | &nbsp; Versi 11.4.4</span>
+      <span>Sistem ICT &nbsp; | &nbsp; Versi 11.5.0</span>
     </div>
   </div>
 </div>
@@ -2403,6 +2428,14 @@ table{max-width:none}
     <strong id="prettyLoaderTitle">Sedang diproses</strong>
     <p id="prettyLoaderMessage">Sila tunggu sebentar…</p>
     <div class="loader-progress"><i></i><i></i><i></i></div>
+  </div>
+</div>
+<div class="submit-success-v115" id="submitSuccessV115" aria-live="polite" aria-hidden="true">
+  <div class="submit-success-card-v115">
+    <div class="submit-check-v115"><span class="submit-ring-v115"></span></div>
+    <strong>Permohonan berjaya dihantar</strong>
+    <p>Permohonan telah diterima dan dihantar untuk tujuan kelulusan ICT.</p>
+    <span class="submit-success-id-v115" id="submitSuccessIdV115">—</span>
   </div>
 </div>
 <div class="toast-wrap" id="toastWrap"></div>
@@ -3669,10 +3702,24 @@ async function submitApplication(){
       );
     }
 
+    // UI optimistik: aset yang baru dipohon terus hilang daripada senarai boleh pinjam.
+    const selectedSetV115=new Set(selected.map(String));
+    const selectedAssetRowsV115=(state.assets||[]).filter(a=>selectedSetV115.has(String(a.asset_id)));
+    state.assets=(state.assets||[]).filter(a=>!selectedSetV115.has(String(a.asset_id)));
+    if(state.kpi)state.kpi.available_assets=state.assets.length;
+    state.loans=[{
+      loan_id:saved.loan_id,request_date:new Date().toISOString(),due_date:due,purpose,
+      status:saved.status||'MENUNGGU_KELULUSAN',borrower_signature_saved:true,
+      items:selectedAssetRowsV115.map(a=>({asset_id:a.asset_id,asset_name:a.asset_name,asset_tag:a.asset_tag,category:a.category}))
+    },...(state.loans||[]).filter(x=>String(x.loan_id)!==String(saved.loan_id))];
+    renderShell();renderApplyCategories();renderMyLoans();
+    try{savePortalCache({profile:state.profile,kpi:state.kpi,available_assets:state.assets,loans:state.loans,public_settings:state.publicSettings});}catch(e){}
+
     state.imagePayload=null;
     resetApplicationSignatureV114();
     closeLoanRequestModal();
     hidePrettyLoader();
+    await showSubmitSuccessV115(saved.loan_id);
     toast('Permohonan berjaya dihantar',`No. permohonan: ${saved.loan_id}`,'ok');
     showView('myloans');
     renderMyLoans();
@@ -3681,7 +3728,10 @@ async function submitApplication(){
       uploadApplicantAttachmentInBackground(saved.loan_id,pendingAttachment);
     }
 
-    setTimeout(()=>refreshPortal(true,true),650);
+    // Server refresh dibuat selepas UI stabil; jangan bebankan transaksi sejurus submit.
+    const refreshAfterSubmitV115=()=>refreshPortal(true,true);
+    if('requestIdleCallback' in window)requestIdleCallback(refreshAfterSubmitV115,{timeout:3200});
+    else setTimeout(refreshAfterSubmitV115,2600);
   }catch(err){
     hidePrettyLoader();
 
@@ -3953,12 +4003,12 @@ function setupApplicationSignatureV114(){
   if(!canvas)return;
   const rect=canvas.getBoundingClientRect();
   if(!rect.width)return;
-  const ratio=Math.max(1,Math.min(2,window.devicePixelRatio||1));
+  const ratio=Math.max(1,Math.min(1.5,window.devicePixelRatio||1));
   canvas.width=Math.max(280,Math.round(rect.width*ratio));
   canvas.height=Math.max(150,Math.round(rect.height*ratio));
   const ctx=canvas.getContext('2d');
   ctx.setTransform(ratio,0,0,ratio,0,0);
-  ctx.lineWidth=2.35;ctx.lineCap='round';ctx.lineJoin='round';ctx.strokeStyle='#17395f';
+  ctx.lineWidth=3.05;ctx.lineCap='round';ctx.lineJoin='round';ctx.strokeStyle='#0b2742';
   applicationSignatureCtxV114=ctx;
   applicationSignatureInkV114=false;
   updateApplicationSignatureStateV114();
@@ -4006,7 +4056,21 @@ function resetApplicationSignatureV114(){
 function applicationSignatureDataUrlV114(){
   const c=$('#applicationSignatureCanvas');
   if(!c||!applicationSignatureInkV114)return '';
-  return c.toDataURL('image/png');
+  // Trim ruang kosong supaya fail tandatangan jauh lebih kecil dan upload lebih laju.
+  try{
+    const ctx=c.getContext('2d'),img=ctx.getImageData(0,0,c.width,c.height),d=img.data;
+    let minX=c.width,minY=c.height,maxX=-1,maxY=-1;
+    for(let y=0;y<c.height;y++)for(let x=0;x<c.width;x++){
+      const a=d[(y*c.width+x)*4+3];if(a>10){if(x<minX)minX=x;if(x>maxX)maxX=x;if(y<minY)minY=y;if(y>maxY)maxY=y;}
+    }
+    if(maxX<0)return '';
+    const pad=Math.max(12,Math.round(Math.min(c.width,c.height)*.035));
+    minX=Math.max(0,minX-pad);minY=Math.max(0,minY-pad);maxX=Math.min(c.width-1,maxX+pad);maxY=Math.min(c.height-1,maxY+pad);
+    const w=maxX-minX+1,h=maxY-minY+1,out=document.createElement('canvas');
+    const maxW=720,scale=Math.min(1,maxW/w);out.width=Math.max(1,Math.round(w*scale));out.height=Math.max(1,Math.round(h*scale));
+    out.getContext('2d').drawImage(c,minX,minY,w,h,0,0,out.width,out.height);
+    return out.toDataURL('image/png');
+  }catch(err){return c.toDataURL('image/png');}
 }
 
 let signatureDrawingV112=false,signatureInkV112=false,signatureCtxV112=null;
@@ -4237,5 +4301,31 @@ document.addEventListener('DOMContentLoaded',bindStaffToolsV9,{once:true});
 
 </script>
 
+
+<script id="pkpj-v115-category-success">
+function categoryColorV115(category){const c=String(category||'').toLowerCase();if(c.includes('laptop')||c.includes('desktop')||c.includes('monitor'))return '#2d7fe5';if(c.includes('wifi')||c.includes('mifi')||c.includes('network'))return '#15a2b8';if(c.includes('extension')||c.includes('charger')||c.includes('adapter'))return '#ef9226';if(c.includes('printer'))return '#7459dc';if(c.includes('camera')||c.includes('audio'))return '#df5686';if(c.includes('access'))return '#e3477b';return '#19a77b'}
+function premiumAssetIconV115(category){const c=String(category||'').toLowerCase();let body='';if(c==='all')body='<path d="M4 7.5h16v11H4z"/><path d="M7 4h4l2 2H7z"/>';else if(c.includes('laptop'))body='<rect x="4" y="5" width="16" height="11" rx="2"/><path d="M2.8 19h18.4"/>';else if(c.includes('wifi')||c.includes('mifi')||c.includes('network'))body='<path d="M5 9.5a10 10 0 0 1 14 0M8 13a6 6 0 0 1 8 0M11 16.5a2 2 0 0 1 2 0"/><circle cx="12" cy="19" r="1" fill="currentColor" stroke="none"/>';else if(c.includes('extension')||c.includes('charger')||c.includes('adapter'))body='<path d="M9 3v6m6-6v6M7 9h10v3a5 5 0 0 1-5 5v4"/>';else if(c.includes('printer'))body='<path d="M7 8V4h10v4M6 17H4v-7h16v7h-2M7 14h10v6H7z"/>';else if(c.includes('camera'))body='<path d="M5 8h3l1.5-2h5L16 8h3a2 2 0 0 1 2 2v8H3v-8a2 2 0 0 1 2-2z"/><circle cx="12" cy="13" r="3"/>';else body='<rect x="5" y="5" width="14" height="14" rx="3"/><path d="M9 9h6v6H9z"/>';return `<svg class="premium-asset-svg-v115" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${body}</svg>`}
+function setApplyCategoryV115(category){state.applyCategoryTabV115=String(category||'');renderApplyCategories();}
+window.renderApplyCategories=function(){
+ const grid=$('#loanCategoryGrid');if(!grid)return;
+ const assets=(state.assets||[]).filter(a=>String(a.status||'TERSEDIA').toUpperCase()==='TERSEDIA'||!a.status);
+ const search=($('#applyAssetSearch')?.value||'').trim().toLowerCase();
+ const counts=new Map();assets.forEach(a=>{const cat=String(a.category||'Lain-lain').trim()||'Lain-lain';counts.set(cat,(counts.get(cat)||0)+1)});
+ const cats=[...counts.keys()].sort((a,b)=>a.localeCompare(b,'ms',{sensitivity:'base'}));
+ if(state.applyCategoryTabV115 && !counts.has(state.applyCategoryTabV115))state.applyCategoryTabV115='';
+ const active=String(state.applyCategoryTabV115||'');
+ const filtered=assets.filter(a=>{
+   if(active&&String(a.category||'Lain-lain').trim()!==active)return false;
+   const hay=[a.asset_name,a.category,a.brand,a.model,a.asset_tag,a.location].join(' ').toLowerCase();return !search||hay.includes(search);
+ });
+ const totalEl=$('#applyAvailableCount');if(totalEl)totalEl.textContent=filtered.length;
+ const tabs=[{name:'',label:'Semua',count:assets.length},...cats.map(c=>({name:c,label:c,count:counts.get(c)}))];
+ const tabHtml=tabs.map(t=>{const enc=encodeURIComponent(t.name),color=categoryColorV115(t.name||'all');return `<button type="button" class="equipment-category-tab-v115 ${active===t.name?'active':''}" style="--cat:${color}" onclick="setApplyCategoryV115(decodeURIComponent('${enc}'))"><span class="equipment-category-icon-v115">${premiumAssetIconV115(t.name||'all')}</span><span><b>${esc(t.label)}</b><small>${t.count} tersedia</small></span></button>`}).join('');
+ const cards=filtered.map(asset=>{const key=normalizeLoanCategory(asset.category),model=[asset.brand,asset.model].filter(Boolean).join(' ')||'Model tidak dinyatakan';return `<button class="equipment-choice-card" type="button" onclick="openLoanRequestModal('${key}','${attr(asset.asset_id)}')"><div class="equipment-choice-photo">${assetThumbHtml(asset,true)}</div><div class="equipment-choice-body"><div class="equipment-choice-category"><span>${premiumAssetIconV115(asset.category)}</span>${esc(asset.category||'Peralatan ICT')}</div><h3>${esc(asset.asset_name||asset.asset_tag||asset.asset_id)}</h3><div class="equipment-choice-model">${esc(model)}</div><div class="equipment-choice-select">Tekan untuk mohon →</div></div></button>`}).join('');
+ grid.innerHTML=`<div class="equipment-category-shell-v115"><div class="equipment-category-tabs-v115">${tabHtml}</div><div class="equipment-category-list-v115">${cards||'<div class="empty" style="grid-column:1/-1">Tiada peralatan tersedia dalam kategori ini.</div>'}</div></div>`;
+};
+function showSubmitSuccessV115(loanId){return new Promise(resolve=>{const el=$('#submitSuccessV115');if(!el){resolve();return}const id=$('#submitSuccessIdV115');if(id)id.textContent=loanId||'Berjaya';el.setAttribute('aria-hidden','false');requestAnimationFrame(()=>el.classList.add('show'));setTimeout(()=>{el.classList.remove('show');el.setAttribute('aria-hidden','true');setTimeout(resolve,180)},1050)})}
+document.addEventListener('DOMContentLoaded',()=>{state.applyCategoryTabV115='';const s=$('#applyAssetCategory');if(s)s.setAttribute('aria-hidden','true')});
+</script>
 </body>
 </html>
