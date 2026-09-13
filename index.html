@@ -2397,7 +2397,70 @@ function printAssetQr(){
         <p>${esc(link)}</p>
         <button onclick="window.print()">Cetak</button>
       </div>
-    </body></html>`);
+    
+<style id="pkpj-v10121-category-image-75pct">
+/* ===== ADMIN V10.12.1 : kategori visual 3/4 gambar, 1/4 maklumat =====
+   Visual-only additive patch. Semua fungsi V10.12/V10.11 kekal. */
+#view-assets .asset-category-menu{
+ grid-template-columns:repeat(auto-fit,minmax(220px,1fr))!important;
+ gap:16px!important;
+}
+#view-assets .asset-category-menu .cat-card{
+ min-height:218px!important;
+ padding:10px 12px 14px!important;
+ justify-content:flex-start!important;
+ overflow:hidden!important;
+}
+/* Ruang visual lebih kurang 3/4 bahagian atas kad. */
+#view-assets .asset-category-menu .cat-card .emoji{
+ width:100%!important;
+ height:146px!important;
+ flex:0 0 146px!important;
+ margin:0 0 5px!important;
+ border-radius:20px!important;
+ overflow:hidden!important;
+ background:transparent!important;
+ border:0!important;
+ box-shadow:none!important;
+}
+#view-assets .asset-category-menu .cat-card .emoji .premium-cat-svg-v107{
+ width:72px!important;height:72px!important;
+}
+#view-assets .custom-cat-image-v1011,
+#view-assets .icon-image-wrap-v1010{
+ width:100%!important;height:100%!important;display:grid!important;place-items:center!important;
+}
+#view-assets .custom-cat-image-v1011>img,
+#view-assets .icon-image-wrap-v1010>img{
+ width:96%!important;height:96%!important;
+ object-fit:contain!important;object-position:center!important;
+ mix-blend-mode:multiply!important;
+ background:transparent!important;
+ filter:drop-shadow(0 9px 13px rgba(24,65,105,.13))!important;
+}
+#view-assets .asset-category-menu .cat-card>b{
+ font-size:14px!important;margin-top:0!important;line-height:1.15!important;
+}
+.admin-cat-availability-v1012{margin-top:5px!important;gap:6px!important}
+.admin-cat-availability-v1012 strong{font-size:31px!important}
+.admin-cat-availability-v1012 span{font-size:11px!important}
+.admin-cat-total-v1012{display:none!important}
+@media(max-width:900px){
+ #view-assets .asset-category-menu .cat-card{min-height:194px!important;padding:9px 9px 12px!important}
+ #view-assets .asset-category-menu .cat-card .emoji{height:126px!important;flex-basis:126px!important}
+ #view-assets .asset-category-menu .cat-card .emoji .premium-cat-svg-v107{width:62px!important;height:62px!important}
+ .admin-cat-availability-v1012 strong{font-size:27px!important}
+}
+@media(max-width:430px){
+ #view-assets .asset-category-menu .cat-card{min-height:166px!important;padding:8px 6px 10px!important}
+ #view-assets .asset-category-menu .cat-card .emoji{height:103px!important;flex-basis:103px!important;border-radius:17px!important}
+ #view-assets .asset-category-menu .cat-card .emoji .premium-cat-svg-v107{width:49px!important;height:49px!important}
+ #view-assets .asset-category-menu .cat-card>b{font-size:11.5px!important}
+ .admin-cat-availability-v1012 strong{font-size:23px!important}.admin-cat-availability-v1012 span{font-size:9px!important}
+}
+</style>
+
+</body></html>`);
   w.document.close();
 }
 
@@ -4175,7 +4238,70 @@ function renderMovementRegister(data){
 function movementPdfDocumentHtml(data){
  // Only this dedicated stylesheet is included: no sidebar, animation, API or tokens.
  const html=buildAuditSheetsV9(data);
- return '<!doctype html><html lang="ms"><head><meta charset="utf-8"><title>Daftar Pergerakan - KEW.PA-6</title><style>'+AUDIT_PRINT_CSS_V9+'</style></head><body><main class="audit-doc-v9">'+html+'</main></body></html>';
+ return '<!doctype html><html lang="ms"><head><meta charset="utf-8"><title>Daftar Pergerakan - KEW.PA-6</title><style>'+AUDIT_PRINT_CSS_V9+'</style></head><body><main class="audit-doc-v9">'+html+'</main>
+<style id="pkpj-v10121-category-image-75pct">
+/* ===== ADMIN V10.12.1 : kategori visual 3/4 gambar, 1/4 maklumat =====
+   Visual-only additive patch. Semua fungsi V10.12/V10.11 kekal. */
+#view-assets .asset-category-menu{
+ grid-template-columns:repeat(auto-fit,minmax(220px,1fr))!important;
+ gap:16px!important;
+}
+#view-assets .asset-category-menu .cat-card{
+ min-height:218px!important;
+ padding:10px 12px 14px!important;
+ justify-content:flex-start!important;
+ overflow:hidden!important;
+}
+/* Ruang visual lebih kurang 3/4 bahagian atas kad. */
+#view-assets .asset-category-menu .cat-card .emoji{
+ width:100%!important;
+ height:146px!important;
+ flex:0 0 146px!important;
+ margin:0 0 5px!important;
+ border-radius:20px!important;
+ overflow:hidden!important;
+ background:transparent!important;
+ border:0!important;
+ box-shadow:none!important;
+}
+#view-assets .asset-category-menu .cat-card .emoji .premium-cat-svg-v107{
+ width:72px!important;height:72px!important;
+}
+#view-assets .custom-cat-image-v1011,
+#view-assets .icon-image-wrap-v1010{
+ width:100%!important;height:100%!important;display:grid!important;place-items:center!important;
+}
+#view-assets .custom-cat-image-v1011>img,
+#view-assets .icon-image-wrap-v1010>img{
+ width:96%!important;height:96%!important;
+ object-fit:contain!important;object-position:center!important;
+ mix-blend-mode:multiply!important;
+ background:transparent!important;
+ filter:drop-shadow(0 9px 13px rgba(24,65,105,.13))!important;
+}
+#view-assets .asset-category-menu .cat-card>b{
+ font-size:14px!important;margin-top:0!important;line-height:1.15!important;
+}
+.admin-cat-availability-v1012{margin-top:5px!important;gap:6px!important}
+.admin-cat-availability-v1012 strong{font-size:31px!important}
+.admin-cat-availability-v1012 span{font-size:11px!important}
+.admin-cat-total-v1012{display:none!important}
+@media(max-width:900px){
+ #view-assets .asset-category-menu .cat-card{min-height:194px!important;padding:9px 9px 12px!important}
+ #view-assets .asset-category-menu .cat-card .emoji{height:126px!important;flex-basis:126px!important}
+ #view-assets .asset-category-menu .cat-card .emoji .premium-cat-svg-v107{width:62px!important;height:62px!important}
+ .admin-cat-availability-v1012 strong{font-size:27px!important}
+}
+@media(max-width:430px){
+ #view-assets .asset-category-menu .cat-card{min-height:166px!important;padding:8px 6px 10px!important}
+ #view-assets .asset-category-menu .cat-card .emoji{height:103px!important;flex-basis:103px!important;border-radius:17px!important}
+ #view-assets .asset-category-menu .cat-card .emoji .premium-cat-svg-v107{width:49px!important;height:49px!important}
+ #view-assets .asset-category-menu .cat-card>b{font-size:11.5px!important}
+ .admin-cat-availability-v1012 strong{font-size:23px!important}.admin-cat-availability-v1012 span{font-size:9px!important}
+}
+</style>
+
+</body></html>';
 }
 function openMovementPdf(){
  if(!currentMovementRegisterData)return toast('Laporan belum sedia','Muat semua sejarah dahulu.','err');
@@ -4567,6 +4693,69 @@ window.renderAssetCategoryCards=function(){
 };
 document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{if(state.assets?.length)renderAssetCategoryCards()},0)},{once:true});
 </script>
+
+
+<style id="pkpj-v10121-category-image-75pct">
+/* ===== ADMIN V10.12.1 : kategori visual 3/4 gambar, 1/4 maklumat =====
+   Visual-only additive patch. Semua fungsi V10.12/V10.11 kekal. */
+#view-assets .asset-category-menu{
+ grid-template-columns:repeat(auto-fit,minmax(220px,1fr))!important;
+ gap:16px!important;
+}
+#view-assets .asset-category-menu .cat-card{
+ min-height:218px!important;
+ padding:10px 12px 14px!important;
+ justify-content:flex-start!important;
+ overflow:hidden!important;
+}
+/* Ruang visual lebih kurang 3/4 bahagian atas kad. */
+#view-assets .asset-category-menu .cat-card .emoji{
+ width:100%!important;
+ height:146px!important;
+ flex:0 0 146px!important;
+ margin:0 0 5px!important;
+ border-radius:20px!important;
+ overflow:hidden!important;
+ background:transparent!important;
+ border:0!important;
+ box-shadow:none!important;
+}
+#view-assets .asset-category-menu .cat-card .emoji .premium-cat-svg-v107{
+ width:72px!important;height:72px!important;
+}
+#view-assets .custom-cat-image-v1011,
+#view-assets .icon-image-wrap-v1010{
+ width:100%!important;height:100%!important;display:grid!important;place-items:center!important;
+}
+#view-assets .custom-cat-image-v1011>img,
+#view-assets .icon-image-wrap-v1010>img{
+ width:96%!important;height:96%!important;
+ object-fit:contain!important;object-position:center!important;
+ mix-blend-mode:multiply!important;
+ background:transparent!important;
+ filter:drop-shadow(0 9px 13px rgba(24,65,105,.13))!important;
+}
+#view-assets .asset-category-menu .cat-card>b{
+ font-size:14px!important;margin-top:0!important;line-height:1.15!important;
+}
+.admin-cat-availability-v1012{margin-top:5px!important;gap:6px!important}
+.admin-cat-availability-v1012 strong{font-size:31px!important}
+.admin-cat-availability-v1012 span{font-size:11px!important}
+.admin-cat-total-v1012{display:none!important}
+@media(max-width:900px){
+ #view-assets .asset-category-menu .cat-card{min-height:194px!important;padding:9px 9px 12px!important}
+ #view-assets .asset-category-menu .cat-card .emoji{height:126px!important;flex-basis:126px!important}
+ #view-assets .asset-category-menu .cat-card .emoji .premium-cat-svg-v107{width:62px!important;height:62px!important}
+ .admin-cat-availability-v1012 strong{font-size:27px!important}
+}
+@media(max-width:430px){
+ #view-assets .asset-category-menu .cat-card{min-height:166px!important;padding:8px 6px 10px!important}
+ #view-assets .asset-category-menu .cat-card .emoji{height:103px!important;flex-basis:103px!important;border-radius:17px!important}
+ #view-assets .asset-category-menu .cat-card .emoji .premium-cat-svg-v107{width:49px!important;height:49px!important}
+ #view-assets .asset-category-menu .cat-card>b{font-size:11.5px!important}
+ .admin-cat-availability-v1012 strong{font-size:23px!important}.admin-cat-availability-v1012 span{font-size:9px!important}
+}
+</style>
 
 </body>
 </html>
