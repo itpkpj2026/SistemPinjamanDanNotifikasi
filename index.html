@@ -881,7 +881,7 @@ html,body{max-width:100%;overflow-x:hidden}
 .audit-doc-v9 .audit-table-v9 .meta-value-v9{text-align:left;font:8.2pt Arial,Helvetica,sans-serif;padding:1mm 1.5mm}
 .audit-doc-v9 .audit-table-v9 tbody tr{break-inside:avoid;page-break-inside:avoid}
 .audit-doc-v9 .audit-table-v9 tbody td{height:15mm}
-.audit-doc-v9 .audit-table-v9 .borrower-v9{text-align:left;font-weight:700;font-size:9pt}
+.audit-doc-v9 .audit-table-v9 .borrower-v9{text-align:center;font-weight:700;font-size:9pt;vertical-align:middle;padding:1.3mm 1.4mm}
 .audit-doc-v9 .borrower-v9 small{display:block;margin-top:1mm;font-size:7pt;font-weight:400;color:#333}
 .audit-doc-v9 .audit-table-v9 .signature-v9{vertical-align:bottom;font-size:7pt;padding-top:9mm}
 .audit-doc-v9 .audit-table-v9 .notes-v9{text-align:left;font-size:7.8pt}
@@ -1063,7 +1063,7 @@ html,body{max-width:100%;overflow-x:hidden}
 </style>
 
 <style id="pkpj-v108-neumorphic-buttons">
-/* ===== PKPJ V10.8 PREMIUM NEUMORPHIC INTERACTION ===== */
+/* ===== PKPJ V10.8 PREMIUM NEUMORPHIC INTERACTION + V10.9 PATCH ===== */
 :root{--neo-light:rgba(255,255,255,.94);--neo-dark:rgba(115,139,166,.30)}
 button,.btn,.asset-icon-btn,.cat-card,.nav-btn{transition:transform .18s cubic-bezier(.2,.75,.25,1),box-shadow .18s ease,border-color .18s ease,filter .18s ease!important}
 .btn,.asset-icon-btn,.loan-register-btn,.loan-pdf-btn,.cat-card{
@@ -1089,6 +1089,38 @@ button:not(:disabled):active,.btn:not(:disabled):active,.asset-icon-btn:not(:dis
 .nav-btn .nav-ico::after{content:"";position:absolute;inset:1px;border-radius:9px;background:linear-gradient(145deg,rgba(255,255,255,.32),transparent 58%);pointer-events:none}
 @media(max-width:760px){button:not(:disabled):hover,.btn:not(:disabled):hover,.asset-icon-btn:not(:disabled):hover,.cat-card:hover{transform:none!important}button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.98)!important}}
 @media(prefers-reduced-motion:reduce){button,.btn,.asset-icon-btn,.cat-card,.nav-btn{transition:none!important}}
+</style>
+
+
+<style id="pkpj-v109-admin-polish">
+/* ===== PKPJ V10.9 COMPACT REPORT + KEW.PA ALIGNMENT ===== */
+#view-reports>.kpis{display:none!important}
+.report-export-compact-v109{display:flex;align-items:center;justify-content:flex-end;gap:8px;margin:10px 0 0;padding:8px 10px;border:1px solid #dce7f1;border-radius:14px;background:linear-gradient(145deg,#f9fcff,#eef4fa);box-shadow:-4px -4px 10px rgba(255,255,255,.92),5px 6px 14px rgba(92,121,150,.12)}
+.report-export-label-v109{margin-right:auto;font-size:10px;font-weight:900;letter-spacing:.05em;color:#54718a}
+.export-icon-btn-v109{width:43px!important;height:43px!important;min-width:43px!important;padding:0!important;border:0!important;border-radius:14px!important;display:grid!important;place-items:center!important;background:linear-gradient(145deg,#f7fbff,#e7eef6)!important;color:#1e6fc5!important;box-shadow:-5px -5px 12px #fff,6px 7px 15px rgba(96,122,151,.23),inset 0 1px 0 rgba(255,255,255,.9)!important}
+.export-icon-btn-v109.loan{color:#138a69!important}.export-icon-btn-v109 svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.export-icon-btn-v109:hover{transform:translateY(-3px)!important}.export-icon-btn-v109:active{transform:translateY(1px) scale(.97)!important;box-shadow:inset 3px 3px 8px rgba(100,126,154,.18),inset -3px -3px 8px #fff!important}
+
+/* Logout: premium dan sama hierarchy dengan sidebar */
+.operator-mini{display:flex!important;flex-wrap:wrap!important;gap:8px!important;align-items:center!important}
+.operator-mini>div:first-child{flex:1 1 100%!important;min-width:0!important}
+.operator-logout-btn{width:100%!important;min-height:43px!important;padding:10px 14px!important;border-radius:13px!important;font-size:11px!important;font-weight:900!important;letter-spacing:.01em!important;background:linear-gradient(145deg,#f7fbff,#e6eef7)!important;color:#24547f!important;border:1px solid rgba(188,207,225,.75)!important;box-shadow:-5px -5px 12px rgba(255,255,255,.92),6px 7px 15px rgba(89,119,150,.20),inset 0 1px 0 rgba(255,255,255,.95)!important}
+.operator-logout-btn:hover{background:linear-gradient(145deg,#fff,#eaf2fa)!important;color:#0d67b8!important;transform:translateY(-2px)!important}
+.operator-logout-btn:active{transform:translateY(1px)!important;box-shadow:inset 3px 3px 8px rgba(99,126,154,.16),inset -3px -3px 8px #fff!important}
+@media(max-width:760px){.operator-logout-btn{width:100%!important;min-height:42px!important;padding:9px 12px!important}.operator-logout-btn .logout-label{display:inline!important}}
+
+/* Panduan statik disorok di bawah ikon i */
+.info-disclosure-v109{display:inline-flex;position:relative;margin:0 0 10px}.info-disclosure-v109 summary{list-style:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;cursor:pointer;font-family:Georgia,serif;font-size:18px;font-weight:800;color:#2677c5;background:linear-gradient(145deg,#f7fbff,#e5eef7);border:1px solid #d8e5ef;box-shadow:-4px -4px 10px #fff,5px 6px 13px rgba(91,121,151,.18)}.info-disclosure-v109 summary::-webkit-details-marker{display:none}.info-disclosure-v109[open] summary{box-shadow:inset 3px 3px 7px rgba(98,124,151,.16),inset -3px -3px 7px #fff}.info-disclosure-body-v109{position:absolute;left:42px;top:0;z-index:15;width:min(520px,calc(100vw - 90px));padding:11px 13px;border-radius:13px;background:#fff;border:1px solid #dce7ef;box-shadow:0 16px 38px rgba(28,72,108,.16);font-size:11px;line-height:1.55;color:#48667e}
+
+/* KEW.PA: peminjam dan pegawai diluruskan pada pusat baris */
+.audit-doc-v9 .audit-table-v9 tbody td{vertical-align:middle!important}
+.audit-doc-v9 .audit-table-v9 .borrower-v9,.audit-doc-v9 .audit-table-v9 .signature-v9{vertical-align:middle!important;padding-top:1.3mm!important;padding-bottom:1.3mm!important}
+.audit-person-v109,.audit-officer-v109{min-height:12mm;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;width:100%;line-height:1.2}
+.audit-person-v109 strong,.audit-officer-v109{font-size:7.6pt!important;font-weight:700!important;color:#111!important}
+.audit-person-v109 small{display:block;margin-top:1.4mm!important;font-size:6.4pt!important;font-weight:400!important;color:#333!important;text-align:center!important}
+/* Gelapkan tandatangan tanpa menambah latar */
+.movement-signature,.borrower-signature-v1064{filter:grayscale(1) contrast(10) brightness(.12)!important;opacity:1!important;mix-blend-mode:multiply!important;max-width:27mm!important;max-height:13mm!important}
+@media print{.movement-signature,.borrower-signature-v1064{filter:grayscale(1) contrast(12) brightness(.08)!important;opacity:1!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}}
 </style>
 
 </head>
@@ -1219,7 +1251,7 @@ button:not(:disabled):active,.btn:not(:disabled):active,.asset-icon-btn:not(:dis
  <div id="auditSummaryV9" class="audit-summary-v9"></div>
  <div class="toolbar" style="margin-top:14px;margin-bottom:0"><button class="btn" id="auditPreviewV9" disabled>Pratonton paparan</button><button class="btn" id="auditPrintFilteredV9" disabled>Cetak paparan ditapis</button><button class="btn btn-green" id="auditPrintAllV9" disabled>Cetak semua sejarah / Simpan PDF</button></div>
 </div>
-<div class="kpis"><div class="card kpi" style="--accent:var(--green)"><div class="kpi-head">ASET TERSEDIA</div><div class="kpi-value" id="reportAvailable">—</div><div class="kpi-foot">Inventori sedia dipinjam</div></div><div class="card kpi" style="--accent:var(--blue)"><div class="kpi-head">ASET DIPINJAM</div><div class="kpi-value" id="reportBorrowed">—</div><div class="kpi-foot">Inventori sedang digunakan</div></div><div class="card kpi" style="--accent:var(--purple)"><div class="kpi-head">PINJAMAN AKTIF</div><div class="kpi-value" id="reportActiveLoans">—</div><div class="kpi-foot">Rekod pinjaman aktif</div></div><div class="card kpi" style="--accent:var(--red)"><div class="kpi-head">PINJAMAN LEWAT</div><div class="kpi-value" id="reportOverdue">—</div><div class="kpi-foot">Perlu dipulangkan</div></div></div><div class="card panel"><div class="panel-head"><div><div class="panel-title">Eksport Data</div><div class="panel-sub">Muat turun rekod semasa dalam format CSV.</div></div></div><div class="toolbar"><button class="btn" onclick="exportCSV('assets')">Export Inventori CSV</button><button class="btn" onclick="exportCSV('loans')">Export Pinjaman CSV</button></div></div></section>
+<div class="kpis"><div class="card kpi" style="--accent:var(--green)"><div class="kpi-head">ASET TERSEDIA</div><div class="kpi-value" id="reportAvailable">—</div><div class="kpi-foot">Inventori sedia dipinjam</div></div><div class="card kpi" style="--accent:var(--blue)"><div class="kpi-head">ASET DIPINJAM</div><div class="kpi-value" id="reportBorrowed">—</div><div class="kpi-foot">Inventori sedang digunakan</div></div><div class="card kpi" style="--accent:var(--purple)"><div class="kpi-head">PINJAMAN AKTIF</div><div class="kpi-value" id="reportActiveLoans">—</div><div class="kpi-foot">Rekod pinjaman aktif</div></div><div class="card kpi" style="--accent:var(--red)"><div class="kpi-head">PINJAMAN LEWAT</div><div class="kpi-value" id="reportOverdue">—</div><div class="kpi-foot">Perlu dipulangkan</div></div></div><div class="report-export-compact-v109" aria-label="Eksport data"><span class="report-export-label-v109">EKSPORT CSV</span><button class="export-icon-btn-v109" type="button" onclick="exportCSV('assets')" title="Eksport Inventori CSV" aria-label="Eksport Inventori CSV"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h5"/><path d="M15 15v5m0 0-2-2m2 2 2-2"/></svg></button><button class="export-icon-btn-v109 loan" type="button" onclick="exportCSV('loans')" title="Eksport Pinjaman CSV" aria-label="Eksport Pinjaman CSV"><svg viewBox="0 0 24 24"><path d="M7 3h8l4 4v14H7z"/><path d="M15 3v5h5M10 12h6"/><path d="M13 15v5m0 0-2-2m2 2 2-2"/></svg></button></div></section>
 
 <section class="view" id="view-settings">
   <div class="mini-hero">
@@ -3993,7 +4025,7 @@ function handleError(err){
   }
 }
 </script><script>
-const AUDIT_PRINT_CSS_V9="/* Dedicated audit print styles; never copy the application's global print rules. */\n.audit-doc-v9{font-family:Arial,Helvetica,sans-serif;color:#111;background:white;font-size:9pt;line-height:1.3}\n.audit-doc-v9 *{box-sizing:border-box}\n.audit-doc-v9 .audit-sheet-v9{width:281mm;max-width:none;margin:0 auto 8mm;padding:0;background:#fff;position:relative;break-after:page;page-break-after:always}\n.audit-doc-v9 .audit-sheet-v9:last-child{break-after:auto;page-break-after:auto}\n.audit-doc-v9 .audit-heading-v9{position:relative;padding:5mm 28mm 3mm 4mm;text-align:center;min-height:16mm}\n.audit-doc-v9 .audit-heading-v9 h1{font-family:Georgia,'Times New Roman',serif;font-size:13pt;line-height:1.2;letter-spacing:0;margin:0;font-weight:700;color:#111}\n.audit-doc-v9 .audit-code-v9{position:absolute;right:1mm;top:3mm;font-family:Georgia,'Times New Roman',serif;font-size:10pt;font-weight:700;text-align:right}\n.audit-doc-v9 .audit-sub-v9{font-size:7.5pt;margin-top:2mm;color:#333}\n.audit-doc-v9 table.audit-table-v9{width:100%;min-width:0;table-layout:fixed;border-collapse:collapse;border-spacing:0;margin:0;font-size:9pt;color:#111}\n.audit-doc-v9 .audit-table-v9 th,.audit-doc-v9 .audit-table-v9 td{border:.25mm solid #222;padding:1.3mm 1.4mm;vertical-align:middle;color:#111;background:#fff;font-size:8.5pt;line-height:1.27;text-align:center;white-space:normal;overflow-wrap:anywhere}\n.audit-doc-v9 .audit-table-v9 thead{display:table-header-group}\n.audit-doc-v9 .audit-table-v9 th{font-family:Georgia,'Times New Roman',serif;font-weight:700;font-size:9pt}\n.audit-doc-v9 .audit-table-v9 .meta-label-v9{text-align:left;font-size:8.2pt;padding:1mm 1.5mm}\n.audit-doc-v9 .audit-table-v9 .meta-value-v9{text-align:left;font:8.2pt Arial,Helvetica,sans-serif;padding:1mm 1.5mm}\n.audit-doc-v9 .audit-table-v9 tbody tr{break-inside:avoid;page-break-inside:avoid}\n.audit-doc-v9 .audit-table-v9 tbody td{height:15mm}\n.audit-doc-v9 .audit-table-v9 .borrower-v9{text-align:left;font-weight:700;font-size:9pt}\n.audit-doc-v9 .borrower-v9 small{display:block;margin-top:1mm;font-size:7pt;font-weight:400;color:#333}\n.audit-doc-v9 .audit-table-v9 .signature-v9{vertical-align:middle;font-size:7pt;padding:1mm}\n.audit-doc-v9 .borrower-signature-v1064{display:block;max-width:23mm;max-height:11mm;width:auto;height:auto;margin:auto;object-fit:contain;filter:grayscale(1) contrast(4.1) brightness(.34);mix-blend-mode:multiply}\n.audit-doc-v9 .signature-missing-v1064{display:block;font-size:6.5pt;line-height:1.15;color:#555;text-align:center}\n.audit-doc-v9 .audit-table-v9 .notes-v9{text-align:left;font-size:7.8pt}\n.audit-doc-v9 .notes-v9 .row-status-v9{font-size:7.8pt;font-weight:bold;margin-bottom:1mm}\n.audit-doc-v9 .notes-v9 .asset-note-v9{margin-bottom:1mm}\n.audit-doc-v9 .notes-v9 .data-gap-v9{margin-top:1mm;font-style:italic}\n.audit-doc-v9 .audit-footer-v9{display:flex;gap:5mm;justify-content:space-between;padding:2mm 0 1mm;font-size:7pt;line-height:1.3;color:#333}\n.audit-doc-v9 .audit-footer-v9 .page-number-v9{white-space:nowrap}\n.audit-doc-v9 .audit-footnote-v9{font-size:7pt;color:#333;margin:1mm 0}\n@page{size:A4 landscape;margin:8mm}\n@media print{\n html,body{margin:0!important;padding:0!important;background:#fff!important}\n .audit-doc-v9{padding:0;margin:0}\n .audit-doc-v9 .audit-sheet-v9{margin:0!important;box-shadow:none!important}\n .audit-doc-v9 tr:hover td{background:#fff!important}\n}\n";
+const AUDIT_PRINT_CSS_V9="/* Dedicated audit print styles; never copy the application's global print rules. */\n.audit-doc-v9{font-family:Arial,Helvetica,sans-serif;color:#111;background:white;font-size:9pt;line-height:1.3}\n.audit-doc-v9 *{box-sizing:border-box}\n.audit-doc-v9 .audit-sheet-v9{width:281mm;max-width:none;margin:0 auto 8mm;padding:0;background:#fff;position:relative;break-after:page;page-break-after:always}\n.audit-doc-v9 .audit-sheet-v9:last-child{break-after:auto;page-break-after:auto}\n.audit-doc-v9 .audit-heading-v9{position:relative;padding:5mm 28mm 3mm 4mm;text-align:center;min-height:16mm}\n.audit-doc-v9 .audit-heading-v9 h1{font-family:Georgia,'Times New Roman',serif;font-size:13pt;line-height:1.2;letter-spacing:0;margin:0;font-weight:700;color:#111}\n.audit-doc-v9 .audit-code-v9{position:absolute;right:1mm;top:3mm;font-family:Georgia,'Times New Roman',serif;font-size:10pt;font-weight:700;text-align:right}\n.audit-doc-v9 .audit-sub-v9{font-size:7.5pt;margin-top:2mm;color:#333}\n.audit-doc-v9 table.audit-table-v9{width:100%;min-width:0;table-layout:fixed;border-collapse:collapse;border-spacing:0;margin:0;font-size:9pt;color:#111}\n.audit-doc-v9 .audit-table-v9 th,.audit-doc-v9 .audit-table-v9 td{border:.25mm solid #222;padding:1.3mm 1.4mm;vertical-align:middle;color:#111;background:#fff;font-size:8.5pt;line-height:1.27;text-align:center;white-space:normal;overflow-wrap:anywhere}\n.audit-doc-v9 .audit-table-v9 thead{display:table-header-group}\n.audit-doc-v9 .audit-table-v9 th{font-family:Georgia,'Times New Roman',serif;font-weight:700;font-size:9pt}\n.audit-doc-v9 .audit-table-v9 .meta-label-v9{text-align:left;font-size:8.2pt;padding:1mm 1.5mm}\n.audit-doc-v9 .audit-table-v9 .meta-value-v9{text-align:left;font:8.2pt Arial,Helvetica,sans-serif;padding:1mm 1.5mm}\n.audit-doc-v9 .audit-table-v9 tbody tr{break-inside:avoid;page-break-inside:avoid}\n.audit-doc-v9 .audit-table-v9 tbody td{height:15mm}\n.audit-doc-v9 .audit-table-v9 .borrower-v9{text-align:center;font-weight:700;font-size:9pt;vertical-align:middle;padding:1.3mm 1.4mm}\n.audit-doc-v9 .borrower-v9 small{display:block;margin-top:1mm;font-size:7pt;font-weight:400;color:#333}\n.audit-doc-v9 .audit-table-v9 .signature-v9{vertical-align:middle;font-size:7pt;padding:1mm}\n.audit-doc-v9 .borrower-signature-v1064{display:block;max-width:23mm;max-height:11mm;width:auto;height:auto;margin:auto;object-fit:contain;filter:grayscale(1) contrast(12) brightness(.08);mix-blend-mode:multiply}\n.audit-doc-v9 .signature-missing-v1064{display:block;font-size:6.5pt;line-height:1.15;color:#555;text-align:center}\n.audit-doc-v9 .audit-table-v9 .notes-v9{text-align:left;font-size:7.8pt}\n.audit-doc-v9 .notes-v9 .row-status-v9{font-size:7.8pt;font-weight:bold;margin-bottom:1mm}\n.audit-doc-v9 .notes-v9 .asset-note-v9{margin-bottom:1mm}\n.audit-doc-v9 .notes-v9 .data-gap-v9{margin-top:1mm;font-style:italic}\n.audit-doc-v9 .audit-footer-v9{display:flex;gap:5mm;justify-content:space-between;padding:2mm 0 1mm;font-size:7pt;line-height:1.3;color:#333}\n.audit-doc-v9 .audit-footer-v9 .page-number-v9{white-space:nowrap}\n.audit-doc-v9 .audit-footnote-v9{font-size:7pt;color:#333;margin:1mm 0}\n.audit-doc-v9 .audit-person-v109,.audit-doc-v9 .audit-officer-v109{min-height:12mm;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;width:100%;line-height:1.2}\n.audit-doc-v9 .audit-person-v109 strong,.audit-doc-v9 .audit-officer-v109{font-size:7.6pt;font-weight:700;color:#111}\n.audit-doc-v9 .audit-person-v109 small{display:block;margin-top:1.4mm;font-size:6.4pt;font-weight:400;color:#333;text-align:center}\n@page{size:A4 landscape;margin:8mm}\n@media print{\n html,body{margin:0!important;padding:0!important;background:#fff!important}\n .audit-doc-v9{padding:0;margin:0}\n .audit-doc-v9 .audit-sheet-v9{margin:0!important;box-shadow:none!important}\n .audit-doc-v9 tr:hover td{background:#fff!important}\n}\n";
 /* V9: complete paginated report, kept separate from the filtered UI list. */
 const auditStateV9={rows:[],meta:null,complete:false,loading:null,scope:'all'};
 function auditErrorV9(message){$('#auditLoadStatusV9').textContent=message;$('#auditLoadStatusV9').classList.add('error');}
@@ -4103,7 +4135,7 @@ function auditRowV9(row,index,combined){
    : (row.borrower_signed_at?'<span class="signature-missing-v1064">Tandatangan direkod<br>tetapi fail tidak dapat dimuat</span>':'');
  const issuing=row.issuing_officer_name||row.approving_officer_name||'';
  const issueDate=row.issue_officer_date||row.approval_date||'';
- return `<tr data-report-row="${esc(row.row_key||String(index))}"><td>${index}</td><td class="borrower-v9">${esc(row.borrower_name||'Tidak direkod')}<small>${esc(row.loan_id||'')}${row.request_date?'<br>Mohon: '+auditDateDisplayV9(row.request_date):''}</small></td><td>${auditDateDisplayV9(row.issued_date)}</td><td>${auditDateDisplayV9(row.expected_return_date)}</td><td class="signature-v9 borrower-signature-cell-v1064">${borrowerSignature}</td><td class="signature-v9">${esc(issuing)}</td><td>${auditDateDisplayV9(issueDate)}</td><td class="signature-v9">${esc(row.returning_officer_name||'')}</td><td>${auditDateDisplayV9(row.actual_return_date||row.return_officer_date)}</td><td class="notes-v9"><div class="row-status-v9">${esc(String(row.status||'').replaceAll('_',' '))}</div>${assetNote}${esc(row.notes||'')}${warnings?`<div class="data-gap-v9">${warnings}</div>`:''}</td></tr>`;
+ return `<tr data-report-row="${esc(row.row_key||String(index))}"><td>${index}</td><td class="borrower-v9"><div class="audit-person-v109"><strong>${esc(row.borrower_name||'Tidak direkod')}</strong><small>${esc(row.loan_id||'')}${row.request_date?'<br>Mohon: '+auditDateDisplayV9(row.request_date):''}</small></div></td><td>${auditDateDisplayV9(row.issued_date)}</td><td>${auditDateDisplayV9(row.expected_return_date)}</td><td class="signature-v9 borrower-signature-cell-v1064">${borrowerSignature}</td><td class="signature-v9"><div class="audit-officer-v109">${esc(issuing)}</div></td><td>${auditDateDisplayV9(issueDate)}</td><td class="signature-v9"><div class="audit-officer-v109">${esc(row.returning_officer_name||'')}</div></td><td>${auditDateDisplayV9(row.actual_return_date||row.return_officer_date)}</td><td class="notes-v9"><div class="row-status-v9">${esc(String(row.status||'').replaceAll('_',' '))}</div>${assetNote}${esc(row.notes||'')}${warnings?`<div class="data-gap-v9">${warnings}</div>`:''}</td></tr>`;
 }
 function auditGeneratedTimeV9(value){
  if(!value)return '';const d=new Date(value);if(isNaN(d))return String(value);
@@ -4265,6 +4297,22 @@ function premiumNavSvgV108(type){
 document.addEventListener('DOMContentLoaded',()=>{
  document.querySelectorAll('.nav-btn[data-view]').forEach(btn=>{const ico=btn.querySelector('.nav-ico');if(ico)ico.innerHTML=premiumNavSvgV108(btn.dataset.view)});
 },{once:true});
+</script>
+
+
+<script id="pkpj-v109-admin-compact-guide">
+function compactStaticGuidesV109(){
+ document.querySelectorAll('.info-banner,.audit-help-v9').forEach(el=>{
+  if(el.closest('.info-disclosure-v109')||el.dataset.compactedV109==='1')return;
+  el.dataset.compactedV109='1';
+  const d=document.createElement('details');d.className='info-disclosure-v109';
+  const s=document.createElement('summary');s.setAttribute('aria-label','Maklumat');s.title='Maklumat / Panduan';s.textContent='i';
+  const b=document.createElement('div');b.className='info-disclosure-body-v109';
+  while(el.firstChild)b.appendChild(el.firstChild);
+  d.append(s,b);el.replaceWith(d);
+ });
+}
+document.addEventListener('DOMContentLoaded',compactStaticGuidesV109,{once:true});
 </script>
 
 </body>
