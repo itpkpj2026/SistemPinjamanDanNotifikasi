@@ -5292,5 +5292,153 @@ document.addEventListener('DOMContentLoaded',()=>{
   window.addEventListener('focus',()=>{if(!state.connected)recoverV11134()});
 })();
 </script>
+
+
+<style id="pkpj-v11135-clear-name-auto-session-style">
+/* V11.13.5 - Padam nama + sesi pemohon auto tamat 5 minit + auto refresh */
+.neo-input-shell{position:relative!important}
+#loginName{padding-right:86px!important}
+.clear-login-name-v11135{
+  position:absolute;right:9px;top:50%;transform:translateY(-50%);
+  min-width:62px;height:36px;padding:0 11px;border:1px solid rgba(139,177,208,.46);
+  border-radius:12px;background:rgba(255,255,255,.86);color:#2d5d82;
+  font-size:10px;font-weight:900;letter-spacing:.01em;cursor:pointer;z-index:6;
+  box-shadow:-3px -3px 8px rgba(255,255,255,.9),4px 5px 11px rgba(89,124,157,.16);
+  transition:transform .16s ease,opacity .16s ease,box-shadow .16s ease
+}
+.clear-login-name-v11135:hover{transform:translateY(calc(-50% - 1px));box-shadow:-4px -4px 10px #fff,5px 6px 13px rgba(89,124,157,.22)}
+.clear-login-name-v11135:active{transform:translateY(-50%) scale(.97)}
+.clear-login-name-v11135.hidden{display:none!important}
+@media(max-width:520px){
+  #loginName{padding-right:78px!important}
+  .clear-login-name-v11135{right:7px;min-width:56px;height:34px;padding:0 9px;font-size:9.5px}
+}
+</style>
+<script id="pkpj-v11135-clear-name-auto-session-script">
+(function(){
+  const IDLE_MS_V11135=5*60*1000;
+  let idleTimerV11135=null;
+  let lastActivityV11135=Date.now();
+  let reloadingV11135=false;
+  const baseLogoutV11135=typeof window.logoutApplicant==='function'?window.logoutApplicant:null;
+
+  function portalActiveV11135(){
+    const overlay=document.querySelector('#loginOverlay');
+    return !!(window.state&&state.profile&&overlay&&overlay.classList.contains('hidden'));
+  }
+
+  function updateClearButtonV11135(){
+    const input=document.querySelector('#loginName');
+    const btn=document.querySelector('#clearLoginNameBtnV11135');
+    if(!btn||!input)return;
+    btn.classList.toggle('hidden',!String(input.value||'').trim());
+  }
+
+  function clearLoginNameV11135(){
+    const input=document.querySelector('#loginName');
+    if(!input)return;
+    try{localRemoveV9('ict_applicant_user_id');localRemoveV9('ict_applicant_name')}catch(e){}
+    if(window.state){
+      state.selectedUserId='';
+      const hasDirectory=Array.isArray(state.staffList)&&state.staffList.length>0;
+      state.manualNameMode=!hasDirectory;
+    }
+    input.value='';
+    input.placeholder=(window.state&&Array.isArray(state.staffList)&&state.staffList.length)?'Cari nama pemohon...':'Taip nama penuh anda...';
+    document.querySelector('#manualNameBtn')?.setAttribute('aria-pressed',String(!!state?.manualNameMode));
+    document.querySelector('#manualNameNote')?.classList.toggle('hidden',!state?.manualNameMode);
+    try{hideSuggestions()}catch(e){}
+    updateClearButtonV11135();
+    input.focus();
+  }
+
+  function installClearButtonV11135(){
+    const shell=document.querySelector('.neo-input-shell');
+    const input=document.querySelector('#loginName');
+    if(!shell||!input||document.querySelector('#clearLoginNameBtnV11135'))return;
+    const btn=document.createElement('button');
+    btn.type='button';
+    btn.id='clearLoginNameBtnV11135';
+    btn.className='clear-login-name-v11135 hidden';
+    btn.textContent='Padam';
+    btn.setAttribute('aria-label','Padam nama pemohon yang dipilih');
+    btn.title='Padam nama dan pilih semula';
+    btn.addEventListener('click',function(event){
+      event.preventDefault();event.stopPropagation();clearLoginNameV11135();
+    });
+    shell.appendChild(btn);
+    input.addEventListener('input',updateClearButtonV11135);
+    input.addEventListener('change',updateClearButtonV11135);
+    setTimeout(updateClearButtonV11135,50);
+  }
+
+  function performLogoutAndReloadV11135(reason){
+    if(reloadingV11135)return;
+    reloadingV11135=true;
+    clearTimeout(idleTimerV11135);idleTimerV11135=null;
+    try{
+      if(reason==='idle'&&typeof toast==='function'){
+        toast('Sesi tamat','Tiada aktiviti selama 5 minit. Portal sedang disediakan untuk pemohon seterusnya.','ok');
+      }
+    }catch(e){}
+    try{
+      if(baseLogoutV11135)baseLogoutV11135();
+      else{
+        localRemoveV9('ict_applicant_user_id');localRemoveV9('ict_applicant_name');
+      }
+    }catch(e){}
+    setTimeout(function(){window.location.reload()},reason==='idle'?850:350);
+  }
+
+  function scheduleIdleV11135(){
+    clearTimeout(idleTimerV11135);idleTimerV11135=null;
+    if(!portalActiveV11135()||reloadingV11135)return;
+    const elapsed=Date.now()-lastActivityV11135;
+    const remaining=Math.max(0,IDLE_MS_V11135-elapsed);
+    if(remaining<=0){performLogoutAndReloadV11135('idle');return;}
+    idleTimerV11135=setTimeout(function(){
+      if(!portalActiveV11135()||reloadingV11135)return;
+      if(Date.now()-lastActivityV11135>=IDLE_MS_V11135)performLogoutAndReloadV11135('idle');
+      else scheduleIdleV11135();
+    },remaining+80);
+  }
+
+  function markActivityV11135(){
+    if(!portalActiveV11135()||reloadingV11135)return;
+    lastActivityV11135=Date.now();
+    scheduleIdleV11135();
+  }
+
+  window.logoutApplicant=function(){performLogoutAndReloadV11135('manual')};
+
+  document.addEventListener('DOMContentLoaded',function(){
+    installClearButtonV11135();
+    const logout=document.querySelector('#logoutBtn');
+    if(logout)logout.onclick=function(event){event?.preventDefault?.();window.logoutApplicant()};
+
+    const overlay=document.querySelector('#loginOverlay');
+    if(overlay){
+      new MutationObserver(function(){
+        if(portalActiveV11135()){
+          lastActivityV11135=Date.now();scheduleIdleV11135();
+        }else{
+          clearTimeout(idleTimerV11135);idleTimerV11135=null;
+          setTimeout(updateClearButtonV11135,30);
+        }
+      }).observe(overlay,{attributes:true,attributeFilter:['class']});
+    }
+
+    ['pointerdown','touchstart','keydown','wheel','scroll'].forEach(function(type){
+      window.addEventListener(type,markActivityV11135,{passive:true});
+    });
+    document.addEventListener('visibilitychange',function(){
+      if(document.visibilityState==='visible')scheduleIdleV11135();
+    });
+    window.addEventListener('pageshow',scheduleIdleV11135);
+    setTimeout(function(){updateClearButtonV11135();scheduleIdleV11135()},700);
+  },{once:true});
+})();
+</script>
+
 </body>
 </html>
