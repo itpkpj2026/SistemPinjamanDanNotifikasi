@@ -4511,5 +4511,92 @@ const logoutApplicantBaseV119=window.logoutApplicant;if(typeof logoutApplicantBa
 document.addEventListener('DOMContentLoaded',()=>{startApplicantLiveV119()},{once:true});
 </script>
 
+
+
+<style id="pkpj-v1110-visual-blend-cards">
+/* ===== PEMOHON V11.10 : VISUAL BLEND + LARGE AVAILABLE COUNTS =====
+   Additive only. V11.9 bulk request, success OK, custom icon manager and live status remain unchanged. */
+.apply-equipment-toolbar{margin-bottom:14px!important}
+#applyAvailableCount{font-size:12px!important;font-weight:950!important;padding:7px 12px!important;min-width:58px!important;text-align:center!important}
+.equipment-category-launchers-v116{
+ display:grid!important;
+ grid-template-columns:repeat(auto-fit,minmax(220px,1fr))!important;
+ gap:16px!important;padding:7px 3px 14px!important;
+}
+.equipment-category-launcher-v116{
+ --cat-a:#2d7fe5;--cat-b:#55baff;
+ min-height:190px!important;border-radius:24px!important;padding:18px 13px 16px!important;
+ background:
+  radial-gradient(circle at 92% 8%,color-mix(in srgb,var(--cat-a) 10%,transparent) 0 36px,transparent 37px),
+  linear-gradient(145deg,#fbfdff,color-mix(in srgb,var(--cat-a) 6%,#f3f8fc))!important;
+ border:1px solid color-mix(in srgb,var(--cat-a) 30%,#dce7f1)!important;
+ box-shadow:-7px -7px 16px rgba(255,255,255,.96),8px 10px 24px rgba(78,112,148,.15)!important;
+}
+.equipment-category-launcher-v116::before{display:none!important}
+.equipment-category-launcher-v116>b{font-size:14px!important;color:#113657!important;margin-top:7px!important;line-height:1.2!important}
+/* Large art, but file weight is unchanged: this is presentation only. */
+.premium-icon-orb-v116{width:104px!important;height:104px!important;border-radius:28px!important;flex:0 0 104px!important}
+.premium-asset-art-v116{width:54px!important;height:54px!important}
+/* If a custom picture is active, remove its coloured mini-background and blend it into the category card. */
+.premium-icon-orb-v116:has(.custom-setting-art-v119),
+.premium-icon-orb-v116:has(.category-custom-art-v118){
+ background:transparent!important;box-shadow:none!important;border:0!important;overflow:visible!important;
+}
+.premium-icon-orb-v116:has(.custom-setting-art-v119)::after,
+.premium-icon-orb-v116:has(.category-custom-art-v118)::after{display:none!important}
+.custom-setting-art-v119>img,.category-custom-art-v118>img{
+ width:98%!important;height:98%!important;object-fit:contain!important;
+ mix-blend-mode:multiply!important;
+ filter:drop-shadow(0 10px 13px rgba(22,65,110,.16))!important;
+ background:transparent!important;
+}
+.category-availability-v1110{display:flex;align-items:baseline;justify-content:center;gap:6px;margin-top:9px;line-height:1}
+.category-availability-v1110 strong{font-size:34px;letter-spacing:-.045em;color:var(--cat-a);font-weight:950}
+.category-availability-v1110 span{font-size:12px;color:#70859a;font-weight:850;font-style:normal}
+.category-zero-v1110{opacity:.72}
+
+@media(max-width:900px){
+ .equipment-category-launchers-v116{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:11px!important}
+ .equipment-category-launcher-v116{min-height:170px!important;padding:15px 9px!important}
+ .premium-icon-orb-v116{width:84px!important;height:84px!important;flex-basis:84px!important;border-radius:23px!important}
+ .category-availability-v1110 strong{font-size:29px}
+}
+@media(max-width:430px){
+ .equipment-category-launchers-v116{grid-template-columns:1fr 1fr!important;gap:9px!important}
+ .equipment-category-launcher-v116{min-height:148px!important;border-radius:19px!important;padding:12px 6px!important}
+ .premium-icon-orb-v116{width:68px!important;height:68px!important;flex-basis:68px!important;border-radius:20px!important}
+ .premium-asset-art-v116{width:38px!important;height:38px!important}
+ .equipment-category-launcher-v116>b{font-size:11.5px!important;margin-top:5px!important}
+ .category-availability-v1110 strong{font-size:25px}.category-availability-v1110 span{font-size:9.5px}
+}
+</style>
+<script id="pkpj-v1110-category-render">
+/* Same data flow as V11.9; only visual markup/count emphasis is changed. Extension remains forced-visible. */
+window.renderApplyCategories=function(){
+ const grid=$('#loanCategoryGrid');if(!grid)return;
+ const assets=(state.assets||[]).filter(a=>String(a.status||'TERSEDIA').toUpperCase()==='TERSEDIA'||!a.status);
+ const search=($('#applyAssetSearch')?.value||'').trim().toLowerCase();
+ const searched=search?assets.filter(a=>[a.asset_name,a.category,a.brand,a.model,a.asset_tag,a.location].join(' ').toLowerCase().includes(search)):assets;
+ const fixed=[['Accessory','accessory'],['Laptop','laptop'],['WiFi/MiFi','wifi'],['Extension','extension']];
+ const used=new Set(fixed.map(x=>x[1]));
+ const dynamic=[...new Set(searched.map(a=>String(a.category||'Lain-lain').trim()||'Lain-lain'))]
+  .filter(c=>!used.has(portalIconKeyV118(c))).sort((a,b)=>a.localeCompare(b,'ms',{sensitivity:'base'}));
+ const items=[
+  {name:'',label:'Semua Inventori',count:searched.length},
+  ...fixed.map(([label,key])=>({name:label,label,count:searched.filter(a=>portalIconKeyV118(a.category)===key).length})),
+  ...dynamic.map(c=>({name:c,label:c,count:searched.filter(a=>String(a.category||'Lain-lain').trim()===c).length}))
+ ];
+ const totalEl=$('#applyAvailableCount');if(totalEl)totalEl.textContent=searched.length;
+ grid.innerHTML=`<div class="equipment-category-launchers-v116">${items.map(t=>{
+  const [a,b]=paletteV116(t.name||'all');const enc=encodeURIComponent(t.name);
+  return `<button type="button" class="equipment-category-launcher-v116 ${t.count===0?'category-zero-v1110':''}" style="--cat-a:${a};--cat-b:${b}" onclick="openCategoryPopupV116(decodeURIComponent('${enc}'))">
+    ${orbV116(t.name||'all')}<b>${esc(t.label)}</b>
+    <span class="category-availability-v1110"><strong>${t.count}</strong><span>tersedia</span></span>
+   </button>`;
+ }).join('')}</div>`;
+};
+document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{if(state.currentView==='apply')renderApplyCategories()},0)},{once:true});
+</script>
+
 </body>
 </html>
