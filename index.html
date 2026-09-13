@@ -1123,7 +1123,6 @@ button:not(:disabled):active,.btn:not(:disabled):active,.asset-icon-btn:not(:dis
 @media print{.movement-signature,.borrower-signature-v1064{filter:grayscale(1) contrast(12) brightness(.08)!important;opacity:1!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}}
 </style>
 
-
 <style id="pkpj-v10122-upperbar-seamless-blend">
 /* ===== V10.12.2 UPPER BAR SEAMLESS BLEND =====
    Visual-only patch. Custom upper-bar artwork overfills the art zone slightly so
@@ -1162,7 +1161,6 @@ button:not(:disabled):active,.btn:not(:disabled):active,.asset-icon-btn:not(:dis
  .mini-hero .art .module-hero-image-v1010{inset:-12px -20px -12px -24px!important;width:calc(100% + 44px)!important;height:calc(100% + 24px)!important}
 }
 </style>
-
 </head>
 <body>
 <div class="admin-login-overlay" id="adminLoginOverlay">
@@ -2428,47 +2426,7 @@ function printAssetQr(){
       p{font-size:12px;color:#60788e;word-break:break-all}
       .box{max-width:420px;margin:auto;padding:22px;border:1px solid #dce7ef;border-radius:18px}
       @media print{button{display:none}}
-    </style>
-<style id="pkpj-v10122-upperbar-seamless-blend">
-/* ===== V10.12.2 UPPER BAR SEAMLESS BLEND =====
-   Visual-only patch. Custom upper-bar artwork overfills the art zone slightly so
-   hard image edges/rounded white frame are cropped away, then blends into the
-   module gradient. No extra server/API calls.
-*/
-.mini-hero .art{position:relative!important;overflow:hidden!important;background:transparent!important;isolation:auto!important}
-.mini-hero .art.custom-icon-loaded-v1010{background:transparent!important}
-.mini-hero .art .module-hero-image-v1010{
-  position:absolute!important;
-  inset:-14px -24px -14px -30px!important;
-  width:calc(100% + 54px)!important;
-  height:calc(100% + 28px)!important;
-  max-width:none!important;
-  max-height:none!important;
-  object-fit:cover!important;
-  object-position:center center!important;
-  border:0!important;
-  border-radius:0!important;
-  box-shadow:none!important;
-  background:transparent!important;
-  opacity:.98!important;
-  mix-blend-mode:multiply!important;
-  filter:saturate(1.06) contrast(1.025) drop-shadow(0 7px 10px rgba(20,60,105,.08))!important;
-  transform:scale(1.025)!important;
-  transform-origin:center!important;
-  -webkit-mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.62) 8%,#000 20%,#000 100%)!important;
-  mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.62) 8%,#000 20%,#000 100%)!important;
-}
-.mini-hero .art.custom-icon-loaded-v1010::after{
-  content:"";position:absolute;inset:0;pointer-events:none;z-index:4;
-  background:linear-gradient(90deg,color-mix(in srgb,var(--mh-b,#76b8ff) 32%,transparent) 0%,transparent 34%);
-}
-.mini-hero .art.custom-icon-loaded-v1010>svg{display:none!important}
-@media(max-width:1200px){
- .mini-hero .art .module-hero-image-v1010{inset:-12px -20px -12px -24px!important;width:calc(100% + 44px)!important;height:calc(100% + 24px)!important}
-}
-</style>
-
-</head>
+    </style></head>
     <body>
       <div class="box">
         <img src="${attr(src)}">
@@ -2477,70 +2435,7 @@ function printAssetQr(){
         <p>${esc(link)}</p>
         <button onclick="window.print()">Cetak</button>
       </div>
-    
-<style id="pkpj-v10121-category-image-75pct">
-/* ===== ADMIN V10.12.1 : kategori visual 3/4 gambar, 1/4 maklumat =====
-   Visual-only additive patch. Semua fungsi V10.12/V10.11 kekal. */
-#view-assets .asset-category-menu{
- grid-template-columns:repeat(auto-fit,minmax(220px,1fr))!important;
- gap:16px!important;
-}
-#view-assets .asset-category-menu .cat-card{
- min-height:218px!important;
- padding:10px 12px 14px!important;
- justify-content:flex-start!important;
- overflow:hidden!important;
-}
-/* Ruang visual lebih kurang 3/4 bahagian atas kad. */
-#view-assets .asset-category-menu .cat-card .emoji{
- width:100%!important;
- height:146px!important;
- flex:0 0 146px!important;
- margin:0 0 5px!important;
- border-radius:20px!important;
- overflow:hidden!important;
- background:transparent!important;
- border:0!important;
- box-shadow:none!important;
-}
-#view-assets .asset-category-menu .cat-card .emoji .premium-cat-svg-v107{
- width:72px!important;height:72px!important;
-}
-#view-assets .custom-cat-image-v1011,
-#view-assets .icon-image-wrap-v1010{
- width:100%!important;height:100%!important;display:grid!important;place-items:center!important;
-}
-#view-assets .custom-cat-image-v1011>img,
-#view-assets .icon-image-wrap-v1010>img{
- width:96%!important;height:96%!important;
- object-fit:contain!important;object-position:center!important;
- mix-blend-mode:multiply!important;
- background:transparent!important;
- filter:drop-shadow(0 9px 13px rgba(24,65,105,.13))!important;
-}
-#view-assets .asset-category-menu .cat-card>b{
- font-size:14px!important;margin-top:0!important;line-height:1.15!important;
-}
-.admin-cat-availability-v1012{margin-top:5px!important;gap:6px!important}
-.admin-cat-availability-v1012 strong{font-size:31px!important}
-.admin-cat-availability-v1012 span{font-size:11px!important}
-.admin-cat-total-v1012{display:none!important}
-@media(max-width:900px){
- #view-assets .asset-category-menu .cat-card{min-height:194px!important;padding:9px 9px 12px!important}
- #view-assets .asset-category-menu .cat-card .emoji{height:126px!important;flex-basis:126px!important}
- #view-assets .asset-category-menu .cat-card .emoji .premium-cat-svg-v107{width:62px!important;height:62px!important}
- .admin-cat-availability-v1012 strong{font-size:27px!important}
-}
-@media(max-width:430px){
- #view-assets .asset-category-menu .cat-card{min-height:166px!important;padding:8px 6px 10px!important}
- #view-assets .asset-category-menu .cat-card .emoji{height:103px!important;flex-basis:103px!important;border-radius:17px!important}
- #view-assets .asset-category-menu .cat-card .emoji .premium-cat-svg-v107{width:49px!important;height:49px!important}
- #view-assets .asset-category-menu .cat-card>b{font-size:11.5px!important}
- .admin-cat-availability-v1012 strong{font-size:23px!important}.admin-cat-availability-v1012 span{font-size:9px!important}
-}
-</style>
-
-</body></html>`);
+    </body></html>`);
   w.document.close();
 }
 
@@ -4318,110 +4213,7 @@ function renderMovementRegister(data){
 function movementPdfDocumentHtml(data){
  // Only this dedicated stylesheet is included: no sidebar, animation, API or tokens.
  const html=buildAuditSheetsV9(data);
- return '<!doctype html><html lang="ms"><head><meta charset="utf-8"><title>Daftar Pergerakan - KEW.PA-6</title><style>'+AUDIT_PRINT_CSS_V9+'</style>
-<style id="pkpj-v10122-upperbar-seamless-blend">
-/* ===== V10.12.2 UPPER BAR SEAMLESS BLEND =====
-   Visual-only patch. Custom upper-bar artwork overfills the art zone slightly so
-   hard image edges/rounded white frame are cropped away, then blends into the
-   module gradient. No extra server/API calls.
-*/
-.mini-hero .art{position:relative!important;overflow:hidden!important;background:transparent!important;isolation:auto!important}
-.mini-hero .art.custom-icon-loaded-v1010{background:transparent!important}
-.mini-hero .art .module-hero-image-v1010{
-  position:absolute!important;
-  inset:-14px -24px -14px -30px!important;
-  width:calc(100% + 54px)!important;
-  height:calc(100% + 28px)!important;
-  max-width:none!important;
-  max-height:none!important;
-  object-fit:cover!important;
-  object-position:center center!important;
-  border:0!important;
-  border-radius:0!important;
-  box-shadow:none!important;
-  background:transparent!important;
-  opacity:.98!important;
-  mix-blend-mode:multiply!important;
-  filter:saturate(1.06) contrast(1.025) drop-shadow(0 7px 10px rgba(20,60,105,.08))!important;
-  transform:scale(1.025)!important;
-  transform-origin:center!important;
-  -webkit-mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.62) 8%,#000 20%,#000 100%)!important;
-  mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.62) 8%,#000 20%,#000 100%)!important;
-}
-.mini-hero .art.custom-icon-loaded-v1010::after{
-  content:"";position:absolute;inset:0;pointer-events:none;z-index:4;
-  background:linear-gradient(90deg,color-mix(in srgb,var(--mh-b,#76b8ff) 32%,transparent) 0%,transparent 34%);
-}
-.mini-hero .art.custom-icon-loaded-v1010>svg{display:none!important}
-@media(max-width:1200px){
- .mini-hero .art .module-hero-image-v1010{inset:-12px -20px -12px -24px!important;width:calc(100% + 44px)!important;height:calc(100% + 24px)!important}
-}
-</style>
-
-</head><body><main class="audit-doc-v9">'+html+'</main>
-<style id="pkpj-v10121-category-image-75pct">
-/* ===== ADMIN V10.12.1 : kategori visual 3/4 gambar, 1/4 maklumat =====
-   Visual-only additive patch. Semua fungsi V10.12/V10.11 kekal. */
-#view-assets .asset-category-menu{
- grid-template-columns:repeat(auto-fit,minmax(220px,1fr))!important;
- gap:16px!important;
-}
-#view-assets .asset-category-menu .cat-card{
- min-height:218px!important;
- padding:10px 12px 14px!important;
- justify-content:flex-start!important;
- overflow:hidden!important;
-}
-/* Ruang visual lebih kurang 3/4 bahagian atas kad. */
-#view-assets .asset-category-menu .cat-card .emoji{
- width:100%!important;
- height:146px!important;
- flex:0 0 146px!important;
- margin:0 0 5px!important;
- border-radius:20px!important;
- overflow:hidden!important;
- background:transparent!important;
- border:0!important;
- box-shadow:none!important;
-}
-#view-assets .asset-category-menu .cat-card .emoji .premium-cat-svg-v107{
- width:72px!important;height:72px!important;
-}
-#view-assets .custom-cat-image-v1011,
-#view-assets .icon-image-wrap-v1010{
- width:100%!important;height:100%!important;display:grid!important;place-items:center!important;
-}
-#view-assets .custom-cat-image-v1011>img,
-#view-assets .icon-image-wrap-v1010>img{
- width:96%!important;height:96%!important;
- object-fit:contain!important;object-position:center!important;
- mix-blend-mode:multiply!important;
- background:transparent!important;
- filter:drop-shadow(0 9px 13px rgba(24,65,105,.13))!important;
-}
-#view-assets .asset-category-menu .cat-card>b{
- font-size:14px!important;margin-top:0!important;line-height:1.15!important;
-}
-.admin-cat-availability-v1012{margin-top:5px!important;gap:6px!important}
-.admin-cat-availability-v1012 strong{font-size:31px!important}
-.admin-cat-availability-v1012 span{font-size:11px!important}
-.admin-cat-total-v1012{display:none!important}
-@media(max-width:900px){
- #view-assets .asset-category-menu .cat-card{min-height:194px!important;padding:9px 9px 12px!important}
- #view-assets .asset-category-menu .cat-card .emoji{height:126px!important;flex-basis:126px!important}
- #view-assets .asset-category-menu .cat-card .emoji .premium-cat-svg-v107{width:62px!important;height:62px!important}
- .admin-cat-availability-v1012 strong{font-size:27px!important}
-}
-@media(max-width:430px){
- #view-assets .asset-category-menu .cat-card{min-height:166px!important;padding:8px 6px 10px!important}
- #view-assets .asset-category-menu .cat-card .emoji{height:103px!important;flex-basis:103px!important;border-radius:17px!important}
- #view-assets .asset-category-menu .cat-card .emoji .premium-cat-svg-v107{width:49px!important;height:49px!important}
- #view-assets .asset-category-menu .cat-card>b{font-size:11.5px!important}
- .admin-cat-availability-v1012 strong{font-size:23px!important}.admin-cat-availability-v1012 span{font-size:9px!important}
-}
-</style>
-
-</body></html>';
+ return '<!doctype html><html lang="ms"><head><meta charset="utf-8"><title>Daftar Pergerakan - KEW.PA-6</title><style>'+AUDIT_PRINT_CSS_V9+'</style></head><body><main class="audit-doc-v9">'+html+'</main></body></html>';
 }
 function openMovementPdf(){
  if(!currentMovementRegisterData)return toast('Laporan belum sedia','Muat semua sejarah dahulu.','err');
@@ -4681,8 +4473,6 @@ if(typeof renderCategorySettingsBaseV1011==='function'){window.renderCategorySet
 document.addEventListener('DOMContentLoaded',()=>{startAdminLiveWatchV1011();const lazy=()=>loadUiPublicV1011(false);if('requestIdleCallback'in window)requestIdleCallback(lazy,{timeout:1600});else setTimeout(lazy,900)},{once:true});
 </script>
 
-
-
 <style id="pkpj-v1012-visual-blend-cards">
 /* ===== ADMIN V10.12 : VISUAL BLEND + LARGE INVENTORY CATEGORY CARDS =====
    Additive only. V10.11 icon manager, live status, KEW.PA and all existing settings remain untouched. */
@@ -4813,8 +4603,6 @@ window.renderAssetCategoryCards=function(){
 };
 document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{if(state.assets?.length)renderAssetCategoryCards()},0)},{once:true});
 </script>
-
-
 <style id="pkpj-v10121-category-image-75pct">
 /* ===== ADMIN V10.12.1 : kategori visual 3/4 gambar, 1/4 maklumat =====
    Visual-only additive patch. Semua fungsi V10.12/V10.11 kekal. */
@@ -4877,49 +4665,85 @@ document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{if(state.asset
 }
 </style>
 
-<style id="pkpj-v10123-operator-login-fix-style">
-#adminOperatorSelect.operator-ready-v10123{border-color:#93c7ef!important;box-shadow:0 0 0 3px rgba(35,132,218,.07)!important}
-#adminOperatorLoadNote.operator-warn-v10123{background:#fff8e8!important;border-color:#f0d49d!important;color:#7a5a17!important}
-#adminOperatorLoadNote.operator-ok-v10123{background:#eef9f4!important;border-color:#bfe7d2!important;color:#277055!important}
+<style id="pkpj-v10124-operator-login-fix-style">
+#adminOperatorSelect.operator-ready-v10124{border-color:#93c7ef!important;box-shadow:0 0 0 3px rgba(35,132,218,.07)!important}
+#adminOperatorLoadNote.operator-warn-v10124{background:#fff8e8!important;border-color:#f0d49d!important;color:#7a5a17!important}
+#adminOperatorLoadNote.operator-ok-v10124{background:#eef9f4!important;border-color:#bfe7d2!important;color:#277055!important}
+.admin-login-btn{min-height:44px!important;font-size:13px!important;font-weight:900!important}
 </style>
-<script id="pkpj-v10123-operator-login-fix-script">
-const ADMIN_OPERATOR_CACHE_V10123='pkpj_admin_operator_directory_v10123';
-const KNOWN_IT_OPERATORS_V10123=[
+<script id="pkpj-v10124-operator-login-fix-script">
+/* V10.12.4: cache-first Staf IT directory + fail-safe Masuk Sistem. */
+const ADMIN_OPERATOR_CACHE_V10124='pkpj_admin_operator_directory_v10124';
+const KNOWN_IT_OPERATORS_V10124=[
  {name:'Mohamad Nazrirafidi bin Samsudin',role:'SUPER_ADMIN'},
  {name:'Muhamad Syafiq Nastangin Bin Palal',role:'STAFF_IT'},
  {name:'Sharifah Azizah binti Syed Hamid',role:'STAFF_IT'},
  {name:'Zaiton Binti Mohamed',role:'STAFF_IT'}
 ];
-function normOperatorNameV10123(v){return String(v||'').trim().replace(/\s+/g,' ').toLowerCase()}
-function readOperatorCacheV10123(){try{const x=JSON.parse(localStorage.getItem(ADMIN_OPERATOR_CACHE_V10123)||'[]');return Array.isArray(x)?x.filter(u=>u&&u.user_id&&u.name):[]}catch(e){return []}}
-function saveOperatorCacheV10123(list){try{localStorage.setItem(ADMIN_OPERATOR_CACHE_V10123,JSON.stringify((list||[]).map(u=>({user_id:u.user_id,name:u.name,role:u.role,active:u.active||'Ya',department:u.department||'',unit:u.unit||''}))))}catch(e){}}
-function mergeOperatorsV10123(list){const byId=new Map((state.users||[]).map(x=>[String(x.user_id),x]));(list||[]).forEach(x=>{if(x?.user_id)byId.set(String(x.user_id),{...(byId.get(String(x.user_id))||{}),...x})});state.users=[...byId.values()];state.loadedAt.users=Date.now();saveAdminFastCache()}
-function renderOperatorsV10123(list,status='ok'){
+function normOperatorNameV10124(v){return String(v||'').trim().replace(/\s+/g,' ').toLowerCase()}
+function readOperatorCacheV10124(){try{const x=JSON.parse(localStorage.getItem(ADMIN_OPERATOR_CACHE_V10124)||'[]');return Array.isArray(x)?x.filter(u=>u&&u.user_id&&u.name):[]}catch(e){return []}}
+function saveOperatorCacheV10124(list){try{localStorage.setItem(ADMIN_OPERATOR_CACHE_V10124,JSON.stringify((list||[]).map(u=>({user_id:u.user_id,name:u.name,role:u.role||'STAFF_IT',active:u.active||'Ya',department:u.department||'',unit:u.unit||''}))))}catch(e){}}
+function mergeOperatorsV10124(list){const byId=new Map((state.users||[]).map(x=>[String(x.user_id),x]));(list||[]).forEach(x=>{if(x?.user_id)byId.set(String(x.user_id),{...(byId.get(String(x.user_id))||{}),...x})});state.users=[...byId.values()];state.loadedAt.users=Date.now();try{saveAdminFastCache()}catch(e){}}
+function renderOperatorsV10124(list){
  const operators=(list||[]).filter(x=>x&&x.user_id&&x.name).sort((a,b)=>String(a.name).localeCompare(String(b.name),'ms',{sensitivity:'base'}));
  const sel=$('#adminOperatorSelect');
- if(sel){sel.innerHTML=operators.length?'<option value="">Pilih nama staf IT…</option>'+operators.map(x=>`<option value="${attr(x.user_id)}">${esc(x.name)}</option>`).join(''):'<option value="">Senarai belum tersedia…</option>';sel.classList.toggle('operator-ready-v10123',!!operators.length)}
+ if(sel){
+  sel.innerHTML=operators.length?'<option value="">Pilih nama staf IT…</option>'+operators.map(x=>`<option value="${attr(x.user_id)}" data-name="${attr(x.name)}" data-role="${attr(x.role||'STAFF_IT')}">${esc(x.name)}</option>`).join(''):'<option value="">Senarai belum tersedia…</option>';
+  sel.classList.toggle('operator-ready-v10124',!!operators.length);
+ }
  $('#operatorExistingBox')?.classList.remove('hidden');
  const boot=$('#operatorBootstrapBox');if(boot)boot.classList.toggle('hidden',!!operators.length);
- const note=$('#adminOperatorLoadNote');if(note){note.classList.remove('operator-warn-v10123','operator-ok-v10123');if(operators.length){note.textContent='Senarai Staf IT sedia digunakan.';note.classList.add('operator-ok-v10123')}else{note.textContent='Sambungan direktori agak lambat. Tekan Cuba Muat Semula; sistem akan cuba semula tanpa menjejaskan tetapan lain.';note.classList.add('operator-warn-v10123')}}
- try{renderItOperators()}catch(e){} return operators;
+ const note=$('#adminOperatorLoadNote');if(note){note.classList.remove('operator-warn-v10124','operator-ok-v10124');if(operators.length){note.textContent='Senarai Staf IT sedia digunakan.';note.classList.add('operator-ok-v10124')}else{note.textContent='Direktori sedang cuba disambungkan. Tekan Cuba Muat Semula jika nama belum keluar.';note.classList.add('operator-warn-v10124')}}
+ try{renderItOperators()}catch(e){}
+ return operators;
 }
-async function fallbackOperatorsFromStaffDirectoryV10123(){
- const raw=await jsonp('admin.staff_directory',{_t:Date.now()},{timeoutMs:14000,retries:1});
+async function fallbackOperatorsFromStaffDirectoryV10124(){
+ const raw=await jsonp('admin.staff_directory',{_t:Date.now()},{timeoutMs:9000,retries:0});
  const staff=Array.isArray(raw)?raw:Array.isArray(raw?.items)?raw.items:[];
- const known=new Map(KNOWN_IT_OPERATORS_V10123.map(x=>[normOperatorNameV10123(x.name),x]));
- return staff.map(u=>{const k=known.get(normOperatorNameV10123(u.name));if(!k)return null;return {user_id:u.user_id,name:u.name,role:k.role,active:'Ya',department:u.department||'',unit:u.unit||''}}).filter(Boolean);
+ const known=new Map(KNOWN_IT_OPERATORS_V10124.map(x=>[normOperatorNameV10124(x.name),x]));
+ return staff.map(u=>{const k=known.get(normOperatorNameV10124(u.name));if(!k)return null;return {user_id:u.user_id,name:u.name,role:k.role,active:'Ya',department:u.department||'',unit:u.unit||''}}).filter(Boolean);
 }
 loadOperatorOptions=async function(force=false){
  let operators=(state.users||[]).filter(x=>['SUPER_ADMIN','STAFF_IT'].includes(String(x.role||''))&&String(x.active||'Ya').toLowerCase()==='ya');
- if(!operators.length){const cached=readOperatorCacheV10123();if(cached.length){mergeOperatorsV10123(cached);operators=cached;renderOperatorsV10123(operators,'cache')}}
- if(operators.length&&!force)return renderOperatorsV10123(operators,'cache');
- const sel=$('#adminOperatorSelect');if(sel&&!operators.length)sel.innerHTML='<option value="">Memuatkan senarai…</option>';
+ const cached=readOperatorCacheV10124();
+ if(!operators.length&&cached.length){mergeOperatorsV10124(cached);operators=cached;renderOperatorsV10124(cached)}
+ if(operators.length&&!force)return renderOperatorsV10124(operators);
  let lastErr=null;
- try{const res=await jsonp('admin.operators',{_t:Date.now()},{timeoutMs:15000,retries:1});const live=Array.isArray(res?.items)?res.items:[];if(live.length){operators=live;mergeOperatorsV10123(live);saveOperatorCacheV10123(live);return renderOperatorsV10123(live,'live')}}catch(err){lastErr=err;console.warn('admin.operators lambat/gagal, cuba direktori staf.',err)}
- try{const fallback=await fallbackOperatorsFromStaffDirectoryV10123();if(fallback.length){operators=fallback;mergeOperatorsV10123(fallback);saveOperatorCacheV10123(fallback);return renderOperatorsV10123(fallback,'fallback')}}catch(err){lastErr=err;console.warn('Fallback direktori staf gagal.',err)}
- if(operators.length)return renderOperatorsV10123(operators,'cache');renderOperatorsV10123([],'error');throw lastErr||new Error('Senarai Staf IT belum dapat dimuatkan.');
+ try{
+  const res=await jsonp('admin.operators',{_t:Date.now()},{timeoutMs:10000,retries:1});
+  const live=Array.isArray(res?.items)?res.items:[];
+  if(live.length){mergeOperatorsV10124(live);saveOperatorCacheV10124(live);return renderOperatorsV10124(live)}
+ }catch(err){lastErr=err;console.warn('admin.operators belum respons.',err)}
+ try{
+  const fallback=await fallbackOperatorsFromStaffDirectoryV10124();
+  if(fallback.length){mergeOperatorsV10124(fallback);saveOperatorCacheV10124(fallback);return renderOperatorsV10124(fallback)}
+ }catch(err){lastErr=err;console.warn('Fallback direktori Staf IT gagal.',err)}
+ if(cached.length){mergeOperatorsV10124(cached);return renderOperatorsV10124(cached)}
+ renderOperatorsV10124([]);
+ throw lastErr||new Error('Senarai Staf IT belum dapat dimuatkan.');
 };
-document.addEventListener('DOMContentLoaded',()=>{const cached=readOperatorCacheV10123();if(cached.length){mergeOperatorsV10123(cached);renderOperatorsV10123(cached,'cache')}setTimeout(()=>loadOperatorOptions(true).catch(err=>console.warn('Refresh Staf IT tertangguh.',err)),250)},{once:true});
+operatorLogin=function(){
+ const sel=$('#adminOperatorSelect');
+ const id=String(sel?.value||'');
+ if(!id)return toast('Pilih nama','Pilih nama staf IT untuk masuk.','err');
+ let user=(state.users||[]).find(x=>String(x.user_id)===id);
+ if(!user){user=readOperatorCacheV10124().find(x=>String(x.user_id)===id)}
+ if(!user&&sel?.selectedOptions?.[0]){
+  const opt=sel.selectedOptions[0];
+  user={user_id:id,name:opt.dataset.name||opt.textContent||'Staf IT',role:opt.dataset.role||'STAFF_IT',active:'Ya'};
+  mergeOperatorsV10124([user]);
+ }
+ if(!user)return toast('Nama belum sedia','Cuba muat semula senarai Staf IT.','err');
+ const operator={user_id:user.user_id,name:user.name,role:user.role||'STAFF_IT'};
+ saveStoredOperator(operator);applyOperatorSession(operator);toast('Selamat datang',operator.name,'ok');
+ setTimeout(()=>{try{const p=loadDashboard(false);p?.catch?.(()=>{})}catch(e){}},60);
+};
+document.addEventListener('DOMContentLoaded',()=>{
+ const cached=readOperatorCacheV10124();if(cached.length){mergeOperatorsV10124(cached);renderOperatorsV10124(cached)}
+ const btn=$('#operatorLoginBtn');if(btn)btn.onclick=operatorLogin;
+ setTimeout(()=>loadOperatorOptions(true).catch(err=>console.warn('Refresh Staf IT tertangguh.',err)),250);
+},{once:true});
 </script>
+
 </body>
 </html>
