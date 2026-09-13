@@ -1163,24 +1163,40 @@ button:not(:disabled):active,.btn:not(:disabled):active,.asset-icon-btn:not(:dis
 </style>
 </head>
 <body>
-<div class="admin-login-overlay" id="adminLoginOverlay">
-  <div class="admin-login-card">
-    <div class="admin-login-logo"><img src="pkpj-premium.png" alt="PKPJ"></div>
-    <h2>Log Masuk Pengurusan ICT</h2>
-    <p>Portal ini hanya untuk staf IT. Pegawai yang dipilih akan direkod secara automatik sebagai pegawai yang memproses dan meluluskan pinjaman.</p>
+<div class="admin-login-overlay neo-admin-login-overlay" id="adminLoginOverlay">
+  <div class="neo-admin-scene">
+    <div class="neo-admin-access-badge">STAF IT SAHAJA</div>
+    <div class="neo-admin-login-wrap">
+      <section class="neo-admin-login-card">
+        <div class="neo-admin-logo-bubble"><img src="pkpj-premium.png" alt="PKPJ"></div>
+        <h1>Selamat Datang<span>ke Portal Admin</span></h1>
+        <p class="neo-admin-login-sub">Pilih nama Staf IT untuk mengurus inventori, kelulusan pinjaman dan laporan ICT.</p>
 
-    <div id="operatorExistingBox">
-      <label>Nama Staf IT</label>
-      <select class="field" id="adminOperatorSelect">
-        <option value="">Memuatkan senarai…</option>
-      </select>
-      <button class="btn btn-primary admin-login-btn" type="button" id="operatorLoginBtn">Masuk Sistem</button>
-    </div>
+        <div id="operatorExistingBox" class="neo-admin-name-group">
+          <label for="adminOperatorSelect">Nama Staf IT</label>
+          <div class="neo-admin-input-shell">
+            <span class="neo-admin-input-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="8" r="3.1"></circle><path d="M5.7 19c.7-4 3-6 6.3-6s5.6 2 6.3 6"></path></svg>
+            </span>
+            <select class="field" id="adminOperatorSelect"><option value="">Memuatkan senarai…</option></select>
+          </div>
+          <button class="btn btn-primary admin-login-btn neo-admin-enter-btn" type="button" id="operatorLoginBtn">
+            <span>Masuk Portal Admin</span>
+            <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M5 12h13"></path><path d="m14 7 5 5-5 5"></path></svg>
+          </button>
+        </div>
 
-    <div class="operator-bootstrap hidden" id="operatorBootstrapBox">
-      <div class="admin-login-info" id="adminOperatorLoadNote">Senarai staf IT sedang dimuatkan. Jika nama masih belum keluar, tekan butang di bawah untuk semak semula.</div>
-      <button class="btn admin-operator-retry" type="button" id="adminOperatorRetryBtn">↻ Cuba Muat Semula</button>
+        <div class="operator-bootstrap hidden neo-admin-retry-box" id="operatorBootstrapBox">
+          <div class="admin-login-info neo-admin-status" id="adminOperatorLoadNote">Senarai staf IT sedang dimuatkan.</div>
+          <button class="btn admin-operator-retry neo-admin-retry" type="button" id="adminOperatorRetryBtn">Cuba Muat Semula</button>
+        </div>
+
+        <div class="neo-admin-divider"></div>
+        <div class="neo-admin-login-foot">Portal Pengurusan Inventori & Pinjaman ICT</div>
+        <div class="neo-admin-login-meta">Inventori &nbsp;·&nbsp; Kelulusan &nbsp;·&nbsp; Laporan</div>
+      </section>
     </div>
+    <div class="neo-admin-page-foot" aria-hidden="true"><span>© 2026 PKPJ. Hak Cipta Terpelihara.</span><span>Sistem ICT &nbsp; | &nbsp; Admin</span></div>
   </div>
 </div>
 <div class="app">
@@ -4466,7 +4482,7 @@ async function resetUiImageV1011(kind,key){if(!confirm('Kembali kepada ikon/gamb
 
 /* Lightweight live watch: hanya semak fingerprint setiap 8 saat. Full loans reload hanya bila status/rekod berubah. */
 async function pollAdminLoanWatchV1011(){if(document.visibilityState!=='visible'||!state.operator||approvalBusyV92()||state.inFlight.loans)return;try{const w=await jsonp('admin.loan_watch',{_t:Date.now()},{timeoutMs:4500,retries:0});if(!w?.fingerprint)return;if(!state.loanWatchFingerprintV1011){state.loanWatchFingerprintV1011=w.fingerprint;return}if(w.fingerprint!==state.loanWatchFingerprintV1011){state.loanWatchFingerprintV1011=w.fingerprint;state.loadedAt.dashboard=0;await loadLoans(true);if(state.view==='dashboard'||state.view==='reports'){setTimeout(()=>loadDashboard(true).catch?.(()=>{}),120)}}}catch(e){/* senyap: polling tidak boleh mengganggu UI */}}
-function startAdminLiveWatchV1011(){if(window.__adminLiveWatchV1011)return;window.__adminLiveWatchV1011=setInterval(pollAdminLoanWatchV1011,8000);setTimeout(pollAdminLoanWatchV1011,1800)}
+function startAdminLiveWatchV1011(){if(window.__adminLiveWatchV1011)return;window.__adminLiveWatchV1011=setInterval(pollAdminLoanWatchV1011,2500);setTimeout(pollAdminLoanWatchV1011,450)}
 
 const renderCategorySettingsBaseV1011=window.renderCategorySettings;
 if(typeof renderCategorySettingsBaseV1011==='function'){window.renderCategorySettings=function(){renderCategorySettingsBaseV1011();renderUiImageManagerV1011()}}
@@ -4919,6 +4935,58 @@ document.addEventListener('DOMContentLoaded',()=>{
   window.addEventListener('resize',function(){if(!mobile())close();else sync()});sync();
  };
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+})();
+</script>
+
+
+<style id="pkpj-v1014-login-autofit-live">
+/* ===== ADMIN V10.14 : login disamakan dengan Pemohon + auto-fit gambar + live status pantas ===== */
+.neo-admin-login-overlay{position:fixed!important;inset:0!important;z-index:1000!important;display:grid!important;place-items:center!important;padding:22px!important;background:linear-gradient(90deg,rgba(231,241,251,.78),rgba(236,246,252,.68)),url('pkpj-login-background.jpg') center/cover no-repeat!important;overflow:auto!important}
+.neo-admin-login-overlay.hidden{display:none!important}
+.neo-admin-scene{position:relative;width:min(1180px,96vw);min-height:min(760px,calc(100dvh - 44px));border-radius:34px;overflow:hidden;display:grid;place-items:center;padding:66px 18px 58px;background:radial-gradient(circle at 14% 38%,rgba(218,238,250,.86),transparent 42%),linear-gradient(135deg,rgba(247,251,254,.94),rgba(236,245,251,.92));border:1px solid rgba(255,255,255,.82);box-shadow:0 30px 90px rgba(54,91,130,.22)}
+.neo-admin-login-wrap{width:min(470px,100%);position:relative;z-index:3}
+.neo-admin-login-card{padding:36px 32px 30px;border-radius:30px;text-align:center;background:rgba(239,246,254,.88);border:1px solid rgba(255,255,255,.78);box-shadow:17px 17px 38px rgba(139,160,187,.30),-14px -14px 34px rgba(255,255,255,.92);backdrop-filter:blur(9px)}
+.neo-admin-logo-bubble{width:82px;height:82px;margin:0 auto 22px;border-radius:25px;display:grid;place-items:center;background:rgba(239,246,254,.96);box-shadow:9px 9px 20px rgba(143,165,192,.30),-9px -9px 20px rgba(255,255,255,.98)}
+.neo-admin-logo-bubble img{width:67px;height:67px;object-fit:contain;mix-blend-mode:multiply}
+.neo-admin-login-card h1{margin:0;color:#173f73;font-size:32px;line-height:1.05;letter-spacing:-.035em}.neo-admin-login-card h1 span{display:block;font-size:20px;margin-top:6px}
+.neo-admin-login-sub{max-width:390px;margin:16px auto 27px;color:#6885aa;font-size:12px;line-height:1.6}
+.neo-admin-name-group{text-align:left;position:relative}.neo-admin-name-group>label{display:block;margin:0 0 8px 5px;color:#49688f;font-size:10px;font-weight:900}
+.neo-admin-input-shell{height:59px;border-radius:18px;display:flex;align-items:center;gap:11px;padding:0 18px;background:rgba(233,241,251,.90);box-shadow:inset 7px 7px 14px rgba(161,179,202,.43),inset -7px -7px 14px #fff;border:1px solid rgba(255,255,255,.72)}
+.neo-admin-input-icon{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;color:#326fcb;background:rgba(255,255,255,.58);box-shadow:3px 3px 7px rgba(154,173,197,.28),-3px -3px 7px #fff;flex:0 0 auto}.neo-admin-input-icon svg,.neo-admin-enter-btn svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.neo-admin-input-shell .field{min-width:0;width:100%!important;height:auto!important;padding:0!important;margin:0!important;border:0!important;outline:0!important;box-shadow:none!important;background:transparent!important;color:#284d78!important;font-size:14px!important;font-weight:750!important}
+.neo-admin-input-shell:focus-within{box-shadow:inset 6px 6px 12px rgba(153,175,202,.40),inset -6px -6px 12px #fff,0 0 0 3px rgba(42,139,215,.09)}
+.neo-admin-enter-btn{width:100%!important;min-height:59px!important;margin:18px 0 0!important;border:0!important;border-radius:18px!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:14px!important;background:linear-gradient(105deg,#2f69e6 0%,#1e9ee5 55%,#2dc7c7 100%)!important;color:white!important;font-size:14px!important;font-weight:900!important;box-shadow:9px 9px 22px rgba(88,137,188,.34),-7px -7px 18px rgba(255,255,255,.92)!important}
+.neo-admin-retry-box{margin-top:12px}.neo-admin-status{border:0!important;background:rgba(230,238,248,.82)!important;color:#667f9d!important;border-radius:12px!important;font-size:9.5px!important;line-height:1.45!important}.neo-admin-retry{width:100%;margin-top:9px;border-radius:14px!important}
+.neo-admin-divider{height:1px;margin:22px 0 13px;background:linear-gradient(90deg,transparent,#b9c8da,transparent)}.neo-admin-login-foot{color:#6c83a1;font-size:9px}.neo-admin-login-meta{margin-top:4px;color:#91a1b6;font-size:8.5px}
+.neo-admin-access-badge{position:absolute;left:24px;top:20px;color:#6382aa;font-size:8px;font-weight:950;letter-spacing:.18em}.neo-admin-page-foot{position:absolute;left:24px;right:24px;bottom:16px;display:flex;justify-content:space-between;color:#869dbc;font-size:8px}
+/* kategori: auto margin supaya modem/laptop/extension nampak keseluruhan */
+#view-assets .pkpj-showcase-art img,#view-assets .asset-category-menu .cat-card .emoji img{object-fit:contain!important;object-position:center!important;background:transparent!important;max-width:100%!important;max-height:100%!important}
+@media(max-width:760px){.neo-admin-login-overlay{padding:0!important;align-items:start!important}.neo-admin-scene{width:100%;min-height:100dvh;border-radius:0;padding:64px 13px 48px}.neo-admin-login-wrap{width:min(430px,100%)}.neo-admin-login-card{padding:31px 20px 25px;border-radius:25px}.neo-admin-logo-bubble{width:72px;height:72px}.neo-admin-logo-bubble img{width:58px;height:58px}.neo-admin-login-card h1{font-size:28px}.neo-admin-login-card h1 span{font-size:18px}.neo-admin-input-shell{height:56px}.neo-admin-input-shell .field{font-size:16px!important}.neo-admin-enter-btn{min-height:56px!important;font-size:13px!important}.neo-admin-access-badge{left:19px;top:18px}.neo-admin-page-foot{position:static;margin-top:22px;display:block;text-align:center;line-height:1.7}.neo-admin-page-foot span{display:block}}
+</style>
+<script id="pkpj-v1014-image-autofit-live-script">
+(function(){
+  function imageScaleV1014(img){
+    if(!img||!img.naturalWidth||!img.naturalHeight)return;
+    const ratio=img.naturalWidth/img.naturalHeight;
+    const card=img.closest('.cat-card,.pkpj-showcase-card');
+    const label=(card?.textContent||'').toLowerCase();
+    let scale=78;
+    if(label.includes('wifi')||label.includes('mifi')||label.includes('modem')) scale=62;
+    else if(label.includes('laptop')) scale=76;
+    else if(label.includes('extension')) scale=88;
+    else if(label.includes('accessory')) scale=82;
+    else if(label.includes('semua')) scale=82;
+    else if(ratio<.82) scale=64;
+    else if(ratio<1.12) scale=72;
+    else if(ratio>2.15) scale=88;
+    else scale=79;
+    img.style.setProperty('width',scale+'%','important');
+    img.style.setProperty('height',scale+'%','important');
+    img.style.setProperty('object-fit','contain','important');
+    img.style.setProperty('object-position','center','important');
+  }
+  function fitAllV1014(root=document){root.querySelectorAll?.('#view-assets .pkpj-showcase-art img,#view-assets .asset-category-menu .cat-card .emoji img').forEach(img=>{if(img.complete)imageScaleV1014(img);else img.addEventListener('load',()=>imageScaleV1014(img),{once:true})})}
+  document.addEventListener('DOMContentLoaded',()=>{fitAllV1014();const host=document.querySelector('#view-assets .asset-category-menu');if(host)new MutationObserver(()=>fitAllV1014(host)).observe(host,{childList:true,subtree:true});document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')setTimeout(()=>window.pollAdminLoanWatchV1011?.(),80)});window.addEventListener('focus',()=>setTimeout(()=>window.pollAdminLoanWatchV1011?.(),80))},{once:true});
 })();
 </script>
 
