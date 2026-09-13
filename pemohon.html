@@ -4910,5 +4910,36 @@ document.addEventListener('DOMContentLoaded',()=>{
 })();
 </script>
 
+
+<style id="pkpj-v11121-shared-category-fit">
+/* ===== V11.12.1: exact same category image fitting profile as Admin ===== */
+.pkpj-request-visual-v1111{padding:8px!important}
+.pkpj-request-art-v1111,.pkpj-request-art-v1111 .custom-setting-art-v119,.pkpj-request-art-v1111 .category-custom-art-v118{display:grid!important;place-items:center!important}
+.pkpj-request-art-v1111 img{object-fit:contain!important;object-position:center!important;background:transparent!important;mix-blend-mode:multiply!important}
+</style>
+<script id="pkpj-v11121-shared-category-fit-script">
+(function(){
+ function fit(img){
+  if(!img||!img.naturalWidth||!img.naturalHeight)return;
+  const card=img.closest('.pkpj-request-showcase-v1111,.equipment-category-launcher-v116');
+  const label=(card?.textContent||'').toLowerCase();
+  const r=img.naturalWidth/img.naturalHeight;
+  let w=78,h=76;
+  if(/wifi|mifi|modem/.test(label)){w=56;h=72}
+  else if(label.includes('laptop')){w=72;h=68}
+  else if(label.includes('extension')){w=86;h=72}
+  else if(label.includes('accessory')){w=80;h=74}
+  else if(label.includes('semua')){w=78;h=72}
+  else if(r<.82){w=56;h=74}
+  else if(r<1.12){w=68;h=72}
+  else if(r>2.15){w=88;h=68}
+  if(card){img.style.setProperty('width',w+'%','important');img.style.setProperty('height',h+'%','important')}
+  img.style.setProperty('object-fit','contain','important');img.style.setProperty('object-position','center','important');
+ }
+ function apply(root=document){root.querySelectorAll?.('.pkpj-request-art-v1111 img,.equipment-category-launcher-v116 img').forEach(img=>{if(img.complete)fit(img);else img.addEventListener('load',()=>fit(img),{once:true})})}
+ const boot=()=>{apply();const host=document.querySelector('#loanCategoryGrid');if(host)new MutationObserver(()=>requestAnimationFrame(()=>apply(host))).observe(host,{childList:true,subtree:true})};
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
+})();
+</script>
 </body>
 </html>
