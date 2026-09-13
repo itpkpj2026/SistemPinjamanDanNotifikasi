@@ -3384,9 +3384,7 @@ function syncLoanModalSelection(){
     if(asset){
       if(state.loanCategory==='laptop' && !$('#loanLaptopType').value){
         $('#loanLaptopType').value=
-          [asset.brand,asset.model].filter(Boolean).join(' ')||
-          asset.asset_name||
-          '';
+          String(asset.model||'').trim();
       }
 
       if(state.loanCategory==='wifi' && !$('#loanWifiNo').value){
@@ -3644,13 +3642,13 @@ async function submitApplication(){
   ];
 
   if(state.loanCategory==='laptop'){
-    const laptopType=$('#loanLaptopType').value.trim();
-
-    if(!laptopType){
-      return toast('Jenis Laptop diperlukan','Sila isi Jenis Laptop.','err');
+    const laptopModels=[...new Set(selected.map(assetId=>{
+      const asset=(state.assets||[]).find(x=>String(x.asset_id)===String(assetId));
+      return String(asset?.model||'').trim();
+    }).filter(Boolean))];
+    if(laptopModels.length){
+      detailLines.push(`Jenis Laptop: ${laptopModels.join(' | ')}`);
     }
-
-    detailLines.push(`Jenis Laptop: ${laptopType}`);
   }
 
   if(state.loanCategory==='wifi'){
@@ -5441,26 +5439,26 @@ document.addEventListener('DOMContentLoaded',()=>{
 </script>
 
 
-<style id="pkpj-v11136-engine-laptop-style">
-/* V11.13.6 - Jenis Laptop ikut rekod inventori + fast login/API */
+<style id="pkpj-v11137-engine-laptop-style">
+/* V11.13.7 - Jenis Laptop disorok; auto ikut MODEL inventori asal + fast login/API */
 #laptopTypeGroup{display:none!important}
 </style>
-<script id="pkpj-v11136-engine-laptop-script">
+<script id="pkpj-v11137-engine-laptop-script">
 (function(){
-  const VERSION='11.13.6';
+  const VERSION='11.13.7';
 
-  function recordedLaptopLabelV11136(asset){
+  function recordedLaptopModelV11137(asset){
     if(!asset)return '';
-    return [asset.brand,asset.model].filter(Boolean).join(' ').trim() || String(asset.asset_name||asset.asset_tag||asset.asset_id||'').trim();
+    return String(asset.model||'').trim();
   }
-  function syncRecordedLaptopTypeV11136(){
+  function syncRecordedLaptopModelV11137(){
     if(!window.state||state.loanCategory!=='laptop')return;
     const input=document.querySelector('#loanLaptopType');if(!input)return;
     const ids=Array.from(document.querySelectorAll('.loan-modal-asset-check:checked')).map(x=>String(x.value));
     const labels=[];
     ids.forEach(id=>{
       const asset=(state.assets||[]).find(x=>String(x.asset_id)===id);
-      const label=recordedLaptopLabelV11136(asset);
+      const label=recordedLaptopModelV11137(asset);
       if(label&&!labels.includes(label))labels.push(label);
     });
     input.value=labels.join(' | ');
@@ -5468,11 +5466,11 @@ document.addEventListener('DOMContentLoaded',()=>{
 
   const syncBase=window.syncLoanModalSelection;
   if(typeof syncBase==='function'){
-    window.syncLoanModalSelection=function(){const r=syncBase.apply(this,arguments);syncRecordedLaptopTypeV11136();return r};
+    window.syncLoanModalSelection=function(){const r=syncBase.apply(this,arguments);syncRecordedLaptopModelV11137();return r};
   }
   const openBase=window.openLoanRequestModal;
   if(typeof openBase==='function'){
-    window.openLoanRequestModal=function(){const r=openBase.apply(this,arguments);syncRecordedLaptopTypeV11136();return r};
+    window.openLoanRequestModal=function(){const r=openBase.apply(this,arguments);syncRecordedLaptopModelV11137();return r};
   }
 
   /* Permohonan dengan tandatangan/base64 terus guna POST + receipt polling.
@@ -5536,7 +5534,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   };
 
   /* Live keputusan: revision-first, murah ketika tiada perubahan. */
-  async function pollApplicantFastV11136(){
+  async function pollApplicantFastV11137(){
     if(document.visibilityState!=='visible'||!state?.profile||state.refreshPromise)return;
     try{
       const previous=String(state.loanWatchFingerprintV119||'');
@@ -5549,16 +5547,16 @@ document.addEventListener('DOMContentLoaded',()=>{
       if(Array.isArray(w.items))patchApplicantLoanStatusesV119(w);
     }catch(e){}
   }
-  function startFastWatchV11136(){
+  function startFastWatchV11137(){
     if(state.liveStatusTimerV119){clearInterval(state.liveStatusTimerV119);state.liveStatusTimerV119=null}
-    state.liveStatusTimerV119=setInterval(pollApplicantFastV11136,1500);
-    setTimeout(pollApplicantFastV11136,450);
+    state.liveStatusTimerV119=setInterval(pollApplicantFastV11137,1500);
+    setTimeout(pollApplicantFastV11137,450);
   }
-  window.pollApplicantLiveV119=pollApplicantFastV11136;
-  window.startApplicantLiveV119=startFastWatchV11136;
-  document.addEventListener('DOMContentLoaded',startFastWatchV11136,{once:true});
-  window.addEventListener('focus',()=>{if(state?.profile)setTimeout(pollApplicantFastV11136,80)});
-  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&state?.profile)setTimeout(pollApplicantFastV11136,80)});
+  window.pollApplicantLiveV119=pollApplicantFastV11137;
+  window.startApplicantLiveV119=startFastWatchV11137;
+  document.addEventListener('DOMContentLoaded',startFastWatchV11137,{once:true});
+  window.addEventListener('focus',()=>{if(state?.profile)setTimeout(pollApplicantFastV11137,80)});
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&state?.profile)setTimeout(pollApplicantFastV11137,80)});
 })();
 </script>
 
