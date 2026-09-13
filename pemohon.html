@@ -2245,7 +2245,7 @@ button:not(:disabled):active,.btn:not(:disabled):active,.equipment-category-laun
 
     <div class="neo-page-foot" aria-hidden="true">
       <span>© 2026 PKPJ. Hak Cipta Terpelihara.</span>
-      <span>Sistem ICT &nbsp; | &nbsp; Versi 11.5.0</span>
+      <span>Sistem ICT &nbsp; | &nbsp; Versi 11.10.3</span>
     </div>
   </div>
 </div>
@@ -2645,7 +2645,11 @@ function init(){
       setTimeout(refreshRoster,3200);
     }
   }else{
-    loadStaffNames(false,true);
+    // Telefon/peranti baharu: jangan tahan login menunggu refresh penuh direktori.
+    state.manualNameMode=true;
+    $('#manualNameNote')?.classList.remove('hidden');
+    setStaffLoadStatus('Taip nama penuh untuk terus masuk. Direktori staf sedang disegerakkan di belakang.','local');
+    setTimeout(()=>loadStaffNames(true,false),180);
   }
 
   const savedId=localGetV9('ict_applicant_user_id')||'';
@@ -2778,7 +2782,7 @@ function enableManualNameMode(){
 
 
 async function fetchStaffListFast(force=false){
- return jsonp('applicant.staff_list',{refresh:force?'1':'',_t:Date.now()},{timeoutMs:10000,retries:0});
+ return jsonp('applicant.staff_list',{refresh:force?'1':'',_t:Date.now()},{timeoutMs:5500,retries:0});
 }
 
 async function loadStaffNames(silent=false,force=false){
@@ -2807,10 +2811,10 @@ async function loadStaffNames(silent=false,force=false){
    if(!state.staffList.length){
     state.manualNameMode=true;
     $('#manualNameNote')?.classList.remove('hidden');
-    if(document.activeElement===$('#loginName'))renderStaffSuggestions([], 'Direktori belum tersedia. Gunakan Isian nama manual sementara.');
+    if(document.activeElement===$('#loginName'))renderStaffSuggestions([], 'Taip nama penuh dan tekan Masuk Portal. Direktori akan disegerakkan di belakang.');
     state.staffRetryCount=(state.staffRetryCount||0)+1;
-    if(state.staffRetryCount<=2&&!state.staffRetryTimer){
-      const delay=state.staffRetryCount===1?4500:12000;
+    if(state.staffRetryCount<=1&&!state.staffRetryTimer){
+      const delay=15000;
       state.staffRetryTimer=setTimeout(()=>{state.staffRetryTimer=null;loadStaffNames(true,false);},delay);
     }
    }
@@ -4343,7 +4347,7 @@ function bindStaffToolsV9(){
    if(event.key==='Escape'){hideSuggestions();return;}
    const buttons=$$('#staffSuggestions .suggestion');
    if(event.key==='ArrowDown'&&buttons.length){event.preventDefault();buttons[0].focus();}
-   if(event.key==='Enter'&&state.selectedUserId){event.preventDefault();loginApplicant(false);}
+   if(event.key==='Enter'&&String($('#loginName')?.value||'').trim()){event.preventDefault();loginApplicant(false);}
  });
  $('#staffSuggestions')?.addEventListener('keydown',event=>{
    const buttons=$$('#staffSuggestions .suggestion'),at=buttons.indexOf(document.activeElement);
@@ -4732,6 +4736,23 @@ document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{if(state.curre
  .category-availability-v1110 strong{font-size:23px!important}.category-availability-v1110 span{font-size:9px!important}
 }
 </style>
+
+
+<style id="pkpj-v11103-mobile-login-fast-style">
+@media(max-width:720px){
+ #staffLoadStatus.portal-fast-status{font-size:10px!important;line-height:1.35!important}
+ .neo-manual-note{font-size:10px!important;line-height:1.45!important}
+}
+</style>
+<script id="pkpj-v11103-mobile-login-fast-script">
+/* V11.10.3: directory is an enhancement, never a blocker for applicant login. */
+document.addEventListener('DOMContentLoaded',()=>{
+ const input=$('#loginName');
+ if(input&&!state.staffList.length){input.placeholder='Taip nama penuh anda...';}
+ const btn=$('#loginBtn');
+ if(btn)btn.title='Boleh masuk menggunakan nama penuh walaupun direktori masih disegerakkan';
+},{once:true});
+</script>
 
 </body>
 </html>
