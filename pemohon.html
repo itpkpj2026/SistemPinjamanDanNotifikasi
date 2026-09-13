@@ -4464,5 +4464,52 @@ document.addEventListener('DOMContentLoaded',()=>{
 },{once:true});
 </script>
 
+
+<style id="pkpj-v118-custom-images">
+/* ===== PKPJ PEMOHON V11.8: CUSTOM IMAGE ICON + FORCED EXTENSION ===== */
+.category-custom-art-v118{width:100%;height:100%;display:grid;place-items:center;position:relative}
+.category-custom-art-v118>img{width:74%;height:74%;object-fit:contain;display:block;position:relative;z-index:2;filter:drop-shadow(0 5px 9px rgba(0,39,78,.18))}
+.category-custom-art-v118>.fallback-v118{width:100%;height:100%;display:grid;place-items:center}
+</style>
+<script id="pkpj-v118-custom-icon-script">
+/* Tukar gambar dengan mengganti fail di /ui-icons/. PNG/WebP transparent paling sesuai. */
+const PORTAL_ICON_FILES_V118={all:'ui-icons/all.png',accessory:'ui-icons/accessory.png',laptop:'ui-icons/laptop.png',wifi:'ui-icons/wifi.png',extension:'ui-icons/extension.png',printer:'ui-icons/printer.png',camera:'ui-icons/camera.png',audio:'ui-icons/audio.png',storage:'ui-icons/storage.png',other:'ui-icons/other.png'};
+function portalIconKeyV118(category){const c=String(category||'').toLowerCase();if(c==='all')return'all';if(c.includes('laptop')||c.includes('desktop')||c.includes('monitor'))return'laptop';if(c.includes('wifi')||c.includes('mifi')||c.includes('network'))return'wifi';if(c.includes('extension')||c.includes('charger')||c.includes('adapter'))return'extension';if(c.includes('printer'))return'printer';if(c.includes('camera'))return'camera';if(c.includes('audio'))return'audio';if(c.includes('storage'))return'storage';if(c.includes('access'))return'accessory';return'other'}
+const premiumAssetArtBaseV118=window.premiumAssetArtV116;
+if(typeof premiumAssetArtBaseV118==='function'){
+ window.premiumAssetArtV116=function(category){const fallback=premiumAssetArtBaseV118(category),src=PORTAL_ICON_FILES_V118[portalIconKeyV118(category)]||PORTAL_ICON_FILES_V118.other;return `<span class="category-custom-art-v118"><img src="${src}" alt="" loading="lazy" decoding="async" onload="this.nextElementSibling.style.display='none'" onerror="this.style.display='none'"><span class="fallback-v118">${fallback}</span></span>`};
+}
+/* Kategori maya: membolehkan Extension sentiasa dipaparkan dan mengumpulkan nama kategori yang hampir sama. */
+window.categoryAssetsV116=function(category){const assets=(state.assets||[]).filter(a=>String(a.status||'TERSEDIA').toUpperCase()==='TERSEDIA'||!a.status),key=portalIconKeyV118(category);if(!category)return assets;return assets.filter(a=>{const ak=portalIconKeyV118(a.category||'');if(['laptop','wifi','extension','accessory'].includes(key))return ak===key;return String(a.category||'Lain-lain').trim()===String(category).trim()})};
+window.renderApplyCategories=function(){const grid=$('#loanCategoryGrid');if(!grid)return;const assets=(state.assets||[]).filter(a=>String(a.status||'TERSEDIA').toUpperCase()==='TERSEDIA'||!a.status);const search=($('#applyAssetSearch')?.value||'').trim().toLowerCase();const searched=search?assets.filter(a=>[a.asset_name,a.category,a.brand,a.model,a.asset_tag,a.location].join(' ').toLowerCase().includes(search)):assets;const fixed=[['Accessory','accessory'],['Laptop','laptop'],['WiFi/MiFi','wifi'],['Extension','extension']];const used=new Set(fixed.map(x=>x[1]));const dynamic=[...new Set(searched.map(a=>String(a.category||'Lain-lain').trim()||'Lain-lain'))].filter(c=>!used.has(portalIconKeyV118(c))).sort((a,b)=>a.localeCompare(b,'ms',{sensitivity:'base'}));const items=[{name:'',label:'Semua',count:searched.length},...fixed.map(([label,key])=>({name:label,label,count:searched.filter(a=>portalIconKeyV118(a.category)===key).length})),...dynamic.map(c=>({name:c,label:c,count:searched.filter(a=>String(a.category||'Lain-lain').trim()===c).length}))];const totalEl=$('#applyAvailableCount');if(totalEl)totalEl.textContent=searched.length;grid.innerHTML=`<div class="equipment-category-launchers-v116">${items.map(t=>{const [a,b]=paletteV116(t.name||'all');return `<button type="button" class="equipment-category-launcher-v116" style="--cat-a:${a};--cat-b:${b}" onclick="openCategoryPopupV116(decodeURIComponent('${encodeURIComponent(t.name)}'))">${orbV116(t.name||'all')}<b>${esc(t.label)}</b><small>${t.count} tersedia</small></button>`}).join('')}</div>`};
+</script>
+
+
+
+<style id="pkpj-v119-custom-live-style">
+/* ===== V11.9 CUSTOM ICON FROM SETTINGS + LIVE STATUS ===== */
+.custom-setting-art-v119{width:100%;height:100%;display:grid;place-items:center}.custom-setting-art-v119>img{width:76%;height:76%;object-fit:contain;display:block;position:relative;z-index:3;filter:drop-shadow(0 5px 9px rgba(0,39,78,.18))}.custom-setting-art-v119>.fallback-v119{width:100%;height:100%;display:grid;place-items:center}
+</style>
+<script id="pkpj-v119-custom-live-script">
+/* Additive only: setting dan flow V11.8 kekal. */
+state.loanWatchFingerprintV119=state.loanWatchFingerprintV119||'';
+state.liveStatusTimerV119=state.liveStatusTimerV119||null;
+function parsePortalUiJsonV119(raw){try{const x=JSON.parse(String(raw||'{}'));return x&&typeof x==='object'&&!Array.isArray(x)?x:{}}catch(e){return {}}}
+function driveThumbV119(fileId,size=512){return fileId?`https://drive.google.com/thumbnail?id=${encodeURIComponent(fileId)}&sz=w${size}`:''}
+function canonicalPortalCategoryV119(category){const key=portalIconKeyV118(category);const map={all:'__ALL__',laptop:'Laptop',wifi:'WiFi/MiFi',extension:'Extension',accessory:'Accessory',printer:'Printer',camera:'Camera',audio:'Audio',storage:'Storage Device',other:'Other'};return map[key]||String(category||'Other')}
+function portalCustomMetaV119(category){const map=parsePortalUiJsonV119(state.publicSettings?.inventory_category_icons_json);const exact=map[String(category||'')];if(exact&&typeof exact==='object'&&exact.image_file_id)return exact;const x=map[canonicalPortalCategoryV119(category)];return x&&typeof x==='object'&&x.image_file_id?x:null}
+const premiumAssetArtBaseV119=window.premiumAssetArtV116;
+if(typeof premiumAssetArtBaseV119==='function'){
+ window.premiumAssetArtV116=function(category){const fallback=premiumAssetArtBaseV119(category),meta=portalCustomMetaV119(category);if(!meta?.image_file_id)return fallback;return `<span class="custom-setting-art-v119"><img src="${driveThumbV119(meta.image_file_id,512)}" alt="" loading="lazy" decoding="async" onload="this.nextElementSibling.style.display='none'" onerror="this.style.display='none'"><span class="fallback-v119">${fallback}</span></span>`}
+}
+
+function patchApplicantLoanStatusesV119(w){const incoming=new Map((w.items||[]).map(x=>[String(x.loan_id),x]));let unknown=false;(w.items||[]).forEach(x=>{const row=(state.loans||[]).find(l=>String(l.loan_id)===String(x.loan_id));if(!row){unknown=true;return}Object.assign(row,{status:x.status,updated_at:x.updated_at||row.updated_at,approved_by_user_id:x.approved_by_user_id||row.approved_by_user_id,approved_at:x.approved_at||row.approved_at,loan_date:x.loan_date||row.loan_date,return_date:x.return_date||row.return_date})});if((state.loans||[]).some(l=>!incoming.has(String(l.loan_id)))&&Number(w.count)!==(state.loans||[]).length)unknown=true;if(w.kpi){state.kpi.pending=w.kpi.pending;state.kpi.active=w.kpi.active;state.kpi.overdue=w.kpi.overdue}renderShell();if(state.currentView==='myloans')renderMyLoans();if(state.currentView==='home')renderHomeView();try{savePortalCache({profile:state.profile,kpi:state.kpi,available_assets:state.assets,loans:state.loans,public_settings:state.publicSettings})}catch(e){}if(unknown)setTimeout(()=>refreshPortal(true,true),150)}
+async function pollApplicantLiveV119(){if(document.visibilityState!=='visible'||!state.profile||state.refreshPromise)return;try{const w=await jsonp('applicant.loan_watch',{user_id:state.profile.user_id||'',name:state.profile.name||'',_t:Date.now()},{timeoutMs:4300,retries:0});if(!w?.fingerprint)return;if(!state.loanWatchFingerprintV119){state.loanWatchFingerprintV119=w.fingerprint;patchApplicantLoanStatusesV119(w);return}if(w.fingerprint!==state.loanWatchFingerprintV119){state.loanWatchFingerprintV119=w.fingerprint;patchApplicantLoanStatusesV119(w)}}catch(e){/* status watch senyap supaya portal tidak terasa berat */}}
+function startApplicantLiveV119(){if(state.liveStatusTimerV119)return;state.liveStatusTimerV119=setInterval(pollApplicantLiveV119,8000);setTimeout(pollApplicantLiveV119,1600)}
+const applyBootstrapBaseV119=window.applyBootstrap;if(typeof applyBootstrapBaseV119==='function'){window.applyBootstrap=function(data){applyBootstrapBaseV119(data);startApplicantLiveV119();if(state.currentView==='apply')renderApplyCategories()}}
+const logoutApplicantBaseV119=window.logoutApplicant;if(typeof logoutApplicantBaseV119==='function'){window.logoutApplicant=function(){if(state.liveStatusTimerV119){clearInterval(state.liveStatusTimerV119);state.liveStatusTimerV119=null}state.loanWatchFingerprintV119='';return logoutApplicantBaseV119()}}
+document.addEventListener('DOMContentLoaded',()=>{startApplicantLiveV119()},{once:true});
+</script>
+
 </body>
 </html>
