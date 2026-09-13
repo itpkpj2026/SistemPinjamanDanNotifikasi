@@ -2245,7 +2245,7 @@ button:not(:disabled):active,.btn:not(:disabled):active,.equipment-category-laun
 
     <div class="neo-page-foot" aria-hidden="true">
       <span>© 2026 PKPJ. Hak Cipta Terpelihara.</span>
-      <span>Sistem ICT &nbsp; | &nbsp; Versi 11.10.3</span>
+      <span>Sistem ICT &nbsp; | &nbsp; Versi 11.12</span>
     </div>
   </div>
 </div>
@@ -4509,7 +4509,7 @@ if(typeof premiumAssetArtBaseV119==='function'){
 
 function patchApplicantLoanStatusesV119(w){const incoming=new Map((w.items||[]).map(x=>[String(x.loan_id),x]));let unknown=false;(w.items||[]).forEach(x=>{const row=(state.loans||[]).find(l=>String(l.loan_id)===String(x.loan_id));if(!row){unknown=true;return}Object.assign(row,{status:x.status,updated_at:x.updated_at||row.updated_at,approved_by_user_id:x.approved_by_user_id||row.approved_by_user_id,approved_at:x.approved_at||row.approved_at,loan_date:x.loan_date||row.loan_date,return_date:x.return_date||row.return_date})});if((state.loans||[]).some(l=>!incoming.has(String(l.loan_id)))&&Number(w.count)!==(state.loans||[]).length)unknown=true;if(w.kpi){state.kpi.pending=w.kpi.pending;state.kpi.active=w.kpi.active;state.kpi.overdue=w.kpi.overdue}renderShell();if(state.currentView==='myloans')renderMyLoans();if(state.currentView==='home')renderHomeView();try{savePortalCache({profile:state.profile,kpi:state.kpi,available_assets:state.assets,loans:state.loans,public_settings:state.publicSettings})}catch(e){}if(unknown)setTimeout(()=>refreshPortal(true,true),150)}
 async function pollApplicantLiveV119(){if(document.visibilityState!=='visible'||!state.profile||state.refreshPromise)return;try{const w=await jsonp('applicant.loan_watch',{user_id:state.profile.user_id||'',name:state.profile.name||'',_t:Date.now()},{timeoutMs:4300,retries:0});if(!w?.fingerprint)return;if(!state.loanWatchFingerprintV119){state.loanWatchFingerprintV119=w.fingerprint;patchApplicantLoanStatusesV119(w);return}if(w.fingerprint!==state.loanWatchFingerprintV119){state.loanWatchFingerprintV119=w.fingerprint;patchApplicantLoanStatusesV119(w)}}catch(e){/* status watch senyap supaya portal tidak terasa berat */}}
-function startApplicantLiveV119(){if(state.liveStatusTimerV119)return;state.liveStatusTimerV119=setInterval(pollApplicantLiveV119,8000);setTimeout(pollApplicantLiveV119,1600)}
+function startApplicantLiveV119(){if(state.liveStatusTimerV119)return;state.liveStatusTimerV119=setInterval(pollApplicantLiveV119,2500);setTimeout(pollApplicantLiveV119,450)}
 const applyBootstrapBaseV119=window.applyBootstrap;if(typeof applyBootstrapBaseV119==='function'){window.applyBootstrap=function(data){applyBootstrapBaseV119(data);startApplicantLiveV119();if(state.currentView==='apply')renderApplyCategories()}}
 const logoutApplicantBaseV119=window.logoutApplicant;if(typeof logoutApplicantBaseV119==='function'){window.logoutApplicant=function(){if(state.liveStatusTimerV119){clearInterval(state.liveStatusTimerV119);state.liveStatusTimerV119=null}state.loanWatchFingerprintV119='';return logoutApplicantBaseV119()}}
 document.addEventListener('DOMContentLoaded',()=>{startApplicantLiveV119()},{once:true});
@@ -4862,6 +4862,53 @@ document.addEventListener('DOMContentLoaded',()=>{
 .asset-card .photo,.asset-photo{background:linear-gradient(145deg,#eef6fc,#f9fcff)!important}
 @media(max-width:560px){.pkpj-request-visual-v1111{padding:5px!important}.category-popup-photo-v116{padding:5px!important}}
 </style>
+
+
+<style id="pkpj-v1112-guide-autofit-live">
+/* ===== PEMOHON V11.12 : Panduan sebagai tab teks + auto-fit gambar + status pantas ===== */
+/* Panduan kembali sebagai tab penuh di sidebar; tanpa ikon. */
+.nav-btn[data-view="guide"]{width:100%!important;min-height:46px!important;padding:13px 14px!important;justify-content:flex-start!important;margin:0!important;border-radius:12px!important;text-align:left!important}
+.nav-btn[data-view="guide"] .nav-ico{display:none!important}
+.nav-btn[data-view="guide"] .nav-label-v117{display:inline!important;font-size:15px!important;font-weight:650!important}
+/* Auto-fit: gambar tak dipaksa memenuhi 96%; beri margin pintar supaya keseluruhan peralatan jelas. */
+.pkpj-request-art-v1111 img,.equipment-category-launcher-v116 img,.category-popup-photo-v116 img,.equipment-choice-photo img{object-fit:contain!important;object-position:center!important;background:transparent!important;max-width:100%!important;max-height:100%!important}
+</style>
+<script id="pkpj-v1112-autofit-live-script">
+(function(){
+ function scaleImageV1112(img){
+   if(!img||!img.naturalWidth||!img.naturalHeight)return;
+   const ratio=img.naturalWidth/img.naturalHeight;
+   const card=img.closest('.pkpj-request-showcase-v1111,.equipment-category-launcher-v116');
+   const label=(card?.textContent||'').toLowerCase();
+   let scale=78;
+   if(label.includes('wifi')||label.includes('mifi')||label.includes('modem')) scale=62;
+   else if(label.includes('laptop')) scale=76;
+   else if(label.includes('extension')) scale=88;
+   else if(label.includes('accessory')) scale=82;
+   else if(label.includes('semua')) scale=82;
+   else if(ratio<.82) scale=64;
+   else if(ratio<1.12) scale=72;
+   else if(ratio>2.15) scale=88;
+   else scale=79;
+   if(card){
+     img.style.setProperty('width',scale+'%','important');
+     img.style.setProperty('height',scale+'%','important');
+   }else{
+     img.style.setProperty('width','92%','important');
+     img.style.setProperty('height','92%','important');
+   }
+   img.style.setProperty('object-fit','contain','important');
+   img.style.setProperty('object-position','center','important');
+ }
+ function fitAllV1112(root=document){root.querySelectorAll?.('.pkpj-request-art-v1111 img,.equipment-category-launcher-v116 img,.category-popup-photo-v116 img,.equipment-choice-photo img').forEach(img=>{if(img.complete)scaleImageV1112(img);else img.addEventListener('load',()=>scaleImageV1112(img),{once:true})})}
+ document.addEventListener('DOMContentLoaded',()=>{
+   fitAllV1112();
+   const host=document.querySelector('#loanCategoryGrid');if(host)new MutationObserver(()=>fitAllV1112(host)).observe(host,{childList:true,subtree:true});
+   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')setTimeout(()=>window.pollApplicantLiveV119?.(),60)});
+   window.addEventListener('focus',()=>setTimeout(()=>window.pollApplicantLiveV119?.(),60));
+ },{once:true});
+})();
+</script>
 
 </body>
 </html>
