@@ -4754,5 +4754,90 @@ document.addEventListener('DOMContentLoaded',()=>{
 },{once:true});
 </script>
 
+
+<style id="pkpj-v1111-showcase-cards-mobile-drawer">
+/* ===== PEMOHON V11.11: Showcase category cards ===== */
+.equipment-category-launchers-v116{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:16px!important;padding:4px 2px 16px!important}
+.pkpj-request-showcase-v1111{--cat-a:#2d7fe5;--cat-b:#55baff;position:relative;min-width:0;min-height:320px;border:1px solid color-mix(in srgb,var(--cat-a) 30%,#dbe8f2);border-radius:24px;padding:10px;background:linear-gradient(155deg,#fff,color-mix(in srgb,var(--cat-a) 5%,#f5faff));box-shadow:0 12px 30px rgba(40,79,118,.10);color:#123657;text-align:center;overflow:hidden;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+.pkpj-request-showcase-v1111:hover{transform:translateY(-4px)!important;box-shadow:0 20px 40px color-mix(in srgb,var(--cat-a) 17%,rgba(40,79,118,.16))!important}
+.pkpj-request-showcase-v1111.zero{opacity:.68}
+.pkpj-request-visual-v1111{height:185px;border-radius:20px;display:grid;place-items:center;overflow:hidden;position:relative;background:radial-gradient(circle at 50% 48%,rgba(255,255,255,.96),color-mix(in srgb,var(--cat-a) 7%,#eef7ff) 68%,color-mix(in srgb,var(--cat-a) 11%,#eef7ff));}
+.pkpj-request-art-v1111{width:92%;height:92%;display:grid;place-items:center}
+.pkpj-request-art-v1111 .custom-setting-art-v119,.pkpj-request-art-v1111 .category-custom-art-v118{width:100%!important;height:100%!important;display:grid!important;place-items:center!important}
+.pkpj-request-art-v1111 .custom-setting-art-v119>img,.pkpj-request-art-v1111 .category-custom-art-v118>img{width:96%!important;height:96%!important;object-fit:contain!important;object-position:center!important;mix-blend-mode:multiply!important;background:transparent!important;border-radius:18px!important;filter:drop-shadow(0 14px 15px rgba(26,68,108,.14))!important}
+.pkpj-request-art-v1111 .premium-asset-art-v116{width:92px!important;height:92px!important;color:var(--cat-a)!important;filter:drop-shadow(0 12px 12px color-mix(in srgb,var(--cat-a) 18%,transparent))}
+.pkpj-request-name-v1111{font-size:17px;font-weight:950;line-height:1.2;margin:12px 6px 10px;color:#102f51}
+.pkpj-request-stock-v1111{display:grid;grid-template-columns:48px 1fr 38px;gap:10px;align-items:center;text-align:left;padding:10px 12px;border-radius:17px;background:linear-gradient(145deg,#f1f9ff,#e8f4fc);border:1px solid rgba(218,234,246,.92)}
+.pkpj-request-stock-v1111 .cube{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,#20b563,#55cf72);color:#fff;box-shadow:0 8px 18px rgba(37,174,96,.22)}
+.pkpj-request-stock-v1111 .cube svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.pkpj-request-stock-v1111 small{display:block;font-size:9px;font-weight:850;color:#58738b;line-height:1.2;margin-bottom:2px}
+.pkpj-request-stock-v1111 strong{font-size:30px;line-height:.95;color:#0f3154;letter-spacing:-.04em}
+.pkpj-request-stock-v1111 em{font-size:11px;font-style:normal;font-weight:850;color:#698095;margin-left:4px}
+.pkpj-request-stock-v1111 .arrow{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:#dcefff;color:#205f96;font-size:25px;line-height:1}
+
+/* ===== MOBILE DRAWER: hide/unhide + swipe ===== */
+.mobile-sidebar-close-v1111{display:none}
+.mobile-sidebar-backdrop-v1111{display:none}
+@media(max-width:760px){
+  .sidebar{z-index:110!important;box-shadow:18px 0 45px rgba(16,52,88,.24)!important}
+  .mobile-sidebar-close-v1111{display:flex;position:absolute;right:10px;top:10px;z-index:125;width:38px;height:38px;border:1px solid rgba(206,223,238,.85);border-radius:13px;align-items:center;justify-content:center;background:rgba(255,255,255,.92);color:#1b568c;font-size:27px;line-height:1;font-weight:500;box-shadow:-4px -4px 10px rgba(255,255,255,.96),5px 6px 14px rgba(72,108,143,.18);backdrop-filter:blur(10px)}
+  .mobile-sidebar-close-v1111:active{transform:scale(.95);box-shadow:inset 3px 3px 8px rgba(86,116,146,.16),inset -3px -3px 8px #fff}
+  .mobile-sidebar-backdrop-v1111{position:fixed;inset:0;z-index:105;background:rgba(11,34,58,.32);backdrop-filter:blur(3px);opacity:0;pointer-events:none;display:block;transition:opacity .2s ease}
+  .mobile-sidebar-backdrop-v1111.show{opacity:1;pointer-events:auto}
+  body.mobile-sidebar-open-v1111{overflow:hidden}
+}
+
+@media(max-width:1050px){.equipment-category-launchers-v116{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:560px){.equipment-category-launchers-v116{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}.pkpj-request-showcase-v1111{min-height:232px;padding:7px;border-radius:18px}.pkpj-request-visual-v1111{height:118px;border-radius:15px}.pkpj-request-art-v1111 .premium-asset-art-v116{width:58px!important;height:58px!important}.pkpj-request-name-v1111{font-size:12px;margin:8px 3px 7px}.pkpj-request-stock-v1111{grid-template-columns:34px 1fr 28px;gap:6px;padding:7px;border-radius:12px}.pkpj-request-stock-v1111 .cube{width:32px;height:32px}.pkpj-request-stock-v1111 .cube svg{width:17px;height:17px}.pkpj-request-stock-v1111 small{font-size:7.2px}.pkpj-request-stock-v1111 strong{font-size:21px}.pkpj-request-stock-v1111 em{font-size:8px}.pkpj-request-stock-v1111 .arrow{width:27px;height:27px;font-size:19px}}
+</style>
+<script id="pkpj-v1111-showcase-cards-mobile-drawer-script">
+(function(){
+ const cube='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4.5 7.2v9.6L12 21l7.5-4.2V7.2L12 3Z"/><path d="m4.8 7.4 7.2 4.1 7.2-4.1M12 11.5V21"/></svg>';
+ window.renderApplyCategories=function(){
+  const grid=$('#loanCategoryGrid');if(!grid)return;
+  const assets=(state.assets||[]).filter(a=>String(a.status||'TERSEDIA').toUpperCase()==='TERSEDIA'||!a.status);
+  const search=($('#applyAssetSearch')?.value||'').trim().toLowerCase();
+  const searched=search?assets.filter(a=>[a.asset_name,a.category,a.brand,a.model,a.asset_tag,a.location].join(' ').toLowerCase().includes(search)):assets;
+  const fixed=[['Laptop','laptop'],['WiFi/MiFi','wifi'],['Extension','extension'],['Accessory','accessory']];
+  const used=new Set(fixed.map(x=>x[1]));
+  const dynamic=[...new Set(searched.map(a=>String(a.category||'Lain-lain').trim()||'Lain-lain'))].filter(c=>!used.has(portalIconKeyV118(c))).sort((a,b)=>a.localeCompare(b,'ms',{sensitivity:'base'}));
+  const items=[{name:'',label:'Semua Inventori',count:searched.length},...fixed.map(([label,key])=>({name:label,label,count:searched.filter(a=>portalIconKeyV118(a.category)===key).length})),...dynamic.map(c=>({name:c,label:c,count:searched.filter(a=>String(a.category||'Lain-lain').trim()===c).length}))];
+  const totalEl=$('#applyAvailableCount');if(totalEl)totalEl.textContent=searched.length;
+  grid.innerHTML=`<div class="equipment-category-launchers-v116">${items.map(t=>{const [a,b]=paletteV116(t.name||'all'),enc=encodeURIComponent(t.name),art=premiumAssetArtV116(t.name||'all');return `<button type="button" class="pkpj-request-showcase-v1111 ${t.count===0?'zero':''}" style="--cat-a:${a};--cat-b:${b}" onclick="openCategoryPopupV116(decodeURIComponent('${enc}'))"><div class="pkpj-request-visual-v1111"><div class="pkpj-request-art-v1111">${art}</div></div><div class="pkpj-request-name-v1111">${esc(t.label)}</div><div class="pkpj-request-stock-v1111"><span class="cube">${cube}</span><span><small>Kuantiti Tersedia</small><strong>${t.count}</strong><em>unit</em></span><span class="arrow">›</span></div></button>`}).join('')}</div>`;
+ };
+ document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{if(state.currentView==='apply')renderApplyCategories()},0),{once:true});
+})();
+
+(function installMobileDrawerV1111(){
+ const init=()=>{
+  const sidebar=document.getElementById('sidebar');
+  if(!sidebar||sidebar.dataset.drawerV1111==='1')return;
+  sidebar.dataset.drawerV1111='1';
+  let closeBtn=document.getElementById('mobileSidebarCloseV1111');
+  if(!closeBtn){closeBtn=document.createElement('button');closeBtn.type='button';closeBtn.id='mobileSidebarCloseV1111';closeBtn.className='mobile-sidebar-close-v1111';closeBtn.setAttribute('aria-label','Sembunyikan menu');closeBtn.title='Sembunyikan menu';closeBtn.innerHTML='‹';sidebar.appendChild(closeBtn)}
+  let backdrop=document.getElementById('mobileSidebarBackdropV1111');
+  if(!backdrop){backdrop=document.createElement('div');backdrop.id='mobileSidebarBackdropV1111';backdrop.className='mobile-sidebar-backdrop-v1111';document.body.appendChild(backdrop)}
+  const mobile=()=>window.matchMedia('(max-width:760px)').matches;
+  const sync=()=>{const opened=mobile()&&sidebar.classList.contains('open');backdrop.classList.toggle('show',opened);document.body.classList.toggle('mobile-sidebar-open-v1111',opened)};
+  const open=()=>{if(!mobile())return;sidebar.classList.add('open');sync()};
+  const close=()=>{sidebar.classList.remove('open');sync()};
+  closeBtn.addEventListener('click',close);
+  backdrop.addEventListener('click',close);
+  document.getElementById('mobileMenu')?.addEventListener('click',()=>setTimeout(sync,0));
+  sidebar.querySelectorAll('.nav-btn').forEach(btn=>btn.addEventListener('click',()=>setTimeout(sync,0)));
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&mobile())close()});
+  let sx=0,sy=0,edge=false;
+  sidebar.addEventListener('touchstart',e=>{if(!mobile()||!e.touches?.length)return;sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});
+  sidebar.addEventListener('touchend',e=>{if(!mobile()||!e.changedTouches?.length)return;const dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;if(dx<-55&&Math.abs(dx)>Math.abs(dy)*1.15)close()},{passive:true});
+  document.addEventListener('touchstart',e=>{if(!mobile()||sidebar.classList.contains('open')||!e.touches?.length)return;edge=e.touches[0].clientX<=24;sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});
+  document.addEventListener('touchend',e=>{if(!mobile()||!edge||!e.changedTouches?.length){edge=false;return}const dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;edge=false;if(dx>65&&Math.abs(dx)>Math.abs(dy)*1.15)open()},{passive:true});
+  window.addEventListener('resize',()=>{if(!mobile())close();else sync()});
+  sync();
+ };
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+})();
+
+</script>
+
 </body>
 </html>
