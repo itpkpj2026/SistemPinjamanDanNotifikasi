@@ -4877,5 +4877,49 @@ document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{if(state.asset
 }
 </style>
 
+<style id="pkpj-v10123-operator-login-fix-style">
+#adminOperatorSelect.operator-ready-v10123{border-color:#93c7ef!important;box-shadow:0 0 0 3px rgba(35,132,218,.07)!important}
+#adminOperatorLoadNote.operator-warn-v10123{background:#fff8e8!important;border-color:#f0d49d!important;color:#7a5a17!important}
+#adminOperatorLoadNote.operator-ok-v10123{background:#eef9f4!important;border-color:#bfe7d2!important;color:#277055!important}
+</style>
+<script id="pkpj-v10123-operator-login-fix-script">
+const ADMIN_OPERATOR_CACHE_V10123='pkpj_admin_operator_directory_v10123';
+const KNOWN_IT_OPERATORS_V10123=[
+ {name:'Mohamad Nazrirafidi bin Samsudin',role:'SUPER_ADMIN'},
+ {name:'Muhamad Syafiq Nastangin Bin Palal',role:'STAFF_IT'},
+ {name:'Sharifah Azizah binti Syed Hamid',role:'STAFF_IT'},
+ {name:'Zaiton Binti Mohamed',role:'STAFF_IT'}
+];
+function normOperatorNameV10123(v){return String(v||'').trim().replace(/\s+/g,' ').toLowerCase()}
+function readOperatorCacheV10123(){try{const x=JSON.parse(localStorage.getItem(ADMIN_OPERATOR_CACHE_V10123)||'[]');return Array.isArray(x)?x.filter(u=>u&&u.user_id&&u.name):[]}catch(e){return []}}
+function saveOperatorCacheV10123(list){try{localStorage.setItem(ADMIN_OPERATOR_CACHE_V10123,JSON.stringify((list||[]).map(u=>({user_id:u.user_id,name:u.name,role:u.role,active:u.active||'Ya',department:u.department||'',unit:u.unit||''}))))}catch(e){}}
+function mergeOperatorsV10123(list){const byId=new Map((state.users||[]).map(x=>[String(x.user_id),x]));(list||[]).forEach(x=>{if(x?.user_id)byId.set(String(x.user_id),{...(byId.get(String(x.user_id))||{}),...x})});state.users=[...byId.values()];state.loadedAt.users=Date.now();saveAdminFastCache()}
+function renderOperatorsV10123(list,status='ok'){
+ const operators=(list||[]).filter(x=>x&&x.user_id&&x.name).sort((a,b)=>String(a.name).localeCompare(String(b.name),'ms',{sensitivity:'base'}));
+ const sel=$('#adminOperatorSelect');
+ if(sel){sel.innerHTML=operators.length?'<option value="">Pilih nama staf IT…</option>'+operators.map(x=>`<option value="${attr(x.user_id)}">${esc(x.name)}</option>`).join(''):'<option value="">Senarai belum tersedia…</option>';sel.classList.toggle('operator-ready-v10123',!!operators.length)}
+ $('#operatorExistingBox')?.classList.remove('hidden');
+ const boot=$('#operatorBootstrapBox');if(boot)boot.classList.toggle('hidden',!!operators.length);
+ const note=$('#adminOperatorLoadNote');if(note){note.classList.remove('operator-warn-v10123','operator-ok-v10123');if(operators.length){note.textContent='Senarai Staf IT sedia digunakan.';note.classList.add('operator-ok-v10123')}else{note.textContent='Sambungan direktori agak lambat. Tekan Cuba Muat Semula; sistem akan cuba semula tanpa menjejaskan tetapan lain.';note.classList.add('operator-warn-v10123')}}
+ try{renderItOperators()}catch(e){} return operators;
+}
+async function fallbackOperatorsFromStaffDirectoryV10123(){
+ const raw=await jsonp('admin.staff_directory',{_t:Date.now()},{timeoutMs:14000,retries:1});
+ const staff=Array.isArray(raw)?raw:Array.isArray(raw?.items)?raw.items:[];
+ const known=new Map(KNOWN_IT_OPERATORS_V10123.map(x=>[normOperatorNameV10123(x.name),x]));
+ return staff.map(u=>{const k=known.get(normOperatorNameV10123(u.name));if(!k)return null;return {user_id:u.user_id,name:u.name,role:k.role,active:'Ya',department:u.department||'',unit:u.unit||''}}).filter(Boolean);
+}
+loadOperatorOptions=async function(force=false){
+ let operators=(state.users||[]).filter(x=>['SUPER_ADMIN','STAFF_IT'].includes(String(x.role||''))&&String(x.active||'Ya').toLowerCase()==='ya');
+ if(!operators.length){const cached=readOperatorCacheV10123();if(cached.length){mergeOperatorsV10123(cached);operators=cached;renderOperatorsV10123(operators,'cache')}}
+ if(operators.length&&!force)return renderOperatorsV10123(operators,'cache');
+ const sel=$('#adminOperatorSelect');if(sel&&!operators.length)sel.innerHTML='<option value="">Memuatkan senarai…</option>';
+ let lastErr=null;
+ try{const res=await jsonp('admin.operators',{_t:Date.now()},{timeoutMs:15000,retries:1});const live=Array.isArray(res?.items)?res.items:[];if(live.length){operators=live;mergeOperatorsV10123(live);saveOperatorCacheV10123(live);return renderOperatorsV10123(live,'live')}}catch(err){lastErr=err;console.warn('admin.operators lambat/gagal, cuba direktori staf.',err)}
+ try{const fallback=await fallbackOperatorsFromStaffDirectoryV10123();if(fallback.length){operators=fallback;mergeOperatorsV10123(fallback);saveOperatorCacheV10123(fallback);return renderOperatorsV10123(fallback,'fallback')}}catch(err){lastErr=err;console.warn('Fallback direktori staf gagal.',err)}
+ if(operators.length)return renderOperatorsV10123(operators,'cache');renderOperatorsV10123([],'error');throw lastErr||new Error('Senarai Staf IT belum dapat dimuatkan.');
+};
+document.addEventListener('DOMContentLoaded',()=>{const cached=readOperatorCacheV10123();if(cached.length){mergeOperatorsV10123(cached);renderOperatorsV10123(cached,'cache')}setTimeout(()=>loadOperatorOptions(true).catch(err=>console.warn('Refresh Staf IT tertangguh.',err)),250)},{once:true});
+</script>
 </body>
 </html>
