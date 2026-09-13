@@ -5059,5 +5059,141 @@ document.addEventListener('DOMContentLoaded',()=>{
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 })();
 </script>
+
+<style id="pkpj-v1015-completed-fast-style">
+#view-completed .mini-hero{--mh-a:#536b82;--mh-b:#8da5bb}
+.completed-count-v1015{font-weight:900;color:#245475}
+@media(max-width:700px){#view-completed .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}#view-completed table{min-width:900px}}
+</style>
+<script id="pkpj-v1015-completed-fast-script">
+(function(){
+  state.completedLoansV1015=state.completedLoansV1015||[];
+  state.loadedAt.completedV1015=state.loadedAt.completedV1015||0;
+  state.adminLoanRevisionV1015=state.adminLoanRevisionV1015||'';
+
+  function installCompletedViewV1015(){
+    const reportsBtn=document.querySelector('.nav-btn[data-view="reports"]');
+    if(reportsBtn&&!document.querySelector('.nav-btn[data-view="completed"]')){
+      const b=document.createElement('button');b.className='nav-btn';b.dataset.view='completed';
+      b.innerHTML='<span class="nav-ico">✓</span>Selesai Dipulangkan';
+      b.onclick=()=>showView('completed');reportsBtn.before(b);
+    }
+    const reports=document.querySelector('#view-reports');
+    if(reports&&!document.querySelector('#view-completed')){
+      const s=document.createElement('section');s.className='view';s.id='view-completed';
+      s.innerHTML=`<div class="mini-hero gray"><div class="copy"><h2>Selesai Dipulangkan</h2><p>Pinjaman yang telah selesai dipulangkan diasingkan daripada proses aktif.</p></div><div class="art"></div></div>
+      <div class="card panel"><div class="panel-head"><div><div class="panel-title">Rekod Selesai</div><div class="panel-sub"><span id="completedCountV1015" class="completed-count-v1015">0</span> pinjaman selesai dipulangkan.</div></div><button class="btn btn-sm" id="refreshCompletedV1015">↻ Segarkan</button></div>
+      <div class="toolbar"><div class="search">⌕ <input id="completedSearchV1015" placeholder="Cari ID pinjaman, peminjam atau tujuan..."></div></div>
+      <div class="table-wrap"><table><thead><tr><th>ID PINJAMAN</th><th>GAMBAR</th><th>PEMINJAM</th><th>ITEM</th><th>TARIKH PULANG</th><th>TUJUAN</th><th>STATUS</th><th>DILULUSKAN OLEH</th><th>RUJUKAN</th></tr></thead><tbody id="completedRowsV1015"></tbody></table></div></div>`;
+      reports.before(s);
+      s.querySelector('#completedSearchV1015').addEventListener('input',renderCompletedLoansV1015);
+      s.querySelector('#refreshCompletedV1015').onclick=()=>loadCompletedLoansV1015(true);
+    }
+  }
+
+  function renderCompletedLoansV1015(){
+    const box=document.querySelector('#completedRowsV1015');if(!box)return;
+    const q=String(document.querySelector('#completedSearchV1015')?.value||'').toLowerCase();
+    const rows=(state.completedLoansV1015||[]).filter(x=>{
+      const hay=[x.loan_id,userName(x.borrower_user_id),x.purpose,x.status].join(' ').toLowerCase();return !q||hay.includes(q);
+    });
+    document.querySelector('#completedCountV1015').textContent=String(rows.length);
+    box.innerHTML=rows.length?rows.map(x=>`<tr><td class="strong">${esc(x.loan_id)}</td><td>${photoCell(x,'loan')}</td><td>${esc(userName(x.borrower_user_id))}</td><td><span class="pill blue">${n(Number(x.item_count||0))} item</span></td><td>${fmtDate(x.return_date||x.updated_at)}</td><td>${esc(x.purpose||'—')}</td><td>${statusPill(x.status)}</td><td><span class="tiny strong">${esc(x.approved_by_user_id?userName(x.approved_by_user_id):'—')}</span></td><td><div class="action-row"><button class="btn btn-sm loan-register-btn" onclick="openMovementRegister('${attr(x.loan_id)}')">Daftar</button><button class="btn btn-sm loan-pdf-btn" onclick="openMovementRegisterPdf('${attr(x.loan_id)}')">PDF</button></div></td></tr>`).join(''):'<tr><td colspan="9" class="empty">Belum ada rekod selesai.</td></tr>';
+  }
+  window.renderCompletedLoansV1015=renderCompletedLoansV1015;
+
+  async function loadCompletedLoansV1015(force=false){
+    if(!requireConfig())return;
+    if(!force&&state.completedLoansV1015.length&&Date.now()-(state.loadedAt.completedV1015||0)<12000){renderCompletedLoansV1015();return}
+    try{
+      const res=await jsonp('loans',{scope:'completed',pageSize:200,sort:'return_date',order:'desc',_t:Date.now()},{timeoutMs:6500,retries:0});
+      state.completedLoansV1015=(res?.items||[]).filter(x=>String(x.status)==='DIPULANGKAN');
+      state.loadedAt.completedV1015=Date.now();renderCompletedLoansV1015();
+    }catch(e){console.warn('Rekod selesai belum dapat dimuatkan.',e)}
+  }
+  window.loadCompletedLoansV1015=loadCompletedLoansV1015;
+
+  const baseShow=window.showView;
+  window.showView=function(name){
+    if(name!=='completed')return baseShow(name);
+    state.view='completed';
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(v=>v.classList.toggle('active',v.dataset.view===name));
+    document.querySelector('#view-completed')?.classList.add('active');
+    document.querySelector('#pageHeading').textContent='Selesai Dipulangkan';
+    document.querySelector('#pageSubtitle').textContent='Rekod yang telah selesai dipulangkan dan tidak lagi mengganggu proses kelulusan aktif.';
+    document.querySelector('#topbar')?.classList.add('section-mode');
+    if(document.querySelector('#quickAddBtn'))document.querySelector('#quickAddBtn').style.display='none';
+    loadCompletedLoansV1015(false);
+  };
+
+  window.loadLoans=async function(force=false){
+    if(!requireConfig())return;
+    if(!force&&state.loans.length&&isFresh('loans',9000)){renderLoans();return}
+    if(state.inFlight.loans)return state.inFlight.loans;
+    const epoch=typeof loanEpochV92==='number'?loanEpochV92:0;
+    state.inFlight.loans=(async()=>{
+      try{
+        const res=await jsonp('loans',{scope:'active',pageSize:200,sort:'request_date',order:'desc',_t:Date.now()},{timeoutMs:6500,retries:0});
+        if(typeof loanEpochV92==='number'&&epoch!==loanEpochV92)return;
+        const rows=(res?.items||[]).filter(x=>!['DIPULANGKAN','DITOLAK','DIBATALKAN'].includes(String(x.status)));
+        state.loans=typeof overlayConfirmedV92==='function'?overlayConfirmedV92(rows):rows;
+        state.loadedAt.loans=Date.now();try{saveAdminFastCache()}catch(e){};renderLoans();
+        const note=document.querySelector('#loanListCountV92');if(note)note.textContent='Paparan '+state.loans.length+' pinjaman aktif.';
+      }catch(err){console.warn('Senarai pinjaman aktif tertangguh.',err)}finally{state.inFlight.loans=null}
+    })();
+    return state.inFlight.loans;
+  };
+
+  window.renderLoans=function(){
+    const q=String(document.querySelector('#loanSearch')?.value||'').toLowerCase();
+    const st=String(document.querySelector('#loanStatusFilter')?.value||'');
+    const rows=(state.loans||[]).filter(x=>{
+      if(['DIPULANGKAN','DITOLAK','DIBATALKAN'].includes(String(x.status)))return false;
+      const hay=[x.loan_id,userName(x.borrower_user_id),x.purpose,x.status].join(' ').toLowerCase();return(!q||hay.includes(q))&&(!st||x.status===st);
+    });
+    document.querySelector('#loansRows').innerHTML=rows.length?rows.map(x=>{const count=Number(x.item_count||0),bulk=count>1;return `<tr class="${bulk?'bulk-loan-row-v1010':''}"><td class="strong">${esc(x.loan_id)}</td><td>${photoCell(x,'loan')}</td><td>${esc(userName(x.borrower_user_id))}</td><td><span class="pill ${bulk?'bulk-item-pill-v1010':'blue'}">${bulk?'PUKAL · ':''}${n(count)} item</span></td><td>${fmtDate(x.due_date)}</td><td>${esc(x.purpose||'—')}</td><td>${statusPill(x.status)}</td><td><span class="tiny strong">${esc(x.approved_by_user_id?userName(x.approved_by_user_id):'—')}</span></td><td>${loanActionButtons(x)}</td></tr>`}).join(''):'<tr><td colspan="9" class="empty">Tiada pinjaman aktif.</td></tr>';
+  };
+
+  async function pollAdminFastV1015(){
+    if(document.visibilityState!=='visible'||!state.operator||approvalBusyV92()||state.inFlight.loans)return;
+    try{
+      const w=await jsonp('admin.loan_watch',{rev:state.adminLoanRevisionV1015||'',_t:Date.now()},{timeoutMs:3000,retries:0});
+      if(!w?.fingerprint)return;
+      if(state.adminLoanRevisionV1015&&w.fingerprint===state.adminLoanRevisionV1015)return;
+      state.adminLoanRevisionV1015=w.fingerprint;
+      state.loadedAt.dashboard=0;await loadLoans(true);
+      if(state.view==='completed')await loadCompletedLoansV1015(true);
+      if(state.view==='dashboard'||state.view==='reports')setTimeout(()=>loadDashboard(true).catch?.(()=>{}),80);
+    }catch(e){}
+  }
+  window.pollAdminLoanWatchV1011=pollAdminFastV1015;
+
+  const baseFinish=window.finishLoanV92;
+  if(typeof baseFinish==='function')window.finishLoanV92=function(id,pending,result){
+    const ok=baseFinish(id,pending,result);
+    if(ok){
+      const loan=(result?.loan||result)||{};
+      if(String(loan.status)==='DIPULANGKAN'){
+        state.loans=(state.loans||[]).filter(x=>String(x.loan_id)!==String(id));renderLoans();
+        setTimeout(()=>loadCompletedLoansV1015(true),100);
+      }
+      setTimeout(pollAdminFastV1015,120);
+    }
+    return ok;
+  };
+
+  installCompletedViewV1015();
+  document.addEventListener('DOMContentLoaded',()=>{
+    installCompletedViewV1015();
+    if(window.__adminLiveWatchV1011){clearInterval(window.__adminLiveWatchV1011);window.__adminLiveWatchV1011=null}
+    window.__adminLiveWatchV1011=setInterval(pollAdminFastV1015,1500);
+    setTimeout(pollAdminFastV1015,350);
+  },{once:true});
+  window.addEventListener('focus',()=>setTimeout(pollAdminFastV1015,70));
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')setTimeout(pollAdminFastV1015,70)});
+})();
+</script>
+
 </body>
 </html>
