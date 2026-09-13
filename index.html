@@ -4435,5 +4435,138 @@ if(typeof renderCategorySettingsBaseV1011==='function'){window.renderCategorySet
 document.addEventListener('DOMContentLoaded',()=>{startAdminLiveWatchV1011();const lazy=()=>loadUiPublicV1011(false);if('requestIdleCallback'in window)requestIdleCallback(lazy,{timeout:1600});else setTimeout(lazy,900)},{once:true});
 </script>
 
+
+
+<style id="pkpj-v1012-visual-blend-cards">
+/* ===== ADMIN V10.12 : VISUAL BLEND + LARGE INVENTORY CATEGORY CARDS =====
+   Additive only. V10.11 icon manager, live status, KEW.PA and all existing settings remain untouched. */
+#view-assets .asset-category-heading{margin-bottom:14px!important}
+#view-assets .asset-category-heading strong{font-size:16px!important}
+#view-assets .asset-category-heading span:not(.pill){font-size:10.5px!important}
+#assetCategoryTotal{font-size:11px!important;padding:6px 11px!important;min-height:30px!important}
+
+#view-assets .asset-category-menu{
+ display:grid!important;
+ grid-template-columns:repeat(auto-fit,minmax(220px,1fr))!important;
+ gap:16px!important;
+ overflow:visible!important;
+ padding:4px 2px 12px!important;
+}
+#view-assets .asset-category-menu .cat-card{
+ --cat-color:#2d7fe5;
+ min-width:0!important;
+ min-height:190px!important;
+ border-radius:24px!important;
+ padding:19px 14px 17px!important;
+ display:flex!important;
+ flex-direction:column!important;
+ align-items:center!important;
+ justify-content:center!important;
+ text-align:center!important;
+ background:
+   radial-gradient(circle at 92% 8%,color-mix(in srgb,var(--cat-color) 10%,transparent) 0 35px,transparent 36px),
+   linear-gradient(145deg,#fbfdff,color-mix(in srgb,var(--cat-color) 6%,#f4f8fc))!important;
+ border:1px solid color-mix(in srgb,var(--cat-color) 28%,#dbe7f1)!important;
+ box-shadow:-7px -7px 16px rgba(255,255,255,.96),8px 10px 24px rgba(78,112,148,.15)!important;
+}
+#view-assets .asset-category-menu .cat-card:hover{
+ transform:translateY(-4px)!important;
+ border-color:color-mix(in srgb,var(--cat-color) 58%,#dbe7f1)!important;
+ box-shadow:-9px -9px 20px #fff,11px 14px 30px rgba(68,106,145,.20)!important;
+}
+#view-assets .asset-category-menu .cat-card.active{
+ background:
+   radial-gradient(circle at 92% 8%,color-mix(in srgb,var(--cat-color) 15%,transparent) 0 38px,transparent 39px),
+   linear-gradient(145deg,color-mix(in srgb,var(--cat-color) 8%,#fff),#f9fcff)!important;
+ border-color:var(--cat-color)!important;
+}
+#view-assets .asset-category-menu .cat-card .emoji{
+ width:96px!important;height:96px!important;flex:0 0 96px!important;
+ margin:0 auto 8px!important;border-radius:26px!important;
+ display:grid!important;place-items:center!important;
+ background:linear-gradient(145deg,color-mix(in srgb,var(--cat-color) 18%,#fff),#fff)!important;
+ border:1px solid color-mix(in srgb,var(--cat-color) 24%,#dce8f2)!important;
+ box-shadow:0 15px 28px color-mix(in srgb,var(--cat-color) 15%,transparent),inset 0 1px 0 #fff!important;
+ overflow:visible!important;
+}
+#view-assets .asset-category-menu .cat-card .emoji .premium-cat-svg-v107{width:48px!important;height:48px!important}
+/* Custom image: remove the mini box and let the image visually merge into the card background. */
+#view-assets .asset-category-menu .cat-card .emoji:has(.custom-cat-image-v1011),
+#view-assets .asset-category-menu .cat-card .emoji:has(.icon-image-wrap-v1010){
+ background:transparent!important;border-color:transparent!important;box-shadow:none!important;
+}
+#view-assets .custom-cat-image-v1011>img,
+#view-assets .icon-image-wrap-v1010>img{
+ width:96%!important;height:96%!important;object-fit:contain!important;
+ mix-blend-mode:multiply!important;
+ filter:drop-shadow(0 9px 12px rgba(28,74,119,.16))!important;
+}
+#view-assets .asset-category-menu .cat-card>b{font-size:14px!important;line-height:1.2!important;color:#123657!important;margin-top:1px!important}
+#view-assets .asset-category-menu .cat-card>small{font-size:9px!important;color:#7890a4!important;margin-top:5px!important;min-height:12px}
+.admin-cat-availability-v1012{display:flex;align-items:baseline;justify-content:center;gap:6px;margin-top:9px;line-height:1}
+.admin-cat-availability-v1012 strong{font-size:34px;letter-spacing:-.045em;color:var(--cat-color);font-weight:950}
+.admin-cat-availability-v1012 span{font-size:12px;color:#71869a;font-weight:850}
+.admin-cat-total-v1012{margin-top:5px!important;font-size:8.5px!important;color:#91a2b0!important}
+/* Old small corner counter is superseded by the large count. */
+#view-assets .asset-category-menu .cat-count{display:none!important}
+
+/* White/near-white custom artwork visually absorbs the module header background. */
+.module-hero-image-v1010{
+ max-width:94%!important;max-height:122px!important;
+ object-fit:contain!important;
+ mix-blend-mode:multiply!important;
+ filter:drop-shadow(0 13px 18px rgba(21,61,103,.14))!important;
+ background:transparent!important;
+}
+.mini-hero .art.custom-icon-loaded-v1010{background:transparent!important}
+
+@media(max-width:900px){
+ #view-assets .asset-category-menu{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:11px!important}
+ #view-assets .asset-category-menu .cat-card{min-height:172px!important;padding:15px 10px!important}
+ #view-assets .asset-category-menu .cat-card .emoji{width:82px!important;height:82px!important;flex-basis:82px!important}
+ .admin-cat-availability-v1012 strong{font-size:29px}
+}
+@media(max-width:430px){
+ #view-assets .asset-category-menu{grid-template-columns:1fr 1fr!important;gap:9px!important}
+ #view-assets .asset-category-menu .cat-card{min-height:150px!important;border-radius:19px!important;padding:12px 7px!important}
+ #view-assets .asset-category-menu .cat-card .emoji{width:68px!important;height:68px!important;flex-basis:68px!important;border-radius:20px!important}
+ #view-assets .asset-category-menu .cat-card .emoji .premium-cat-svg-v107{width:36px!important;height:36px!important}
+ #view-assets .asset-category-menu .cat-card>b{font-size:11.5px!important}
+ .admin-cat-availability-v1012 strong{font-size:25px}.admin-cat-availability-v1012 span{font-size:9.5px}
+}
+</style>
+<script id="pkpj-v1012-inventory-card-render">
+/* Only the inventory category presentation is replaced. Data and actions remain V10.11. */
+window.renderAssetCategoryCards=function(){
+ const box=$('#assetCategoryCards');if(!box)return;
+ const bucket={};
+ (state.assets||[]).forEach(asset=>{
+  const category=String(asset.category||'Lain-lain').trim()||'Lain-lain';
+  const b=bucket[category]||(bucket[category]={total:0,available:0});
+  b.total++;
+  if(String(asset.status||'').trim().toUpperCase()==='TERSEDIA')b.available++;
+ });
+ const entries=Object.entries(bucket).sort((a,b)=>a[0].localeCompare(b[0],'ms',{sensitivity:'base'}));
+ const allTotal=(state.assets||[]).length;
+ const allAvailable=(state.assets||[]).filter(a=>String(a.status||'').trim().toUpperCase()==='TERSEDIA').length;
+ const totalEl=$('#assetCategoryTotal');if(totalEl)totalEl.textContent=`${allTotal} aset`;
+ if(!entries.length){box.innerHTML='<div class="empty" style="grid-column:1/-1">Belum ada rekod inventori.</div>';state.assetCategoryView='';$('#assetListPanel')?.classList.add('asset-list-closed');return;}
+ const card=(category,label,total,available,description,color)=>{
+  const selected=state.assetCategoryView===category;
+  const enc=encodeURIComponent(category);
+  const totalNote=available===total?`${total} aset · semua tersedia`:`${total} aset keseluruhan`;
+  return `<button type="button" class="cat-card ${selected?'active':''}" style="--cat-color:${color}" onclick="openAssetCategory(decodeURIComponent('${enc}'))">
+   <div class="emoji">${premiumCategoryIconV107(category==='__ALL__'?'all':category)}</div>
+   <b>${esc(label)}</b>
+   <div class="admin-cat-availability-v1012"><strong>${available}</strong><span>tersedia</span></div>
+   <small class="admin-cat-total-v1012">${esc(totalNote)}</small>
+  </button>`;
+ };
+ const all=card('__ALL__','Semua Inventori',allTotal,allAvailable,'Lihat semua kategori','#2f7de1');
+ box.innerHTML=all+entries.map(([category,b])=>card(category,category,b.total,b.available,assetCategoryDescription(category),premiumCategoryColorV107(category))).join('');
+};
+document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{if(state.assets?.length)renderAssetCategoryCards()},0)},{once:true});
+</script>
+
 </body>
 </html>
