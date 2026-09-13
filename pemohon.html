@@ -2245,7 +2245,7 @@ button:not(:disabled):active,.btn:not(:disabled):active,.equipment-category-laun
 
     <div class="neo-page-foot" aria-hidden="true">
       <span>© 2026 PKPJ. Hak Cipta Terpelihara.</span>
-      <span>Sistem ICT &nbsp; | &nbsp; Versi 11.12</span>
+      <span>Sistem ICT &nbsp; | &nbsp; Versi 11.13</span>
     </div>
   </div>
 </div>
@@ -4941,5 +4941,187 @@ document.addEventListener('DOMContentLoaded',()=>{
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 })();
 </script>
+
+<style id="pkpj-v1113-bulk-mixed-all-style">
+/* ===== V11.13: Permohonan pukal pelbagai kategori dari Semua Peralatan ===== */
+.category-bulk-btn-v117.bulk-all-v1113{
+  background:linear-gradient(105deg,#2469df 0%,#1f9ddd 58%,#24bfae 100%)!important;
+  color:#fff!important;border:0!important;box-shadow:0 10px 24px rgba(35,116,183,.24)!important;
+  white-space:nowrap!important
+}
+.loan-modal-asset .mixed-category-pill-v1113{
+  display:inline-flex;align-items:center;margin:0 0 5px;padding:3px 7px;border-radius:999px;
+  background:#eaf4ff;color:#286aa4;font-size:8px;font-weight:900;letter-spacing:.02em
+}
+.loan-modal-asset.selected .mixed-category-pill-v1113{background:#dff6ee;color:#16745d}
+.bulk-mixed-note-v1113{
+  margin:0 0 10px;padding:10px 12px;border-radius:13px;background:linear-gradient(145deg,#eef7ff,#f2fbf8);
+  border:1px solid #d7e9f1;color:#54758c;font-size:9.5px;line-height:1.5
+}
+.bulk-mixed-note-v1113 b{color:#1e5e91}
+#loanRequestModal.mixed-bulk-v1113 #loanBulkBarV117{display:flex!important}
+#loanRequestModal.mixed-bulk-v1113 #loanModalAssets{max-height:360px;overflow:auto;overscroll-behavior:contain}
+@media(max-width:720px){
+ .category-bulk-btn-v117.bulk-all-v1113{font-size:9px!important;padding:9px 10px!important}
+ #loanRequestModal.mixed-bulk-v1113 #loanModalAssets{max-height:42vh}
+ .bulk-mixed-note-v1113{font-size:9px}
+}
+</style>
+<script id="pkpj-v1113-bulk-mixed-all-script">
+(function(){
+  const baseOpenLoanV1113=window.openLoanRequestModal;
+  const basePopupV1113=window.openCategoryPopupV116;
+  const baseSyncV1113=window.syncLoanModalSelection;
+
+  function availableAllV1113(){
+    return (state.assets||[]).filter(a=>String(a.status||'TERSEDIA').toUpperCase()==='TERSEDIA'||!a.status);
+  }
+
+  function renderMixedAssetsV1113(assets){
+    const box=$('#loanModalAssets');
+    if(!box)return;
+    box.innerHTML=assets.length?assets.map(asset=>{
+      const name=asset.asset_name||asset.asset_tag||asset.asset_id;
+      const detail=[asset.asset_tag,asset.model,asset.location].filter(Boolean).join(' • ');
+      return `<label class="loan-modal-asset">
+        <input type="checkbox" class="loan-modal-asset-check" value="${attr(asset.asset_id)}" onchange="syncLoanModalSelection()">
+        <div class="loan-modal-asset-icon linked-photo">${assetThumbHtml(asset,true)}</div>
+        <div>
+          <span class="mixed-category-pill-v1113">${esc(asset.category||'Peralatan ICT')}</span>
+          <strong>${esc(name)}</strong>
+          <small>${esc(detail||'Aset tersedia')}</small>
+          ${assetImageOpenUrl(asset)?`<a class="popup-view-image" href="${attr(assetImageOpenUrl(asset))}" target="_blank" rel="noopener" onclick="event.stopPropagation()">🖼 Lihat Gambar</a>`:''}
+        </div>
+      </label>`;
+    }).join(''):'<div class="loan-modal-empty">Tiada peralatan berstatus TERSEDIA buat masa ini.</div>';
+  }
+
+  window.openBulkAllV1113=function(){
+    const assets=availableAllV1113();
+    if(!assets.length)return toast('Tiada peralatan','Tiada peralatan tersedia untuk permohonan pukal.','err');
+    closeCategoryPopupV116();
+    setTimeout(()=>{
+      /* Guna modal sedia ada supaya flow tarikh, tujuan, akuan, tandatangan dan submit kekal sama. */
+      baseOpenLoanV1113('other','');
+      state.loanCategory='all';
+      state.loanCategoryLabel='Pelbagai Kategori';
+      $('#loanRequestModal')?.classList.add('mixed-bulk-v1113');
+      $('#loanModalIcon').textContent='▦';
+      $('#loanModalTitle').textContent='Permohonan Pukal Pelbagai Kategori';
+      $('#loanModalSubtitle').textContent='Pilih Laptop, WiFi/MiFi, Extension atau peralatan lain dalam satu permohonan.';
+      $('#loanModalStockText').textContent=`${assets.length} aset tersedia • pilih campuran kategori`;
+      $('#laptopTypeGroup')?.classList.add('hidden');
+      $('#wifiNoGroup')?.classList.add('hidden');
+      $('#extensionNoGroup')?.classList.add('hidden');
+      renderMixedAssetsV1113(assets);
+      const bulkBar=$('#loanBulkBarV117');
+      if(bulkBar){bulkBar.classList.remove('hidden');
+        if(!bulkBar.querySelector('.bulk-mixed-note-anchor-v1113')){
+          const note=document.createElement('div');
+          note.className='bulk-mixed-note-v1113 bulk-mixed-note-anchor-v1113';
+          note.innerHTML='<b>Boleh campur kategori:</b> contoh 1 Laptop + 1 WiFi/MiFi + 1 Extension dalam satu nombor permohonan.';
+          bulkBar.parentNode.insertBefore(note,bulkBar);
+        }
+      }
+      if(typeof window.syncLoanModalSelection==='function')window.syncLoanModalSelection();
+    },90);
+  };
+
+  if(typeof baseOpenLoanV1113==='function'){
+    window.openLoanRequestModal=function(categoryKey,preselectAssetId=''){
+      $('#loanRequestModal')?.classList.remove('mixed-bulk-v1113');
+      document.querySelector('.bulk-mixed-note-anchor-v1113')?.remove();
+      return baseOpenLoanV1113(categoryKey,preselectAssetId);
+    };
+  }
+
+  if(typeof baseSyncV1113==='function'){
+    window.syncLoanModalSelection=function(){
+      baseSyncV1113();
+      if(state.loanCategory!=='all')return;
+      const ids=$$('.loan-modal-asset-check:checked').map(x=>String(x.value));
+      const selected=(state.assets||[]).filter(a=>ids.includes(String(a.asset_id)));
+      const cats=[...new Set(selected.map(a=>String(a.category||'Peralatan ICT').trim()).filter(Boolean))];
+      const count=$('#loanBulkCountV117');
+      if(count)count.textContent=selected.length?`${selected.length} dipilih • ${cats.length} kategori`:'0 dipilih';
+    };
+  }
+
+  if(typeof basePopupV1113==='function'){
+    window.openCategoryPopupV116=function(category){
+      basePopupV1113(category);
+      requestAnimationFrame(()=>{
+        const bulk=$('#categoryBulkBtnV117');
+        const assets=availableAllV1113();
+        if(!bulk)return;
+        if(!category){
+          bulk.classList.toggle('hidden',assets.length<1);
+          bulk.classList.add('bulk-all-v1113');
+          bulk.textContent='Mohon Pukal Pelbagai';
+          bulk.onclick=()=>window.openBulkAllV1113();
+          bulk.title='Pilih beberapa item daripada kategori berbeza dalam satu permohonan';
+        }else{
+          bulk.classList.remove('bulk-all-v1113');
+          bulk.textContent='Mohon Pukal';
+          bulk.onclick=()=>openBulkCategoryV117(category);
+          bulk.title='Mohon beberapa item dalam kategori ini';
+        }
+      });
+    };
+  }
+
+  document.addEventListener('DOMContentLoaded',()=>{
+    const popup=$('#categoryPopupV116');
+    if(popup)popup.setAttribute('data-bulk-mixed','ready');
+  },{once:true});
+})();
+</script>
+
+
+<style id="pkpj-v11131-home-hero-photo">
+/* V11.13.1 - Foto bangunan PKPJ pada upper hero Portal Pemohon */
+#view-home .hero{
+  isolation:isolate!important;
+  background:
+    linear-gradient(90deg,rgba(241,248,255,.98) 0%,rgba(239,247,255,.94) 31%,rgba(232,244,253,.72) 49%,rgba(222,239,250,.30) 67%,rgba(214,234,247,.08) 100%),
+    url("pkpj-login-background(2).jpg") center 54% / cover no-repeat!important;
+  border-color:rgba(169,207,234,.72)!important;
+  box-shadow:0 12px 34px rgba(31,92,137,.12)!important;
+}
+#view-home .hero:after{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  width:auto!important;
+  height:auto!important;
+  right:auto!important;
+  top:auto!important;
+  border-radius:inherit!important;
+  background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,0) 46%,rgba(16,91,147,.04))!important;
+  pointer-events:none!important;
+  z-index:1!important;
+}
+#view-home .hero-copy{
+  position:relative!important;
+  z-index:3!important;
+  max-width:660px!important;
+  text-shadow:0 1px 0 rgba(255,255,255,.75)!important;
+}
+#view-home .hero .eyebrow{
+  background:rgba(255,255,255,.88)!important;
+  backdrop-filter:blur(5px)!important;
+}
+#view-home .hero h2{color:#0a2d56!important}
+#view-home .hero p{color:#4d6d88!important}
+@media(max-width:760px){
+  #view-home .hero{
+    background:
+      linear-gradient(90deg,rgba(241,248,255,.98) 0%,rgba(239,247,255,.94) 48%,rgba(230,243,252,.64) 72%,rgba(220,239,250,.28) 100%),
+      url("pkpj-login-background(2).jpg") 56% 54% / cover no-repeat!important;
+  }
+  #view-home .hero-copy{max-width:90%!important}
+}
+</style>
+
 </body>
 </html>
