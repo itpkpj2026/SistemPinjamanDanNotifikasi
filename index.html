@@ -1017,7 +1017,7 @@ html,body{max-width:100%;overflow-x:hidden}
 <!-- PKPJ Admin V10.6.4 PERFORMANCE: cache-first, serialized startup, silent background retry -->
 
 <style id="pkpj-v107-premium-ui">
-/* ===== PKPJ V10.7 PREMIUM + COMPACT ===== */
+/* ===== PKPJ V10.8 PREMIUM + COMPACT + NEUMORPHIC ===== */
 .nav-btn .nav-ico{width:31px!important;height:31px!important;border-radius:10px!important;color:#fff!important;font-size:15px!important;font-weight:900!important;border:1px solid rgba(255,255,255,.7)!important;box-shadow:0 8px 18px rgba(26,73,125,.14),inset 0 1px 0 rgba(255,255,255,.55)!important}
 .nav-btn:nth-child(1) .nav-ico{background:linear-gradient(145deg,#2688ff,#56b8ff)!important}.nav-btn:nth-child(2) .nav-ico{background:linear-gradient(145deg,#12a3a0,#4fd6c2)!important}.nav-btn:nth-child(3) .nav-ico{background:linear-gradient(145deg,#13a565,#49d18d)!important}.nav-btn:nth-child(4) .nav-ico{background:linear-gradient(145deg,#f08a22,#ffbd52)!important}.nav-btn:nth-child(5) .nav-ico{background:linear-gradient(145deg,#6b5ce7,#9d8cff)!important}
 .nav-btn.active .nav-ico{box-shadow:0 9px 22px rgba(18,108,255,.22),inset 0 1px 0 rgba(255,255,255,.7)!important}
@@ -1061,6 +1061,36 @@ html,body{max-width:100%;overflow-x:hidden}
 }
 @media(max-width:480px){#view-reports>.kpis{grid-template-columns:1fr 1fr!important}#view-reports>.kpis .kpi{min-height:62px!important;padding:9px 10px!important}.nav-btn .nav-ico{width:29px!important;height:29px!important}}
 </style>
+
+<style id="pkpj-v108-neumorphic-buttons">
+/* ===== PKPJ V10.8 PREMIUM NEUMORPHIC INTERACTION ===== */
+:root{--neo-light:rgba(255,255,255,.94);--neo-dark:rgba(115,139,166,.30)}
+button,.btn,.asset-icon-btn,.cat-card,.nav-btn{transition:transform .18s cubic-bezier(.2,.75,.25,1),box-shadow .18s ease,border-color .18s ease,filter .18s ease!important}
+.btn,.asset-icon-btn,.loan-register-btn,.loan-pdf-btn,.cat-card{
+ box-shadow:-6px -6px 14px var(--neo-light),6px 7px 16px var(--neo-dark),inset 0 1px 0 rgba(255,255,255,.76)!important;
+}
+.btn-primary,.btn-green{box-shadow:-5px -5px 13px rgba(255,255,255,.86),7px 8px 18px rgba(43,88,138,.28),inset 0 1px 0 rgba(255,255,255,.34)!important}
+.btn-danger{box-shadow:-5px -5px 13px rgba(255,255,255,.9),6px 7px 15px rgba(189,85,104,.16),inset 0 1px 0 rgba(255,255,255,.72)!important}
+button:not(:disabled):hover,.btn:not(:disabled):hover,.asset-icon-btn:not(:disabled):hover,.cat-card:hover{
+ transform:translateY(-5px)!important;
+ filter:saturate(1.04);
+}
+.btn:not(:disabled):hover,.asset-icon-btn:not(:disabled):hover,.loan-register-btn:not(:disabled):hover,.loan-pdf-btn:not(:disabled):hover,.cat-card:hover{
+ box-shadow:-9px -9px 20px rgba(255,255,255,.98),10px 12px 24px rgba(105,132,164,.34),inset 0 1px 0 rgba(255,255,255,.8)!important;
+}
+button:not(:disabled):active,.btn:not(:disabled):active,.asset-icon-btn:not(:disabled):active,.cat-card:active{
+ transform:translateY(1px) scale(.985)!important;
+ box-shadow:inset 4px 4px 10px rgba(120,145,173,.20),inset -4px -4px 10px rgba(255,255,255,.92)!important;
+}
+.nav-btn{border:1px solid rgba(210,224,238,.54)!important;box-shadow:-3px -3px 8px rgba(255,255,255,.72),4px 5px 12px rgba(92,124,157,.12)!important}
+.nav-btn:hover{box-shadow:-5px -5px 12px rgba(255,255,255,.92),6px 7px 15px rgba(91,124,158,.18)!important}
+.premium-nav-svg-v108{width:18px;height:18px;display:block;stroke:#fff;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.nav-btn .nav-ico{position:relative;overflow:hidden!important}
+.nav-btn .nav-ico::after{content:"";position:absolute;inset:1px;border-radius:9px;background:linear-gradient(145deg,rgba(255,255,255,.32),transparent 58%);pointer-events:none}
+@media(max-width:760px){button:not(:disabled):hover,.btn:not(:disabled):hover,.asset-icon-btn:not(:disabled):hover,.cat-card:hover{transform:none!important}button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.98)!important}}
+@media(prefers-reduced-motion:reduce){button,.btn,.asset-icon-btn,.cat-card,.nav-btn{transition:none!important}}
+</style>
+
 </head>
 <body>
 <div class="admin-login-overlay" id="adminLoginOverlay">
@@ -4220,5 +4250,22 @@ document.addEventListener('DOMContentLoaded',()=>{
  const art=document.querySelector('#view-settings>.mini-hero .art');if(art)art.innerHTML=premiumSettingsArtV107();
 });
 </script>
+
+<script id="pkpj-v108-premium-nav-icons">
+function premiumNavSvgV108(type){
+ const map={
+  dashboard:'<path d="M3.5 10.5L12 3l8.5 7.5"/><path d="M5.5 9.5V21h13V9.5M9.5 21v-6h5v6"/>',
+  assets:'<path d="M4 7l8-4 8 4-8 4z"/><path d="M4 7v10l8 4 8-4V7M12 11v10"/>',
+  loans:'<path d="M7 3h10v4H7zM5 7h14v14H5z"/><path d="M8.5 14l2.2 2.2 4.8-5"/>',
+  reports:'<path d="M5 20V10M10 20V5M15 20v-8M20 20V8"/><path d="M3 20h19"/>',
+  settings:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06A1.7 1.7 0 0 0 15 19.37a1.7 1.7 0 0 0-1 .63 1.7 1.7 0 0 0-.38 1.1V21h-4v-.09a1.7 1.7 0 0 0-1.38-1.66 1.7 1.7 0 0 0-1.63.46l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.2 15a1.7 1.7 0 0 0-.63-1 1.7 1.7 0 0 0-1.1-.38H2.4v-4h.09A1.7 1.7 0 0 0 4.15 8.2a1.7 1.7 0 0 0-.46-1.63l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 8.4 4.1a1.7 1.7 0 0 0 1-.63A1.7 1.7 0 0 0 9.8 2.4V2.3h4v.1a1.7 1.7 0 0 0 1.38 1.66 1.7 1.7 0 0 0 1.63-.46l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.3 8.3c.18.37.4.7.7.98.3.27.69.42 1.1.42h.1v4h-.1A1.7 1.7 0 0 0 19.4 15z"/>'
+ };
+ return `<svg class="premium-nav-svg-v108" viewBox="0 0 24 24" aria-hidden="true">${map[type]||map.dashboard}</svg>`;
+}
+document.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.nav-btn[data-view]').forEach(btn=>{const ico=btn.querySelector('.nav-ico');if(ico)ico.innerHTML=premiumNavSvgV108(btn.dataset.view)});
+},{once:true});
+</script>
+
 </body>
 </html>
