@@ -1161,6 +1161,194 @@ button:not(:disabled):active,.btn:not(:disabled):active,.asset-icon-btn:not(:dis
  .mini-hero .art .module-hero-image-v1010{inset:-12px -20px -12px -24px!important;width:calc(100% + 44px)!important;height:calc(100% + 24px)!important}
 }
 </style>
+<style id="pkpj-v-elegant-raised-full">
+/* =========================================================
+   PKPJ ELEGANT RAISED UI - VISUAL ONLY
+   Tiada perubahan JS / API / backend / cache / polling.
+========================================================= */
+:root{
+  --pkpj-elegant-blue:#103d78;
+  --pkpj-elegant-sub:#6482a8;
+  --pkpj-elegant-hi:rgba(255,255,255,.98);
+  --pkpj-elegant-lo:rgba(112,142,180,.24);
+  --pkpj-elegant-lo2:rgba(112,142,180,.14);
+}
+
+/* ======================= LOGIN PEMOHON ======================= */
+#loginOverlay .neo-login-card{
+  position:relative!important;
+  box-shadow:
+    24px 24px 58px rgba(132,157,190,.29),
+    -18px -18px 44px rgba(255,255,255,.94),
+    inset 1px 1px 0 rgba(255,255,255,.98),
+    inset -1px -1px 0 rgba(171,194,220,.30)!important;
+}
+#loginOverlay .neo-logo-bubble{
+  width:96px!important;height:96px!important;margin-bottom:24px!important;
+  border-radius:29px!important;position:relative!important;overflow:hidden!important;
+  background:linear-gradient(145deg,#fbfdff 0%,#eef5fc 46%,#dbe7f4 100%)!important;
+  border:1px solid rgba(255,255,255,.98)!important;
+  box-shadow:
+    -11px -11px 24px rgba(255,255,255,.96),
+    12px 14px 28px rgba(116,144,179,.28),
+    inset 2px 2px 3px rgba(255,255,255,.95),
+    inset -2px -2px 4px rgba(168,190,216,.30)!important;
+}
+#loginOverlay .neo-logo-bubble::before{
+  content:"";position:absolute;left:10px;right:10px;top:8px;height:34px;border-radius:999px;
+  background:linear-gradient(180deg,rgba(255,255,255,.88),rgba(255,255,255,0));pointer-events:none;z-index:0
+}
+#loginOverlay .neo-logo-bubble img{
+  width:76px!important;height:76px!important;position:relative!important;z-index:1!important;
+  mix-blend-mode:normal!important;background:transparent!important;
+  filter:drop-shadow(0 5px 7px rgba(18,69,124,.14)) contrast(1.04) saturate(1.04)!important
+}
+#loginOverlay .neo-login-card h1{
+  color:var(--pkpj-elegant-blue)!important;
+  text-shadow:
+    -1px -1px 0 rgba(255,255,255,.96),
+    0 2px 0 rgba(255,255,255,.78),
+    0 5px 0 rgba(71,108,153,.10),
+    0 11px 20px rgba(48,87,135,.15)!important;
+}
+#loginOverlay .neo-login-card h1 span{
+  color:var(--pkpj-elegant-sub)!important;
+  text-shadow:-1px -1px 0 rgba(255,255,255,.92),0 2px 0 rgba(255,255,255,.58),0 7px 14px rgba(67,100,142,.12)!important
+}
+#loginOverlay .neo-login-sub,#loginOverlay .neo-login-foot,#loginOverlay .neo-login-meta{
+  text-shadow:0 1px 0 rgba(255,255,255,.76)!important
+}
+
+/* ======================= LOGIN ADMIN ======================= */
+#adminLoginOverlay .neo-admin-login-card,
+#adminLoginOverlay .admin-login-card{
+  position:relative!important;
+  box-shadow:
+    24px 24px 58px rgba(132,157,190,.29),
+    -18px -18px 44px rgba(255,255,255,.94),
+    inset 1px 1px 0 rgba(255,255,255,.98),
+    inset -1px -1px 0 rgba(171,194,220,.30)!important;
+}
+#adminLoginOverlay .neo-admin-logo-bubble,
+#adminLoginOverlay .admin-login-logo{
+  width:96px!important;height:96px!important;margin:0 auto 24px!important;padding:0!important;
+  border-radius:29px!important;position:relative!important;overflow:hidden!important;
+  background:linear-gradient(145deg,#fbfdff 0%,#eef5fc 46%,#dbe7f4 100%)!important;
+  border:1px solid rgba(255,255,255,.98)!important;
+  box-shadow:
+    -11px -11px 24px rgba(255,255,255,.96),
+    12px 14px 28px rgba(116,144,179,.28),
+    inset 2px 2px 3px rgba(255,255,255,.95),
+    inset -2px -2px 4px rgba(168,190,216,.30)!important;
+}
+#adminLoginOverlay .neo-admin-logo-bubble::before,
+#adminLoginOverlay .admin-login-logo::before{
+  content:"";position:absolute;left:10px;right:10px;top:8px;height:34px;border-radius:999px;
+  background:linear-gradient(180deg,rgba(255,255,255,.88),rgba(255,255,255,0));pointer-events:none;z-index:0
+}
+#adminLoginOverlay .neo-admin-logo-bubble img,
+#adminLoginOverlay .admin-login-logo img{
+  width:76px!important;height:76px!important;position:relative!important;z-index:1!important;
+  mix-blend-mode:normal!important;background:transparent!important;
+  filter:drop-shadow(0 5px 7px rgba(18,69,124,.14)) contrast(1.04) saturate(1.04)!important
+}
+#adminLoginOverlay .neo-admin-login-card h1,
+#adminLoginOverlay .admin-login-card h2{
+  color:var(--pkpj-elegant-blue)!important;
+  text-shadow:
+    -1px -1px 0 rgba(255,255,255,.96),
+    0 2px 0 rgba(255,255,255,.78),
+    0 5px 0 rgba(71,108,153,.10),
+    0 11px 20px rgba(48,87,135,.15)!important;
+}
+#adminLoginOverlay .neo-admin-login-card h1 span{
+  color:var(--pkpj-elegant-sub)!important;
+  text-shadow:-1px -1px 0 rgba(255,255,255,.92),0 2px 0 rgba(255,255,255,.58),0 7px 14px rgba(67,100,142,.12)!important
+}
+#adminLoginOverlay .neo-admin-login-sub,
+#adminLoginOverlay .admin-login-card>p{
+  text-shadow:0 1px 0 rgba(255,255,255,.76)!important
+}
+
+/* ======================= DALAMAN - DUA PORTAL ======================= */
+/* Logo sidebar timbul */
+.sidebar .brand-mark,.brand .brand-mark,.pkpj-sidebar-logo{
+  position:relative!important;overflow:hidden!important;
+  background:linear-gradient(145deg,rgba(255,255,255,.98),rgba(226,237,248,.96))!important;
+  border:1px solid rgba(255,255,255,.94)!important;
+  box-shadow:-5px -5px 11px rgba(255,255,255,.26),7px 8px 17px rgba(1,50,92,.19),inset 1px 1px 0 #fff,inset -1px -1px 0 rgba(133,165,197,.24)!important
+}
+.sidebar .brand-mark img,.brand .brand-mark img,.pkpj-sidebar-logo img{
+  position:relative!important;z-index:1!important;mix-blend-mode:normal!important;
+  filter:drop-shadow(0 3px 5px rgba(12,61,112,.13)) contrast(1.03) saturate(1.03)!important
+}
+.sidebar .brand strong,.brand strong{
+  text-shadow:0 1px 0 rgba(255,255,255,.28),0 5px 11px rgba(0,35,71,.15)!important
+}
+
+/* Tajuk halaman utama */
+.page-head h1,#pageHeading{
+  color:#123d73!important;
+  text-shadow:-1px -1px 0 rgba(255,255,255,.96),0 2px 0 rgba(255,255,255,.66),0 6px 13px rgba(58,94,137,.13)!important
+}
+.page-head p,#pageSubtitle{ text-shadow:0 1px 0 rgba(255,255,255,.72)!important }
+
+/* Hero Pemohon - kekalkan warna asal, cuma timbul */
+#view-home .hero h2,.hero-copy h2{
+  text-shadow:-1px -1px 0 rgba(255,255,255,.88),0 2px 0 rgba(255,255,255,.62),0 7px 14px rgba(50,91,137,.12)!important
+}
+#view-home .hero .eyebrow,.eyebrow{
+  box-shadow:-3px -3px 8px rgba(255,255,255,.92),4px 5px 10px rgba(76,117,157,.13),inset 1px 1px 0 rgba(255,255,255,.95)!important
+}
+
+/* Hero Admin berwarna - teks putih dengan depth */
+.mini-hero h2{
+  color:#fff!important;
+  text-shadow:0 2px 0 rgba(7,48,88,.18),0 7px 16px rgba(0,44,82,.20)!important
+}
+.mini-hero p{
+  color:rgba(255,255,255,.96)!important;
+  text-shadow:0 2px 6px rgba(0,45,82,.16)!important
+}
+
+/* Tajuk panel / KPI / kategori - elegan ringan */
+.panel-title,.asset-category-heading strong,.category-popup-title-v116 b,.equipment-category-launcher-v116 b{
+  text-shadow:-1px -1px 0 rgba(255,255,255,.94),0 4px 9px rgba(57,91,127,.10)!important
+}
+.kpi-value,.cat-card strong{
+  text-shadow:-1px -1px 0 rgba(255,255,255,.88),0 4px 10px rgba(54,91,132,.10)!important
+}
+
+/* Kad kekal struktur asal - cuma depth lebih kemas, tiada animation baru */
+.card,.panel{
+  box-shadow:0 14px 34px rgba(39,76,112,.085),-2px -2px 8px rgba(255,255,255,.72),inset 1px 1px 0 rgba(255,255,255,.78)!important
+}
+
+/* Butang penting lebih timbul tanpa ubah fungsi */
+.btn-primary,.btn-green,.neo-enter-btn,.neo-admin-enter-btn{
+  box-shadow:0 11px 22px rgba(27,103,174,.20),inset 0 1px 0 rgba(255,255,255,.30)!important
+}
+
+/* ======================= MOBILE ======================= */
+@media(max-width:600px){
+  #loginOverlay .neo-logo-bubble,
+  #adminLoginOverlay .neo-admin-logo-bubble,
+  #adminLoginOverlay .admin-login-logo{
+    width:78px!important;height:78px!important;border-radius:24px!important;margin-bottom:19px!important;
+    box-shadow:-7px -7px 17px rgba(255,255,255,.93),8px 9px 19px rgba(116,144,179,.23),inset 1px 1px 2px #fff,inset -1px -1px 3px rgba(168,190,216,.25)!important
+  }
+  #loginOverlay .neo-logo-bubble img,
+  #adminLoginOverlay .neo-admin-logo-bubble img,
+  #adminLoginOverlay .admin-login-logo img{width:61px!important;height:61px!important}
+  #loginOverlay .neo-login-card h1,
+  #adminLoginOverlay .neo-admin-login-card h1,
+  #adminLoginOverlay .admin-login-card h2{
+    text-shadow:-1px -1px 0 rgba(255,255,255,.94),0 2px 0 rgba(255,255,255,.62),0 7px 14px rgba(48,87,135,.12)!important
+  }
+  .card,.panel{box-shadow:0 10px 24px rgba(39,76,112,.07),inset 1px 1px 0 rgba(255,255,255,.76)!important}
+}
+</style>
+
 </head>
 <body>
 <div class="admin-login-overlay neo-admin-login-overlay" id="adminLoginOverlay">
@@ -5195,236 +5383,87 @@ document.addEventListener('DOMContentLoaded',()=>{
 })();
 </script>
 
+
+<script id="pkpj-v10152-universal-connect-script">
+/* V10.15.2 - universal browser transport. Additive only. */
+(function(){
+  const TYPE='PKPJ_IFRAME_BRIDGE_RESULT_V1014';
+  let transportMode='';
+  let probePromise=null;
+  const MODE_KEY='pkpj_transport_mode_v1014';
+  try{const saved=JSON.parse(localStorage.getItem(MODE_KEY)||'null');if(saved&&Date.now()-Number(saved.time||0)<86400000&&['jsonp','iframe'].includes(saved.mode))transportMode=saved.mode}catch(e){}
+  function rememberMode(mode){transportMode=mode;try{localStorage.setItem(MODE_KEY,JSON.stringify({mode,time:Date.now()}))}catch(e){}}
+  let iframeSeq=0;
+
+  function isTransportFailure(err){
+    const code=String(err?.code||'').toUpperCase();
+    const msg=String(err?.message||'').toLowerCase();
+    return code==='TIMEOUT'||code==='NETWORK'||/timeout|sambungan|network|failed to load|dihubungi|deployment/.test(msg);
+  }
+  function apiUrl(){return String(cfg?.apiUrl||'').trim()}
+  function apiToken(){return String(cfg?.token||'')}
+  function iframeGet(action,params={},timeoutMs=16000){
+    return new Promise((resolve,reject)=>{
+      const base=apiUrl();if(!base)return reject(new Error('API URL belum ditetapkan.'));
+      const id='ADMIF_'+Date.now()+'_'+(++iframeSeq)+'_'+Math.random().toString(36).slice(2,7);
+      const frame=document.createElement('iframe');
+      let done=false;
+      let timer=null;
+      const cleanup=()=>{window.removeEventListener('message',onMessage);if(timer)clearTimeout(timer);try{frame.remove()}catch(e){}};
+      const finish=(fn,val)=>{if(done)return;done=true;cleanup();fn(val)};
+      const onMessage=(event)=>{
+        const msg=event?.data;if(!msg||msg.type!==TYPE||msg.id!==id)return;
+        const payload=msg.payload||{};
+        if(payload.ok){finish(resolve,payload.data)}
+        else{const e=new Error(payload?.error?.message||'API error');e.code=payload?.error?.code||'API';finish(reject,e)}
+      };
+      window.addEventListener('message',onMessage);
+      const q=new URLSearchParams();
+      Object.entries(params||{}).forEach(([k,v])=>{if(v!==undefined&&v!==null&&v!=='')q.set(k,String(v))});
+      q.set('action',action);q.set('token',apiToken());q.set('_transport','iframe');q.set('_bridge_id',id);
+      q.set('_parent_origin',location.origin&&location.origin!=='null'?location.origin:'*');q.set('_cb',String(Date.now()));
+      frame.name=id;frame.setAttribute('aria-hidden','true');frame.tabIndex=-1;
+      frame.style.cssText='position:fixed;width:1px;height:1px;left:-9999px;top:-9999px;border:0;opacity:0;pointer-events:none';
+      frame.src=base+(base.includes('?')?'&':'?')+q.toString();
+      (document.body||document.documentElement).appendChild(frame);
+      timer=setTimeout(()=>{const e=new Error('API timeout pada sambungan alternatif.');e.code='TIMEOUT';finish(reject,e)},Math.max(7000,timeoutMs||16000));
+    });
+  }
+
+  const baseJsonp=typeof jsonp==='function'?jsonp:null;
+  if(!baseJsonp)return;
+
+  async function detectTransport(){
+    if(transportMode)return transportMode;
+    if(probePromise)return probePromise;
+    probePromise=(async()=>{
+      try{await baseJsonp('ping',{_t:Date.now()},{timeoutMs:3500,retries:0});rememberMode('jsonp');return transportMode}catch(e){}
+      try{await iframeGet('ping',{_t:Date.now()},9000);rememberMode('iframe');return transportMode}catch(e){}
+      transportMode='auto';return transportMode;
+    })().finally(()=>{probePromise=null});
+    return probePromise;
+  }
+
+  jsonp=async function(action,params={},options={}){
+    const mode=transportMode||await detectTransport();
+    const timeoutMs=options.timeoutMs||12000;
+    if(mode==='iframe'){
+      try{return await iframeGet(action,params,Math.max(timeoutMs,9000))}
+      catch(e){
+        try{const r=await baseJsonp(action,params,{...options,retries:0});rememberMode('jsonp');return r}catch(e2){throw e}
+      }
+    }
+    try{return await baseJsonp(action,params,options)}
+    catch(err){
+      if(!isTransportFailure(err))throw err;
+      try{const r=await iframeGet(action,params,Math.max(timeoutMs,9000));rememberMode('iframe');return r}
+      catch(fallbackErr){throw err}
+    }
+  };
+
+  window.__pkpjUniversalTransportV10152={mode:()=>transportMode,probe:detectTransport};
+  detectTransport().catch(()=>{});
+})();
+</script>
 </body>
 </html>
-<style id="pkpj-elegant-elevated-ui">
-/* =========================================================
-   PKPJ ELEGANT RAISED / EMBOSSED UI
-   VISUAL ONLY - TAK UBAH JS / API / SETTING / KELAJUAN
-========================================================= */
-
-:root{
-  --pkpj-neo-top: #f9fcff;
-  --pkpj-neo-bottom: #dfe9f5;
-  --pkpj-neo-line: rgba(255,255,255,.95);
-  --pkpj-shadow-light: rgba(255,255,255,.96);
-  --pkpj-shadow-dark: rgba(124,149,181,.24);
-  --pkpj-shadow-dark-soft: rgba(124,149,181,.14);
-  --pkpj-title-main: #123c74;
-  --pkpj-title-sub: #6580a4;
-}
-
-/* =========================
-   LOGIN - PORTAL PEMOHON
-========================= */
-#loginOverlay .neo-logo-bubble{
-  position:relative!important;
-  overflow:hidden!important;
-  background:linear-gradient(145deg,var(--pkpj-neo-top),var(--pkpj-neo-bottom))!important;
-  border:1px solid var(--pkpj-neo-line)!important;
-  box-shadow:
-    -10px -10px 24px var(--pkpj-shadow-light),
-    12px 12px 26px var(--pkpj-shadow-dark),
-    inset 1px 1px 0 rgba(255,255,255,.98),
-    inset -1px -1px 0 rgba(186,203,224,.38)!important;
-}
-
-#loginOverlay .neo-logo-bubble::before{
-  content:"";
-  position:absolute;
-  left:10px;
-  right:10px;
-  top:8px;
-  height:28px;
-  border-radius:999px;
-  background:linear-gradient(180deg,rgba(255,255,255,.78),rgba(255,255,255,0));
-  pointer-events:none;
-}
-
-#loginOverlay .neo-logo-bubble img{
-  position:relative!important;
-  z-index:1!important;
-  mix-blend-mode:normal!important;
-  filter:
-    drop-shadow(0 4px 10px rgba(32,77,127,.15))
-    saturate(1.03)
-    contrast(1.03)!important;
-}
-
-#loginOverlay .neo-login-card h1{
-  color:var(--pkpj-title-main)!important;
-  text-shadow:
-    -1px -1px 0 rgba(255,255,255,.95),
-    0 1px 0 rgba(255,255,255,.78),
-    0 10px 18px rgba(84,118,160,.10)!important;
-}
-
-#loginOverlay .neo-login-card h1 span{
-  color:var(--pkpj-title-sub)!important;
-  text-shadow:
-    -1px -1px 0 rgba(255,255,255,.88),
-    0 7px 14px rgba(90,121,160,.08)!important;
-}
-
-#loginOverlay .neo-login-sub,
-#loginOverlay .neo-login-foot,
-#loginOverlay .neo-login-meta{
-  text-shadow:0 1px 0 rgba(255,255,255,.72)!important;
-}
-
-/* =========================
-   LOGIN - PORTAL ADMIN
-========================= */
-#adminLoginOverlay .neo-admin-logo-bubble,
-#adminLoginOverlay .admin-login-logo{
-  position:relative!important;
-  overflow:hidden!important;
-  background:linear-gradient(145deg,var(--pkpj-neo-top),var(--pkpj-neo-bottom))!important;
-  border:1px solid var(--pkpj-neo-line)!important;
-  box-shadow:
-    -10px -10px 24px var(--pkpj-shadow-light),
-    12px 12px 26px var(--pkpj-shadow-dark),
-    inset 1px 1px 0 rgba(255,255,255,.98),
-    inset -1px -1px 0 rgba(186,203,224,.38)!important;
-  padding:0!important;
-}
-
-#adminLoginOverlay .neo-admin-logo-bubble::before,
-#adminLoginOverlay .admin-login-logo::before{
-  content:"";
-  position:absolute;
-  left:10px;
-  right:10px;
-  top:8px;
-  height:28px;
-  border-radius:999px;
-  background:linear-gradient(180deg,rgba(255,255,255,.78),rgba(255,255,255,0));
-  pointer-events:none;
-}
-
-#adminLoginOverlay .neo-admin-logo-bubble img,
-#adminLoginOverlay .admin-login-logo img{
-  position:relative!important;
-  z-index:1!important;
-  mix-blend-mode:normal!important;
-  filter:
-    drop-shadow(0 4px 10px rgba(32,77,127,.15))
-    saturate(1.03)
-    contrast(1.03)!important;
-}
-
-#adminLoginOverlay .neo-admin-login-card h1,
-#adminLoginOverlay .admin-login-card h2{
-  color:var(--pkpj-title-main)!important;
-  text-shadow:
-    -1px -1px 0 rgba(255,255,255,.95),
-    0 1px 0 rgba(255,255,255,.78),
-    0 10px 18px rgba(84,118,160,.10)!important;
-}
-
-#adminLoginOverlay .neo-admin-login-card h1 span{
-  color:var(--pkpj-title-sub)!important;
-  text-shadow:
-    -1px -1px 0 rgba(255,255,255,.88),
-    0 7px 14px rgba(90,121,160,.08)!important;
-}
-
-#adminLoginOverlay .neo-admin-login-sub,
-#adminLoginOverlay .admin-login-card > p{
-  text-shadow:0 1px 0 rgba(255,255,255,.72)!important;
-}
-
-/* =========================
-   DALAMAN PORTAL
-   (logo sisi + heading utama)
-========================= */
-.app .brand-mark,
-.sidebar .brand-mark,
-.brand .brand-mark,
-.pkpj-sidebar-logo{
-  position:relative!important;
-  overflow:hidden!important;
-  background:linear-gradient(145deg,#f8fbff,#e3edf7)!important;
-  border:1px solid rgba(255,255,255,.95)!important;
-  box-shadow:
-    -6px -6px 14px rgba(255,255,255,.90),
-    8px 8px 18px rgba(123,149,182,.18),
-    inset 1px 1px 0 rgba(255,255,255,.92),
-    inset -1px -1px 0 rgba(186,203,224,.28)!important;
-}
-
-.app .brand-mark::before,
-.sidebar .brand-mark::before,
-.brand .brand-mark::before,
-.pkpj-sidebar-logo::before{
-  content:"";
-  position:absolute;
-  left:7px;
-  right:7px;
-  top:6px;
-  height:18px;
-  border-radius:999px;
-  background:linear-gradient(180deg,rgba(255,255,255,.72),rgba(255,255,255,0));
-  pointer-events:none;
-}
-
-.app .brand-mark img,
-.sidebar .brand-mark img,
-.brand .brand-mark img,
-.pkpj-sidebar-logo img{
-  mix-blend-mode:normal!important;
-  filter:drop-shadow(0 3px 8px rgba(32,77,127,.12))!important;
-}
-
-.app .brand strong,
-.sidebar .brand strong,
-.brand strong,
-.panel-head h2,
-.panel-head h3,
-.mini-hero h2,
-.mini-hero h3,
-.hero-copy h1,
-.hero-copy h2,
-.card h2,
-.card h3{
-  color:var(--pkpj-title-main)!important;
-  text-shadow:
-    -1px -1px 0 rgba(255,255,255,.90),
-    0 6px 14px rgba(86,120,160,.08)!important;
-}
-
-.app .brand span,
-.sidebar .brand span,
-.panel-head p,
-.mini-hero p,
-.hero-copy p{
-  text-shadow:0 1px 0 rgba(255,255,255,.68)!important;
-}
-
-/* =========================
-   MOBILE - ringankan shadow
-========================= */
-@media (max-width:600px){
-  #loginOverlay .neo-logo-bubble,
-  #adminLoginOverlay .neo-admin-logo-bubble,
-  #adminLoginOverlay .admin-login-logo,
-  .app .brand-mark,
-  .sidebar .brand-mark,
-  .brand .brand-mark,
-  .pkpj-sidebar-logo{
-    box-shadow:
-      -5px -5px 12px rgba(255,255,255,.88),
-      6px 6px 14px rgba(123,149,182,.16),
-      inset 1px 1px 0 rgba(255,255,255,.94),
-      inset -1px -1px 0 rgba(186,203,224,.24)!important;
-  }
-
-  #loginOverlay .neo-login-card h1,
-  #adminLoginOverlay .neo-admin-login-card h1,
-  #adminLoginOverlay .admin-login-card h2{
-    text-shadow:
-      -1px -1px 0 rgba(255,255,255,.92),
-      0 6px 12px rgba(84,118,160,.08)!important;
-  }
-}
-</style>
