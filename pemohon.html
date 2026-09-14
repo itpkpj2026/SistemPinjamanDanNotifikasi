@@ -5737,7 +5737,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   }
   function startFastWatchV11137(){
     if(state.liveStatusTimerV119){clearInterval(state.liveStatusTimerV119);state.liveStatusTimerV119=null}
-    state.liveStatusTimerV119=setInterval(pollApplicantFastV11137,1500);
+    state.liveStatusTimerV119=setInterval(pollApplicantFastV11137,2200);
     setTimeout(pollApplicantFastV11137,450);
   }
   window.pollApplicantLiveV119=pollApplicantFastV11137;
@@ -5749,37 +5749,49 @@ document.addEventListener('DOMContentLoaded',()=>{
 </script>
 
 
-<script id="pkpj-v11139-universal-connect-script">
-/* V11.13.9 - universal browser transport. Additive only. */
+<script id="pkpj-v111310-fast-universal-connect-script">
+/* V11.13.10 - FAST UNIVERSAL CONNECT
+   Tiada preflight ping. Request sebenar bermula terus.
+   Jika laluan utama lambat, laluan kedua bermula secara hedge selepas 750ms.
+   Request_id backend mengekalkan write idempotent. */
 (function(){
   const TYPE='PKPJ_IFRAME_BRIDGE_RESULT_V1014';
-  let transportMode='';
-  let probePromise=null;
-  const MODE_KEY='pkpj_transport_mode_v1014';
-  try{const saved=JSON.parse(localStorage.getItem(MODE_KEY)||'null');if(saved&&Date.now()-Number(saved.time||0)<86400000&&['jsonp','iframe'].includes(saved.mode))transportMode=saved.mode}catch(e){}
-  function rememberMode(mode){transportMode=mode;try{localStorage.setItem(MODE_KEY,JSON.stringify({mode,time:Date.now()}))}catch(e){}}
+  const MODE_KEY='pkpj_transport_mode_v111310';
+  const OLD_MODE_KEY='pkpj_transport_mode_v1014';
+  const HEDGE_MS=750;
+  let preferred='jsonp';
   let iframeSeq=0;
 
-  function isTransportFailure(err){
-    const code=String(err?.code||'').toUpperCase();
-    const msg=String(err?.message||'').toLowerCase();
-    return code==='TIMEOUT'||code==='NETWORK'||/timeout|sambungan|network|failed to load|dihubungi|deployment/.test(msg);
+  try{
+    localStorage.removeItem(OLD_MODE_KEY);
+    const saved=JSON.parse(localStorage.getItem(MODE_KEY)||'null');
+    if(saved&&Date.now()-Number(saved.time||0)<21600000&&['jsonp','iframe'].includes(saved.mode))preferred=saved.mode;
+  }catch(e){}
+
+  function remember(mode){
+    preferred=mode;
+    try{localStorage.setItem(MODE_KEY,JSON.stringify({mode,time:Date.now()}))}catch(e){}
   }
   function apiUrl(){return String(SYSTEM_CONFIG?.API_URL||'').trim()}
   function apiToken(){return String(SYSTEM_CONFIG?.APPLICANT_TOKEN||'')}
-  function iframeGet(action,params={},timeoutMs=16000){
+  function isTransportFailure(err){
+    const code=String(err?.code||'').toUpperCase();
+    const msg=String(err?.message||'').toLowerCase();
+    return code==='TIMEOUT'||code==='NETWORK'||code==='WRITE_IN_PROGRESS'||/timeout|sambungan|network|failed to load|dihubungi|deployment|write_in_progress|masih diproses/.test(msg);
+  }
+
+  function iframeGet(action,params={},timeoutMs=12000){
     return new Promise((resolve,reject)=>{
       const base=apiUrl();if(!base)return reject(new Error('API URL belum ditetapkan.'));
-      const id='APPIF_'+Date.now()+'_'+(++iframeSeq)+'_'+Math.random().toString(36).slice(2,7);
+      const id='APPFAST_'+Date.now()+'_'+(++iframeSeq)+'_'+Math.random().toString(36).slice(2,7);
       const frame=document.createElement('iframe');
-      let done=false;
-      let timer=null;
+      let done=false,timer=null;
       const cleanup=()=>{window.removeEventListener('message',onMessage);if(timer)clearTimeout(timer);try{frame.remove()}catch(e){}};
       const finish=(fn,val)=>{if(done)return;done=true;cleanup();fn(val)};
       const onMessage=(event)=>{
         const msg=event?.data;if(!msg||msg.type!==TYPE||msg.id!==id)return;
         const payload=msg.payload||{};
-        if(payload.ok){try{if(typeof setConnected==='function')setConnected(true)}catch(e){}finish(resolve,payload.data)}
+        if(payload.ok)finish(resolve,payload.data);
         else{const e=new Error(payload?.error?.message||'API error');e.code=payload?.error?.code||'API';finish(reject,e)}
       };
       window.addEventListener('message',onMessage);
@@ -5791,43 +5803,57 @@ document.addEventListener('DOMContentLoaded',()=>{
       frame.style.cssText='position:fixed;width:1px;height:1px;left:-9999px;top:-9999px;border:0;opacity:0;pointer-events:none';
       frame.src=base+(base.includes('?')?'&':'?')+q.toString();
       (document.body||document.documentElement).appendChild(frame);
-      timer=setTimeout(()=>{const e=new Error('API timeout pada sambungan alternatif.');e.code='TIMEOUT';finish(reject,e)},Math.max(7000,timeoutMs||16000));
+      timer=setTimeout(()=>{const e=new Error('API timeout pada sambungan alternatif.');e.code='TIMEOUT';finish(reject,e)},Math.max(5000,timeoutMs||12000));
     });
   }
 
   const baseJsonp=typeof jsonp==='function'?jsonp:null;
   if(!baseJsonp)return;
 
-  async function detectTransport(){
-    if(transportMode)return transportMode;
-    if(probePromise)return probePromise;
-    probePromise=(async()=>{
-      try{await baseJsonp('ping',{_t:Date.now()},{timeoutMs:3500,retries:0});rememberMode('jsonp');return transportMode}catch(e){}
-      try{await iframeGet('ping',{_t:Date.now()},9000);rememberMode('iframe');return transportMode}catch(e){}
-      transportMode='auto';return transportMode;
-    })().finally(()=>{probePromise=null});
-    return probePromise;
+  function jsonpDirect(action,params,options){
+    return baseJsonp(action,params,{...(options||{}),retries:0});
+  }
+
+  function hedge(action,params,options={}){
+    const timeoutMs=options.timeoutMs||12000;
+    const firstMode=preferred==='iframe'?'iframe':'jsonp';
+    const secondMode=firstMode==='jsonp'?'iframe':'jsonp';
+    let settled=false,secondStarted=false,timer=null;
+    let firstError=null,secondError=null;
+
+    return new Promise((resolve,reject)=>{
+      const finishOk=(mode,value)=>{
+        if(settled)return;settled=true;if(timer)clearTimeout(timer);remember(mode);resolve(value);
+      };
+      const finishErr=(mode,err)=>{
+        if(settled)return;
+        if(mode===firstMode)firstError=err;else secondError=err;
+        if(!isTransportFailure(err)){
+          settled=true;if(timer)clearTimeout(timer);reject(err);return;
+        }
+        if(!secondStarted){startSecond();return;}
+        if(firstError&&secondError){settled=true;if(timer)clearTimeout(timer);reject(firstError||secondError);}
+      };
+      const start=(mode)=>{
+        const p=mode==='iframe'
+          ? iframeGet(action,params,Math.max(timeoutMs,7000))
+          : jsonpDirect(action,params,{...options,timeoutMs});
+        p.then(v=>finishOk(mode,v)).catch(e=>finishErr(mode,e));
+      };
+      const startSecond=()=>{
+        if(secondStarted||settled)return;secondStarted=true;start(secondMode);
+      };
+
+      start(firstMode);
+      timer=setTimeout(startSecond,HEDGE_MS);
+    });
   }
 
   jsonp=async function(action,params={},options={}){
-    const mode=transportMode||await detectTransport();
-    const timeoutMs=options.timeoutMs||12000;
-    if(mode==='iframe'){
-      try{return await iframeGet(action,params,Math.max(timeoutMs,9000))}
-      catch(e){
-        try{const r=await baseJsonp(action,params,{...options,retries:0});rememberMode('jsonp');return r}catch(e2){throw e}
-      }
-    }
-    try{return await baseJsonp(action,params,options)}
-    catch(err){
-      if(!isTransportFailure(err))throw err;
-      try{const r=await iframeGet(action,params,Math.max(timeoutMs,9000));rememberMode('iframe');return r}
-      catch(fallbackErr){throw err}
-    }
+    return hedge(action,params,options);
   };
 
-  window.__pkpjUniversalTransportV11139={mode:()=>transportMode,probe:detectTransport};
-  detectTransport().catch(()=>{});
+  window.__pkpjUniversalTransportV111310={mode:()=>preferred};
 })();
 </script>
 </body>
