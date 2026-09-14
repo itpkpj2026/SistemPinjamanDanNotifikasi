@@ -5748,51 +5748,73 @@ document.addEventListener('DOMContentLoaded',()=>{
 })();
 </script>
 
+<style id="pkpj-v111311-mobile-safe-performance-style">
+/* V11.13.11 - Mobile Safe: visual dikekalkan, kesan GPU berat diringankan pada telefon. */
+@media(max-width:760px){
+  #loginOverlay .neo-login-card,
+  .topbar,
+  .mobile-drawer-backdrop-v1111,
+  .modal-backdrop,
+  .category-popup-v116{
+    -webkit-backdrop-filter:none!important;
+    backdrop-filter:none!important;
+  }
+  #loginOverlay .neo-login-card{background:rgba(238,246,255,.96)!important}
+  .topbar{background:rgba(247,250,255,.98)!important}
+}
+</style>
 
-<script id="pkpj-v111310-fast-universal-connect-script">
-/* V11.13.10 - FAST UNIVERSAL CONNECT
-   Tiada preflight ping. Request sebenar bermula terus.
-   Jika laluan utama lambat, laluan kedua bermula secara hedge selepas 750ms.
-   Request_id backend mengekalkan write idempotent. */
+<script id="pkpj-v111311-mobile-safe-connect-script">
+/* V11.13.11 - MOBILE SAFE CONNECT
+   - Telefon: satu laluan pada satu masa; JSONP dahulu, iframe hanya bila benar-benar perlu.
+   - Desktop: hedge ringan dikekalkan untuk respons pantas.
+   - Bootstrap login dikunci kepada satu request supaya focus/visibility/live-watch tidak berebut API.
+   - Live watch hanya bermula selepas bootstrap server selesai. */
 (function(){
   const TYPE='PKPJ_IFRAME_BRIDGE_RESULT_V1014';
-  const MODE_KEY='pkpj_transport_mode_v111310';
-  const OLD_MODE_KEY='pkpj_transport_mode_v1014';
-  const HEDGE_MS=750;
-  let preferred='jsonp';
+  const MOBILE_RE=/Android|iPhone|iPad|iPod|Mobile|IEMobile|Opera Mini/i;
+  const isMobile=()=>MOBILE_RE.test(String(navigator.userAgent||'')) || !!(window.matchMedia&&matchMedia('(pointer:coarse)').matches&&innerWidth<=900);
+  const rawJsonp=typeof jsonp==='function'?jsonp:null;
+  if(!rawJsonp)return;
+
   let iframeSeq=0;
+  let desktopPreferred='jsonp';
+  const inflight=new Map();
+  const readSingleFlight=new Set(['applicant.staff_list','applicant.bootstrap','applicant.loan_watch','applicant.health','ui.public']);
 
   try{
-    localStorage.removeItem(OLD_MODE_KEY);
-    const saved=JSON.parse(localStorage.getItem(MODE_KEY)||'null');
-    if(saved&&Date.now()-Number(saved.time||0)<21600000&&['jsonp','iframe'].includes(saved.mode))preferred=saved.mode;
+    localStorage.removeItem('pkpj_transport_mode_v1014');
+    localStorage.removeItem('pkpj_transport_mode_v111310');
   }catch(e){}
 
-  function remember(mode){
-    preferred=mode;
-    try{localStorage.setItem(MODE_KEY,JSON.stringify({mode,time:Date.now()}))}catch(e){}
-  }
-  function apiUrl(){return String(SYSTEM_CONFIG?.API_URL||'').trim()}
-  function apiToken(){return String(SYSTEM_CONFIG?.APPLICANT_TOKEN||'')}
+  function apiUrl(){return String(SYSTEM_CONFIG&&SYSTEM_CONFIG.API_URL||'').trim()}
+  function apiToken(){return String(SYSTEM_CONFIG&&SYSTEM_CONFIG.APPLICANT_TOKEN||'')}
   function isTransportFailure(err){
-    const code=String(err?.code||'').toUpperCase();
-    const msg=String(err?.message||'').toLowerCase();
+    const code=String(err&&err.code||'').toUpperCase();
+    const msg=String(err&&err.message||'').toLowerCase();
     return code==='TIMEOUT'||code==='NETWORK'||code==='WRITE_IN_PROGRESS'||/timeout|sambungan|network|failed to load|dihubungi|deployment|write_in_progress|masih diproses/.test(msg);
   }
+  function cleanParamsKey(params){
+    const p=params||{};
+    return Object.keys(p).filter(k=>k!=='_t'&&k!=='_cb').sort().map(k=>k+'='+String(p[k]??'')).join('&');
+  }
+  function requestKey(action,params){return String(action)+'|'+cleanParamsKey(params)}
 
   function iframeGet(action,params={},timeoutMs=12000){
     return new Promise((resolve,reject)=>{
-      const base=apiUrl();if(!base)return reject(new Error('API URL belum ditetapkan.'));
-      const id='APPFAST_'+Date.now()+'_'+(++iframeSeq)+'_'+Math.random().toString(36).slice(2,7);
+      const base=apiUrl();
+      if(!base){const e=new Error('API URL belum ditetapkan.');e.code='CONFIG';reject(e);return}
+      const id='APPMOB_'+Date.now()+'_'+(++iframeSeq)+'_'+Math.random().toString(36).slice(2,7);
       const frame=document.createElement('iframe');
       let done=false,timer=null;
       const cleanup=()=>{window.removeEventListener('message',onMessage);if(timer)clearTimeout(timer);try{frame.remove()}catch(e){}};
       const finish=(fn,val)=>{if(done)return;done=true;cleanup();fn(val)};
       const onMessage=(event)=>{
-        const msg=event?.data;if(!msg||msg.type!==TYPE||msg.id!==id)return;
+        const msg=event&&event.data;
+        if(!msg||msg.type!==TYPE||msg.id!==id)return;
         const payload=msg.payload||{};
-        if(payload.ok)finish(resolve,payload.data);
-        else{const e=new Error(payload?.error?.message||'API error');e.code=payload?.error?.code||'API';finish(reject,e)}
+        if(payload.ok){setConnected(true);finish(resolve,payload.data)}
+        else{const e=new Error(payload&&payload.error&&payload.error.message||'API error');e.code=payload&&payload.error&&payload.error.code||'API';finish(reject,e)}
       };
       window.addEventListener('message',onMessage);
       const q=new URLSearchParams();
@@ -5803,58 +5825,149 @@ document.addEventListener('DOMContentLoaded',()=>{
       frame.style.cssText='position:fixed;width:1px;height:1px;left:-9999px;top:-9999px;border:0;opacity:0;pointer-events:none';
       frame.src=base+(base.includes('?')?'&':'?')+q.toString();
       (document.body||document.documentElement).appendChild(frame);
-      timer=setTimeout(()=>{const e=new Error('API timeout pada sambungan alternatif.');e.code='TIMEOUT';finish(reject,e)},Math.max(5000,timeoutMs||12000));
+      timer=setTimeout(()=>{const e=new Error('API timeout pada sambungan alternatif.');e.code='TIMEOUT';finish(reject,e)},Math.max(6500,Number(timeoutMs)||12000));
     });
   }
 
-  const baseJsonp=typeof jsonp==='function'?jsonp:null;
-  if(!baseJsonp)return;
-
-  function jsonpDirect(action,params,options){
-    return baseJsonp(action,params,{...(options||{}),retries:0});
+  function rawGet(action,params,options={}){
+    return rawJsonp(action,params,{...options,retries:0});
   }
 
-  function hedge(action,params,options={}){
-    const timeoutMs=options.timeoutMs||12000;
-    const firstMode=preferred==='iframe'?'iframe':'jsonp';
-    const secondMode=firstMode==='jsonp'?'iframe':'jsonp';
-    let settled=false,secondStarted=false,timer=null;
-    let firstError=null,secondError=null;
+  async function mobileSequential(action,params={},options={}){
+    const timeoutMs=Number(options.timeoutMs)||12000;
+    try{
+      // Jangan cipta iframe kedua ketika JSONP masih normal pada telefon.
+      return await rawGet(action,params,{...options,timeoutMs});
+    }catch(err){
+      if(!isTransportFailure(err))throw err;
+      return await iframeGet(action,params,Math.max(timeoutMs,7500));
+    }
+  }
 
+  function desktopHedge(action,params={},options={}){
+    const timeoutMs=Number(options.timeoutMs)||12000;
+    const first=desktopPreferred==='iframe'?'iframe':'jsonp';
+    const second=first==='jsonp'?'iframe':'jsonp';
+    let settled=false,secondStarted=false,timer=null,firstErr=null,secondErr=null;
     return new Promise((resolve,reject)=>{
-      const finishOk=(mode,value)=>{
-        if(settled)return;settled=true;if(timer)clearTimeout(timer);remember(mode);resolve(value);
-      };
-      const finishErr=(mode,err)=>{
+      const ok=(mode,val)=>{if(settled)return;settled=true;if(timer)clearTimeout(timer);desktopPreferred=mode;resolve(val)};
+      const bad=(mode,err)=>{
         if(settled)return;
-        if(mode===firstMode)firstError=err;else secondError=err;
-        if(!isTransportFailure(err)){
-          settled=true;if(timer)clearTimeout(timer);reject(err);return;
-        }
-        if(!secondStarted){startSecond();return;}
-        if(firstError&&secondError){settled=true;if(timer)clearTimeout(timer);reject(firstError||secondError);}
+        if(mode===first)firstErr=err;else secondErr=err;
+        if(!isTransportFailure(err)){settled=true;if(timer)clearTimeout(timer);reject(err);return}
+        if(!secondStarted){startSecond();return}
+        if(firstErr&&secondErr){settled=true;if(timer)clearTimeout(timer);reject(firstErr||secondErr)}
       };
       const start=(mode)=>{
-        const p=mode==='iframe'
-          ? iframeGet(action,params,Math.max(timeoutMs,7000))
-          : jsonpDirect(action,params,{...options,timeoutMs});
-        p.then(v=>finishOk(mode,v)).catch(e=>finishErr(mode,e));
+        const p=mode==='iframe'?iframeGet(action,params,Math.max(timeoutMs,7000)):rawGet(action,params,{...options,timeoutMs});
+        p.then(v=>ok(mode,v)).catch(e=>bad(mode,e));
       };
-      const startSecond=()=>{
-        if(secondStarted||settled)return;secondStarted=true;start(secondMode);
-      };
-
-      start(firstMode);
-      timer=setTimeout(startSecond,HEDGE_MS);
+      const startSecond=()=>{if(secondStarted||settled)return;secondStarted=true;start(second)};
+      start(first);
+      timer=setTimeout(startSecond,900);
     });
   }
 
-  jsonp=async function(action,params={},options={}){
-    return hedge(action,params,options);
+  function universalCall(action,params={},options={}){
+    // Elak live-watch menyerbu API ketika login/bootstrap masih berjalan.
+    if(action==='applicant.loan_watch'&&(!state||!state.profile||!state.connected||state.refreshPromise)){
+      return Promise.resolve(null);
+    }
+    const run=()=>isMobile()?mobileSequential(action,params,options):desktopHedge(action,params,options);
+    if(!readSingleFlight.has(String(action)))return run();
+    const key=requestKey(action,params);
+    if(inflight.has(key))return inflight.get(key);
+    const p=Promise.resolve().then(run).finally(()=>inflight.delete(key));
+    inflight.set(key,p);
+    return p;
+  }
+
+  jsonp=async function(action,params={},options={}){return universalCall(action,params,options)};
+
+  function stopLive(){
+    if(state&&state.liveStatusTimerV119){clearInterval(state.liveStatusTimerV119);state.liveStatusTimerV119=null}
+  }
+  function mobileSafePoll(){
+    if(!state||!state.profile||!state.connected||state.refreshPromise||document.visibilityState!=='visible')return Promise.resolve(null);
+    try{return Promise.resolve(pollApplicantFastV11137())}catch(e){return Promise.resolve(null)}
+  }
+  function mobileSafeStart(){
+    stopLive();
+    if(!state||!state.profile||!state.connected)return;
+    const period=isMobile()?5000:2400;
+    const firstDelay=isMobile()?2600:700;
+    state.liveStatusTimerV119=setInterval(mobileSafePoll,period);
+    setTimeout(mobileSafePoll,firstDelay);
+  }
+  try{startApplicantLiveV119=mobileSafeStart}catch(e){}
+  window.startApplicantLiveV119=mobileSafeStart;
+  window.pollApplicantLiveV119=mobileSafePoll;
+
+  // Gantikan login dengan versi single-bootstrap; UI/fungsi asal dikekalkan.
+  window.loginApplicant=async function(silent=false){
+    const input=document.querySelector('#loginName');
+    const name=String(input&&input.value||'').trim();
+    if(!name)return toast('Nama diperlukan','Masukkan nama pemohon.','err');
+    if(!state.selectedUserId){
+      const matches=(state.staffList||[]).filter(x=>String(x.name||'').trim().toLowerCase()===name.toLowerCase());
+      if(matches.length>1){handleNameSearch();return toast('Nama berulang','Pilih akaun yang betul dalam senarai.','err')}
+      if(matches.length===1)state.selectedUserId=String(matches[0].user_id);
+    }
+    const userId=String(state.selectedUserId||'');
+    const selected=(state.staffList||[]).find(x=>String(x.user_id)===userId);
+    const finalName=selected&&selected.name||name;
+    const btn=document.querySelector('#loginBtn');
+    if(btn){btn.disabled=true;const span=btn.querySelector('span');if(span)span.textContent='Membuka portal...';else btn.textContent='Membuka portal...'}
+    localSetV9('ict_applicant_user_id',userId);localSetV9('ict_applicant_name',finalName);
+
+    stopLive();
+    setConnected(false);
+    state.profile={user_id:userId,name:finalName,department:selected&&selected.department||'',unit:selected&&selected.unit||'',role:'PEMOHON'};
+    document.querySelector('#loginOverlay')?.classList.add('hidden');
+    document.querySelector('#sidebar')?.classList.remove('open');
+    try{renderShell();renderHomeView()}catch(e){}
+    if(btn){btn.disabled=false;const span=btn.querySelector('span');if(span)span.textContent='Masuk Portal Pemohon';else btn.textContent='Masuk Portal Pemohon'}
+
+    const cached=userId?readPortalCache(userId):null;
+    requestAnimationFrame(()=>{
+      if(cached){
+        try{applyBootstrap(cached);setConnected(false);stopLive()}catch(e){}
+      }
+      setTimeout(()=>{try{maybeOpenQrAsset(false)}catch(e){}},20);
+    });
+
+    const task=(async()=>{
+      try{
+        const data=await jsonp('applicant.bootstrap',{user_id:userId,name:finalName,_t:Date.now()},{timeoutMs:isMobile()?6500:8500,retries:0});
+        applyBootstrap(data);
+        if(data&&data.profile&&data.profile.user_id)localSetV9('ict_applicant_user_id',String(data.profile.user_id));
+        if(data&&data.profile&&data.profile.name)localSetV9('ict_applicant_name',String(data.profile.name));
+        savePortalCache(data);setTimeout(()=>maybeOpenQrAsset(true),20);
+        mobileSafeStart();
+        if(!silent)toast('Selamat datang',data&&data.profile&&data.profile.name||finalName,'ok');
+        return data;
+      }catch(err){
+        console.warn('Bootstrap latar belum selesai',err);
+        setConnected(false);stopLive();
+        setTimeout(()=>refreshPortal(true,true),isMobile()?4500:1800);
+        return null;
+      }
+    })();
+    state.refreshPromise=task;
+    try{return await task}finally{if(state.refreshPromise===task)state.refreshPromise=null}
   };
 
-  window.__pkpjUniversalTransportV111310={mode:()=>preferred};
+  // Handler lama mungkin telah membuat timer ketika DOM siap. Bersihkan selepas semua handler awal berjalan.
+  document.addEventListener('DOMContentLoaded',()=>{
+    setTimeout(()=>{
+      if(!state||!state.profile||!state.connected)stopLive();
+      else mobileSafeStart();
+    },0);
+  },{once:true});
+
+  window.__pkpjMobileSafeV111311={isMobile,transport:()=>isMobile()?'sequential-mobile':desktopPreferred};
 })();
 </script>
+
 </body>
 </html>
