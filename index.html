@@ -4675,7 +4675,7 @@ async function resetUiImageV1011(kind,key){if(!confirm('Kembali kepada ikon/gamb
 
 /* Lightweight live watch: hanya semak fingerprint setiap 8 saat. Full loans reload hanya bila status/rekod berubah. */
 async function pollAdminLoanWatchV1011(){if(document.visibilityState!=='visible'||!state.operator||approvalBusyV92()||state.inFlight.loans)return;try{const w=await jsonp('admin.loan_watch',{_t:Date.now()},{timeoutMs:4500,retries:0});if(!w?.fingerprint)return;if(!state.loanWatchFingerprintV1011){state.loanWatchFingerprintV1011=w.fingerprint;return}if(w.fingerprint!==state.loanWatchFingerprintV1011){state.loanWatchFingerprintV1011=w.fingerprint;state.loadedAt.dashboard=0;await loadLoans(true);if(state.view==='dashboard'||state.view==='reports'){setTimeout(()=>loadDashboard(true).catch?.(()=>{}),120)}}}catch(e){/* senyap: polling tidak boleh mengganggu UI */}}
-function startAdminLiveWatchV1011(){if(window.__adminLiveWatchV1011)return;window.__adminLiveWatchV1011=setInterval(pollAdminLoanWatchV1011,2500);setTimeout(pollAdminLoanWatchV1011,450)}
+function startAdminLiveWatchV1011(){if(window.__adminLiveWatchV1011)return;window.__adminLiveWatchV1011=setInterval(pollAdminLoanWatchV1011,8000);setTimeout(pollAdminLoanWatchV1011,1200)}
 
 const renderCategorySettingsBaseV1011=window.renderCategorySettings;
 if(typeof renderCategorySettingsBaseV1011==='function'){window.renderCategorySettings=function(){renderCategorySettingsBaseV1011();renderUiImageManagerV1011()}}
@@ -5343,17 +5343,29 @@ document.addEventListener('DOMContentLoaded',()=>{
     document.querySelector('#loansRows').innerHTML=rows.length?rows.map(x=>{const count=Number(x.item_count||0),bulk=count>1;return `<tr class="${bulk?'bulk-loan-row-v1010':''}"><td class="strong">${esc(x.loan_id)}</td><td>${photoCell(x,'loan')}</td><td>${esc(userName(x.borrower_user_id))}</td><td><span class="pill ${bulk?'bulk-item-pill-v1010':'blue'}">${bulk?'PUKAL · ':''}${n(count)} item</span></td><td>${fmtDate(x.due_date)}</td><td>${esc(x.purpose||'—')}</td><td>${statusPill(x.status)}</td><td><span class="tiny strong">${esc(x.approved_by_user_id?userName(x.approved_by_user_id):'—')}</span></td><td>${loanActionButtons(x)}</td></tr>`}).join(''):'<tr><td colspan="9" class="empty">Tiada pinjaman aktif.</td></tr>';
   };
 
+  let adminWatchBusyTurboV1016=false;
+  let adminLastWatchTurboV1016=0;
   async function pollAdminFastV1015(){
-    if(document.visibilityState!=='visible'||!state.operator||approvalBusyV92()||state.inFlight.loans)return;
+    const now=Date.now();
+    if(document.visibilityState!=='visible'||!state.operator||approvalBusyV92()||state.inFlight.loans||adminWatchBusyTurboV1016)return;
+    if(now-adminLastWatchTurboV1016<4000)return;
+    adminWatchBusyTurboV1016=true;
+    adminLastWatchTurboV1016=now;
     try{
-      const w=await jsonp('admin.loan_watch',{rev:state.adminLoanRevisionV1015||'',_t:Date.now()},{timeoutMs:3000,retries:0});
+      const w=await jsonp('admin.loan_watch',{rev:state.adminLoanRevisionV1015||'',_t:now},{timeoutMs:6000,retries:0});
       if(!w?.fingerprint)return;
-      if(state.adminLoanRevisionV1015&&w.fingerprint===state.adminLoanRevisionV1015)return;
+      if(w.unchanged||state.adminLoanRevisionV1015&&w.fingerprint===state.adminLoanRevisionV1015){
+        state.adminLoanRevisionV1015=w.fingerprint;
+        return;
+      }
       state.adminLoanRevisionV1015=w.fingerprint;
-      state.loadedAt.dashboard=0;await loadLoans(true);
+      state.loadedAt.dashboard=0;
+      await loadLoans(true);
       if(state.view==='completed')await loadCompletedLoansV1015(true);
-      if(state.view==='dashboard'||state.view==='reports')setTimeout(()=>loadDashboard(true).catch?.(()=>{}),80);
-    }catch(e){}
+      if(state.view==='dashboard'||state.view==='reports')setTimeout(()=>loadDashboard(true).catch?.(()=>{}),180);
+    }catch(e){}finally{
+      adminWatchBusyTurboV1016=false;
+    }
   }
   window.pollAdminLoanWatchV1011=pollAdminFastV1015;
 
@@ -5375,25 +5387,24 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.addEventListener('DOMContentLoaded',()=>{
     installCompletedViewV1015();
     if(window.__adminLiveWatchV1011){clearInterval(window.__adminLiveWatchV1011);window.__adminLiveWatchV1011=null}
-    window.__adminLiveWatchV1011=setInterval(pollAdminFastV1015,2200);
-    setTimeout(pollAdminFastV1015,350);
+    window.__adminLiveWatchV1011=setInterval(pollAdminFastV1015,8000);
+    setTimeout(pollAdminFastV1015,1200);
   },{once:true});
-  window.addEventListener('focus',()=>setTimeout(pollAdminFastV1015,70));
-  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')setTimeout(pollAdminFastV1015,70)});
+  window.addEventListener('focus',()=>setTimeout(pollAdminFastV1015,350));
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')setTimeout(pollAdminFastV1015,350)});
 })();
 </script>
 
 
 <script id="pkpj-v10153-fast-universal-connect-script">
-/* V10.15.3 - FAST UNIVERSAL CONNECT
+/* V10.16 TURBO SAFE CONNECT
    Tiada preflight ping. Request sebenar bermula terus.
-   Jika laluan utama lambat, laluan kedua bermula secara hedge selepas 750ms.
-   Request_id backend mengekalkan write idempotent. */
+   Laluan kedua hanya digunakan jika laluan utama benar-benar gagal/timeout.
+   Ini mengelakkan dua execution Apps Script berjalan serentak untuk satu bacaan. */
 (function(){
   const TYPE='PKPJ_IFRAME_BRIDGE_RESULT_V1014';
   const MODE_KEY='pkpj_transport_mode_v10153';
   const OLD_MODE_KEY='pkpj_transport_mode_v1014';
-  const HEDGE_MS=750;
   let preferred='jsonp';
   let iframeSeq=0;
 
@@ -5449,39 +5460,24 @@ document.addEventListener('DOMContentLoaded',()=>{
     return baseJsonp(action,params,{...(options||{}),retries:0});
   }
 
-  function hedge(action,params,options={}){
+  async function hedge(action,params,options={}){
     const timeoutMs=options.timeoutMs||12000;
     const firstMode=preferred==='iframe'?'iframe':'jsonp';
     const secondMode=firstMode==='jsonp'?'iframe':'jsonp';
-    let settled=false,secondStarted=false,timer=null;
-    let firstError=null,secondError=null;
+    const run=mode=>mode==='iframe'
+      ? iframeGet(action,params,Math.max(timeoutMs,7000))
+      : jsonpDirect(action,params,{...options,timeoutMs});
 
-    return new Promise((resolve,reject)=>{
-      const finishOk=(mode,value)=>{
-        if(settled)return;settled=true;if(timer)clearTimeout(timer);remember(mode);resolve(value);
-      };
-      const finishErr=(mode,err)=>{
-        if(settled)return;
-        if(mode===firstMode)firstError=err;else secondError=err;
-        if(!isTransportFailure(err)){
-          settled=true;if(timer)clearTimeout(timer);reject(err);return;
-        }
-        if(!secondStarted){startSecond();return;}
-        if(firstError&&secondError){settled=true;if(timer)clearTimeout(timer);reject(firstError||secondError);}
-      };
-      const start=(mode)=>{
-        const p=mode==='iframe'
-          ? iframeGet(action,params,Math.max(timeoutMs,7000))
-          : jsonpDirect(action,params,{...options,timeoutMs});
-        p.then(v=>finishOk(mode,v)).catch(e=>finishErr(mode,e));
-      };
-      const startSecond=()=>{
-        if(secondStarted||settled)return;secondStarted=true;start(secondMode);
-      };
-
-      start(firstMode);
-      timer=setTimeout(startSecond,HEDGE_MS);
-    });
+    try{
+      const value=await run(firstMode);
+      remember(firstMode);
+      return value;
+    }catch(err){
+      if(!isTransportFailure(err))throw err;
+      const value=await run(secondMode);
+      remember(secondMode);
+      return value;
+    }
   }
 
   jsonp=async function(action,params={},options={}){
