@@ -4653,6 +4653,9 @@ document.addEventListener('DOMContentLoaded',compactStaticGuidesV109,{once:true}
 .movement-fast-shell-v1010{display:grid;place-items:center;min-height:150px;text-align:center;color:#54718a}
 .movement-fast-spinner-v1010{width:34px;height:34px;border-radius:50%;border:3px solid #dbe9f5;border-top-color:#2d84e8;animation:movementSpinV1010 .72s linear infinite;margin-bottom:10px}
 @keyframes movementSpinV1010{to{transform:rotate(360deg)}}
+
+.completed-trash-v1018{min-width:34px!important;padding:7px 8px!important;font-size:15px!important;line-height:1!important}
+.completed-trash-v1018:hover{transform:translateY(-1px) scale(1.03)!important}
 </style>
 <script id="pkpj-v1010-admin-patch">
 /* Fail pilihan sendiri. Upload ke folder /ui-icons/ dalam GitHub. Jika fail tiada, SVG asal kekal. */
@@ -5333,7 +5336,7 @@ document.addEventListener('DOMContentLoaded',()=>{
       s.innerHTML=`<div class="mini-hero gray"><div class="copy"><h2>Selesai Dipulangkan</h2><p>Pinjaman yang telah selesai dipulangkan diasingkan daripada proses aktif.</p></div><div class="art"></div></div>
       <div class="card panel"><div class="panel-head"><div><div class="panel-title">Rekod Selesai</div><div class="panel-sub"><span id="completedCountV1015" class="completed-count-v1015">0</span> pinjaman selesai dipulangkan.</div></div><button class="btn btn-sm" id="refreshCompletedV1015">↻ Segarkan</button></div>
       <div class="toolbar"><div class="search">⌕ <input id="completedSearchV1015" placeholder="Cari ID pinjaman, peminjam atau tujuan..."></div></div>
-      <div class="table-wrap"><table><thead><tr><th>ID PINJAMAN</th><th>GAMBAR</th><th>PEMINJAM</th><th>ITEM</th><th>TARIKH PULANG</th><th>TUJUAN</th><th>STATUS</th><th>DILULUSKAN OLEH</th><th>RUJUKAN</th></tr></thead><tbody id="completedRowsV1015"></tbody></table></div></div>`;
+      <div class="table-wrap"><table><thead><tr><th>ID PINJAMAN</th><th>GAMBAR</th><th>PEMINJAM</th><th>ITEM</th><th>TARIKH PULANG</th><th>TUJUAN</th><th>STATUS</th><th>DILULUSKAN OLEH</th><th>RUJUKAN / TINDAKAN</th></tr></thead><tbody id="completedRowsV1015"></tbody></table></div></div>`;
       reports.before(s);
       s.querySelector('#completedSearchV1015').addEventListener('input',renderCompletedLoansV1015);
       s.querySelector('#refreshCompletedV1015').onclick=()=>loadCompletedLoansV1015(true);
@@ -5347,9 +5350,55 @@ document.addEventListener('DOMContentLoaded',()=>{
       const hay=[x.loan_id,userName(x.borrower_user_id),x.purpose,x.status].join(' ').toLowerCase();return !q||hay.includes(q);
     });
     document.querySelector('#completedCountV1015').textContent=String(rows.length);
-    box.innerHTML=rows.length?rows.map(x=>`<tr><td class="strong">${esc(x.loan_id)}</td><td>${photoCell(x,'loan')}</td><td>${esc(userName(x.borrower_user_id))}</td><td><span class="pill blue">${n(Number(x.item_count||0))} item</span></td><td>${fmtDate(x.return_date||x.updated_at)}</td><td>${esc(x.purpose||'—')}</td><td>${statusPill(x.status)}</td><td><span class="tiny strong">${esc(x.approved_by_user_id?userName(x.approved_by_user_id):'—')}</span></td><td><div class="action-row"><button class="btn btn-sm loan-register-btn" onclick="openMovementRegister('${attr(x.loan_id)}')">Daftar</button><button class="btn btn-sm loan-pdf-btn" onclick="openMovementRegisterPdf('${attr(x.loan_id)}')">PDF</button></div></td></tr>`).join(''):'<tr><td colspan="9" class="empty">Belum ada rekod selesai.</td></tr>';
+    box.innerHTML=rows.length?rows.map(x=>{
+      const id=String(x.loan_id||'');
+      const trash=isSuperAdmin()?`<button type="button" class="btn btn-sm btn-danger completed-trash-v1018" title="Padam rekod ujian ${attr(id)}" aria-label="Padam rekod ujian ${attr(id)}" onclick="deleteCompletedLoanV1018('${attr(id)}')">🗑</button>`:'';
+      return `<tr><td class="strong">${esc(id)}</td><td>${photoCell(x,'loan')}</td><td>${esc(userName(x.borrower_user_id))}</td><td><span class="pill blue">${n(Number(x.item_count||0))} item</span></td><td>${fmtDate(x.return_date||x.updated_at)}</td><td>${esc(x.purpose||'—')}</td><td>${statusPill(x.status)}</td><td><span class="tiny strong">${esc(x.approved_by_user_id?userName(x.approved_by_user_id):'—')}</span></td><td><div class="action-row"><button class="btn btn-sm loan-register-btn" onclick="openMovementRegister('${attr(id)}')">Daftar</button><button class="btn btn-sm loan-pdf-btn" onclick="openMovementRegisterPdf('${attr(id)}')">PDF</button>${trash}</div></td></tr>`;
+    }).join(''):'<tr><td colspan="9" class="empty">Belum ada rekod selesai.</td></tr>';
   }
   window.renderCompletedLoansV1015=renderCompletedLoansV1015;
+
+  async function deleteCompletedLoanV1018(loanId){
+    if(!isSuperAdmin()){
+      return toast('Akses terhad','Hanya Super Admin boleh memadam rekod selesai.','err');
+    }
+    const id=String(loanId||'').trim();
+    const row=(state.completedLoansV1015||[]).find(x=>String(x.loan_id)===id);
+    if(!row||String(row.status)!=='DIPULANGKAN'){
+      return toast('Rekod tidak sesuai','Butang tong sampah hanya untuk rekod yang telah selesai dipulangkan.','err');
+    }
+    const borrower=userName(row.borrower_user_id)||'Peminjam';
+    const first=confirm(`PADAM REKOD UJIAN?\n\n${id}\nPeminjam: ${borrower}\nTujuan: ${row.purpose||'—'}\n\nRekod pinjaman dan item berkaitan akan dipadam daripada sistem. Aset inventori TIDAK dipadam. Gunakan fungsi ini untuk rekod ujian sahaja.`);
+    if(!first)return;
+    const second=confirm(`PENGESAHAN AKHIR\n\nPadam ${id} secara kekal?\n\nTindakan ini tidak boleh Undo.`);
+    if(!second)return;
+    try{
+      const result=await postApi('loan.purge',{
+        loan_id:id,
+        force:true,
+        actor_user_id:state.operator?.user_id||'',
+        actor_name:state.operator?.name||''
+      });
+      state.completedLoansV1015=(state.completedLoansV1015||[]).filter(x=>String(x.loan_id)!==id);
+      state.loans=(state.loans||[]).filter(x=>String(x.loan_id)!==id);
+      state.loadedAt.completedV1015=Date.now();
+      if(typeof movementClientCacheV1010!=='undefined')movementClientCacheV1010.delete(id);
+      if(typeof auditStateV9!=='undefined'&&auditStateV9.complete){
+        auditStateV9.complete=false;
+        try{setAuditReadyV9(false)}catch(e){}
+        const hint=document.querySelector('#auditLoadStatusV9');
+        if(hint)hint.textContent='Rekod ujian telah dipadam. Tekan Muat semua sejarah sebelum cetakan audit baharu.';
+      }
+      try{saveAdminFastCache()}catch(e){}
+      renderCompletedLoansV1015();
+      state.loadedAt.dashboard=0;
+      setTimeout(()=>loadDashboard(true).catch?.(()=>{}),120);
+      toast('Rekod ujian dipadam',`${id} telah dibuang. ${Number(result?.deleted_items||0)} item pinjaman turut dibersihkan.`,'ok');
+    }catch(err){
+      handleError(err);
+    }
+  }
+  window.deleteCompletedLoanV1018=deleteCompletedLoanV1018;
 
   async function loadCompletedLoansV1015(force=false){
     if(!requireConfig())return;
@@ -5550,7 +5599,8 @@ document.addEventListener('DOMContentLoaded',()=>{
 </script>
 
 <script id="pkpj-v1017-kewpa6-marker">
-window.PKPJ_KEWPA6_VERSION='10.17';
+window.PKPJ_KEWPA6_VERSION='10.18';
+window.PKPJ_COMPLETED_DELETE_VERSION='10.18';
 </script>
 </body>
 </html>
