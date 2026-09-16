@@ -4698,7 +4698,7 @@ if(typeof premiumAssetArtBaseV119==='function'){
 
 function patchApplicantLoanStatusesV119(w){const incoming=new Map((w.items||[]).map(x=>[String(x.loan_id),x]));let unknown=false;(w.items||[]).forEach(x=>{const row=(state.loans||[]).find(l=>String(l.loan_id)===String(x.loan_id));if(!row){unknown=true;return}Object.assign(row,{status:x.status,updated_at:x.updated_at||row.updated_at,approved_by_user_id:x.approved_by_user_id||row.approved_by_user_id,approved_at:x.approved_at||row.approved_at,loan_date:x.loan_date||row.loan_date,return_date:x.return_date||row.return_date})});if((state.loans||[]).some(l=>!incoming.has(String(l.loan_id)))&&Number(w.count)!==(state.loans||[]).length)unknown=true;if(w.kpi){state.kpi.pending=w.kpi.pending;state.kpi.active=w.kpi.active;state.kpi.overdue=w.kpi.overdue}renderShell();if(state.currentView==='myloans')renderMyLoans();if(state.currentView==='home')renderHomeView();try{savePortalCache({profile:state.profile,kpi:state.kpi,available_assets:state.assets,loans:state.loans,public_settings:state.publicSettings})}catch(e){}if(unknown)setTimeout(()=>refreshPortal(true,true),150)}
 async function pollApplicantLiveV119(){if(document.visibilityState!=='visible'||!state.profile||!state.connected||state.refreshPromise)return;try{const w=await jsonp('applicant.loan_watch',{user_id:state.profile.user_id||'',name:state.profile.name||'',_t:Date.now()},{timeoutMs:4300,retries:0});if(!w?.fingerprint)return;if(!state.loanWatchFingerprintV119){state.loanWatchFingerprintV119=w.fingerprint;patchApplicantLoanStatusesV119(w);return}if(w.fingerprint!==state.loanWatchFingerprintV119){state.loanWatchFingerprintV119=w.fingerprint;patchApplicantLoanStatusesV119(w)}}catch(e){/* status watch senyap supaya portal tidak terasa berat */}}
-function startApplicantLiveV119(){if(state.liveStatusTimerV119)return;state.liveStatusTimerV119=setInterval(pollApplicantLiveV119,3000);setTimeout(pollApplicantLiveV119,1800)}
+function startApplicantLiveV119(){if(state.liveStatusTimerV119)return;state.liveStatusTimerV119=setInterval(pollApplicantLiveV119,8000);setTimeout(pollApplicantLiveV119,1800)}
 const applyBootstrapBaseV119=window.applyBootstrap;if(typeof applyBootstrapBaseV119==='function'){window.applyBootstrap=function(data){applyBootstrapBaseV119(data);startApplicantLiveV119();if(state.currentView==='apply')renderApplyCategories()}}
 const logoutApplicantBaseV119=window.logoutApplicant;if(typeof logoutApplicantBaseV119==='function'){window.logoutApplicant=function(){if(state.liveStatusTimerV119){clearInterval(state.liveStatusTimerV119);state.liveStatusTimerV119=null}state.loanWatchFingerprintV119='';return logoutApplicantBaseV119()}}
 document.addEventListener('DOMContentLoaded',()=>{startApplicantLiveV119()},{once:true});
@@ -5721,30 +5721,38 @@ document.addEventListener('DOMContentLoaded',()=>{
     }
   };
 
-  /* Live keputusan: revision-first, murah ketika tiada perubahan. */
+  /* Live keputusan TURBO: revision-first + throttle + single in-flight. */
+  let applicantWatchBusyTurboV1114=false;
+  let applicantLastWatchTurboV1114=0;
   async function pollApplicantFastV11137(){
-    if(document.visibilityState!=='visible'||!state?.profile||state.refreshPromise)return;
+    const now=Date.now();
+    if(document.visibilityState!=='visible'||!state?.profile||state.refreshPromise||applicantWatchBusyTurboV1114)return;
+    if(now-applicantLastWatchTurboV1114<4000)return;
+    applicantWatchBusyTurboV1114=true;
+    applicantLastWatchTurboV1114=now;
     try{
       const previous=String(state.loanWatchFingerprintV119||'');
       const w=await jsonp('applicant.loan_watch',{
-        user_id:state.profile.user_id||'',name:state.profile.name||'',rev:previous,_t:Date.now()
-      },{timeoutMs:3500,retries:0});
+        user_id:state.profile.user_id||'',name:state.profile.name||'',rev:previous,_t:now
+      },{timeoutMs:6000,retries:0});
       if(!w?.fingerprint)return;
       if(w.unchanged){state.loanWatchFingerprintV119=w.fingerprint;return}
       state.loanWatchFingerprintV119=w.fingerprint;
       if(Array.isArray(w.items))patchApplicantLoanStatusesV119(w);
-    }catch(e){}
+    }catch(e){}finally{
+      applicantWatchBusyTurboV1114=false;
+    }
   }
   function startFastWatchV11137(){
     if(state.liveStatusTimerV119){clearInterval(state.liveStatusTimerV119);state.liveStatusTimerV119=null}
-    state.liveStatusTimerV119=setInterval(pollApplicantFastV11137,2200);
-    setTimeout(pollApplicantFastV11137,450);
+    state.liveStatusTimerV119=setInterval(pollApplicantFastV11137,8000);
+    setTimeout(pollApplicantFastV11137,1200);
   }
   window.pollApplicantLiveV119=pollApplicantFastV11137;
   window.startApplicantLiveV119=startFastWatchV11137;
   document.addEventListener('DOMContentLoaded',startFastWatchV11137,{once:true});
-  window.addEventListener('focus',()=>{if(state?.profile)setTimeout(pollApplicantFastV11137,80)});
-  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&state?.profile)setTimeout(pollApplicantFastV11137,80)});
+  window.addEventListener('focus',()=>{if(state?.profile)setTimeout(pollApplicantFastV11137,350)});
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&state?.profile)setTimeout(pollApplicantFastV11137,350)});
 })();
 </script>
 
@@ -5765,11 +5773,11 @@ document.addEventListener('DOMContentLoaded',()=>{
 </style>
 
 <script id="pkpj-v111311-mobile-safe-connect-script">
-/* V11.13.11 - MOBILE SAFE CONNECT
-   - Telefon: satu laluan pada satu masa; JSONP dahulu, iframe hanya bila benar-benar perlu.
-   - Desktop: hedge ringan dikekalkan untuk respons pantas.
+/* V11.14 - TURBO SAFE CONNECT
+   - Telefon dan desktop: satu laluan pada satu masa.
+   - JSONP/iframe kedua hanya digunakan apabila laluan utama benar-benar gagal/timeout.
    - Bootstrap login dikunci kepada satu request supaya focus/visibility/live-watch tidak berebut API.
-   - Live watch hanya bermula selepas bootstrap server selesai. */
+   - Live watch diperlahankan secara pintar untuk kurangkan execution Apps Script. */
 (function(){
   const TYPE='PKPJ_IFRAME_BRIDGE_RESULT_V1014';
   const MOBILE_RE=/Android|iPhone|iPad|iPod|Mobile|IEMobile|Opera Mini/i;
@@ -5844,28 +5852,23 @@ document.addEventListener('DOMContentLoaded',()=>{
     }
   }
 
-  function desktopHedge(action,params={},options={}){
+  async function desktopHedge(action,params={},options={}){
     const timeoutMs=Number(options.timeoutMs)||12000;
     const first=desktopPreferred==='iframe'?'iframe':'jsonp';
     const second=first==='jsonp'?'iframe':'jsonp';
-    let settled=false,secondStarted=false,timer=null,firstErr=null,secondErr=null;
-    return new Promise((resolve,reject)=>{
-      const ok=(mode,val)=>{if(settled)return;settled=true;if(timer)clearTimeout(timer);desktopPreferred=mode;resolve(val)};
-      const bad=(mode,err)=>{
-        if(settled)return;
-        if(mode===first)firstErr=err;else secondErr=err;
-        if(!isTransportFailure(err)){settled=true;if(timer)clearTimeout(timer);reject(err);return}
-        if(!secondStarted){startSecond();return}
-        if(firstErr&&secondErr){settled=true;if(timer)clearTimeout(timer);reject(firstErr||secondErr)}
-      };
-      const start=(mode)=>{
-        const p=mode==='iframe'?iframeGet(action,params,Math.max(timeoutMs,7000)):rawGet(action,params,{...options,timeoutMs});
-        p.then(v=>ok(mode,v)).catch(e=>bad(mode,e));
-      };
-      const startSecond=()=>{if(secondStarted||settled)return;secondStarted=true;start(second)};
-      start(first);
-      timer=setTimeout(startSecond,900);
-    });
+    const run=mode=>mode==='iframe'
+      ? iframeGet(action,params,Math.max(timeoutMs,7000))
+      : rawGet(action,params,{...options,timeoutMs});
+    try{
+      const value=await run(first);
+      desktopPreferred=first;
+      return value;
+    }catch(err){
+      if(!isTransportFailure(err))throw err;
+      const value=await run(second);
+      desktopPreferred=second;
+      return value;
+    }
   }
 
   function universalCall(action,params={},options={}){
@@ -5894,8 +5897,8 @@ document.addEventListener('DOMContentLoaded',()=>{
   function mobileSafeStart(){
     stopLive();
     if(!state||!state.profile||!state.connected)return;
-    const period=isMobile()?5000:2400;
-    const firstDelay=isMobile()?2600:700;
+    const period=isMobile()?12000:8000;
+    const firstDelay=isMobile()?2200:1200;
     state.liveStatusTimerV119=setInterval(mobileSafePoll,period);
     setTimeout(mobileSafePoll,firstDelay);
   }
