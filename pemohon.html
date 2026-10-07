@@ -5974,26 +5974,29 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 
 
-<style id="pkpj-v111314-generic-pkpj-asset-art-style">
-/* V11.13.14 - Laptop/WiFi/Extension guna visual PKPJ generik. Tiada muat turun gambar aset untuk tiga kategori ini. */
-.pkpj-generic-asset-art-v111314{width:100%;height:100%;display:grid;place-items:center;overflow:hidden;border-radius:inherit;background:linear-gradient(145deg,#f6fbff,#e5f2ff)}
-.pkpj-generic-asset-art-v111314 svg{width:94%;height:94%;display:block;filter:drop-shadow(0 8px 12px rgba(24,72,120,.12))}
-.pkpj-generic-asset-art-v111314 .pkpj-mark{font:900 8px/1 Arial,sans-serif;letter-spacing:.8px;fill:#0b69b4}
+<style id="pkpj-v111314-generic-pkpj-art-style">
+/* V11.13.14 - Laptop / WiFi / Extension guna visual PKPJ generik ringan, tanpa gambar individu Drive */
+.pkpj-generic-asset-v111314{width:100%;height:100%;display:grid;place-items:center;overflow:hidden;border-radius:inherit;background:linear-gradient(145deg,#f7fbff,#e5f2ff)}
+.pkpj-generic-asset-v111314 svg{width:92%;height:92%;display:block;filter:drop-shadow(0 8px 12px rgba(25,72,116,.13))}
+.pkpj-generic-category-v111314{width:100%;height:100%;display:grid;place-items:center}.pkpj-generic-category-v111314 svg{width:100%;height:100%;display:block}
 </style>
-<script id="pkpj-v111314-generic-pkpj-asset-art-script">
+<script id="pkpj-v111314-generic-pkpj-art-script">
 (function(){
-  const baseThumbV111314=window.assetThumbHtml;
-  const baseOpenV111314=window.assetImageOpenUrl;
-  function keyV111314(category){const s=String(category||'').toLowerCase();if(s.includes('laptop')||s.includes('notebook'))return'laptop';if(s.includes('wifi')||s.includes('wi-fi')||s.includes('mifi')||s.includes('modem')||s.includes('broadband'))return'wifi';if(s.includes('extension')||s.includes('sambungan'))return'extension';return''}
-  function artV111314(key){
-    if(key==='laptop')return `<svg viewBox="0 0 180 120" aria-hidden="true"><defs><linearGradient id="lg111314" x1="0" x2="1"><stop stop-color="#176fce"/><stop offset="1" stop-color="#26b7d4"/></linearGradient></defs><rect x="3" y="3" width="174" height="114" rx="24" fill="#eef7ff"/><rect x="43" y="23" width="94" height="61" rx="7" fill="#173654"/><rect x="50" y="30" width="80" height="46" rx="3" fill="url(#lg111314)"/><path d="M28 88h124l14 12H14z" fill="#b6c9d9"/><rect x="68" y="91" width="44" height="3" rx="2" fill="#718aa0"/><circle cx="24" cy="23" r="14" fill="#fff"/><text x="24" y="26" text-anchor="middle" class="pkpj-mark">PKPJ</text></svg>`;
-    if(key==='wifi')return `<svg viewBox="0 0 180 120" aria-hidden="true"><rect x="3" y="3" width="174" height="114" rx="24" fill="#edfbff"/><rect x="52" y="48" width="76" height="45" rx="14" fill="#fff" stroke="#c8e1ed"/><rect x="65" y="35" width="5" height="38" rx="3" fill="#2d5574"/><rect x="110" y="35" width="5" height="38" rx="3" fill="#2d5574"/><circle cx="77" cy="72" r="4" fill="#1cb67a"/><circle cx="90" cy="72" r="4" fill="#1a92d1"/><path d="M68 38c13-13 31-13 44 0M77 47c8-8 18-8 26 0M87 56c2-2 4-2 6 0" fill="none" stroke="#1a92d1" stroke-width="4" stroke-linecap="round"/><circle cx="28" cy="23" r="14" fill="#fff"/><text x="28" y="26" text-anchor="middle" class="pkpj-mark">PKPJ</text></svg>`;
-    return `<svg viewBox="0 0 180 120" aria-hidden="true"><rect x="3" y="3" width="174" height="114" rx="24" fill="#fff8ec"/><rect x="39" y="49" width="102" height="34" rx="11" fill="#fff" stroke="#ead8b7"/><circle cx="58" cy="66" r="7" fill="none" stroke="#d18c26" stroke-width="3"/><circle cx="83" cy="66" r="7" fill="none" stroke="#d18c26" stroke-width="3"/><circle cx="108" cy="66" r="7" fill="none" stroke="#d18c26" stroke-width="3"/><path d="M141 66h21M162 66v17" stroke="#425c73" stroke-width="5" stroke-linecap="round"/><path d="M48 92h84" stroke="#d7c4a4" stroke-width="4" stroke-linecap="round"/><circle cx="28" cy="23" r="14" fill="#fff"/><text x="28" y="26" text-anchor="middle" class="pkpj-mark">PKPJ</text></svg>`;
+  function key(cat){const s=String(cat||'').toLowerCase();if(/laptop|notebook/.test(s))return'laptop';if(/wifi|wi-fi|mifi|modem|broadband/.test(s))return'wifi';if(/extension|sambungan/.test(s))return'extension';return''}
+  function svg(kind){
+    if(kind==='laptop')return '<svg viewBox="0 0 220 150" aria-hidden="true"><defs><linearGradient id="lp" x1="0" x2="1"><stop stop-color="#0b68c7"/><stop offset="1" stop-color="#34b4e8"/></linearGradient></defs><rect x="42" y="22" width="136" height="88" rx="9" fill="#173b60"/><rect x="50" y="30" width="120" height="72" rx="4" fill="url(#lp)"/><text x="110" y="72" text-anchor="middle" font-family="Arial,sans-serif" font-size="24" font-weight="800" fill="#fff">PKPJ</text><text x="110" y="90" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" font-weight="700" fill="#dff5ff">ICT JOHOR</text><path d="M28 112h164l17 16H11z" fill="#b7c9d8"/><rect x="75" y="116" width="70" height="5" rx="2.5" fill="#879fb3"/></svg>';
+    if(kind==='wifi')return '<svg viewBox="0 0 220 150" aria-hidden="true"><defs><linearGradient id="wf" x1="0" x2="1"><stop stop-color="#0d78c9"/><stop offset="1" stop-color="#23c0bd"/></linearGradient></defs><path d="M110 24c-31 0-57 11-77 30l13 14c17-15 38-23 64-23s47 8 64 23l13-14c-20-19-46-30-77-30z" fill="url(#wf)" opacity=".9"/><path d="M110 55c-20 0-36 7-49 19l13 14c9-8 21-13 36-13s27 5 36 13l13-14c-13-12-29-19-49-19z" fill="#26a8d5"/><circle cx="110" cy="99" r="9" fill="#1685bb"/><rect x="55" y="108" width="110" height="28" rx="10" fill="#fff" stroke="#c7dce9"/><text x="110" y="127" text-anchor="middle" font-family="Arial,sans-serif" font-size="15" font-weight="800" fill="#0d6fae">PKPJ WiFi</text></svg>';
+    if(kind==='extension')return '<svg viewBox="0 0 220 150" aria-hidden="true"><defs><linearGradient id="ex" x1="0" x2="1"><stop stop-color="#ff9d21"/><stop offset="1" stop-color="#ffd164"/></linearGradient></defs><rect x="35" y="45" width="150" height="58" rx="18" fill="#fff" stroke="#d8e2eb" stroke-width="3"/><circle cx="68" cy="74" r="14" fill="#f2f6f9" stroke="#c9d7e1"/><circle cx="110" cy="74" r="14" fill="#f2f6f9" stroke="#c9d7e1"/><circle cx="152" cy="74" r="14" fill="#f2f6f9" stroke="#c9d7e1"/><path d="M68 67v14m-7-7h14M110 67v14m-7-7h14M152 67v14m-7-7h14" stroke="#728aa0" stroke-width="3"/><rect x="61" y="111" width="98" height="23" rx="11" fill="url(#ex)"/><text x="110" y="127" text-anchor="middle" font-family="Arial,sans-serif" font-size="13" font-weight="800" fill="#754400">PKPJ EXTENSION</text></svg>';
+    return '';
   }
-  window.assetThumbHtml=function(asset,compact=false){const key=keyV111314(asset?.category);if(key)return `<span class="${compact?'asset-linked-thumb compact':'asset-linked-thumb'} pkpj-generic-asset-art-v111314">${artV111314(key)}</span>`;return typeof baseThumbV111314==='function'?baseThumbV111314(asset,compact):''};
-  window.assetImageOpenUrl=function(asset){return keyV111314(asset?.category)?'':(typeof baseOpenV111314==='function'?baseOpenV111314(asset):'')};
-  window.__pkpjGenericAssetArtV111314={key:keyV111314};
+  const baseThumb=window.assetThumbHtml,baseOpen=window.assetImageOpenUrl,basePreview=window.assetImagePreviewUrl,baseArt=window.premiumAssetArtV116;
+  if(typeof baseThumb==='function')window.assetThumbHtml=function(asset,compact=false){const k=key(asset?.category);if(k)return `<span class="${compact?'asset-linked-thumb compact':'asset-linked-thumb'} pkpj-generic-asset-v111314">${svg(k)}</span>`;return baseThumb(asset,compact)};
+  if(typeof baseOpen==='function')window.assetImageOpenUrl=function(asset){return key(asset?.category)?'':baseOpen(asset)};
+  if(typeof basePreview==='function')window.assetImagePreviewUrl=function(asset){return key(asset?.category)?'':basePreview(asset)};
+  if(typeof baseArt==='function')window.premiumAssetArtV116=function(category){const k=key(category);return k?`<span class="pkpj-generic-category-v111314">${svg(k)}</span>`:baseArt(category)};
+  document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{try{if(state.currentView==='apply')renderApplyCategories();if(state.currentView==='assets')renderAvailableAssets()}catch(e){}},30)},{once:true});
 })();
 </script>
+
 </body>
 </html>
