@@ -5974,48 +5974,26 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 
 
-<style id="pkpj-v1115-generic-asset-art-style">
-/* V11.15 - Laptop/WiFi/Extension guna visual PKPJ generik; tiada download gambar aset untuk 3 kategori ini. */
-.pkpj-generic-asset-art-v1115{display:grid;place-items:center;width:100%;height:100%;overflow:hidden;border-radius:inherit;background:linear-gradient(145deg,#eef7ff,#fff)}
-.pkpj-generic-asset-art-v1115 svg{display:block;width:100%;height:100%;max-width:240px;max-height:180px;object-fit:contain}
-.category-custom-art-v118 .pkpj-generic-asset-art-v1115,.custom-setting-art-v119 .pkpj-generic-asset-art-v1115{width:100%;height:100%}
+<style id="pkpj-v111314-generic-pkpj-asset-art-style">
+/* V11.13.14 - Laptop/WiFi/Extension guna visual PKPJ generik. Tiada muat turun gambar aset untuk tiga kategori ini. */
+.pkpj-generic-asset-art-v111314{width:100%;height:100%;display:grid;place-items:center;overflow:hidden;border-radius:inherit;background:linear-gradient(145deg,#f6fbff,#e5f2ff)}
+.pkpj-generic-asset-art-v111314 svg{width:94%;height:94%;display:block;filter:drop-shadow(0 8px 12px rgba(24,72,120,.12))}
+.pkpj-generic-asset-art-v111314 .pkpj-mark{font:900 8px/1 Arial,sans-serif;letter-spacing:.8px;fill:#0b69b4}
 </style>
-<script id="pkpj-v1115-generic-asset-art-script">
+<script id="pkpj-v111314-generic-pkpj-asset-art-script">
 (function(){
-  const GENERIC=new Set(['laptop','wifi','extension']);
-  function keyV1115(category){
-    const s=String(category||'').toLowerCase();
-    if(s.includes('laptop')||s.includes('notebook'))return 'laptop';
-    if(s.includes('wifi')||s.includes('wi-fi')||s.includes('mifi')||s.includes('modem')||s.includes('broadband'))return 'wifi';
-    if(s.includes('extension')||s.includes('sambungan'))return 'extension';
-    return typeof portalIconKeyV118==='function'?portalIconKeyV118(category):'other';
+  const baseThumbV111314=window.assetThumbHtml;
+  const baseOpenV111314=window.assetImageOpenUrl;
+  function keyV111314(category){const s=String(category||'').toLowerCase();if(s.includes('laptop')||s.includes('notebook'))return'laptop';if(s.includes('wifi')||s.includes('wi-fi')||s.includes('mifi')||s.includes('modem')||s.includes('broadband'))return'wifi';if(s.includes('extension')||s.includes('sambungan'))return'extension';return''}
+  function artV111314(key){
+    if(key==='laptop')return `<svg viewBox="0 0 180 120" aria-hidden="true"><defs><linearGradient id="lg111314" x1="0" x2="1"><stop stop-color="#176fce"/><stop offset="1" stop-color="#26b7d4"/></linearGradient></defs><rect x="3" y="3" width="174" height="114" rx="24" fill="#eef7ff"/><rect x="43" y="23" width="94" height="61" rx="7" fill="#173654"/><rect x="50" y="30" width="80" height="46" rx="3" fill="url(#lg111314)"/><path d="M28 88h124l14 12H14z" fill="#b6c9d9"/><rect x="68" y="91" width="44" height="3" rx="2" fill="#718aa0"/><circle cx="24" cy="23" r="14" fill="#fff"/><text x="24" y="26" text-anchor="middle" class="pkpj-mark">PKPJ</text></svg>`;
+    if(key==='wifi')return `<svg viewBox="0 0 180 120" aria-hidden="true"><rect x="3" y="3" width="174" height="114" rx="24" fill="#edfbff"/><rect x="52" y="48" width="76" height="45" rx="14" fill="#fff" stroke="#c8e1ed"/><rect x="65" y="35" width="5" height="38" rx="3" fill="#2d5574"/><rect x="110" y="35" width="5" height="38" rx="3" fill="#2d5574"/><circle cx="77" cy="72" r="4" fill="#1cb67a"/><circle cx="90" cy="72" r="4" fill="#1a92d1"/><path d="M68 38c13-13 31-13 44 0M77 47c8-8 18-8 26 0M87 56c2-2 4-2 6 0" fill="none" stroke="#1a92d1" stroke-width="4" stroke-linecap="round"/><circle cx="28" cy="23" r="14" fill="#fff"/><text x="28" y="26" text-anchor="middle" class="pkpj-mark">PKPJ</text></svg>`;
+    return `<svg viewBox="0 0 180 120" aria-hidden="true"><rect x="3" y="3" width="174" height="114" rx="24" fill="#fff8ec"/><rect x="39" y="49" width="102" height="34" rx="11" fill="#fff" stroke="#ead8b7"/><circle cx="58" cy="66" r="7" fill="none" stroke="#d18c26" stroke-width="3"/><circle cx="83" cy="66" r="7" fill="none" stroke="#d18c26" stroke-width="3"/><circle cx="108" cy="66" r="7" fill="none" stroke="#d18c26" stroke-width="3"/><path d="M141 66h21M162 66v17" stroke="#425c73" stroke-width="5" stroke-linecap="round"/><path d="M48 92h84" stroke="#d7c4a4" stroke-width="4" stroke-linecap="round"/><circle cx="28" cy="23" r="14" fill="#fff"/><text x="28" y="26" text-anchor="middle" class="pkpj-mark">PKPJ</text></svg>`;
   }
-  function artV1115(category){
-    const key=keyV1115(category);
-    if(key==='laptop')return `<span class="pkpj-generic-asset-art-v1115"><svg viewBox="0 0 220 150" aria-label="Laptop PKPJ"><defs><linearGradient id="lp15" x1="0" x2="1"><stop stop-color="#0b69c8"/><stop offset="1" stop-color="#2cc5d6"/></linearGradient></defs><rect x="43" y="25" width="134" height="82" rx="10" fill="#193a57"/><rect x="51" y="33" width="118" height="66" rx="5" fill="url(#lp15)"/><text x="110" y="72" text-anchor="middle" fill="#fff" font-size="19" font-family="Arial" font-weight="800">PKPJ</text><text x="110" y="88" text-anchor="middle" fill="#dff7ff" font-size="8" font-family="Arial">ICT INVENTORI</text><path d="M25 111h170l-16 16H41z" fill="#b8c9d8"/><path d="M83 115h54" stroke="#7993aa" stroke-width="4" stroke-linecap="round"/></svg></span>`;
-    if(key==='wifi')return `<span class="pkpj-generic-asset-art-v1115"><svg viewBox="0 0 220 150" aria-label="WiFi MiFi PKPJ"><defs><linearGradient id="wf15" x1="0" x2="1"><stop stop-color="#0873ca"/><stop offset="1" stop-color="#27c7bd"/></linearGradient></defs><path d="M82 33c17-17 39-17 56 0M93 45c10-10 24-10 34 0" fill="none" stroke="#1b6894" stroke-width="6" stroke-linecap="round"/><circle cx="110" cy="56" r="5" fill="#1b6894"/><rect x="58" y="61" width="104" height="65" rx="18" fill="url(#wf15)"/><text x="110" y="94" text-anchor="middle" fill="#fff" font-size="17" font-family="Arial" font-weight="800">PKPJ</text><text x="110" y="108" text-anchor="middle" fill="#e5fffb" font-size="8" font-family="Arial">WiFi / MiFi</text><circle cx="83" cy="116" r="3" fill="#bfffe4"/><circle cx="94" cy="116" r="3" fill="#bfffe4"/></svg></span>`;
-    if(key==='extension')return `<span class="pkpj-generic-asset-art-v1115"><svg viewBox="0 0 220 150" aria-label="Extension PKPJ"><defs><linearGradient id="ex15" x1="0" x2="1"><stop stop-color="#ff941f"/><stop offset="1" stop-color="#ffd268"/></linearGradient></defs><text x="110" y="35" text-anchor="middle" fill="#93600b" font-size="13" font-family="Arial" font-weight="800">PKPJ ICT</text><rect x="36" y="47" width="148" height="59" rx="20" fill="url(#ex15)"/><g fill="#fff" stroke="#d58c1b" stroke-width="2"><circle cx="70" cy="77" r="14"/><circle cx="110" cy="77" r="14"/><circle cx="150" cy="77" r="14"/></g><g fill="#8b650d"><circle cx="65" cy="73" r="2.7"/><circle cx="75" cy="73" r="2.7"/><rect x="68" y="80" width="4" height="7" rx="2"/><circle cx="105" cy="73" r="2.7"/><circle cx="115" cy="73" r="2.7"/><rect x="108" y="80" width="4" height="7" rx="2"/><circle cx="145" cy="73" r="2.7"/><circle cx="155" cy="73" r="2.7"/><rect x="148" y="80" width="4" height="7" rx="2"/></g><path d="M184 77h20c9 0 9 18 0 18h-10" fill="none" stroke="#a26b0e" stroke-width="5" stroke-linecap="round"/></svg></span>`;
-    return '';
-  }
-  window.pkpjGenericAssetArtV1115=artV1115;
-
-  const baseThumb=window.assetThumbHtml;
-  if(typeof baseThumb==='function')window.assetThumbHtml=function(asset,compact=false){
-    if(GENERIC.has(keyV1115(asset?.category)))return artV1115(asset?.category);
-    return baseThumb.apply(this,arguments);
-  };
-  const baseOpen=window.assetImageOpenUrl;
-  if(typeof baseOpen==='function')window.assetImageOpenUrl=function(asset){
-    if(GENERIC.has(keyV1115(asset?.category)))return '';
-    return baseOpen.apply(this,arguments);
-  };
-  const basePremium=window.premiumAssetArtV116;
-  if(typeof basePremium==='function')window.premiumAssetArtV116=function(category){
-    if(GENERIC.has(keyV1115(category)))return artV1115(category);
-    return basePremium.apply(this,arguments);
-  };
+  window.assetThumbHtml=function(asset,compact=false){const key=keyV111314(asset?.category);if(key)return `<span class="${compact?'asset-linked-thumb compact':'asset-linked-thumb'} pkpj-generic-asset-art-v111314">${artV111314(key)}</span>`;return typeof baseThumbV111314==='function'?baseThumbV111314(asset,compact):''};
+  window.assetImageOpenUrl=function(asset){return keyV111314(asset?.category)?'':(typeof baseOpenV111314==='function'?baseOpenV111314(asset):'')};
+  window.__pkpjGenericAssetArtV111314={key:keyV111314};
 })();
 </script>
-
 </body>
 </html>
