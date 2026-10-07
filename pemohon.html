@@ -5972,5 +5972,50 @@ document.addEventListener('DOMContentLoaded',()=>{
 })();
 </script>
 
+
+
+<style id="pkpj-v1115-generic-asset-art-style">
+/* V11.15 - Laptop/WiFi/Extension guna visual PKPJ generik; tiada download gambar aset untuk 3 kategori ini. */
+.pkpj-generic-asset-art-v1115{display:grid;place-items:center;width:100%;height:100%;overflow:hidden;border-radius:inherit;background:linear-gradient(145deg,#eef7ff,#fff)}
+.pkpj-generic-asset-art-v1115 svg{display:block;width:100%;height:100%;max-width:240px;max-height:180px;object-fit:contain}
+.category-custom-art-v118 .pkpj-generic-asset-art-v1115,.custom-setting-art-v119 .pkpj-generic-asset-art-v1115{width:100%;height:100%}
+</style>
+<script id="pkpj-v1115-generic-asset-art-script">
+(function(){
+  const GENERIC=new Set(['laptop','wifi','extension']);
+  function keyV1115(category){
+    const s=String(category||'').toLowerCase();
+    if(s.includes('laptop')||s.includes('notebook'))return 'laptop';
+    if(s.includes('wifi')||s.includes('wi-fi')||s.includes('mifi')||s.includes('modem')||s.includes('broadband'))return 'wifi';
+    if(s.includes('extension')||s.includes('sambungan'))return 'extension';
+    return typeof portalIconKeyV118==='function'?portalIconKeyV118(category):'other';
+  }
+  function artV1115(category){
+    const key=keyV1115(category);
+    if(key==='laptop')return `<span class="pkpj-generic-asset-art-v1115"><svg viewBox="0 0 220 150" aria-label="Laptop PKPJ"><defs><linearGradient id="lp15" x1="0" x2="1"><stop stop-color="#0b69c8"/><stop offset="1" stop-color="#2cc5d6"/></linearGradient></defs><rect x="43" y="25" width="134" height="82" rx="10" fill="#193a57"/><rect x="51" y="33" width="118" height="66" rx="5" fill="url(#lp15)"/><text x="110" y="72" text-anchor="middle" fill="#fff" font-size="19" font-family="Arial" font-weight="800">PKPJ</text><text x="110" y="88" text-anchor="middle" fill="#dff7ff" font-size="8" font-family="Arial">ICT INVENTORI</text><path d="M25 111h170l-16 16H41z" fill="#b8c9d8"/><path d="M83 115h54" stroke="#7993aa" stroke-width="4" stroke-linecap="round"/></svg></span>`;
+    if(key==='wifi')return `<span class="pkpj-generic-asset-art-v1115"><svg viewBox="0 0 220 150" aria-label="WiFi MiFi PKPJ"><defs><linearGradient id="wf15" x1="0" x2="1"><stop stop-color="#0873ca"/><stop offset="1" stop-color="#27c7bd"/></linearGradient></defs><path d="M82 33c17-17 39-17 56 0M93 45c10-10 24-10 34 0" fill="none" stroke="#1b6894" stroke-width="6" stroke-linecap="round"/><circle cx="110" cy="56" r="5" fill="#1b6894"/><rect x="58" y="61" width="104" height="65" rx="18" fill="url(#wf15)"/><text x="110" y="94" text-anchor="middle" fill="#fff" font-size="17" font-family="Arial" font-weight="800">PKPJ</text><text x="110" y="108" text-anchor="middle" fill="#e5fffb" font-size="8" font-family="Arial">WiFi / MiFi</text><circle cx="83" cy="116" r="3" fill="#bfffe4"/><circle cx="94" cy="116" r="3" fill="#bfffe4"/></svg></span>`;
+    if(key==='extension')return `<span class="pkpj-generic-asset-art-v1115"><svg viewBox="0 0 220 150" aria-label="Extension PKPJ"><defs><linearGradient id="ex15" x1="0" x2="1"><stop stop-color="#ff941f"/><stop offset="1" stop-color="#ffd268"/></linearGradient></defs><text x="110" y="35" text-anchor="middle" fill="#93600b" font-size="13" font-family="Arial" font-weight="800">PKPJ ICT</text><rect x="36" y="47" width="148" height="59" rx="20" fill="url(#ex15)"/><g fill="#fff" stroke="#d58c1b" stroke-width="2"><circle cx="70" cy="77" r="14"/><circle cx="110" cy="77" r="14"/><circle cx="150" cy="77" r="14"/></g><g fill="#8b650d"><circle cx="65" cy="73" r="2.7"/><circle cx="75" cy="73" r="2.7"/><rect x="68" y="80" width="4" height="7" rx="2"/><circle cx="105" cy="73" r="2.7"/><circle cx="115" cy="73" r="2.7"/><rect x="108" y="80" width="4" height="7" rx="2"/><circle cx="145" cy="73" r="2.7"/><circle cx="155" cy="73" r="2.7"/><rect x="148" y="80" width="4" height="7" rx="2"/></g><path d="M184 77h20c9 0 9 18 0 18h-10" fill="none" stroke="#a26b0e" stroke-width="5" stroke-linecap="round"/></svg></span>`;
+    return '';
+  }
+  window.pkpjGenericAssetArtV1115=artV1115;
+
+  const baseThumb=window.assetThumbHtml;
+  if(typeof baseThumb==='function')window.assetThumbHtml=function(asset,compact=false){
+    if(GENERIC.has(keyV1115(asset?.category)))return artV1115(asset?.category);
+    return baseThumb.apply(this,arguments);
+  };
+  const baseOpen=window.assetImageOpenUrl;
+  if(typeof baseOpen==='function')window.assetImageOpenUrl=function(asset){
+    if(GENERIC.has(keyV1115(asset?.category)))return '';
+    return baseOpen.apply(this,arguments);
+  };
+  const basePremium=window.premiumAssetArtV116;
+  if(typeof basePremium==='function')window.premiumAssetArtV116=function(category){
+    if(GENERIC.has(keyV1115(category)))return artV1115(category);
+    return basePremium.apply(this,arguments);
+  };
+})();
+</script>
+
 </body>
 </html>
