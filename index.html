@@ -5602,5 +5602,147 @@ document.addEventListener('DOMContentLoaded',()=>{
 window.PKPJ_KEWPA6_VERSION='10.18';
 window.PKPJ_COMPLETED_DELETE_VERSION='10.18';
 </script>
+
+
+<style id="pkpj-v1019-pending-popup-generic-art-style">
+/* PKPJ latest patch: pending request popup + generic ICT art. Visual/client only. */
+.pkpj-generic-asset-art-v1019{display:grid;place-items:center;width:100%;height:100%;min-width:42px;min-height:42px;overflow:hidden;border-radius:12px;background:linear-gradient(145deg,#eef7ff,#ffffff);border:1px solid #dbe9f6}
+.pkpj-generic-asset-art-v1019 svg{display:block;width:100%;height:100%;max-width:180px;max-height:120px}
+.loan-item-context-v1019{display:grid;gap:4px;min-width:190px;max-width:330px}
+.loan-item-context-v1019 .loan-item-count{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.loan-item-context-v1019 .loan-item-names{font-size:11px;line-height:1.42;color:#294a68;font-weight:750;white-space:normal}
+.loan-item-context-v1019 .loan-item-names span{display:inline}
+#pkpjPendingPopupV1019{position:fixed;inset:0;z-index:260;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(15,33,55,.48);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px)}
+#pkpjPendingPopupV1019.show{display:flex}
+.pkpj-pending-card-v1019{width:min(780px,100%);max-height:min(82vh,760px);overflow:hidden;border-radius:26px;background:#fff;border:1px solid #dce8f4;box-shadow:0 32px 100px rgba(14,53,91,.28)}
+.pkpj-pending-head-v1019{padding:20px 22px 16px;background:linear-gradient(135deg,#eafff6,#edf9ff);border-bottom:1px solid #dce9f2}
+.pkpj-pending-head-v1019 .badge{display:inline-flex;padding:5px 9px;border-radius:999px;background:#16a66d;color:#fff;font-size:9px;font-weight:900;letter-spacing:.08em}
+.pkpj-pending-head-v1019 h3{margin:9px 0 4px;font-size:24px;color:#0d3c61;letter-spacing:-.03em}
+.pkpj-pending-head-v1019 p{margin:0;color:#607b91;font-size:12px}
+.pkpj-pending-list-v1019{padding:14px;display:grid;gap:10px;max-height:55vh;overflow:auto;background:#f7fbff}
+.pkpj-pending-row-v1019{display:grid;grid-template-columns:86px minmax(0,1fr) auto;gap:13px;align-items:center;padding:12px;border:1px solid #dce7f1;border-radius:17px;background:#fff}
+.pkpj-pending-art-v1019{height:74px}
+.pkpj-pending-info-v1019 strong{display:block;font-size:14px;color:#173b5c;margin-bottom:3px}
+.pkpj-pending-info-v1019 .asset{font-size:12px;font-weight:800;color:#315b7c;line-height:1.45}
+.pkpj-pending-info-v1019 .meta{margin-top:5px;font-size:10px;color:#7890a4;line-height:1.5}
+.pkpj-pending-actions-v1019{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.pkpj-pending-foot-v1019{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:13px 16px;border-top:1px solid #e2ebf3;background:#fff}
+@media(max-width:680px){#pkpjPendingPopupV1019{padding:10px;-webkit-backdrop-filter:none;backdrop-filter:none}.pkpj-pending-card-v1019{border-radius:20px}.pkpj-pending-row-v1019{grid-template-columns:66px minmax(0,1fr)}.pkpj-pending-art-v1019{height:62px}.pkpj-pending-actions-v1019{grid-column:1/-1;justify-content:flex-start}.pkpj-pending-head-v1019 h3{font-size:21px}}
+</style>
+<script id="pkpj-v1019-pending-popup-generic-art-script">
+/* Additive patch on user's latest Admin. No extra API call for popup. */
+(function(){
+  const PENDING_SEEN_KEY='pkpj_admin_pending_seen_v1019';
+  const GENERIC_KEYS=new Set(['laptop','wifi','extension']);
+
+  function catKeyV1019(category){
+    const s=String(category||'').toLowerCase();
+    if(s.includes('laptop')||s.includes('notebook'))return 'laptop';
+    if(s.includes('wifi')||s.includes('wi-fi')||s.includes('mifi')||s.includes('modem')||s.includes('broadband'))return 'wifi';
+    if(s.includes('extension')||s.includes('sambungan'))return 'extension';
+    return 'other';
+  }
+  function genericAssetSvgV1019(category){
+    const key=catKeyV1019(category);
+    if(key==='laptop')return `<span class="pkpj-generic-asset-art-v1019" title="Laptop PKPJ"><svg viewBox="0 0 180 112" aria-hidden="true"><defs><linearGradient id="lp19" x1="0" x2="1"><stop stop-color="#0a68c7"/><stop offset="1" stop-color="#27b7dc"/></linearGradient></defs><rect x="34" y="17" width="112" height="68" rx="8" fill="#173552"/><rect x="41" y="24" width="98" height="54" rx="4" fill="url(#lp19)"/><text x="90" y="56" text-anchor="middle" fill="#fff" font-size="15" font-family="Arial" font-weight="800">PKPJ</text><path d="M19 88h142l-13 12H32z" fill="#b8c9d8"/><path d="M67 91h46" stroke="#7892a9" stroke-width="3" stroke-linecap="round"/></svg></span>`;
+    if(key==='wifi')return `<span class="pkpj-generic-asset-art-v1019" title="WiFi/MiFi PKPJ"><svg viewBox="0 0 180 112" aria-hidden="true"><defs><linearGradient id="wf19" x1="0" x2="1"><stop stop-color="#0875c8"/><stop offset="1" stop-color="#2bc7c8"/></linearGradient></defs><rect x="47" y="31" width="86" height="58" rx="15" fill="url(#wf19)"/><text x="90" y="67" text-anchor="middle" fill="#fff" font-size="13" font-family="Arial" font-weight="800">PKPJ</text><path d="M67 25c13-13 33-13 46 0M76 34c8-8 20-8 28 0" fill="none" stroke="#17618c" stroke-width="5" stroke-linecap="round"/><circle cx="90" cy="43" r="4" fill="#17618c"/><circle cx="68" cy="81" r="3" fill="#bfffe5"/><circle cx="78" cy="81" r="3" fill="#bfffe5"/></svg></span>`;
+    if(key==='extension')return `<span class="pkpj-generic-asset-art-v1019" title="Extension PKPJ"><svg viewBox="0 0 180 112" aria-hidden="true"><defs><linearGradient id="ex19" x1="0" x2="1"><stop stop-color="#ff9a1f"/><stop offset="1" stop-color="#ffcc5d"/></linearGradient></defs><rect x="28" y="33" width="124" height="48" rx="16" fill="url(#ex19)"/><text x="90" y="25" text-anchor="middle" fill="#9a5a05" font-size="12" font-family="Arial" font-weight="800">PKPJ ICT</text><g fill="#fff" stroke="#d68a16" stroke-width="2"><circle cx="53" cy="57" r="12"/><circle cx="90" cy="57" r="12"/><circle cx="127" cy="57" r="12"/></g><g fill="#8b650d"><circle cx="49" cy="54" r="2.4"/><circle cx="57" cy="54" r="2.4"/><rect x="51" y="60" width="4" height="6" rx="2"/><circle cx="86" cy="54" r="2.4"/><circle cx="94" cy="54" r="2.4"/><rect x="88" y="60" width="4" height="6" rx="2"/><circle cx="123" cy="54" r="2.4"/><circle cx="131" cy="54" r="2.4"/><rect x="125" y="60" width="4" height="6" rx="2"/></g><path d="M152 57h17c7 0 7 16 0 16h-8" fill="none" stroke="#a56a0b" stroke-width="4" stroke-linecap="round"/></svg></span>`;
+    return `<span class="pkpj-generic-asset-art-v1019">▧</span>`;
+  }
+  window.pkpjGenericAssetSvgV1019=genericAssetSvgV1019;
+
+  const baseAssetThumb=window.assetListThumbnail;
+  if(typeof baseAssetThumb==='function')window.assetListThumbnail=function(record){
+    if(GENERIC_KEYS.has(catKeyV1019(record?.category)))return `<div class="asset-list-thumb" style="padding:0;overflow:hidden">${genericAssetSvgV1019(record?.category)}</div>`;
+    return baseAssetThumb.apply(this,arguments);
+  };
+
+  const baseAssetPreview=window.assetImagePreviewUrl;
+  if(typeof baseAssetPreview==='function')window.assetImagePreviewUrl=function(record){
+    if(GENERIC_KEYS.has(catKeyV1019(record?.category)))return '';
+    return baseAssetPreview.apply(this,arguments);
+  };
+
+  const baseOpenProfile=window.openAssetProfile;
+  if(typeof baseOpenProfile==='function')window.openAssetProfile=function(assetId){
+    const asset=(state.assets||[]).find(x=>String(x.asset_id)===String(assetId));
+    if(!asset||!GENERIC_KEYS.has(catKeyV1019(asset.category)))return baseOpenProfile.apply(this,arguments);
+    const f=(label,value,full=false)=>`<div class="asset-profile-field ${full?'full':''}"><small>${esc(label)}</small><b>${esc(value||'—')}</b></div>`;
+    openModal('asset_profile','Profil Aset ICT',`<div class="asset-profile"><div class="asset-profile-photo">${genericAssetSvgV1019(asset.category)}</div><div class="asset-profile-info">${f('Nama Aset',asset.asset_name)}${f('Kategori',asset.category)}${f('Brand / Model',[asset.brand,asset.model].filter(Boolean).join(' '))}${f('Serial Number',asset.serial_no)}${f('Lokasi',asset.location)}${f('Jabatan',asset.department)}${f('Keadaan',asset.condition)}${f('Status',asset.status)}${f('Catatan',asset.notes,true)}</div></div>`,{submitText:'Tutup',hideCancel:true});
+    const submit=document.querySelector('#modalSubmit');if(submit)submit.onclick=closeModal;
+  };
+
+  function borrowerNameV1019(loan){return String(loan?.borrower_name||userName(loan?.borrower_user_id)||loan?.borrower_user_id||'—')}
+  function itemNamesV1019(loan){
+    const arr=Array.isArray(loan?.item_names)?loan.item_names.filter(Boolean):[];
+    if(arr.length)return arr;
+    const summary=String(loan?.item_summary||'').trim();
+    return summary?summary.split(/\s*\|\s*/).filter(Boolean):[];
+  }
+  function itemCatsV1019(loan){return Array.isArray(loan?.item_categories)?loan.item_categories.filter(Boolean):[]}
+  function loanArtV1019(loan){
+    const cats=itemCatsV1019(loan);const keys=[...new Set(cats.map(catKeyV1019))];
+    if(keys.length===1&&GENERIC_KEYS.has(keys[0]))return genericAssetSvgV1019(cats[0]);
+    if(keys.length>1)return `<span class="pkpj-generic-asset-art-v1019"><svg viewBox="0 0 180 112" aria-hidden="true"><rect x="24" y="23" width="132" height="66" rx="18" fill="#edf7ff" stroke="#cfe4f5"/><text x="90" y="49" text-anchor="middle" fill="#146cab" font-size="12" font-family="Arial" font-weight="800">PKPJ ICT</text><text x="90" y="70" text-anchor="middle" fill="#2c5574" font-size="11" font-family="Arial">PUKAL · ${Number(loan?.item_count||0)} ITEM</text></svg></span>`;
+    return `<span class="pkpj-generic-asset-art-v1019"><svg viewBox="0 0 180 112"><rect x="30" y="25" width="120" height="62" rx="18" fill="#edf5fb"/><text x="90" y="57" text-anchor="middle" fill="#126ca9" font-size="15" font-family="Arial" font-weight="800">PKPJ ICT</text><text x="90" y="73" text-anchor="middle" fill="#66849a" font-size="9" font-family="Arial">INVENTORI</text></svg></span>`;
+  }
+  function itemsCellV1019(loan){
+    const names=itemNamesV1019(loan),count=Number(loan?.item_count||names.length||0),bulk=count>1;
+    const display=names.length?names.map(x=>esc(x)).join(' • '):`${n(count)} item`;
+    return `<div class="loan-item-context-v1019"><div class="loan-item-count"><span class="pill ${bulk?'bulk-item-pill-v1010':'blue'}">${bulk?'PUKAL · ':''}${n(count)} item</span></div><div class="loan-item-names">${display}</div></div>`;
+  }
+
+  window.renderLoans=function(){
+    const q=String(document.querySelector('#loanSearch')?.value||'').toLowerCase();
+    const st=String(document.querySelector('#loanStatusFilter')?.value||'');
+    const rows=(state.loans||[]).filter(x=>{
+      if(['DIPULANGKAN','DITOLAK','DIBATALKAN'].includes(String(x.status)))return false;
+      const hay=[x.loan_id,borrowerNameV1019(x),x.purpose,x.status,...itemNamesV1019(x)].join(' ').toLowerCase();
+      return(!q||hay.includes(q))&&(!st||x.status===st);
+    });
+    const target=document.querySelector('#loansRows');if(!target)return;
+    target.innerHTML=rows.length?rows.map(x=>{const count=Number(x.item_count||0),bulk=count>1;return `<tr class="${bulk?'bulk-loan-row-v1010':''}"><td class="strong">${esc(x.loan_id)}</td><td><div style="width:70px;height:54px">${loanArtV1019(x)}</div></td><td><b>${esc(borrowerNameV1019(x))}</b><div class="tiny muted">${esc(x.borrower_user_id||'')}</div></td><td>${itemsCellV1019(x)}</td><td>${fmtDate(x.due_date)}</td><td>${esc(x.purpose||'—')}</td><td>${statusPill(x.status)}</td><td><span class="tiny strong">${esc(x.approved_by_user_id?userName(x.approved_by_user_id):'—')}</span></td><td>${loanActionButtons(x)}</td></tr>`}).join(''):'<tr><td colspan="9" class="empty">Tiada pinjaman aktif.</td></tr>';
+    queuePendingPopupV1019(rows);
+  };
+
+  function ensurePendingPopupV1019(){
+    let root=document.querySelector('#pkpjPendingPopupV1019');if(root)return root;
+    root=document.createElement('div');root.id='pkpjPendingPopupV1019';root.setAttribute('aria-hidden','true');
+    root.innerHTML=`<div class="pkpj-pending-card-v1019" role="dialog" aria-modal="true" aria-labelledby="pkpjPendingTitleV1019"><div class="pkpj-pending-head-v1019"><span class="badge">PERMOHONAN BAHARU</span><h3 id="pkpjPendingTitleV1019">Permohonan inventori menunggu kelulusan</h3><p>Semak pemohon dan nama aset sebelum Staff IT membuat keputusan.</p></div><div class="pkpj-pending-list-v1019" id="pkpjPendingListV1019"></div><div class="pkpj-pending-foot-v1019"><span class="tiny muted" id="pkpjPendingCountV1019"></span><div style="display:flex;gap:7px"><button type="button" class="btn btn-sm" id="pkpjPendingLaterV1019">Nanti</button><button type="button" class="btn btn-sm btn-primary" id="pkpjPendingOpenV1019">Buka Kelulusan</button></div></div></div>`;
+    document.body.appendChild(root);
+    document.querySelector('#pkpjPendingLaterV1019').onclick=()=>closePendingPopupV1019();
+    document.querySelector('#pkpjPendingOpenV1019').onclick=()=>{closePendingPopupV1019();showView('loans')};
+    root.addEventListener('click',e=>{if(e.target===root)closePendingPopupV1019()});
+    return root;
+  }
+  function readSeenV1019(){try{return new Set(JSON.parse(sessionStorage.getItem(PENDING_SEEN_KEY)||'[]'))}catch(e){return new Set()}}
+  function saveSeenV1019(set){try{sessionStorage.setItem(PENDING_SEEN_KEY,JSON.stringify([...set].slice(-250)))}catch(e){}}
+  let pendingQueueV1019=[];
+  function queuePendingPopupV1019(rows){
+    const seen=readSeenV1019();
+    const fresh=(rows||[]).filter(x=>['MENUNGGU_KELULUSAN','PERMOHONAN_BARU'].includes(String(x.status||'').toUpperCase())&&!seen.has(String(x.loan_id||'')));
+    if(!fresh.length)return;
+    fresh.forEach(x=>{seen.add(String(x.loan_id||''));if(!pendingQueueV1019.some(y=>String(y.loan_id)===String(x.loan_id)))pendingQueueV1019.push(x)});saveSeenV1019(seen);
+    if(state.view==='dashboard')showPendingPopupV1019();
+  }
+  function showPendingPopupV1019(){
+    if(!pendingQueueV1019.length)return;
+    const root=ensurePendingPopupV1019(),list=root.querySelector('#pkpjPendingListV1019');
+    const queued=pendingQueueV1019.splice(0);
+    const rows=queued.slice(0,10);
+    list.innerHTML=rows.map(x=>{const names=itemNamesV1019(x),assets=names.length?names.map(esc).join(' • '):`${Number(x.item_count||0)} item`;return `<div class="pkpj-pending-row-v1019"><div class="pkpj-pending-art-v1019">${loanArtV1019(x)}</div><div class="pkpj-pending-info-v1019"><strong>${esc(borrowerNameV1019(x))}</strong><div class="asset">${assets}</div><div class="meta">${esc(x.loan_id)} · Perlu pulang ${fmtDate(x.due_date)}${x.purpose?' · '+esc(x.purpose):''}</div></div><div class="pkpj-pending-actions-v1019"><button type="button" class="btn btn-sm btn-green" data-pending-action="approve" data-loan-id="${attr(x.loan_id)}">Lulus</button><button type="button" class="btn btn-sm btn-danger" data-pending-action="reject" data-loan-id="${attr(x.loan_id)}">Tolak</button></div></div>`}).join('');
+    const count=root.querySelector('#pkpjPendingCountV1019');if(count)count.textContent=rows.length+(queued.length>rows.length?` dipaparkan · ${queued.length-rows.length} lagi ada dalam Kelulusan`:' permohonan baharu');
+    list.querySelectorAll('[data-pending-action]').forEach(btn=>btn.onclick=()=>{const action=btn.dataset.pendingAction,id=btn.dataset.loanId;closePendingPopupV1019();loanAction(action,id,false)});
+    root.classList.add('show');root.setAttribute('aria-hidden','false');
+  }
+  function closePendingPopupV1019(){const root=document.querySelector('#pkpjPendingPopupV1019');if(root){root.classList.remove('show');root.setAttribute('aria-hidden','true')}}
+  window.closePendingPopupV1019=closePendingPopupV1019;
+
+  const baseShow=window.showView;
+  if(typeof baseShow==='function')window.showView=function(name){const r=baseShow.apply(this,arguments);if(name==='dashboard'&&pendingQueueV1019.length)setTimeout(showPendingPopupV1019,180);return r};
+  document.addEventListener('DOMContentLoaded',()=>ensurePendingPopupV1019(),{once:true});
+})();
+</script>
+
 </body>
 </html>
