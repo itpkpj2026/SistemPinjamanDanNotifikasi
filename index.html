@@ -7146,5 +7146,227 @@ window.PKPJ_COMPLETED_DELETE_VERSION='10.18';
 })();
 </script>
 
+<!-- =========================================================
+     PKPJ V10.24.1 - STATUS CHECK + NON-BLOCKING PROCESS POLISH
+     - Health checker no longer hardcodes obsolete V9.2.
+     - Normal process overlay soft-releases after 10s (20s for uploads).
+     - Server confirmation continues in background; duplicate-write guard remains.
+========================================================= -->
+<style id="pkpj-v10241-admin-status-loading-style">
+#pkpjStableProcessV1023 .pkpj-stable-note-v1023{display:none!important}
+#pkpjStableProcessV1023[data-soft-release="1"]{display:none!important}
+#pkpjBgStatusV10241{
+  position:fixed;right:18px;bottom:18px;z-index:130600;display:none;align-items:center;gap:10px;
+  max-width:min(420px,calc(100vw - 28px));padding:11px 14px;border-radius:15px;background:#fff;
+  border:1px solid #d7e5f1;box-shadow:0 14px 38px rgba(10,40,72,.18);color:#365b7b;
+  font-size:11px;font-weight:800;line-height:1.35
+}
+#pkpjBgStatusV10241.show{display:flex}
+#pkpjBgStatusV10241 .dot{width:16px;height:16px;border-radius:50%;border:2px solid #dbe8f3;border-top-color:#1678e8;animation:pkpjBgSpinV10241 .75s linear infinite;flex:0 0 auto}
+#pkpjBgStatusV10241.done .dot{animation:none;border:0;width:18px;height:18px;display:grid;place-items:center;color:#18a56b}
+#pkpjBgStatusV10241.done .dot:before{content:'✓';font-size:17px;font-weight:950}
+#pkpjBgStatusV10241.fail .dot{animation:none;border:0;width:18px;height:18px;display:grid;place-items:center;color:#d74d61}
+#pkpjBgStatusV10241.fail .dot:before{content:'!';font-size:17px;font-weight:950}
+#pkpjBgStatusV10241.pending .dot{animation:none;border:0;width:18px;height:18px;display:grid;place-items:center;color:#c58319}
+#pkpjBgStatusV10241.pending .dot:before{content:'…';font-size:18px;font-weight:950}
+@keyframes pkpjBgSpinV10241{to{transform:rotate(360deg)}}
+@media(max-width:720px){#pkpjBgStatusV10241{right:12px;bottom:12px;left:12px;max-width:none}}
+</style>
+<script id="pkpj-v10241-admin-status-loading-script">
+(function(){
+  'use strict';
+  const VERSION='10.24.1';
+
+  // Approval health checker: validate capabilities/checks, not an obsolete exact version number.
+  try{
+    window.exactLoanStatusV92=exactLoanStatusV92=async function(id){
+      const r=await jsonp('loan.status',{loan_id:id,_t:Date.now()},{timeoutMs:15000,retries:0});
+      const loan=cleanLoanV92(r,id);
+      if(!loan||r?.fresh!==true)throw errorV92('Jawapan status belum dapat disahkan daripada deployment semasa. Cuba Semak Sambungan sekali lagi.');
+      return loan;
+    };
+    window.checkApprovalApiV92=checkApprovalApiV92=async function(){
+      if(approvalHealthPromiseV92)return approvalHealthPromiseV92;
+      const button=document.querySelector('#checkApprovalApiV92');if(button)button.disabled=true;
+      loanMessageV92('Menguji sambungan dan struktur database (bacaan sahaja)...');
+      const started=performance.now();
+      const task=(async()=>{
+        try{
+          const r=await jsonp('admin.approval_health',{_t:Date.now()},{timeoutMs:20000,retries:0});
+          const seconds=((performance.now()-started)/1000).toFixed(1);
+          approvalHealthVersionV92=String(r?.version||'');
+          const bad=(r?.checks||[]).filter(x=>!x.ok).map(x=>x.sheet+': '+(x.error||(x.missing_headers||[]).join(', '))).join('; ');
+          const healthy=!!r?.ok&&!bad;
+          const summary=bad||(!r?.ok?'Backend menjawab tetapi semakan kesihatan belum lulus.':'Sambungan dan struktur database sedia. Tiada pinjaman diubah.');
+          loanMessageV92('Backend '+(r?.version||'?')+' | Pergi-balik '+seconds+'s | Server '+((r?.server_ms||0)/1000).toFixed(2)+'s. '+summary,healthy?'ok':'error');
+          return r;
+        }catch(e){
+          loanMessageV92('Semakan API gagal: '+String(e?.message||e),'error');return null;
+        }finally{if(button)button.disabled=false;approvalHealthPromiseV92=null}
+      })();
+      approvalHealthPromiseV92=task;return task;
+    };
+    window.retryApprovalV92=retryApprovalV92=async function(id){
+      const p=loanPendingV92.get(String(id));if(!p||p.phase!=='retryable'||p.action!=='approve')return;
+      const h=await checkApprovalApiV92();if(!h?.ok)return;
+      if(!confirm('Semakan terakhir menunjukkan pinjaman masih menunggu. Cuba lulus semula dengan perlindungan kelulusan berganda?'))return;
+      setLoanPendingV92(id,null);return loanAction('approve',id,true);
+    };
+  }catch(e){console.warn('V10.24.1 health checker patch tertangguh.',e)}
+
+  function pill(){
+    let p=document.getElementById('pkpjBgStatusV10241');if(p)return p;
+    p=document.createElement('div');p.id='pkpjBgStatusV10241';p.innerHTML='<span class="dot"></span><span class="txt">Proses diteruskan di latar belakang.</span>';
+    document.body.appendChild(p);return p;
+  }
+  function showPill(text,state='running',autoHide=0){
+    const p=pill();p.className='show '+state;p.querySelector('.txt').textContent=text;
+    clearTimeout(p._hideTimer);if(autoHide)p._hideTimer=setTimeout(()=>{p.className=''},autoHide);
+  }
+  function hidePill(){const p=pill();clearTimeout(p._hideTimer);p.className=''}
+
+  let attached=false,visible=false,releaseTimer=null;
+  function attach(){
+    const x=document.getElementById('pkpjStableProcessV1023');if(!x||attached)return false;attached=true;
+    const sync=()=>{
+      const isVisible=x.classList.contains('show');
+      const done=x.classList.contains('done'),fail=x.classList.contains('fail'),pending=x.classList.contains('pending');
+      if(isVisible&&!visible&&!done&&!fail&&!pending){
+        visible=true;x.removeAttribute('data-soft-release');hidePill();clearTimeout(releaseTimer);
+        const title=String(x.querySelector('.pkpj-stable-title-v1023')?.textContent||'').toLowerCase();
+        const wait=/memuat naik|gambar|dokumen|tandatangan|laporan/.test(title)?20000:10000;
+        releaseTimer=setTimeout(()=>{
+          if(x.classList.contains('show')&&!x.classList.contains('done')&&!x.classList.contains('fail')&&!x.classList.contains('pending')){
+            x.setAttribute('data-soft-release','1');
+            showPill('Proses masih berjalan di latar belakang. Anda boleh terus menggunakan sistem.','running');
+          }
+        },wait);
+      }
+      if(isVisible&&x.getAttribute('data-soft-release')==='1'){
+        if(done)showPill('Proses selesai dan telah disahkan.','done',2200);
+        else if(fail)showPill('Proses tidak berjaya. Semak mesej sistem.','fail',3500);
+        else if(pending)showPill('Pengesahan server diteruskan secara automatik.','pending',3500);
+      }
+      if(!isVisible&&visible){
+        visible=false;clearTimeout(releaseTimer);releaseTimer=null;x.removeAttribute('data-soft-release');
+      }
+    };
+    new MutationObserver(sync).observe(x,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['class']});sync();return true;
+  }
+  if(!attach()){
+    const obs=new MutationObserver(()=>{if(attach())obs.disconnect()});
+    obs.observe(document.documentElement,{childList:true,subtree:true});
+  }
+  window.PKPJ_STATUS_LOADING_POLISH_V10241={version:VERSION,mode:'NON_BLOCKING_AFTER_10S'};
+})();
+</script>
+
+
+<!-- =========================================================
+     PKPJ V10.24.2 - AUTO LOGOUT STAF IT
+     - 10 minit tanpa aktiviti, amaran 1 minit sebelum tamat.
+     - Jika write/upload/report pengguna masih berjalan, logout ditangguhkan.
+     - Hanya sesi operator dibersihkan; cache direktori dan rekod backend tidak dipadam.
+========================================================= -->
+<script id="pkpj-v10242-admin-auto-logout-script">
+(function(){
+  'use strict';
+  const VERSION='10.24.2';
+  const IDLE_MS=10*60*1000;
+  const WARN_BEFORE_MS=60*1000;
+  const BUSY_RECHECK_MS=1000;
+  const MAX_BUSY_DEFER_MS=2*60*1000;
+  let timer=null,lastActivity=Date.now(),warningShown=false,deferredNotice=false,loggingOut=false,deferredSince=0;
+  const baseLogout=typeof window.operatorLogout==='function'?window.operatorLogout:null;
+
+  function sessionActive(){
+    const overlay=document.querySelector('#adminLoginOverlay');
+    return !!(window.state&&state.operator&&overlay&&overlay.classList.contains('hidden'));
+  }
+
+  function userProcessBusy(){
+    try{if(typeof approvalBusyV92==='function'&&approvalBusyV92())return true}catch(e){}
+    const x=document.querySelector('#pkpjStableProcessV1023');
+    return !!(x&&x.classList.contains('show')&&!x.classList.contains('done')&&!x.classList.contains('fail'));
+  }
+
+  function logoutNow(reason){
+    if(loggingOut)return;
+    if(reason==='idle'&&userProcessBusy()){
+      if(!deferredSince)deferredSince=Date.now();
+      if(Date.now()-deferredSince<MAX_BUSY_DEFER_MS){
+        if(!deferredNotice){
+          deferredNotice=true;
+          try{toast('Sesi dilanjutkan sementara','Proses semasa sedang disahkan. Auto log keluar Staff IT akan dibuat selepas proses selesai.','')}catch(e){}
+        }
+        clearTimeout(timer);timer=setTimeout(()=>logoutNow('idle'),BUSY_RECHECK_MS);return;
+      }
+    }
+    loggingOut=true;deferredSince=0;clearTimeout(timer);timer=null;
+    try{
+      if(reason==='idle'&&typeof toast==='function')toast('Sesi Staff IT tamat','Tiada aktiviti selama 10 minit. Sila pilih nama Staff IT untuk masuk semula.','ok');
+    }catch(e){}
+    try{
+      if(baseLogout)baseLogout(false);
+      else{
+        try{saveStoredOperator(null)}catch(_e){}
+        try{applyOperatorSession(null)}catch(_e){}
+      }
+    }catch(e){}
+    setTimeout(()=>window.location.reload(),reason==='idle'?750:300);
+  }
+
+  function schedule(){
+    clearTimeout(timer);timer=null;
+    if(!sessionActive()||loggingOut)return;
+    const remaining=IDLE_MS-(Date.now()-lastActivity);
+    if(remaining<=0){logoutNow('idle');return;}
+    if(remaining<=WARN_BEFORE_MS){
+      if(!warningShown){
+        warningShown=true;
+        try{toast('Sesi hampir tamat','Tiada aktiviti. Staff IT akan log keluar automatik dalam 1 minit jika tiada aktiviti.','')}catch(e){}
+      }
+      timer=setTimeout(()=>logoutNow('idle'),Math.max(250,remaining+50));return;
+    }
+    timer=setTimeout(schedule,Math.max(250,remaining-WARN_BEFORE_MS+50));
+  }
+
+  function activity(){
+    if(!sessionActive()||loggingOut)return;
+    lastActivity=Date.now();warningShown=false;deferredNotice=false;deferredSince=0;schedule();
+  }
+
+  // Kekalkan fungsi logout manual sedia ada, cuma pastikan timer berhenti.
+  if(baseLogout){
+    window.operatorLogout=operatorLogout=function(showToast=true){
+      clearTimeout(timer);timer=null;loggingOut=true;
+      try{return baseLogout(showToast)}finally{setTimeout(()=>{loggingOut=false},250)}
+    };
+  }
+
+  document.addEventListener('DOMContentLoaded',()=>{
+    const overlay=document.querySelector('#adminLoginOverlay');
+    if(overlay){
+      new MutationObserver(()=>{
+        if(sessionActive()){
+          lastActivity=Date.now();warningShown=false;deferredNotice=false;deferredSince=0;loggingOut=false;schedule();
+        }else{clearTimeout(timer);timer=null;}
+      }).observe(overlay,{attributes:true,attributeFilter:['class']});
+    }
+    ['pointerdown','touchstart','keydown','wheel','scroll','input','change'].forEach(type=>{
+      window.addEventListener(type,activity,{passive:true});
+    });
+    document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')schedule()});
+    window.addEventListener('pageshow',schedule);
+    setTimeout(schedule,700);
+  },{once:true});
+
+  window.PKPJ_ADMIN_AUTO_LOGOUT_V10242={
+    version:VERSION,idle_minutes:10,warning_seconds:60,defer_while_user_process:true,
+    preserves_directory_cache:true,preserves_records:true
+  };
+})();
+</script>
+
 </body>
 </html>
