@@ -5927,5 +5927,151 @@ window.PKPJ_COMPLETED_DELETE_VERSION='10.18';
 })();
 </script>
 
+
+
+<script id="pkpj-v10201-chrome-iframe-post-write-script">
+/* V10.20.1 - CHROME RELIABLE WRITE
+   WRITE sahaja ditukar kepada hidden FORM POST -> iframe -> postMessage.
+   Read/loan-watch/report routes kekal seperti sedia ada.
+   request_id yang sama digunakan untuk receipt/fallback supaya write tidak berganda. */
+(function(){
+  const VERSION='10.20.1';
+  const TYPE='PKPJ_IFRAME_BRIDGE_RESULT_V1014';
+  let iframeSeq=0;
+  const legacyPost=window.postApi;
+
+  function makeRid(){
+    try{return typeof makeWriteRequestId==='function'?makeWriteRequestId():'WR-'+Date.now()+'-'+Math.random().toString(36).slice(2,10).toUpperCase()}
+    catch(e){return 'WR-'+Date.now()+'-'+Math.random().toString(36).slice(2,10).toUpperCase()}
+  }
+  function parentOrigin(){
+    try{return location.origin&&location.origin!=='null'?location.origin:'*'}catch(e){return '*'}
+  }
+  function writeTimeout(action,options){
+    if(Number(options&&options.timeoutMs)>0)return Math.max(12000,Number(options.timeoutMs));
+    return ['image.attach','ui.image.upload'].includes(String(action))?120000:45000;
+  }
+  function titleFor(action){
+    const m={
+      'asset.create':'Menyimpan aset','asset.update':'Mengemaskini aset','asset.delete':'Memadam aset',
+      'loan.create':'Merekod pinjaman','loan.approve':'Meluluskan pinjaman','loan.reject':'Menolak permohonan',
+      'loan.return':'Merekod pemulangan','loan.cancel':'Membatalkan pinjaman','loan.purge':'Memadam rekod',
+      'image.attach':'Memuat naik gambar','image.delete':'Memadam gambar','ui.image.upload':'Memuat naik gambar UI',
+      'ui.image.reset':'Reset gambar UI','user.create':'Menyimpan staf','user.update':'Mengemaskini staf',
+      'staff.bulk_add':'Menyimpan senarai staf','settings.update':'Menyimpan tetapan',
+      'admin.operator.remove':'Mengemaskini akses','notifications.run':'Menjalankan notifikasi'
+    };
+    return m[String(action)]||'Menyimpan perubahan';
+  }
+
+  function iframePostWrite(action,payload,requestId,timeoutMs){
+    return new Promise((resolve,reject)=>{
+      const base=String(cfg&&cfg.apiUrl||'').trim();
+      if(!base){const e=new Error('API URL belum ditetapkan.');e.code='CONFIG';return reject(e)}
+      const token=String(cfg&&cfg.token||'');
+      if(!token){const e=new Error('API token belum ditetapkan.');e.code='CONFIG';return reject(e)}
+
+      const id='ADMWRITE_'+Date.now()+'_'+(++iframeSeq)+'_'+Math.random().toString(36).slice(2,8);
+      const frame=document.createElement('iframe');
+      const form=document.createElement('form');
+      let done=false,timer=null;
+
+      frame.name=id;
+      frame.setAttribute('aria-hidden','true');
+      frame.tabIndex=-1;
+      frame.style.cssText='position:fixed;width:1px;height:1px;left:-9999px;top:-9999px;border:0;opacity:0;pointer-events:none';
+
+      form.method='POST';
+      form.action=base;
+      form.target=id;
+      form.acceptCharset='UTF-8';
+      form.style.display='none';
+
+      const fields={
+        action:String(action||''),token:token,request_id:String(requestId||''),
+        data:JSON.stringify(payload||{}),_transport:'iframe',_bridge_id:id,_parent_origin:parentOrigin()
+      };
+      Object.keys(fields).forEach(k=>{const input=document.createElement('input');input.type='hidden';input.name=k;input.value=fields[k];form.appendChild(input)});
+
+      const cleanup=()=>{
+        window.removeEventListener('message',onMessage);
+        if(timer)clearTimeout(timer);
+        try{form.remove()}catch(e){}
+        try{frame.remove()}catch(e){}
+      };
+      const finish=(fn,val)=>{if(done)return;done=true;cleanup();fn(val)};
+      const onMessage=(event)=>{
+        const msg=event&&event.data;
+        if(!msg||msg.type!==TYPE||String(msg.id||'')!==id)return;
+        const p=msg.payload||{};
+        if(p.ok)return finish(resolve,p.data||{});
+        const e=new Error(p&&p.error&&p.error.message||'Operasi gagal.');
+        e.code=p&&p.error&&p.error.code||'API';
+        e.retryable=!!(p&&p.error&&p.error.retryable);
+        finish(reject,e);
+      };
+
+      window.addEventListener('message',onMessage);
+      (document.body||document.documentElement).appendChild(frame);
+      (document.body||document.documentElement).appendChild(form);
+      timer=setTimeout(()=>{const e=new Error('API timeout semasa menghantar data.');e.code='TIMEOUT';finish(reject,e)},Math.max(12000,timeoutMs||45000));
+      try{form.submit()}catch(err){err.code=err.code||'NETWORK';finish(reject,err)}
+    });
+  }
+
+  async function confirmReceipt(requestId,action,maxWait){
+    if(typeof waitForWriteStatus!=='function')return null;
+    try{return await waitForWriteStatus(requestId,action,maxWait)}catch(e){
+      if(String(e&&e.code||'')==='WRITE_UNCONFIRMED'||/belum dapat disahkan|pending|timeout/i.test(String(e&&e.message||'')))return null;
+      throw e;
+    }
+  }
+
+  if(typeof legacyPost!=='function')return;
+
+  window.postApi=postApi=async function(action,data={},options={}){
+    if(!cfg||!cfg.apiUrl)throw new Error('API URL belum ditetapkan.');
+    const requestId=String(options.requestId||makeRid());
+    const payload={
+      ...(data||{}),
+      actor_user_id:(data&&data.actor_user_id)||state&&state.operator&&state.operator.user_id||'',
+      actor_name:(data&&data.actor_name)||state&&state.operator&&state.operator.name||'',
+      actor_email:(data&&data.actor_email)||cfg.actorEmail||''
+    };
+    const timeoutMs=writeTimeout(action,options);
+    const circle=window.PKPJ_CIRCLE_PROGRESS_V1020;
+    const own=!!(circle&&typeof circle.visible==='function'&&!circle.visible());
+    const q=own?circle.begin(titleFor(action),'Menghantar data melalui sambungan Chrome yang stabil'):0;
+
+    try{
+      if(q)circle.set(24,titleFor(action),'Menghantar data terus ke server...','IFRAME POST',q);
+      const result=await iframePostWrite(action,payload,requestId,timeoutMs);
+      if(q)circle.done(q,titleFor(action),'Server telah mengesahkan simpanan');
+      return result;
+    }catch(err){
+      const transport=/TIMEOUT|NETWORK/i.test(String(err&&err.code||''))||/timeout|network|sambungan|failed/i.test(String(err&&err.message||''));
+      if(!transport){if(q)circle.fail(q,titleFor(action),err&&err.message||'Operasi gagal');err.requestId=requestId;throw err}
+
+      if(q)circle.set(70,titleFor(action),'Sambungan lambat. Menyemak resit simpanan...','SEMAK STATUS',q);
+      const receipt=await confirmReceipt(requestId,action,['image.attach','ui.image.upload'].includes(String(action))?50000:16000);
+      if(receipt){if(q)circle.done(q,titleFor(action),'Rekod telah disimpan dan disahkan');return receipt}
+
+      if(q)circle.set(82,titleFor(action),'Mencuba laluan sandaran dengan request ID yang sama...','FALLBACK SELAMAT',q);
+      try{
+        const result=await legacyPost(action,data,{...(options||{}),requestId});
+        if(q)circle.done(q,titleFor(action),'Simpanan berjaya disahkan');
+        return result;
+      }catch(e){
+        if(q)circle.fail(q,titleFor(action),e&&e.message||'Server belum mengesahkan simpanan');
+        e.requestId=requestId;
+        throw e;
+      }
+    }
+  };
+
+  window.PKPJ_CHROME_WRITE_V10201={version:VERSION,mode:'IFRAME_FORM_POST',post:iframePostWrite};
+})();
+</script>
+
 </body>
 </html>
