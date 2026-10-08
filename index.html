@@ -1953,7 +1953,7 @@ function initHeroVideo(){
 function startApprovalAutoRefresh(){
  if(window.__approvalRefreshTimer)return;
  window.__approvalRefreshTimer=setInterval(()=>{
-  if(state.view==='loans'&&document.visibilityState==='visible'&&state.operator&&!approvalBusyV92()&&!state.inFlight.loans&&Date.now()-(state.loadedAt.loans||0)>30000)loadLoans(true);
+  if(state.view==='loans'&&document.visibilityState==='visible'&&state.operator&&!approvalBusyV92()&&!state.inFlight.loans&&Date.now()-(state.loadedAt.loans||0)>30000)loadLoans(true,{silent:true});
  },45000);
 }
 
@@ -2342,7 +2342,7 @@ function upsertLocalRecord(kind,record){
 function scheduleSilentRefresh(kind,delay=2500){
   setTimeout(()=>{
     if(kind==='asset') loadAssets(true);
-    if(kind==='loan') loadLoans(true);
+    if(kind==='loan') loadLoans(true,{silent:true});
     loadDashboard(true);
   },delay);
 }
@@ -2809,13 +2809,14 @@ function scheduleLoanRetryV1063(){
   loanRetryTimerV1063=setTimeout(()=>{
     loanRetryTimerV1063=null;
     if(state.view==='loans' && !state.inFlight.loans && !approvalBusyV92()){
-      loadLoans(true).catch(()=>{});
+      loadLoans(true,{silent:true}).catch(()=>{});
     }
   },3500);
 }
 
-async function loadLoans(force=false){
+async function loadLoans(force=false,options={}){
  if(!requireConfig())return;
+ const silentProgress=!!(options&&options.silent);
  if(state.loans.length)renderLoans();
  if(approvalBusyV92())return;
  if(!force&&state.loans.length&&isFresh('loans',60000))return;
@@ -2823,7 +2824,7 @@ async function loadLoans(force=false){
  const epoch=loanEpochV92;
  state.inFlight.loans=(async()=>{
   try{
-   const loanRes=await jsonp('loans',{pageSize:200,sort:'request_date',order:'desc',_t:Date.now()},{timeoutMs:7500,retries:0});
+   const loanRes=await jsonp('loans',{pageSize:200,sort:'request_date',order:'desc',_t:Date.now()},{timeoutMs:7500,retries:0,silentProgress});
    if(epoch!==loanEpochV92)return;
    state.loans=overlayConfirmedV92(loanRes?.items||[]);
    state.loadedAt.loans=Date.now();saveAdminFastCache();renderLoans();
@@ -3025,7 +3026,7 @@ async function deleteRecordImage(entityType,entityId){
       const current=state.assets.find(x=>String(x.asset_id)===String(entityId));
       if(state.modalType==='asset_edit' && current) openAssetEditModal(entityId);
     }
-    if(entityType==='loan') await loadLoans(true);
+    if(entityType==='loan') await loadLoans(true,{silent:true});
   }catch(err){handleError(err)}
 }
 
@@ -4738,7 +4739,7 @@ function pickUiImageV1011(kind,key){const input=document.createElement('input');
 async function resetUiImageV1011(kind,key){if(!confirm('Kembali kepada ikon/gambar asal untuk '+uiImageLabelV1011(key)+'?'))return;try{const result=await postApi('ui.image.reset',{kind,key});state.uiPublicV1011=result?.public_settings||state.uiPublicV1011;state.settings.inventory_category_icons_json=JSON.stringify(state.uiPublicV1011.category_icons||{});state.settings.ui_hero_images_json=JSON.stringify(state.uiPublicV1011.hero_images||{});renderUiImageManagerV1011();renderAssetCategoryCards();location.reload()}catch(err){toast('Reset gagal',err.message||String(err),'err')}}
 
 /* Lightweight live watch: hanya semak fingerprint setiap 8 saat. Full loans reload hanya bila status/rekod berubah. */
-async function pollAdminLoanWatchV1011(){if(document.visibilityState!=='visible'||!state.operator||approvalBusyV92()||state.inFlight.loans)return;try{const w=await jsonp('admin.loan_watch',{_t:Date.now()},{timeoutMs:4500,retries:0});if(!w?.fingerprint)return;if(!state.loanWatchFingerprintV1011){state.loanWatchFingerprintV1011=w.fingerprint;return}if(w.fingerprint!==state.loanWatchFingerprintV1011){state.loanWatchFingerprintV1011=w.fingerprint;state.loadedAt.dashboard=0;await loadLoans(true);if(state.view==='dashboard'||state.view==='reports'){setTimeout(()=>loadDashboard(true).catch?.(()=>{}),120)}}}catch(e){/* senyap: polling tidak boleh mengganggu UI */}}
+async function pollAdminLoanWatchV1011(){if(document.visibilityState!=='visible'||!state.operator||approvalBusyV92()||state.inFlight.loans)return;try{const w=await jsonp('admin.loan_watch',{_t:Date.now()},{timeoutMs:4500,retries:0,silentProgress:true});if(!w?.fingerprint)return;if(!state.loanWatchFingerprintV1011){state.loanWatchFingerprintV1011=w.fingerprint;return}if(w.fingerprint!==state.loanWatchFingerprintV1011){state.loanWatchFingerprintV1011=w.fingerprint;state.loadedAt.dashboard=0;await loadLoans(true,{silent:true});if(state.view==='dashboard'||state.view==='reports'){setTimeout(()=>loadDashboard(true).catch?.(()=>{}),120)}}}catch(e){/* senyap: polling tidak boleh mengganggu UI */}}
 function startAdminLiveWatchV1011(){if(window.__adminLiveWatchV1011)return;window.__adminLiveWatchV1011=setInterval(pollAdminLoanWatchV1011,8000);setTimeout(pollAdminLoanWatchV1011,1200)}
 
 const renderCategorySettingsBaseV1011=window.renderCategorySettings;
@@ -5462,7 +5463,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     adminWatchBusyTurboV1016=true;
     adminLastWatchTurboV1016=now;
     try{
-      const w=await jsonp('admin.loan_watch',{rev:state.adminLoanRevisionV1015||'',_t:now},{timeoutMs:6000,retries:0});
+      const w=await jsonp('admin.loan_watch',{rev:state.adminLoanRevisionV1015||'',_t:now},{timeoutMs:6000,retries:0,silentProgress:true});
       if(!w?.fingerprint)return;
       if(w.unchanged||state.adminLoanRevisionV1015&&w.fingerprint===state.adminLoanRevisionV1015){
         state.adminLoanRevisionV1015=w.fingerprint;
@@ -5470,7 +5471,7 @@ document.addEventListener('DOMContentLoaded',()=>{
       }
       state.adminLoanRevisionV1015=w.fingerprint;
       state.loadedAt.dashboard=0;
-      await loadLoans(true);
+      await loadLoans(true,{silent:true});
       if(state.view==='completed')await loadCompletedLoansV1015(true);
       if(state.view==='dashboard'||state.view==='reports')setTimeout(()=>loadDashboard(true).catch?.(()=>{}),180);
     }catch(e){}finally{
@@ -5614,7 +5615,7 @@ window.PKPJ_COMPLETED_DELETE_VERSION='10.18';
 </style>
 <script id="pkpj-v1019-instant-bulk-progress-script">
 (function(){
-  const VERSION='10.19';
+  const VERSION='10.19.1';
   state.adminLoanRevisionV1019=state.adminLoanRevisionV1019||'';
   let watchBusy=false,lastWatch=0,popupLoan=null,pendingQueue=[];
   const seenKey='pkpj_admin_pending_seen_v1019';
@@ -5700,13 +5701,13 @@ window.PKPJ_COMPLETED_DELETE_VERSION='10.18';
   window.closePendingPopupV1019=function(){document.querySelector('#pendingLoanPopupV1019')?.classList.remove('show');popupLoan=null;setTimeout(showNextPendingV1019,120)};
   window.openPendingLoanViewV1019=function(){closePendingPopupV1019();showView('loans');setTimeout(()=>loadLoans(true),50)};
   function showPopup(loan){if(!loan?.loan_id||approvalBusyV92())return;const id=String(loan.loan_id);if(seen.has(id)||document.querySelector('#pendingLoanPopupV1019.show'))return;seen.add(id);saveSeen();popupLoan=loan;const items=loanItems(loan);const body=ensurePopup().querySelector('#pendingPopupBodyV1019');const bulk=items.length>1;body.innerHTML=`<div class="pending-person-v1019"><div class="pending-info-v1019"><small>Nama Pemohon</small><strong>${esc(borrowerLabel(loan))}</strong></div><div class="pending-info-v1019"><small>ID Pinjaman</small><strong>${esc(id)}</strong></div><div class="pending-info-v1019"><small>Tujuan</small><strong>${esc(loan.purpose||'—')}</strong></div><div class="pending-info-v1019"><small>Tarikh Perlu Pulang</small><strong>${fmtDate(loan.due_date)}</strong></div></div><div class="pending-items-head-v1019"><strong>${bulk?'Permohonan Pukal · '+items.length+' aset':'Aset Dipohon'}</strong><span class="pill yellow">MENUNGGU KELULUSAN</span></div><div class="pending-items-v1019">${items.length?items.map((i,idx)=>`<label class="pending-item-v1019"><input class="pending-item-check-v1019" type="checkbox" value="${attr(i.asset_id||idx)}"><span class="pending-item-icon-v1019">${catIcon(i.category)}</span><span><b>${esc(i.asset_name||i.asset_tag||i.asset_id||'Aset')}</b><span>${esc([i.asset_tag,i.model].filter(Boolean).join(' · ')||'')}</span></span><span class="pending-type-v1019">${esc(i.category||'Peralatan ICT')}</span></label>`).join(''):`<div class="pending-info-v1019"><strong>${n(Number(loan.item_count||0))} item</strong></div>`}</div>${bulk?'<div class="pending-bulk-note-v1019">Permohonan pukal diluluskan sebagai satu transaksi. Tandakan semua item selepas semakan, kemudian tekan <b>Lulus Semua</b>.</div>':''}`;document.querySelector('#pendingPopupSubV1019').textContent=bulk?'Semak setiap aset satu per satu sebelum kelulusan pukal.':'Semak nama dan jenis aset sebelum kelulusan.';ensurePopup().classList.add('show');updatePendingChecks()}
-  window.approvePendingPopupV1019=async function(){if(!popupLoan)return;const boxes=[...document.querySelectorAll('.pending-item-check-v1019')];if(boxes.length&&!boxes.every(x=>x.checked))return toast('Semakan belum lengkap','Tandakan semua aset yang dipaparkan sebelum Lulus Semua.','err');const id=String(popupLoan.loan_id);await loanAction('approve',id,true);const row=(state.loans||[]).find(x=>String(x.loan_id)===id);if(!row||!['PERMOHONAN_BARU','MENUNGGU_KELULUSAN'].includes(String(row.status)))closePendingPopupV1019();setTimeout(()=>loadLoans(true),180)};
-  window.rejectPendingPopupV1019=async function(){if(!popupLoan)return;if(!confirm('Tolak permohonan '+popupLoan.loan_id+'?'))return;const id=String(popupLoan.loan_id);await loanAction('reject',id,true);closePendingPopupV1019();setTimeout(()=>loadLoans(true),180)};
+  window.approvePendingPopupV1019=async function(){if(!popupLoan)return;const boxes=[...document.querySelectorAll('.pending-item-check-v1019')];if(boxes.length&&!boxes.every(x=>x.checked))return toast('Semakan belum lengkap','Tandakan semua aset yang dipaparkan sebelum Lulus Semua.','err');const id=String(popupLoan.loan_id);await loanAction('approve',id,true);const row=(state.loans||[]).find(x=>String(x.loan_id)===id);if(!row||!['PERMOHONAN_BARU','MENUNGGU_KELULUSAN'].includes(String(row.status)))closePendingPopupV1019();setTimeout(()=>loadLoans(true,{silent:true}),180)};
+  window.rejectPendingPopupV1019=async function(){if(!popupLoan)return;if(!confirm('Tolak permohonan '+popupLoan.loan_id+'?'))return;const id=String(popupLoan.loan_id);await loanAction('reject',id,true);closePendingPopupV1019();setTimeout(()=>loadLoans(true,{silent:true}),180)};
 
   /* Proses kelulusan/tolak/pulang dengan peratus sebenar mengikut fasa transaksi. */
   window.loanAction=loanAction=async function(action,loanId,alreadyConfirmed=false){if(!requireConfig())return;const id=String(loanId),apiMap={approve:'loan.approve',reject:'loan.reject',checkout:'loan.checkout',return:'loan.return',cancel:'loan.cancel'};if(!apiMap[action]||loanPendingV92.has(id))return;if(approvalBusyV92())return loanMessageV92('Satu transaksi sedang dijalankan. Tunggu jawapan server dahulu.','warning');const labels={approve:'luluskan pinjaman ini',reject:'tolak permohonan ini',checkout:'check-out semua aset ini',return:'pulangkan semua aset ini',cancel:'batalkan permohonan ini'};if(!alreadyConfirmed&&!confirm('Pasti mahu '+labels[action]+'?'))return;const title={approve:'Kelulusan Pinjaman',reject:'Menolak Permohonan',checkout:'Mengeluarkan Aset',return:'Pemulangan Aset',cancel:'Membatalkan Permohonan'}[action]||'Memproses';setProcess(8,title,'Menyediakan transaksi…','Semakan awal');const p={action,requestId:makeWriteRequestId(),startedAt:Date.now(),phase:'sending'};loanEpochV92++;setLoanPendingV92(id,p);loanMessageV92(id+': arahan dihantar sekali. Sedang diproses...');try{setProcess(28,title,'Menghantar arahan ke server…','API sedang memproses');const result=await postApi(apiMap[action],{loan_id:id,actor_user_id:state.operator?.user_id||'',actor_name:state.operator?.name||''},{requestId:p.requestId});setProcess(78,title,'Jawapan server diterima. Mengesahkan status…','Pengesahan rekod');if(finishLoanV92(id,p,result)){setProcess(100,title,'Proses berjaya disahkan.','Selesai');hideProcess(520);return result}setProcess(90,title,'Menyemak status akhir pinjaman…','Semakan akhir');const row=await exactLoanStatusV92(id);if(!finishLoanV92(id,p,{...result,loan:row}))throw errorV92('Server belum mengesahkan status yang diminta.','uncertain','WRITE_UNCONFIRMED');setProcess(100,title,'Proses berjaya disahkan.','Selesai');hideProcess(520);return row}catch(e){const uncertain=isTransportV92(e)||e.kind==='uncertain'||e.code==='WRITE_UNCONFIRMED'||e.code==='WRITE_IN_PROGRESS';if(uncertain){setLoanPendingV92(id,{...p,phase:'unknown'});setProcess(86,title,'Server masih mengesahkan transaksi.','Jangan tekan berulang kali');loanMessageV92(id+': '+e.message+' | Rujukan '+p.requestId,'warning');hideProcess(1200)}else{setLoanPendingV92(id,null);loanMessageV92(id+': '+e.message+' | Rujukan '+p.requestId,'error');toast('Kelulusan / tindakan tidak berjaya',e.message,'err');ensureAdminProcess().classList.remove('show')}return null}};
 
-  async function pollInstant(force=false){const now=Date.now();if(document.visibilityState!=='visible'||!state.operator||approvalBusyV92()||watchBusy)return;if(!force&&now-lastWatch<1600)return;watchBusy=true;lastWatch=now;try{const w=await jsonp('admin.loan_watch',{rev:state.adminLoanRevisionV1019||'',_t:now},{timeoutMs:3500,retries:0});if(!w?.fingerprint)return;state.adminLoanRevisionV1019=w.fingerprint;if(!w.unchanged){const pending=Array.isArray(w.pending)?w.pending:[];pending.forEach(p=>{const idx=(state.loans||[]).findIndex(x=>String(x.loan_id)===String(p.loan_id));if(idx>=0)state.loans[idx]={...state.loans[idx],...p};else state.loans=[p,...(state.loans||[])]});renderLoans();queuePendingV1019(pending);state.loadedAt.dashboard=0;setTimeout(()=>loadLoans(true).catch?.(()=>{}),80)}}catch(e){console.warn('Loan watch ringkas tertangguh:',e?.message||e)}finally{watchBusy=false}}
+  async function pollInstant(force=false){const now=Date.now();if(document.visibilityState!=='visible'||!state.operator||approvalBusyV92()||watchBusy)return;if(!force&&now-lastWatch<1600)return;watchBusy=true;lastWatch=now;try{const w=await jsonp('admin.loan_watch',{rev:state.adminLoanRevisionV1019||'',_t:now},{timeoutMs:3500,retries:0,silentProgress:true});if(!w?.fingerprint)return;state.adminLoanRevisionV1019=w.fingerprint;if(!w.unchanged){const pending=Array.isArray(w.pending)?w.pending:[];pending.forEach(p=>{const idx=(state.loans||[]).findIndex(x=>String(x.loan_id)===String(p.loan_id));if(idx>=0)state.loans[idx]={...state.loans[idx],...p};else state.loans=[p,...(state.loans||[])]});renderLoans();queuePendingV1019(pending);state.loadedAt.dashboard=0;setTimeout(()=>loadLoans(true,{silent:true}).catch?.(()=>{}),80)}}catch(e){console.warn('Loan watch ringkas tertangguh:',e?.message||e)}finally{watchBusy=false}}
   window.pollAdminLoanWatchV1011=pollInstant;
 
   /* Fast movement register: preview tanpa tandatangan dahulu, kemudian hydrate compact di latar. */
@@ -5719,6 +5720,7 @@ window.PKPJ_COMPLETED_DELETE_VERSION='10.18';
   document.addEventListener('DOMContentLoaded',()=>{ensureLoanHeader();ensurePopup();ensureAdminProcess();if(window.__adminLiveWatchV1011){clearInterval(window.__adminLiveWatchV1011);window.__adminLiveWatchV1011=null}window.__adminLiveWatchV1011=setInterval(()=>pollInstant(false),2000);setTimeout(()=>pollInstant(true),450)},{once:true});
   window.addEventListener('focus',()=>setTimeout(()=>pollInstant(true),120));document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')setTimeout(()=>pollInstant(true),120)});
   window.PKPJ_ADMIN_VERSION_V1019=VERSION;
+  window.PKPJ_ADMIN_BACKGROUND_SYNC_SILENT='10.19.1';
 })();
 </script>
 
@@ -5733,6 +5735,7 @@ window.PKPJ_COMPLETED_DELETE_VERSION='10.18';
 </style>
 <script id="pkpj-v1020-global-fast-progress-script">
 (function(){
+  /* V10.19.1: progress hanya untuk tindakan pengguna. Auto sync/poll/retry berjalan senyap. */
   const SILENT=new Set(['admin.loan_watch','admin.write_status','ping','system.fast_health']);
   let fpTimer=null,fpHide=null,fpSeq=0,activeSeq=0;
   function ensureFP(){let x=document.querySelector('#pkpjFastProgressV1020');if(x)return x;x=document.createElement('div');x.id='pkpjFastProgressV1020';x.innerHTML='<div class="fp-card"><div class="fp-row"><span class="fp-title">Fast Engine</span><span class="fp-pct">0%</span></div><div class="fp-track"><div class="fp-fill"></div></div><div class="fp-stage">Bersedia</div></div>';document.body.appendChild(x);return x}
