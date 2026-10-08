@@ -4699,7 +4699,44 @@ if(typeof premiumAssetArtBaseV119==='function'){
  window.premiumAssetArtV116=function(category){const fallback=premiumAssetArtBaseV119(category),meta=portalCustomMetaV119(category);if(!meta?.image_file_id)return fallback;return `<span class="custom-setting-art-v119"><img src="${driveThumbV119(meta.image_file_id,512)}" alt="" loading="lazy" decoding="async" onload="this.nextElementSibling.style.display='none'" onerror="this.style.display='none'"><span class="fallback-v119">${fallback}</span></span>`}
 }
 
-function patchApplicantLoanStatusesV119(w){const incoming=new Map((w.items||[]).map(x=>[String(x.loan_id),x]));let unknown=false;(w.items||[]).forEach(x=>{const row=(state.loans||[]).find(l=>String(l.loan_id)===String(x.loan_id));if(!row){unknown=true;return}Object.assign(row,{status:x.status,updated_at:x.updated_at||row.updated_at,approved_by_user_id:x.approved_by_user_id||row.approved_by_user_id,approved_at:x.approved_at||row.approved_at,loan_date:x.loan_date||row.loan_date,return_date:x.return_date||row.return_date})});if((state.loans||[]).some(l=>!incoming.has(String(l.loan_id)))&&Number(w.count)!==(state.loans||[]).length)unknown=true;if(w.kpi){state.kpi.pending=w.kpi.pending;state.kpi.active=w.kpi.active;state.kpi.overdue=w.kpi.overdue}renderShell();if(state.currentView==='myloans')renderMyLoans();if(state.currentView==='home')renderHomeView();try{savePortalCache({profile:state.profile,kpi:state.kpi,available_assets:state.assets,loans:state.loans,public_settings:state.publicSettings})}catch(e){}if(unknown)setTimeout(()=>refreshPortal(true,true),150)}
+function patchApplicantLoanStatusesV119(w){
+ const incoming=new Map((w.items||[]).map(x=>[String(x.loan_id),x]));
+ let unknown=false,statusChanged=false;
+ (w.items||[]).forEach(x=>{
+   const row=(state.loans||[]).find(l=>String(l.loan_id)===String(x.loan_id));
+   if(!row){unknown=true;return}
+   const before=String(row.status||'');
+   Object.assign(row,{status:x.status,updated_at:x.updated_at||row.updated_at,approved_by_user_id:x.approved_by_user_id||row.approved_by_user_id,approved_at:x.approved_at||row.approved_at,loan_date:x.loan_date||row.loan_date,return_date:x.return_date||row.return_date});
+   if(before!==String(x.status||''))statusChanged=true;
+ });
+ if((state.loans||[]).some(l=>!incoming.has(String(l.loan_id)))&&Number(w.count)!==(state.loans||[]).length)unknown=true;
+
+ /* V10.21: backend menghantar senarai availability authoritative setiap kali revision berubah. */
+ if(Array.isArray(w.available_assets)){
+   state.assets=w.available_assets;
+ }else{
+   /* Fallback untuk deployment backend lama: sekurang-kurangnya buang aset yang
+      masih berada dalam loan aktif daripada paparan tersedia. */
+   const blocked=new Set();
+   const active=['PERMOHONAN_BARU','MENUNGGU_KELULUSAN','DILULUSKAN','DIPINJAM','HAMPIR_DUE','LEWAT'];
+   (state.loans||[]).forEach(l=>{
+     if(!active.includes(String(l.status||'')))return;
+     (Array.isArray(l.items)?l.items:[]).forEach(i=>{if(i?.asset_id)blocked.add(String(i.asset_id))});
+   });
+   state.assets=(state.assets||[]).filter(a=>!blocked.has(String(a.asset_id)));
+ }
+
+ if(w.kpi){state.kpi.pending=w.kpi.pending;state.kpi.active=w.kpi.active;state.kpi.overdue=w.kpi.overdue;if(w.kpi.available_assets!==undefined)state.kpi.available_assets=w.kpi.available_assets}
+ if(state.kpi&&Array.isArray(state.assets))state.kpi.available_assets=state.assets.length;
+ renderShell();
+ if(state.currentView==='myloans')renderMyLoans();
+ if(state.currentView==='home')renderHomeView();
+ if(state.currentView==='apply')renderApplyCategories();
+ if(state.currentView==='assets')renderAvailableAssets();
+ try{savePortalCache({profile:state.profile,kpi:state.kpi,available_assets:state.assets,loans:state.loans,public_settings:state.publicSettings})}catch(e){}
+ /* Jika backend lama belum hantar available_assets, refresh penuh hanya apabila status berubah. */
+ if((unknown||statusChanged)&&!Array.isArray(w.available_assets))setTimeout(()=>refreshPortal(true,true),180);
+}
 async function pollApplicantLiveV119(){if(document.visibilityState!=='visible'||!state.profile||!state.connected||state.refreshPromise)return;try{const w=await jsonp('applicant.loan_watch',{user_id:state.profile.user_id||'',name:state.profile.name||'',_t:Date.now()},{timeoutMs:4300,retries:0});if(!w?.fingerprint)return;if(!state.loanWatchFingerprintV119){state.loanWatchFingerprintV119=w.fingerprint;patchApplicantLoanStatusesV119(w);return}if(w.fingerprint!==state.loanWatchFingerprintV119){state.loanWatchFingerprintV119=w.fingerprint;patchApplicantLoanStatusesV119(w)}}catch(e){/* status watch senyap supaya portal tidak terasa berat */}}
 function startApplicantLiveV119(){if(state.liveStatusTimerV119)return;state.liveStatusTimerV119=setInterval(pollApplicantLiveV119,8000);setTimeout(pollApplicantLiveV119,1800)}
 const applyBootstrapBaseV119=window.applyBootstrap;if(typeof applyBootstrapBaseV119==='function'){window.applyBootstrap=function(data){applyBootstrapBaseV119(data);startApplicantLiveV119();if(state.currentView==='apply')renderApplyCategories()}}
@@ -6661,3 +6698,35 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 </body>
 </html>
+
+<!-- =========================================================
+     PEMOHON V10.21.0 - AUTHORITATIVE AVAILABILITY SYNC
+     Aset RESERVED/DIPINJAM tidak boleh muncul semula sebagai tersedia.
+     ========================================================= -->
+<script id="pkpj-v10210-availability-sync">
+(function(){
+  function hideBoundAssetsV10210(){
+    const blocked=new Set();
+    const active=['PERMOHONAN_BARU','MENUNGGU_KELULUSAN','DILULUSKAN','DIPINJAM','HAMPIR_DUE','LEWAT'];
+    (state.loans||[]).forEach(l=>{
+      if(!active.includes(String(l.status||'')))return;
+      (Array.isArray(l.items)?l.items:[]).forEach(i=>{if(i?.asset_id)blocked.add(String(i.asset_id))});
+    });
+    if(blocked.size){
+      state.assets=(state.assets||[]).filter(a=>!blocked.has(String(a.asset_id)));
+      if(state.kpi)state.kpi.available_assets=state.assets.length;
+    }
+  }
+  const baseApplyBootstrapV10210=window.applyBootstrap;
+  if(typeof baseApplyBootstrapV10210==='function'){
+    window.applyBootstrap=function(data){
+      const out=baseApplyBootstrapV10210(data);
+      hideBoundAssetsV10210();
+      if(state.currentView==='apply')renderApplyCategories();
+      if(state.currentView==='assets')renderAvailableAssets();
+      return out;
+    };
+  }
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(hideBoundAssetsV10210,80),{once:true});
+})();
+</script>
