@@ -6030,5 +6030,42 @@ document.addEventListener('DOMContentLoaded',()=>{
 })();
 </script>
 
+
+<style id="pkpj-v1020-applicant-one-circle-style">
+/* V10.20 - kekalkan satu loader bulat sahaja; progress bar atas dinyahpapar. */
+#pkpjApplicantProgressV1120{display:none!important}
+.pretty-loader-card{width:min(330px,92vw)!important}
+.loader-core{font-size:0!important}
+.loader-core:after{content:attr(data-pct);font-size:20px;font-weight:950;color:#fff}
+.pretty-loader-pct-v1020{font-size:10px;font-weight:900;color:#1479d1;margin-top:-5px;margin-bottom:8px;letter-spacing:.05em}
+.loader-progress{display:none!important}
+</style>
+<script id="pkpj-v1020-applicant-one-circle-script">
+(function(){
+ const VERSION='10.20.0',SILENT=new Set(['applicant.loan_watch','applicant.write_status','ping','ui.public']);
+ let seq=0,active=0,timer=null,hideTimer=null;
+ function loader(){return document.querySelector('#prettyLoader')}
+ function ensurePct(){const x=loader();if(!x)return null;let p=x.querySelector('.pretty-loader-pct-v1020');if(!p){p=document.createElement('div');p.className='pretty-loader-pct-v1020';p.textContent='FAST ENGINE';x.querySelector('.pretty-loader-card')?.insertBefore(p,x.querySelector('#prettyLoaderTitle'))}return p}
+ function set(p,title,msg,q){if(q&&q!==active)return;const x=loader();if(!x)return;p=Math.max(0,Math.min(100,Math.round(Number(p)||0)));x.classList.remove('hidden');const core=x.querySelector('.loader-core');if(core)core.setAttribute('data-pct',p+'%');if(title)x.querySelector('#prettyLoaderTitle').textContent=title;if(msg)x.querySelector('#prettyLoaderMessage').textContent=msg;const label=ensurePct();if(label)label.textContent=p<100?'FAST ENGINE · '+p+'%':'SELESAI · 100%'}
+ function begin(title,msg){clearTimeout(hideTimer);clearInterval(timer);const q=++seq;active=q;let p=6;set(p,title||'Sedang diproses',msg||'Menghubungi server',q);timer=setInterval(()=>{if(q!==active)return clearInterval(timer);p=Math.min(88,p+(p<40?7:p<70?4:1.5));set(p,title||'Sedang diproses',p<36?'Menghantar permintaan...':p<70?'Server sedang memproses...':'Menerima data...',q)},280);return q}
+ function done(q,title,msg){if(q!==active)return;clearInterval(timer);set(100,title||'Selesai',msg||'Proses berjaya disiapkan',q);hideTimer=setTimeout(()=>loader()?.classList.add('hidden'),550)}
+ function fail(q,title,msg){if(q!==active)return;clearInterval(timer);set(100,title||'Proses belum selesai',msg||'Semak sambungan',q);hideTimer=setTimeout(()=>loader()?.classList.add('hidden'),1500)}
+ function visible(){const x=loader();return !!x&&!x.classList.contains('hidden')}
+ window.PKPJ_APPLICANT_CIRCLE_V1020={begin,set,done,fail,visible,version:VERSION};
+
+ window.showPrettyLoader=function(title,message){const q=begin(title||'Sedang diproses',message||'Sila tunggu sebentar...');loader().dataset.progressSeq=String(q);return q};
+ window.updatePrettyLoader=function(title,message){const x=loader();const q=Number(x?.dataset.progressSeq||active||0);set(55,title||x?.querySelector('#prettyLoaderTitle')?.textContent,message||x?.querySelector('#prettyLoaderMessage')?.textContent,q)};
+ window.hidePrettyLoader=function(){const x=loader();const q=Number(x?.dataset.progressSeq||active||0);if(q)done(q,'Selesai','Proses telah disiapkan');else x?.classList.add('hidden')};
+
+ const rawJsonp=window.jsonp;
+ if(typeof rawJsonp==='function')window.jsonp=jsonp=async function(action,params={},options={}){const quiet=options?.silentProgress||SILENT.has(String(action)),own=!quiet&&!visible(),q=own?begin(action==='applicant.bootstrap'?'Membuka Portal Pemohon':'Memuat data','Fast Engine aktif'):0;try{const r=await rawJsonp(action,params,{...options,retries:Number.isFinite(options.retries)?options.retries:0});if(q)done(q,'Data diterima','Paparan sedang dikemas kini');return r}catch(e){if(q)fail(q,'Sambungan belum selesai',e?.message||'Cuba semula');throw e}};
+ const rawPost=window.postApi;
+ if(typeof rawPost==='function')window.postApi=postApi=async function(action,data={},options={}){const own=!visible(),q=own?begin(action==='applicant.loan.create'?'Menghantar permohonan':'Menyimpan perubahan','Menghantar data ke server'):Number(loader()?.dataset.progressSeq||active||0);try{if(q)set(32,action==='applicant.loan.create'?'Menghantar permohonan':'Menyimpan perubahan','Permintaan telah dihantar...',q);const r=await rawPost(action,data,options);if(q)done(q,action==='applicant.loan.create'?'Permohonan dihantar':'Simpanan berjaya','Server telah mengesahkan proses');return r}catch(e){if(q)fail(q,'Proses belum selesai',e?.message||'Semak sambungan');throw e}};
+
+ ensurePct();const core=loader()?.querySelector('.loader-core');if(core&&!core.getAttribute('data-pct'))core.setAttribute('data-pct','0%');
+ window.PKPJ_APPLICANT_VERSION_V1020=VERSION;
+})();
+</script>
+
 </body>
 </html>
