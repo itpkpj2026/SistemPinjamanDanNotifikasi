@@ -5426,14 +5426,19 @@ document.addEventListener('DOMContentLoaded',()=>{
     loadCompletedLoansV1015(false);
   };
 
-  window.loadLoans=async function(force=false){
+  /* V10.19.2 FIX: kekalkan options supaya background sync benar-benar silent.
+     V10.19.1 override ini tercicir parameter options, menyebabkan {silent:true}
+     daripada loan watcher hilang dan Global Progress muncul setiap kali auto-sync. */
+  window.loadLoans=async function(force=false,options={}){
     if(!requireConfig())return;
+    options=options||{};
+    const silent=!!(options.silent||options.silentProgress||options.background);
     if(!force&&state.loans.length&&isFresh('loans',9000)){renderLoans();return}
     if(state.inFlight.loans)return state.inFlight.loans;
     const epoch=typeof loanEpochV92==='number'?loanEpochV92:0;
     state.inFlight.loans=(async()=>{
       try{
-        const res=await jsonp('loans',{scope:'active',pageSize:200,sort:'request_date',order:'desc',_t:Date.now()},{timeoutMs:6500,retries:0});
+        const res=await jsonp('loans',{scope:'active',pageSize:200,sort:'request_date',order:'desc',_t:Date.now()},{timeoutMs:6500,retries:0,silentProgress:silent});
         if(typeof loanEpochV92==='number'&&epoch!==loanEpochV92)return;
         const rows=(res?.items||[]).filter(x=>!['DIPULANGKAN','DITOLAK','DIBATALKAN'].includes(String(x.status)));
         state.loans=typeof overlayConfirmedV92==='function'?overlayConfirmedV92(rows):rows;
@@ -5720,7 +5725,7 @@ window.PKPJ_COMPLETED_DELETE_VERSION='10.18';
   document.addEventListener('DOMContentLoaded',()=>{ensureLoanHeader();ensurePopup();ensureAdminProcess();if(window.__adminLiveWatchV1011){clearInterval(window.__adminLiveWatchV1011);window.__adminLiveWatchV1011=null}window.__adminLiveWatchV1011=setInterval(()=>pollInstant(false),2000);setTimeout(()=>pollInstant(true),450)},{once:true});
   window.addEventListener('focus',()=>setTimeout(()=>pollInstant(true),120));document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')setTimeout(()=>pollInstant(true),120)});
   window.PKPJ_ADMIN_VERSION_V1019=VERSION;
-  window.PKPJ_ADMIN_BACKGROUND_SYNC_SILENT='10.19.1';
+  window.PKPJ_ADMIN_BACKGROUND_SYNC_SILENT='10.19.2';
 })();
 </script>
 
@@ -5735,7 +5740,7 @@ window.PKPJ_COMPLETED_DELETE_VERSION='10.18';
 </style>
 <script id="pkpj-v1020-global-fast-progress-script">
 (function(){
-  /* V10.19.1: progress hanya untuk tindakan pengguna. Auto sync/poll/retry berjalan senyap. */
+  /* V10.19.2: progress hanya untuk tindakan pengguna. Auto sync/poll/retry berjalan senyap; loadLoans kini mengekalkan options.silent. */
   const SILENT=new Set(['admin.loan_watch','admin.write_status','ping','system.fast_health']);
   let fpTimer=null,fpHide=null,fpSeq=0,activeSeq=0;
   function ensureFP(){let x=document.querySelector('#pkpjFastProgressV1020');if(x)return x;x=document.createElement('div');x.id='pkpjFastProgressV1020';x.innerHTML='<div class="fp-card"><div class="fp-row"><span class="fp-title">Fast Engine</span><span class="fp-pct">0%</span></div><div class="fp-track"><div class="fp-fill"></div></div><div class="fp-stage">Bersedia</div></div>';document.body.appendChild(x);return x}
