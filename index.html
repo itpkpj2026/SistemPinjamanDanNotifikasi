@@ -6516,6 +6516,80 @@ window.PKPJ_COMPLETED_DELETE_VERSION='10.18';
 })();
 </script>
 
+
+
+<!-- =========================================================
+     PKPJ V10.22.0 - SMART PROCESS ENGINE
+     API/Sheets operations use stage + real elapsed time, not fake percentages.
+     Existing circular overlay is retained as the single process UI.
+========================================================= -->
+<style id="pkpj-v1022-smart-process-admin-style">
+#pkpjCircleProgressV1020 .pkpj-circle-pct-v1020{display:none!important}
+#pkpjCircleProgressV1020 .pkpj-circle-ring-v1020{
+  --pct:0!important;background:#fff!important;border:8px solid #e5edf5!important;
+  border-top-color:#126cff!important;box-shadow:0 12px 28px rgba(18,108,255,.10)!important;
+  animation:pkpjSmartSpinV1022 .82s linear infinite!important
+}
+#pkpjCircleProgressV1020 .pkpj-circle-ring-v1020:after{inset:8px!important;background:#fff!important}
+#pkpjCircleProgressV1020.smart-done-v1022 .pkpj-circle-ring-v1020,
+#pkpjCircleProgressV1020.smart-fail-v1022 .pkpj-circle-ring-v1020{animation:none!important;border-color:#dce9f3!important}
+#pkpjCircleProgressV1020.smart-done-v1022 .pkpj-circle-ring-v1020{border-color:#bfe9d1!important}
+#pkpjCircleProgressV1020.smart-fail-v1022 .pkpj-circle-ring-v1020{border-color:#f2c7cf!important}
+#pkpjCircleProgressV1020.smart-done-v1022 .pkpj-circle-ring-v1020:before,
+#pkpjCircleProgressV1020.smart-fail-v1022 .pkpj-circle-ring-v1020:before{
+  position:absolute;z-index:4;left:50%;top:50%;transform:translate(-50%,-50%);
+  font-size:34px;font-weight:950;line-height:1
+}
+#pkpjCircleProgressV1020.smart-done-v1022 .pkpj-circle-ring-v1020:before{content:'✓';color:#19a66a}
+#pkpjCircleProgressV1020.smart-fail-v1022 .pkpj-circle-ring-v1020:before{content:'!';color:#d84b61}
+.pkpj-smart-elapsed-v1022{margin-top:9px;font-size:11px;font-weight:850;color:#416783;font-variant-numeric:tabular-nums}
+.pkpj-smart-wait-v1022{min-height:17px;margin-top:5px;font-size:9.5px;line-height:1.4;color:#7a8fa2}
+#pkpjCircleProgressV1020.smart-slow-v1022 .pkpj-smart-wait-v1022{color:#9a6814;font-weight:800}
+@keyframes pkpjSmartSpinV1022{to{transform:rotate(360deg)}}
+</style>
+<script id="pkpj-v1022-smart-process-admin-script">
+(function(){
+  const VERSION='10.22.0';
+  let started=0,timer=null,lastVisible=false;
+  function root(){return document.querySelector('#pkpjCircleProgressV1020')}
+  function ensureExtras(){
+    const x=root();if(!x)return null;const card=x.querySelector('.pkpj-circle-card-v1020');if(!card)return x;
+    let elapsed=card.querySelector('.pkpj-smart-elapsed-v1022');
+    if(!elapsed){elapsed=document.createElement('div');elapsed.className='pkpj-smart-elapsed-v1022';elapsed.textContent='Masa: 0.0 saat';card.appendChild(elapsed)}
+    let wait=card.querySelector('.pkpj-smart-wait-v1022');
+    if(!wait){wait=document.createElement('div');wait.className='pkpj-smart-wait-v1022';card.appendChild(wait)}
+    return x;
+  }
+  function stateFromStep(){
+    const x=root();if(!x)return 'running';const step=String(x.querySelector('.pkpj-circle-step-v1020')?.textContent||'').toUpperCase();
+    if(step.includes('SELESAI'))return 'done';if(step.includes('PERLU SEMAK')||step.includes('GAGAL'))return 'fail';return 'running';
+  }
+  function tick(){
+    const x=ensureExtras();if(!x||!x.classList.contains('show'))return;
+    const sec=Math.max(0,(Date.now()-started)/1000);const elapsed=x.querySelector('.pkpj-smart-elapsed-v1022'),wait=x.querySelector('.pkpj-smart-wait-v1022');
+    if(elapsed)elapsed.textContent='Masa: '+sec.toFixed(1)+' saat';
+    x.classList.toggle('smart-slow-v1022',sec>=5);
+    if(wait){
+      if(sec>=12)wait.textContent='Server mengambil masa lebih lama daripada biasa. Sistem masih menunggu pengesahan.';
+      else if(sec>=5)wait.textContent='Masih diproses — jangan tekan butang yang sama berulang kali.';
+      else wait.textContent='';
+    }
+  }
+  function sync(){
+    const x=ensureExtras();if(!x)return;const visible=x.classList.contains('show');
+    if(visible&&!lastVisible){started=Date.now();clearInterval(timer);timer=setInterval(tick,100);tick()}
+    if(!visible&&lastVisible){clearInterval(timer);timer=null;x.classList.remove('smart-done-v1022','smart-fail-v1022','smart-slow-v1022')}
+    lastVisible=visible;
+    if(!visible)return;
+    const s=stateFromStep();x.classList.toggle('smart-done-v1022',s==='done');x.classList.toggle('smart-fail-v1022',s==='fail');
+  }
+  const observer=new MutationObserver(sync);
+  function boot(){const x=ensureExtras();if(!x)return setTimeout(boot,120);observer.observe(x,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['class']});sync()}
+  boot();
+  window.PKPJ_SMART_PROCESS_V1022={version:VERSION,mode:'STAGE_ELAPSED_NO_FAKE_PERCENT'};
+})();
+</script>
+
 </body>
 </html>
 
