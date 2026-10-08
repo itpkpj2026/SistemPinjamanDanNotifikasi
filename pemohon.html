@@ -5502,7 +5502,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 </style>
 <script id="pkpj-v11135-clear-name-auto-session-script">
 (function(){
-  const IDLE_MS_V11135=5*60*1000;
+  const IDLE_MS_V11135=10*60*1000;
   let idleTimerV11135=null;
   let lastActivityV11135=Date.now();
   let reloadingV11135=false;
@@ -5564,7 +5564,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     clearTimeout(idleTimerV11135);idleTimerV11135=null;
     try{
       if(reason==='idle'&&typeof toast==='function'){
-        toast('Sesi tamat','Tiada aktiviti selama 5 minit. Portal sedang disediakan untuk pemohon seterusnya.','ok');
+        toast('Sesi tamat','Tiada aktiviti selama 10 minit. Portal sedang disediakan untuk pemohon seterusnya.','ok');
       }
     }catch(e){}
     try{
@@ -5995,6 +5995,38 @@ document.addEventListener('DOMContentLoaded',()=>{
   if(typeof basePreview==='function')window.assetImagePreviewUrl=function(asset){return key(asset?.category)?'':basePreview(asset)};
   if(typeof baseArt==='function')window.premiumAssetArtV116=function(category){const k=key(category);return k?`<span class="pkpj-generic-category-v111314">${svg(k)}</span>`:baseArt(category)};
   document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{try{if(state.currentView==='apply')renderApplyCategories();if(state.currentView==='assets')renderAvailableAssets()}catch(e){}},30)},{once:true});
+})();
+</script>
+
+
+<style id="pkpj-v1120-global-fast-progress-style">
+#pkpjApplicantProgressV1120{position:fixed;left:calc(var(--sidebar) + 16px);right:16px;top:12px;z-index:99999;pointer-events:none;opacity:0;transform:translateY(-8px);transition:.18s ease}#pkpjApplicantProgressV1120.show{opacity:1;transform:none}.ap-card-v1120{margin-left:auto;width:min(470px,calc(100vw - 32px));padding:9px 12px;border-radius:14px;background:rgba(255,255,255,.95);border:1px solid #d3e4f0;box-shadow:0 12px 32px rgba(24,71,112,.16);backdrop-filter:blur(12px)}.ap-row-v1120{display:flex;gap:8px;align-items:center}.ap-title-v1120{flex:1;font-size:10px;font-weight:900;color:#145887}.ap-pct-v1120{font-size:13px;font-weight:950;color:#1479d1}.ap-track-v1120{height:7px;margin-top:7px;border-radius:999px;background:#e5eef5;overflow:hidden}.ap-fill-v1120{height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,#1479d1,#20c2b6);transition:width .22s}.ap-stage-v1120{margin-top:5px;font-size:9px;color:#748a9d}
+#pkpjApplicantIdleWarnV1120{display:none;position:fixed;inset:0;z-index:100000;align-items:center;justify-content:center;padding:18px;background:rgba(12,36,58,.43);backdrop-filter:blur(5px)}#pkpjApplicantIdleWarnV1120.show{display:flex}.ap-idle-card-v1120{width:min(420px,100%);padding:22px;border-radius:20px;background:#fff;text-align:center;box-shadow:0 30px 80px rgba(20,60,95,.23)}.ap-idle-card-v1120 h3{margin:0 0 7px}.ap-idle-card-v1120 p{font-size:12px;color:#6c8193;line-height:1.5}.ap-idle-count-v1120{font-size:30px;font-weight:950;color:#1479d1;margin:12px 0}
+@media(max-width:720px){#pkpjApplicantProgressV1120{left:12px;right:12px;top:62px}}
+</style>
+<script id="pkpj-v1120-global-fast-progress-script">
+(function(){
+ const SILENT=new Set(['applicant.loan_watch','applicant.write_status','ping','ui.public']);let timer=null,hide=null,seq=0,active=0;
+ function ensure(){let x=document.querySelector('#pkpjApplicantProgressV1120');if(x)return x;x=document.createElement('div');x.id='pkpjApplicantProgressV1120';x.innerHTML='<div class="ap-card-v1120"><div class="ap-row-v1120"><span class="ap-title-v1120">Fast Engine</span><span class="ap-pct-v1120">0%</span></div><div class="ap-track-v1120"><div class="ap-fill-v1120"></div></div><div class="ap-stage-v1120">Bersedia</div></div>';document.body.appendChild(x);return x}
+ function set(p,t,s,q){if(q&&q!==active)return;const x=ensure();x.classList.add('show');x.querySelector('.ap-title-v1120').textContent=t||'Fast Engine';x.querySelector('.ap-pct-v1120').textContent=Math.round(Math.max(0,Math.min(100,p)))+'%';x.querySelector('.ap-fill-v1120').style.width=Math.max(0,Math.min(100,p))+'%';x.querySelector('.ap-stage-v1120').textContent=s||''}
+ function begin(t){clearTimeout(hide);clearInterval(timer);const q=++seq;active=q;let p=5;set(p,t,'Menghubungi server',q);timer=setInterval(()=>{p=Math.min(88,p+(p<45?7:p<72?4:1.5));set(p,t,p<36?'Menghantar permintaan':p<72?'Server sedang memproses':'Menerima data',q)},260);return q}
+ function done(q,t){if(q!==active)return;clearInterval(timer);set(100,t||'Selesai','Selesai',q);hide=setTimeout(()=>ensure().classList.remove('show'),650)}
+ function fail(q,t,m){if(q!==active)return;clearInterval(timer);set(100,t||'Proses gagal',m||'Semak sambungan',q);hide=setTimeout(()=>ensure().classList.remove('show'),1400)}
+ window.PKPJ_APPLICANT_PROGRESS_V1120={begin,set,done,fail};
+ const raw=typeof window.jsonp==='function'?window.jsonp:null;if(raw){window.jsonp=jsonp=async function(action,params={},options={}){const quiet=options?.silentProgress||SILENT.has(String(action)),q=quiet?0:begin(action==='applicant.bootstrap'?'Membuka Portal Pemohon':'Memuat data');try{const r=await raw(action,params,{...options,retries:Number.isFinite(options.retries)?options.retries:0});if(q)done(q,'Data diterima');return r}catch(e){if(q)fail(q,'Sambungan belum selesai',e?.message||'Cuba semula');throw e}}}
+ const rawPost=typeof window.postApi==='function'?window.postApi:null;if(rawPost){window.postApi=postApi=async function(action,data={},options={}){const q=begin(action==='applicant.loan.create'?'Menghantar permohonan':'Menyimpan perubahan');try{set(30,'Fast Engine','Permintaan telah dihantar',q);const r=await rawPost(action,data,options);done(q,action==='applicant.loan.create'?'Permohonan dihantar':'Simpanan berjaya');return r}catch(e){fail(q,'Proses belum selesai',e?.message||'Semak sambungan');throw e}}}
+
+ /* Override idle lama: 10 minit + amaran 30 saat. */
+ const IDLE=10*60*1000,WARN=30*1000;let last=Date.now(),logoutTimer=null,warnTimer=null,tick=null;
+ function portalActive(){const o=document.querySelector('#loginOverlay');return !!(window.state&&state.profile&&o&&o.classList.contains('hidden'))}
+ function warnBox(){let x=document.querySelector('#pkpjApplicantIdleWarnV1120');if(x)return x;x=document.createElement('div');x.id='pkpjApplicantIdleWarnV1120';x.innerHTML='<div class="ap-idle-card-v1120"><h3>Sesi hampir tamat</h3><p>Tiada aktiviti dikesan. Portal akan log keluar secara automatik untuk memberi laluan kepada pengguna seterusnya.</p><div class="ap-idle-count-v1120">30s</div><button class="btn btn-primary" type="button" id="apStayV1120">Teruskan Sesi</button></div>';document.body.appendChild(x);x.querySelector('#apStayV1120').onclick=mark;return x}
+ function hideWarn(){warnBox().classList.remove('show');clearInterval(tick);tick=null}
+ function doLogout(){hideWarn();clearTimeout(logoutTimer);clearTimeout(warnTimer);try{window.logoutApplicant()}catch(e){location.reload()}}
+ function schedule(){clearTimeout(logoutTimer);clearTimeout(warnTimer);hideWarn();if(!portalActive())return;const age=Date.now()-last;warnTimer=setTimeout(()=>{if(!portalActive())return;const x=warnBox();x.classList.add('show');let n=30;x.querySelector('.ap-idle-count-v1120').textContent=n+'s';tick=setInterval(()=>{n--;x.querySelector('.ap-idle-count-v1120').textContent=Math.max(0,n)+'s'},1000)},Math.max(0,IDLE-WARN-age));logoutTimer=setTimeout(doLogout,Math.max(0,IDLE-age))}
+ function mark(){if(!portalActive())return;last=Date.now();schedule()}
+ ['pointerdown','keydown','touchstart','wheel','scroll'].forEach(t=>window.addEventListener(t,mark,{passive:true}));
+ const o=document.querySelector('#loginOverlay');if(o)new MutationObserver(()=>{if(portalActive()){last=Date.now();schedule()}else{clearTimeout(logoutTimer);clearTimeout(warnTimer);hideWarn()}}).observe(o,{attributes:true,attributeFilter:['class']});
+ setInterval(()=>{if(portalActive()&&!logoutTimer){last=Date.now();schedule()}},3000);
 })();
 </script>
 
