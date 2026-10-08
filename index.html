@@ -5606,7 +5606,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 </script>
 
 <script id="pkpj-v1017-kewpa6-marker">
-window.PKPJ_KEWPA6_VERSION='10.18';
+window.PKPJ_KEWPA6_VERSION='10.23';
 window.PKPJ_COMPLETED_DELETE_VERSION='10.18';
 </script>
 
@@ -6590,8 +6590,6 @@ window.PKPJ_COMPLETED_DELETE_VERSION='10.18';
 })();
 </script>
 
-</body>
-</html>
 
 <!-- =========================================================
      ADMIN V10.21.0 - ITEM NAME / TYPE CONTEXT FIX
@@ -6613,3 +6611,221 @@ window.PKPJ_COMPLETED_DELETE_VERSION='10.18';
   }catch(e){console.warn('V10.21 item context patch tertangguh.',e)}
 })();
 </script>
+
+<!-- =========================================================
+     PKPJ V10.23.0 - STABILITY CONSOLIDATION (ADMIN)
+     One transport, one process UI, hard deadline, no write resend.
+========================================================= -->
+<style id="pkpj-v1023-stability-admin-style">
+#pkpjFastProgressV1020,#pkpjCircleProgressV1020,#adminProcessV1019,.movement-inline-progress-v1019{display:none!important}
+#pkpjStableProcessV1023{position:fixed;inset:0;z-index:130500;display:none;place-items:center;padding:18px;background:rgba(8,27,48,.46);backdrop-filter:blur(7px)}
+#pkpjStableProcessV1023.show{display:grid}
+.pkpj-stable-card-v1023{width:min(420px,94vw);padding:26px 23px 23px;border-radius:25px;background:#fff;border:1px solid #dce8f3;box-shadow:0 30px 90px rgba(9,39,70,.27);text-align:center}
+.pkpj-stable-ring-v1023{width:82px;height:82px;margin:0 auto 17px;border-radius:50%;border:8px solid #e6eef6;border-top-color:#1479e8;animation:pkpjStableSpinV1023 .82s linear infinite;display:grid;place-items:center}
+.pkpj-stable-ring-v1023 span{font-size:0;font-weight:950}
+#pkpjStableProcessV1023.done .pkpj-stable-ring-v1023,#pkpjStableProcessV1023.fail .pkpj-stable-ring-v1023,#pkpjStableProcessV1023.pending .pkpj-stable-ring-v1023{animation:none;border-color:#dce8f0}
+#pkpjStableProcessV1023.done .pkpj-stable-ring-v1023 span{font-size:34px;color:#18a56b}
+#pkpjStableProcessV1023.fail .pkpj-stable-ring-v1023 span{font-size:34px;color:#d74d61}
+#pkpjStableProcessV1023.pending .pkpj-stable-ring-v1023 span{font-size:28px;color:#d29123}
+.pkpj-stable-title-v1023{font-size:18px;font-weight:950;color:#173b61}
+.pkpj-stable-stage-v1023{margin-top:8px;font-size:12px;line-height:1.5;color:#6f8498}
+.pkpj-stable-time-v1023{margin-top:11px;font-size:12px;font-weight:900;color:#3c6485;font-variant-numeric:tabular-nums}
+.pkpj-stable-note-v1023{min-height:18px;margin-top:7px;font-size:10px;line-height:1.45;color:#71879a}
+#pkpjStableProcessV1023.slow .pkpj-stable-note-v1023{color:#986713;font-weight:800}
+@keyframes pkpjStableSpinV1023{to{transform:rotate(360deg)}}
+@media(max-width:760px){.pkpj-stable-card-v1023{width:min(390px,92vw);padding:24px 20px}.pkpj-stable-title-v1023{font-size:17px}.pkpj-stable-ring-v1023{width:76px;height:76px}}
+</style>
+<script id="pkpj-v1023-stability-admin-script">
+(function(){
+  'use strict';
+  const VERSION='10.23.0';
+  const NORMAL_WAIT=45000,LARGE_WAIT=120000;
+  const inflightWrites=new Map(),pendingIntents=new Map(),lateChecks=new Map(),readInflight=new Map();
+  let activeProcess=null,processSeq=0,processTick=null,processHardTimer=null;
+
+  const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+  const now=()=>Date.now();
+  const isLargeAction=a=>['image.attach','ui.image.upload'].includes(String(a));
+  const titleFor=a=>({
+    'asset.create':'Menyimpan aset','asset.update':'Mengemaskini aset','asset.delete':'Memadam aset',
+    'loan.create':'Merekod pinjaman','loan.approve':'Meluluskan pinjaman','loan.reject':'Menolak permohonan',
+    'loan.checkout':'Mengeluarkan aset','loan.return':'Merekod pemulangan','loan.cancel':'Membatalkan pinjaman',
+    'loan.purge':'Memadam rekod','image.attach':'Memuat naik gambar','image.delete':'Memadam gambar',
+    'ui.image.upload':'Memuat naik gambar UI','ui.image.reset':'Reset gambar UI','user.create':'Menyimpan staf',
+    'user.update':'Mengemaskini staf','staff.bulk_add':'Menyimpan senarai staf','settings.update':'Menyimpan tetapan',
+    'admin.operator.remove':'Mengemaskini akses','notifications.run':'Menjalankan notifikasi'
+  })[String(a)]||'Memproses data';
+
+  function stableHash(value){
+    const s=typeof value==='string'?value:JSON.stringify(value||{});let h=5381;
+    for(let i=0;i<s.length;i++)h=((h<<5)+h)^s.charCodeAt(i);
+    return (h>>>0).toString(36);
+  }
+  function compactIntentPayload(data){const out={};Object.keys(data||{}).sort().forEach(k=>{const v=data[k];out[k]=(typeof v==='string'&&v.length>1000)?('[LARGE:'+v.length+']'):v});return out}
+  function intentKey(action,data){return String(action)+'|'+stableHash({loan_id:data?.loan_id||'',asset_id:data?.asset_id||'',user_id:data?.user_id||'',kind:data?.kind||'',key:data?.key||'',payload:compactIntentPayload(data)})}
+  function requestId(options){if(options?.requestId)return String(options.requestId);try{return typeof makeWriteRequestId==='function'?makeWriteRequestId():'WR-'+now()+'-'+Math.random().toString(36).slice(2,9).toUpperCase()}catch(e){return 'WR-'+now()+'-'+Math.random().toString(36).slice(2,9).toUpperCase()}}
+
+  function ensureProcess(){
+    let x=document.getElementById('pkpjStableProcessV1023');if(x)return x;
+    x=document.createElement('div');x.id='pkpjStableProcessV1023';
+    x.innerHTML='<div class="pkpj-stable-card-v1023" role="status" aria-live="polite"><div class="pkpj-stable-ring-v1023"><span>✓</span></div><div class="pkpj-stable-title-v1023">Sedang diproses</div><div class="pkpj-stable-stage-v1023">Menghubungi server…</div><div class="pkpj-stable-time-v1023">Masa: 0.0 saat</div><div class="pkpj-stable-note-v1023"></div></div>';
+    document.body.appendChild(x);return x;
+  }
+  function processRender(){
+    if(!activeProcess)return;const x=ensureProcess();const elapsed=Math.max(0,now()-activeProcess.started);
+    if(elapsed>=activeProcess.maxMs&&activeProcess.state==='running'){processPending(activeProcess.token,'Had masa paparan dicapai. Semakan diteruskan di latar belakang.');return}
+    const sec=Math.min(elapsed,activeProcess.maxMs)/1000;
+    x.querySelector('.pkpj-stable-time-v1023').textContent='Masa: '+sec.toFixed(1)+' saat';
+    x.classList.toggle('slow',sec>=6);
+    const note=x.querySelector('.pkpj-stable-note-v1023');
+    if(activeProcess.state==='running')note.textContent=sec>=20?'Server agak perlahan. Jangan tekan butang yang sama; sistem masih menyemak resit.':sec>=6?'Masih diproses. Sistem akan berhenti menunggu secara automatik jika melebihi had masa.':'';
+  }
+  function processBegin(title,stage,maxMs=NORMAL_WAIT){
+    const x=ensureProcess();
+    if(activeProcess&&activeProcess.state==='running'){
+      activeProcess.maxMs=Math.max(activeProcess.maxMs,maxMs);processStage(activeProcess.token,title,stage);return activeProcess.token;
+    }
+    clearInterval(processTick);clearTimeout(processHardTimer);
+    const token=++processSeq;activeProcess={token,started:now(),maxMs,state:'running'};
+    x.className='show';x.querySelector('.pkpj-stable-ring-v1023 span').textContent='';
+    x.querySelector('.pkpj-stable-title-v1023').textContent=title||'Sedang diproses';
+    x.querySelector('.pkpj-stable-stage-v1023').textContent=stage||'Menghubungi server…';
+    x.querySelector('.pkpj-stable-note-v1023').textContent='';x.querySelector('.pkpj-stable-time-v1023').textContent='Masa: 0.0 saat';
+    processTick=setInterval(processRender,250);
+    processHardTimer=setTimeout(()=>{if(activeProcess?.token===token&&activeProcess.state==='running')processPending(token,'Server belum memberi pengesahan dalam tempoh biasa. Semakan diteruskan secara senyap.');},maxMs+500);
+    return token;
+  }
+  function processStage(token,title,stage){if(!activeProcess||activeProcess.token!==token)return;const x=ensureProcess();if(title)x.querySelector('.pkpj-stable-title-v1023').textContent=title;if(stage)x.querySelector('.pkpj-stable-stage-v1023').textContent=stage;processRender()}
+  function processFinish(token,state,title,stage,delay){
+    if(!activeProcess||activeProcess.token!==token)return;clearInterval(processTick);clearTimeout(processHardTimer);processTick=null;processHardTimer=null;
+    activeProcess.state=state;const x=ensureProcess();x.className='show '+state;
+    x.querySelector('.pkpj-stable-ring-v1023 span').textContent=state==='done'?'✓':state==='pending'?'…':'!';
+    if(title)x.querySelector('.pkpj-stable-title-v1023').textContent=title;if(stage)x.querySelector('.pkpj-stable-stage-v1023').textContent=stage;
+    processRender();setTimeout(()=>{if(activeProcess?.token===token){x.classList.remove('show');activeProcess=null}},delay);
+  }
+  function processDone(token,msg){processFinish(token,'done','Selesai',msg||'Proses telah disahkan.',650)}
+  function processFail(token,msg){processFinish(token,'fail','Proses tidak berjaya',msg||'Semak sambungan dan cuba semula.',1400)}
+  function processPending(token,msg){processFinish(token,'pending','Pengesahan diteruskan',msg||'Semakan diteruskan di latar belakang.',1200)}
+  function processClose(token){if(activeProcess&&(!token||activeProcess.token===token)){clearInterval(processTick);clearTimeout(processHardTimer);ensureProcess().classList.remove('show');activeProcess=null}}
+  function processVisible(){return !!activeProcess}
+  window.PKPJ_STABLE_PROCESS_V1023={begin:processBegin,stage:processStage,done:processDone,fail:processFail,pending:processPending,close:processClose,visible:processVisible};
+
+  async function directJsonp(action,params={},options={}){
+    const timeout=Math.max(2500,Math.min(30000,Number(options.timeoutMs)||12000));
+    const retries=Math.max(0,Math.min(1,Number.isFinite(options.retries)?options.retries:0));
+    const clean={...(params||{}),_sv:VERSION,_t:now()};
+    let last=null;
+    for(let i=0;i<=retries;i++){
+      try{return await jsonpOnce(action,clean,timeout)}catch(e){last=e;if(i<retries)await sleep(450)}
+    }
+    throw last||new Error('API tidak dapat dihubungi.');
+  }
+  const singleReads=new Set(['dashboard','assets','loans','users','admin.loan_watch','admin.operators','admin.staff_directory','ui.public','admin.write_status','movement_register','audit.signature_batch']);
+  window.jsonp=jsonp=function(action,params={},options={}){
+    if(!singleReads.has(String(action)))return directJsonp(action,params,options);
+    const p=params||{},key=String(action)+'|'+Object.keys(p).filter(k=>k!=='_t'&&k!=='_cb').sort().map(k=>k+'='+String(p[k]??'')).join('&');
+    if(readInflight.has(key))return readInflight.get(key);
+    const job=directJsonp(action,params,options).finally(()=>readInflight.delete(key));readInflight.set(key,job);return job;
+  };
+
+  function dispatchWrite(action,data,rid){
+    const body=new URLSearchParams();
+    body.set('action',String(action));body.set('token',String(cfg?.token||''));body.set('request_id',String(rid));body.set('data',JSON.stringify(data||{}));
+    let dispatchError=null;
+    try{
+      fetch(String(cfg?.apiUrl||''),{method:'POST',mode:'no-cors',body,cache:'no-store',credentials:'omit'})
+        .catch(e=>{dispatchError=e});
+    }catch(e){dispatchError=e}
+    return ()=>dispatchError;
+  }
+  async function statusOnce(rid){return directJsonp('admin.write_status',{request_id:rid},{timeoutMs:5000,retries:0})}
+  async function waitReceipt(rid,action,maxMs,token,getDispatchError){
+    const started=now();let pause=450,lastState='pending';
+    await sleep(280);
+    while(now()-started<maxMs){
+      try{
+        const s=await statusOnce(rid);lastState=String(s?.state||'pending');
+        if(lastState==='done'){
+          if(s.ok)return s.data||{};
+          const e=new Error(s?.error?.message||'Operasi gagal.');e.code=s?.error?.code||'WRITE_FAILED';throw e;
+        }
+        if(lastState==='processing')processStage(token,titleFor(action),'Server sedang memproses perubahan…');
+        else if(now()-started>2500)processStage(token,titleFor(action),'Menunggu server menerima permintaan…');
+      }catch(e){
+        if(!/timeout|network|sambung|api|deployment|dihubungi/i.test(String(e?.message||'')))throw e;
+      }
+      if(getDispatchError()&&lastState==='pending'&&now()-started>7000){const e=new Error('Permintaan belum dapat dihantar ke server. Semak sambungan internet.');e.code='NETWORK';throw e}
+      await sleep(pause);pause=Math.min(1200,pause+120);
+    }
+    const e=new Error('Server belum mengesahkan proses dalam tempoh yang ditetapkan. Semakan akan diteruskan di latar belakang.');e.code='WRITE_PENDING';e.requestId=rid;throw e;
+  }
+  function refreshAfter(action){
+    try{
+      if(/^loan\./.test(action)){loadLoans(true,{silent:true});setTimeout(()=>loadDashboard(true).catch?.(()=>{}),150)}
+      else if(/^asset\./.test(action)||/^image\./.test(action)){loadAssets(true);setTimeout(()=>loadDashboard(true).catch?.(()=>{}),150)}
+      else if(/^user\./.test(action)||action==='staff.bulk_add'||action==='admin.operator.remove'){loadStaffSettings(true)}
+      else if(action==='settings.update'){loadDeepSettings?.(true)}
+    }catch(e){}
+  }
+  function scheduleLate(rid,action,intent){
+    if(lateChecks.has(rid))return;let tries=0;
+    const run=async()=>{
+      tries++;
+      try{
+        const s=await statusOnce(rid);
+        if(s?.state==='done'){
+          lateChecks.delete(rid);pendingIntents.delete(intent);
+          if(s.ok){try{toast('Proses selesai','Server telah mengesahkan '+titleFor(action).toLowerCase()+'.','ok')}catch(e){}refreshAfter(action)}
+          else try{toast('Proses gagal',s?.error?.message||'Server menolak permintaan.','err')}catch(e){}
+          return;
+        }
+      }catch(e){}
+      if(tries>=10){lateChecks.delete(rid);pendingIntents.delete(intent);return}
+      const timer=setTimeout(run,10000);lateChecks.set(rid,timer);
+    };
+    lateChecks.set(rid,setTimeout(run,6000));
+  }
+
+  window.postApi=postApi=function(action,data={},options={}){
+    if(!cfg?.apiUrl||!cfg?.token)return Promise.reject(new Error('Tetapan API belum lengkap.'));
+    const intent=intentKey(action,data);
+    if(inflightWrites.has(intent))return inflightWrites.get(intent);
+    const pending=pendingIntents.get(intent);
+    if(pending&&now()-pending.started<120000){const e=new Error('Permintaan yang sama masih dalam semakan server. Tunggu pengesahan automatik sebelum cuba lagi.');e.code='WRITE_PENDING_LOCAL';e.requestId=pending.requestId;return Promise.reject(e)}
+    const rid=requestId(options),maxMs=Math.max(12000,Math.min(isLargeAction(action)?180000:90000,Number(options.maxWait||options.timeoutMs)||(isLargeAction(action)?LARGE_WAIT:NORMAL_WAIT)));
+    const payload={...(data||{}),actor_user_id:data?.actor_user_id||state?.operator?.user_id||'',actor_name:data?.actor_name||state?.operator?.name||'',actor_email:data?.actor_email||cfg?.actorEmail||''};
+    const job=(async()=>{
+      const token=processBegin(titleFor(action),'Menghantar perubahan ke server…',maxMs);
+      const getDispatchError=dispatchWrite(action,payload,rid);
+      try{
+        const result=await waitReceipt(rid,action,maxMs,token,getDispatchError);
+        pendingIntents.delete(intent);processDone(token,'Server telah mengesahkan perubahan.');return result;
+      }catch(e){
+        e.requestId=e.requestId||rid;
+        if(e.code==='WRITE_PENDING'){
+          pendingIntents.set(intent,{requestId:rid,started:now()});processPending(token,e.message);scheduleLate(rid,action,intent);
+        }else processFail(token,e.message||'Operasi gagal.');
+        throw e;
+      }
+    })().finally(()=>inflightWrites.delete(intent));
+    inflightWrites.set(intent,job);return job;
+  };
+
+  const oldAudit=window.loadAuditHistoryV9;
+  if(typeof oldAudit==='function')window.loadAuditHistoryV9=async function(){const t=processBegin('Laporan KEW.PA-6','Mengambil data laporan…',90000);try{const r=await oldAudit.apply(this,arguments);if(r)processDone(t,'Laporan sedia.');else processFail(t,'Laporan belum dapat disediakan.');return r}catch(e){processFail(t,e?.message||'Laporan gagal.');throw e}};
+  ['openMovementRegister','openMovementRegisterPdf'].forEach(name=>{const old=window[name];if(typeof old==='function')window[name]=async function(){const t=processBegin(name==='openMovementRegisterPdf'?'PDF KEW.PA-6':'Daftar Pergerakan','Menyediakan laporan…',90000);try{const r=await old.apply(this,arguments);processDone(t,'Laporan sedia.');return r}catch(e){processFail(t,e?.message||'Laporan gagal.');throw e}}});
+
+  function tuneWatch(){
+    try{if(window.__adminLiveWatchV1011)clearInterval(window.__adminLiveWatchV1011)}catch(e){}
+    const mobile=matchMedia('(max-width:760px)').matches;const period=mobile?5000:3000;
+    window.__adminLiveWatchV1011=setInterval(()=>{try{window.pollAdminLoanWatchV1011?.()}catch(e){}},period);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',tuneWatch,{once:true});else tuneWatch();
+
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&activeProcess)processRender()});
+  window.addEventListener('pageshow',()=>{if(activeProcess)processRender()});
+  window.PKPJ_STABILITY_V1023={version:VERSION,write:'POST_NO_CORS_PLUS_STATUS_POLL',read:'DIRECT_JSONP_SINGLEFLIGHT',hard_deadline:true};
+})();
+</script>
+</body>
+</html>
