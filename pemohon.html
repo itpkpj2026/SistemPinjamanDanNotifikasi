@@ -6994,7 +6994,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   'use strict';
   const VERSION='10.23.1';
   const CACHE_KEY='pkpj_applicant_inventory_firstpaint_v10231';
-  const CACHE_MAX_AGE=60000; // 60 saat sahaja untuk elak paparan stale lama.
+  const CACHE_MAX_AGE=300000; // 5 minit untuk first paint pantas; revision live akan menyegar bila berubah.
   let inflight=null;
   let latest=null;
   let latestAt=0;
@@ -7133,5 +7133,132 @@ document.addEventListener('DOMContentLoaded',()=>{
 })();
 </script>
 
+
+
+<style id="pkpj-v10232-live-inventory-sync-style">
+/* V10.23.2 - status sync inventori ringan; tiada popup/progress global. */
+.pkpj-inventory-sync-note-v10232{font-size:10px;color:#6f8498;margin-top:5px;line-height:1.35}
+.pkpj-inventory-sync-note-v10232.ok{color:#2e7c61}
+</style>
+<script id="pkpj-v10232-live-inventory-sync-script">
+/* =========================================================
+   V10.23.2 - LIVE INVENTORY REVISION SYNC
+   - Guna request applicant.loan_watch yang memang sedia berjalan.
+   - Tiada poll API tambahan semata-mata untuk inventori.
+   - Jika revision inventori berubah, hanya endpoint inventory_fast dipanggil.
+   - Perubahan status pinjaman biasa tidak lagi memaksa bootstrap penuh.
+   ========================================================= */
+(function(){
+  'use strict';
+  const VERSION='10.23.2';
+  const REV_KEY='pkpj_applicant_inventory_revision_v10232';
+  let inventoryRevision='';
+  let refreshQueued=false;
+
+  try{inventoryRevision=String(localStorage.getItem(REV_KEY)||'')}catch(e){}
+
+  function saveRevision(v){
+    inventoryRevision=String(v||'');
+    if(!inventoryRevision)return;
+    try{localStorage.setItem(REV_KEY,inventoryRevision)}catch(e){}
+  }
+
+  function repaintInventory(){
+    try{
+      if(state.kpi&&Array.isArray(state.assets))state.kpi.available_assets=state.assets.length;
+      renderShell?.();
+      if(state.currentView==='home')renderHomeView?.();
+      if(state.currentView==='apply')renderApplyCategories?.();
+      if(state.currentView==='assets'){
+        renderAssetCategoryOptions?.();
+        renderAvailableAssets?.();
+      }
+    }catch(e){}
+  }
+
+  function queueInventoryRefresh(reason){
+    if(refreshQueued)return;
+    refreshQueued=true;
+    setTimeout(async()=>{
+      try{
+        const engine=window.PKPJ_INVENTORY_FIRSTPAINT_V10231;
+        if(engine&&typeof engine.refresh==='function'){
+          await engine.refresh(true);
+          repaintInventory();
+        }
+      }catch(e){}finally{refreshQueued=false}
+    },60);
+  }
+
+  // Gantikan patch status lama supaya status biasa tidak trigger bootstrap penuh.
+  if(typeof window.patchApplicantLoanStatusesV119==='function' || typeof patchApplicantLoanStatusesV119==='function'){
+    const fastPatch=function(w){
+      w=w||{};
+      const incoming=new Map((w.items||[]).map(x=>[String(x.loan_id),x]));
+      let unknown=false;
+      (w.items||[]).forEach(x=>{
+        const row=(state.loans||[]).find(l=>String(l.loan_id)===String(x.loan_id));
+        if(!row){unknown=true;return}
+        Object.assign(row,{
+          status:x.status,
+          updated_at:x.updated_at||row.updated_at,
+          approved_by_user_id:x.approved_by_user_id||row.approved_by_user_id,
+          approved_at:x.approved_at||row.approved_at,
+          loan_date:x.loan_date||row.loan_date,
+          return_date:x.return_date||row.return_date
+        });
+      });
+      if((state.loans||[]).some(l=>!incoming.has(String(l.loan_id))) && Number(w.count)!==(state.loans||[]).length)unknown=true;
+      if(w.kpi){
+        state.kpi=state.kpi||{};
+        if(w.kpi.pending!==undefined)state.kpi.pending=w.kpi.pending;
+        if(w.kpi.active!==undefined)state.kpi.active=w.kpi.active;
+        if(w.kpi.overdue!==undefined)state.kpi.overdue=w.kpi.overdue;
+      }
+      if(state.kpi&&Array.isArray(state.assets))state.kpi.available_assets=state.assets.length;
+      try{
+        renderShell();
+        if(state.currentView==='myloans')renderMyLoans();
+        if(state.currentView==='home')renderHomeView();
+      }catch(e){}
+      try{savePortalCache({profile:state.profile,kpi:state.kpi,available_assets:state.assets,loans:state.loans,public_settings:state.publicSettings})}catch(e){}
+
+      // Hanya rekod pinjaman baru yang tidak dikenali perlukan bootstrap penuh.
+      if(unknown)setTimeout(()=>refreshPortal(true,false),220);
+    };
+    try{window.patchApplicantLoanStatusesV119=fastPatch;patchApplicantLoanStatusesV119=fastPatch}catch(e){}
+  }
+
+  const baseJsonp=typeof jsonp==='function'?jsonp:null;
+  if(baseJsonp){
+    jsonp=async function(action,params={},options={}){
+      const res=await baseJsonp(action,params,options);
+      const a=String(action||'');
+      if(a==='applicant.inventory_fast'){
+        if(res&&res.revision)saveRevision(res.revision);
+      }else if(a==='applicant.loan_watch'){
+        const next=String(res&&res.inventory_revision||'');
+        if(next){
+          if(inventoryRevision && next!==inventoryRevision){
+            saveRevision(next);
+            queueInventoryRefresh('revision');
+          }else if(!inventoryRevision){
+            saveRevision(next);
+          }
+        }
+      }
+      return res;
+    };
+  }
+
+  // Jika app kembali dari background, semakan loan-watch sedia ada akan mengesahkan revision.
+  // Tidak cipta interval tambahan, jadi Apps Script tidak dibebankan.
+  window.PKPJ_LIVE_INVENTORY_SYNC_V10232={
+    version:VERSION,
+    get revision(){return inventoryRevision},
+    refresh:()=>queueInventoryRefresh('manual')
+  };
+})();
+</script>
 </body>
 </html>
