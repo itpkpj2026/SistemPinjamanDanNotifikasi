@@ -5722,5 +5722,64 @@ window.PKPJ_COMPLETED_DELETE_VERSION='10.18';
 })();
 </script>
 
+
+<style id="pkpj-v1020-global-fast-progress-style">
+#pkpjFastProgressV1020{position:fixed;left:calc(var(--sidebar) + 18px);right:18px;top:10px;z-index:99999;pointer-events:none;opacity:0;transform:translateY(-8px);transition:.18s ease}
+#pkpjFastProgressV1020.show{opacity:1;transform:none}
+#pkpjFastProgressV1020 .fp-card{margin-left:auto;width:min(520px,calc(100vw - 36px));padding:9px 12px;border:1px solid rgba(164,193,220,.75);border-radius:14px;background:rgba(255,255,255,.94);backdrop-filter:blur(14px);box-shadow:0 12px 35px rgba(29,67,108,.16)}
+#pkpjFastProgressV1020 .fp-row{display:flex;align-items:center;gap:10px;font-size:10px;color:#4f6881}.fp-title{font-weight:900;color:#174f82;flex:1}.fp-pct{font-size:13px;font-weight:950;color:#126cff;min-width:42px;text-align:right}.fp-track{height:7px;margin-top:7px;border-radius:999px;background:#e8eff6;overflow:hidden}.fp-fill{height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,#126cff,#21b5d8);transition:width .22s ease}.fp-stage{font-size:9px;color:#71859a;margin-top:5px}
+#pkpjIdleWarnV1020{position:fixed;inset:0;z-index:100000;display:none;align-items:center;justify-content:center;background:rgba(13,30,52,.42);backdrop-filter:blur(5px);padding:18px}#pkpjIdleWarnV1020.show{display:flex}.idle-card-v1020{width:min(430px,100%);padding:23px;border-radius:20px;background:#fff;border:1px solid #dbe7f1;box-shadow:0 30px 80px rgba(12,42,76,.22);text-align:center}.idle-card-v1020 h3{margin:0 0 7px;font-size:20px}.idle-card-v1020 p{margin:0 0 16px;color:#657a90;font-size:12px;line-height:1.55}.idle-count-v1020{font-size:30px;font-weight:950;color:#126cff;margin-bottom:14px}
+@media(max-width:760px){#pkpjFastProgressV1020{left:12px;right:12px;top:64px}}
+</style>
+<script id="pkpj-v1020-global-fast-progress-script">
+(function(){
+  const SILENT=new Set(['admin.loan_watch','admin.write_status','ping','system.fast_health']);
+  let fpTimer=null,fpHide=null,fpSeq=0,activeSeq=0;
+  function ensureFP(){let x=document.querySelector('#pkpjFastProgressV1020');if(x)return x;x=document.createElement('div');x.id='pkpjFastProgressV1020';x.innerHTML='<div class="fp-card"><div class="fp-row"><span class="fp-title">Fast Engine</span><span class="fp-pct">0%</span></div><div class="fp-track"><div class="fp-fill"></div></div><div class="fp-stage">Bersedia</div></div>';document.body.appendChild(x);return x}
+  function label(a){const m={dashboard:'Memuat dashboard',assets:'Memuat inventori',loans:'Memuat pinjaman','admin.write':'Menyimpan perubahan','audit.loan_history':'Memuat laporan KEW.PA-6',movement_register:'Menjana daftar KEW.PA-6',users:'Memuat staf','admin.staff_directory':'Memuat direktori staf'};return m[a]||'Memproses data'}
+  function setFP(p,title,stage,seq){if(seq&&seq!==activeSeq)return;const x=ensureFP();x.classList.add('show');x.querySelector('.fp-title').textContent=title||'Fast Engine';x.querySelector('.fp-pct').textContent=Math.max(0,Math.min(100,Math.round(p)))+'%';x.querySelector('.fp-fill').style.width=Math.max(0,Math.min(100,p))+'%';x.querySelector('.fp-stage').textContent=stage||''}
+  function beginFP(title,stage){clearTimeout(fpHide);clearInterval(fpTimer);const seq=++fpSeq;activeSeq=seq;let p=6;setFP(p,title,stage||'Menghubungi server',seq);fpTimer=setInterval(()=>{if(seq!==activeSeq)return clearInterval(fpTimer);p=Math.min(88,p+(p<45?7:p<70?4:1.5));setFP(p,title,p<35?'Menghantar permintaan':p<70?'Server sedang memproses':'Menerima dan menyusun data',seq)},260);return seq}
+  function doneFP(seq,title){if(seq!==activeSeq)return;clearInterval(fpTimer);setFP(100,title||'Selesai','Selesai',seq);fpHide=setTimeout(()=>ensureFP().classList.remove('show'),650)}
+  function failFP(seq,title,msg){if(seq!==activeSeq)return;clearInterval(fpTimer);setFP(100,title||'Proses tidak selesai',msg||'Semak sambungan',seq);fpHide=setTimeout(()=>ensureFP().classList.remove('show'),1500)}
+  window.PKPJ_FAST_PROGRESS_V1020={begin:beginFP,set:setFP,done:doneFP,fail:failFP};
+
+  const rawJsonp=typeof window.jsonp==='function'?window.jsonp:null;
+  if(rawJsonp){window.jsonp=jsonp=async function(action,params={},options={}){const silent=options?.silentProgress||SILENT.has(String(action));const seq=silent?0:beginFP(label(action),'Fast Engine aktif');try{const r=await rawJsonp(action,params,{...options,retries:Number.isFinite(options.retries)?options.retries:0});if(seq)doneFP(seq,label(action));return r}catch(e){if(seq)failFP(seq,label(action),e?.message||'Sambungan gagal');throw e}}}
+  const rawPost=typeof window.postApi==='function'?window.postApi:null;
+  if(rawPost){window.postApi=postApi=async function(action,data={},options={}){const seq=beginFP('Menyimpan: '+String(action).replaceAll('.',' '),'Menghantar perubahan');try{setFP(28,'Menyimpan perubahan','Menunggu pengesahan server',seq);const r=await rawPost(action,data,options);doneFP(seq,'Simpanan berjaya');return r}catch(e){failFP(seq,'Simpanan gagal',e?.message||'Semak sambungan');throw e}}}
+
+  /* FAST KEW.PA-6: data dahulu, tandatangan ditangguhkan. */
+  window.loadAuditHistoryV9=async function(){
+    if(auditStateV9.loading)return auditStateV9.loading;
+    auditStateV9.complete=false;setAuditReadyV9(false);currentMovementRegisterData=null;
+    const button=document.querySelector('#auditLoadV9'),hint=document.querySelector('#auditLoadStatusV9');if(button)button.disabled=true;if(hint)hint.classList.remove('error');
+    const seq=beginFP('Laporan KEW.PA-6','Mengambil data laporan');
+    const job=(async()=>{let snapshot='',meta=null,rows=[],keys=new Set();for(let page=1;;page++){
+      if(hint)hint.textContent='Fast Engine: mengambil halaman '+page+'...';
+      const response=await jsonp('audit.loan_history',{page,pageSize:200,include_signatures:'0',snapshot_id:snapshot,_t:Date.now()},{timeoutMs:18000,retries:0,silentProgress:true});
+      if(!response||!Array.isArray(response.items)||!response.snapshot_id)throw new Error('Format laporan tidak lengkap. Pastikan Code.gs V10.19 telah dideploy.');
+      if(!meta){meta=response;snapshot=response.snapshot_id}if(snapshot!==response.snapshot_id)throw new Error('Data berubah semasa laporan dimuatkan. Cuba sekali lagi.');
+      response.items.forEach(r=>{if(r.row_key&&!keys.has(r.row_key)){keys.add(r.row_key);rows.push(r)}});
+      const pct=Math.min(92,12+Math.round((page/Math.max(1,response.totalPages))*78));setFP(pct,'Laporan KEW.PA-6',rows.length+' / '+response.total+' rekod',seq);
+      if(page>=response.totalPages)break;
+    }if(rows.length!==Number(meta.total||rows.length))throw new Error('Laporan tidak lengkap ('+rows.length+'/'+meta.total+').');
+    auditStateV9.rows=rows;auditStateV9.meta=meta;auditStateV9.complete=true;if(hint)hint.textContent='Lengkap: '+meta.total_loans+' pinjaman, '+meta.total_assets+' aset, '+rows.length+' rekod. Data sedia untuk pratonton/cetak.';setAuditReadyV9(rows.length>0);updateAuditSummaryV9();doneFP(seq,'Laporan sedia');return rows})();
+    auditStateV9.loading=job;try{return await job}catch(e){auditStateV9.rows=[];auditStateV9.meta=null;auditStateV9.complete=false;auditErrorV9(String(e?.message||e));setAuditReadyV9(false);failFP(seq,'Laporan gagal',e?.message||'Semak deployment');toast('Laporan belum lengkap',e?.message||String(e),'err');return null}finally{auditStateV9.loading=null;if(button)button.disabled=false}
+  };
+  const auditBtnOld=document.querySelector('#auditLoadV9');if(auditBtnOld){const auditBtn=auditBtnOld.cloneNode(true);auditBtnOld.replaceWith(auditBtn);auditBtn.addEventListener('click',window.loadAuditHistoryV9)}
+
+  /* Auto logout selepas 10 minit tiada aktiviti, amaran 30 saat. */
+  const IDLE=10*60*1000,WARN=30*1000;let last=Date.now(),timer=null,warnTimer=null,tick=null;
+  function active(){return !!(window.state&&state.operator&&state.operator.user_id)}
+  function ensureWarn(){let x=document.querySelector('#pkpjIdleWarnV1020');if(x)return x;x=document.createElement('div');x.id='pkpjIdleWarnV1020';x.innerHTML='<div class="idle-card-v1020"><h3>Sesi hampir tamat</h3><p>Tiada aktiviti dikesan. Sistem akan log keluar secara automatik untuk keselamatan.</p><div class="idle-count-v1020">30s</div><button class="btn btn-primary" type="button" id="idleStayV1020">Teruskan Sesi</button></div>';document.body.appendChild(x);x.querySelector('#idleStayV1020').onclick=mark;return x}
+  function hideWarn(){ensureWarn().classList.remove('show');clearInterval(tick);tick=null}
+  function logoutIdle(){hideWarn();clearTimeout(timer);clearTimeout(warnTimer);try{operatorLogout(false)}catch(e){}try{toast('Sesi tamat','Auto logout kerana tiada aktiviti selama 10 minit.','ok')}catch(e){}}
+  function schedule(){clearTimeout(timer);clearTimeout(warnTimer);hideWarn();if(!active())return;const age=Date.now()-last;const toWarn=Math.max(0,IDLE-WARN-age);warnTimer=setTimeout(()=>{if(!active())return;const box=ensureWarn();box.classList.add('show');let left=30;box.querySelector('.idle-count-v1020').textContent=left+'s';tick=setInterval(()=>{left--;box.querySelector('.idle-count-v1020').textContent=Math.max(0,left)+'s'},1000)},toWarn);timer=setTimeout(logoutIdle,Math.max(0,IDLE-age))}
+  function mark(){if(!active())return;last=Date.now();schedule()}
+  ['pointerdown','keydown','touchstart','wheel','scroll'].forEach(t=>window.addEventListener(t,mark,{passive:true}));
+  setInterval(()=>{if(active()&&!timer){last=Date.now();schedule()}else if(!active()){clearTimeout(timer);clearTimeout(warnTimer);hideWarn();timer=null}},3000);
+})();
+</script>
+
 </body>
 </html>
