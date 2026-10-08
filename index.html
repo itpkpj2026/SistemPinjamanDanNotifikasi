@@ -1382,6 +1382,7 @@ button:not(:disabled):active,.btn:not(:disabled):active,.asset-icon-btn:not(:dis
             </span>
             <select class="field" id="adminOperatorSelect"><option value="">Memuatkan senarai…</option></select>
           </div>
+          <div class="admin-operator-updated-at-v10205" id="adminOperatorUpdatedAtV10205" aria-live="polite"></div>
           <button class="btn btn-primary admin-login-btn neo-admin-enter-btn" type="button" id="operatorLoginBtn">
             <span>Masuk Portal Admin</span>
             <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M5 12h13"></path><path d="m14 7 5 5-5 5"></path></svg>
@@ -6070,6 +6071,264 @@ window.PKPJ_COMPLETED_DELETE_VERSION='10.18';
   };
 
   window.PKPJ_CHROME_WRITE_V10201={version:VERSION,mode:'IFRAME_FORM_POST',post:iframePostWrite};
+})();
+</script>
+
+<style id="pkpj-v10205-admin-mobile-staff-fix-style">
+/* V10.20.5 - Chrome Android Staf IT directory fix + waktu kemas kini. Mobile sahaja. */
+.admin-operator-updated-at-v10205{min-height:18px;margin:7px 4px 1px;color:#66849f;font-size:10px;line-height:1.35;font-weight:650;letter-spacing:.01em;opacity:.94}
+.admin-operator-updated-at-v10205.is-live{color:#28795e}
+.admin-operator-updated-at-v10205.is-cache{color:#6b7f96}
+@media(max-width:760px){
+  #adminOperatorSelect:disabled{opacity:.72!important;cursor:wait!important}
+  #adminOperatorSelect.operator-mobile-ready-v10205{opacity:1!important;border-color:#8fc8ef!important;box-shadow:0 0 0 3px rgba(33,137,220,.08)!important}
+  #adminOperatorLoadNote{font-size:12px!important;line-height:1.45!important}
+  .admin-operator-updated-at-v10205{font-size:11px!important;margin-top:8px!important;padding-left:2px!important}
+}
+</style>
+<script id="pkpj-v10205-admin-mobile-staff-fix-script">
+(function(){
+  'use strict';
+  const VERSION='10.20.5';
+  const CACHE_KEY='pkpj_admin_operator_directory_v10205';
+  const VERSION_KEY='pkpj_admin_mobile_directory_version';
+  const TYPE='PKPJ_IFRAME_BRIDGE_RESULT_V1014';
+  const ua=String(navigator.userAgent||'');
+  const isAndroid=/Android/i.test(ua);
+  const isChrome=/Chrome\//i.test(ua);
+  const isBrave=!!navigator.brave;
+  const chromeMobile=isAndroid&&isChrome&&!isBrave;
+  let seq=0;
+  let inflight=null;
+  let lastDirectoryUpdatedAt=0;
+  let lastDirectorySource='';
+
+  function safeGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
+  function safeSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+  function safeRemove(k){try{localStorage.removeItem(k)}catch(e){}}
+
+  /* Cache-bust SEKALI sahaja apabila versi mobile berubah. */
+  if(chromeMobile){
+    const previous=safeGet(VERSION_KEY);
+    if(previous!==VERSION){
+      safeRemove('pkpj_admin_operator_directory_v10124');
+      safeRemove('pkpj_admin_operator_directory_v10204');
+      safeRemove(CACHE_KEY);
+      safeRemove('pkpj_transport_mode_v10153');
+      safeSet(VERSION_KEY,VERSION);
+      try{
+        const u=new URL(location.href);
+        if(u.searchParams.get('__adminpv')!==VERSION){
+          u.searchParams.set('__adminpv',VERSION);
+          location.replace(u.toString());
+          return;
+        }
+      }catch(e){}
+    }
+  }
+
+  function normalize(list){
+    const arr=Array.isArray(list)?list:Array.isArray(list?.items)?list.items:[];
+    const seen=new Set();
+    return arr.filter(x=>{
+      if(!x||!x.user_id||!String(x.name||'').trim())return false;
+      const id=String(x.user_id);if(seen.has(id))return false;seen.add(id);return true;
+    }).map(x=>({
+      user_id:String(x.user_id),name:String(x.name||'').trim(),role:String(x.role||'STAFF_IT'),
+      active:x.active===undefined||x.active===null||x.active===''?'Ya':x.active,
+      department:String(x.department||''),unit:String(x.unit||'')
+    }));
+  }
+
+  function readCache(){
+    try{
+      const raw=JSON.parse(localStorage.getItem(CACHE_KEY)||'null');
+      if(!raw||!Array.isArray(raw.data)||!raw.data.length)return [];
+      if(Date.now()-Number(raw.savedAt||0)>24*60*60*1000)return [];
+      lastDirectoryUpdatedAt=Number(raw.savedAt||0);
+      lastDirectorySource='cache';
+      return normalize(raw.data);
+    }catch(e){return []}
+  }
+  function saveCache(list){
+    const good=normalize(list);if(!good.length)return;
+    const savedAt=Date.now();
+    lastDirectoryUpdatedAt=savedAt;
+    lastDirectorySource='live';
+    try{localStorage.setItem(CACHE_KEY,JSON.stringify({savedAt:savedAt,data:good}))}catch(e){}
+  }
+
+  function formatUpdatedAt(ts){
+    const n=Number(ts||0);if(!n)return '';
+    const d=new Date(n);if(Number.isNaN(d.getTime()))return '';
+    let h=d.getHours(),m=String(d.getMinutes()).padStart(2,'0');
+    let part='pagi';
+    if(h>=12&&h<19)part='petang';
+    else if(h>=19||h<5)part='malam';
+    const h12=h%12||12;
+    return h12+':'+m+' '+part;
+  }
+  function renderUpdatedAt(hasOperators){
+    const el=document.getElementById('adminOperatorUpdatedAtV10205');if(!el)return;
+    el.classList.remove('is-live','is-cache');
+    if(!hasOperators){el.textContent='';return}
+    if(lastDirectoryUpdatedAt){
+      el.textContent='Direktori dikemas kini: '+formatUpdatedAt(lastDirectoryUpdatedAt);
+      el.classList.add(lastDirectorySource==='live'?'is-live':'is-cache');
+    }else{
+      el.textContent='Direktori sedia • sedang menyemak kemas kini…';
+      el.classList.add('is-cache');
+    }
+  }
+
+  function apiUrl(){return String((typeof cfg!=='undefined'&&cfg&&cfg.apiUrl)||'').trim()}
+  function apiToken(){return String((typeof cfg!=='undefined'&&cfg&&cfg.token)||'').trim()}
+
+  function iframeGet(action,params={},timeoutMs=12000){
+    return new Promise((resolve,reject)=>{
+      const base=apiUrl();
+      if(!base){const e=new Error('API URL belum ditetapkan.');e.code='CONFIG';return reject(e)}
+      const id='ADMOP_'+Date.now()+'_'+(++seq)+'_'+Math.random().toString(36).slice(2,7);
+      const frame=document.createElement('iframe');
+      let done=false,timer=null;
+      const cleanup=()=>{window.removeEventListener('message',onMessage);if(timer)clearTimeout(timer);try{frame.remove()}catch(e){}};
+      const finish=(fn,val)=>{if(done)return;done=true;cleanup();fn(val)};
+      const onMessage=(event)=>{
+        const msg=event&&event.data;if(!msg||msg.type!==TYPE||String(msg.id)!==id)return;
+        const payload=msg.payload||{};
+        if(payload.ok)return finish(resolve,payload.data);
+        const e=new Error(payload?.error?.message||'API error');e.code=payload?.error?.code||'API';finish(reject,e);
+      };
+      window.addEventListener('message',onMessage);
+      const q=new URLSearchParams();
+      Object.entries(params||{}).forEach(([k,v])=>{if(v!==undefined&&v!==null&&v!=='')q.set(k,String(v))});
+      q.set('action',action);q.set('token',apiToken());q.set('_transport','iframe');q.set('_bridge_id',id);
+      q.set('_parent_origin',location.origin&&location.origin!=='null'?location.origin:'*');q.set('_cb',String(Date.now()));
+      frame.setAttribute('aria-hidden','true');frame.tabIndex=-1;
+      frame.style.cssText='position:fixed;width:1px;height:1px;left:-9999px;top:-9999px;border:0;opacity:0;pointer-events:none';
+      frame.src=base+(base.includes('?')?'&':'?')+q.toString();
+      (document.body||document.documentElement).appendChild(frame);
+      timer=setTimeout(()=>{const e=new Error('Direktori Staf IT mengambil masa terlalu lama.');e.code='TIMEOUT';finish(reject,e)},Math.max(6500,Number(timeoutMs)||12000));
+    });
+  }
+
+  function activeOperatorList(list){
+    return normalize(list).filter(x=>['SUPER_ADMIN','STAFF_IT'].includes(String(x.role||''))&&String(x.active||'Ya').trim().toLowerCase()!=='tidak')
+      .sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''),'ms',{sensitivity:'base'}));
+  }
+
+  function fallbackFromStaff(list){
+    const staff=normalize(list);
+    const known=(typeof KNOWN_IT_OPERATORS_V10124!=='undefined'&&Array.isArray(KNOWN_IT_OPERATORS_V10124))?KNOWN_IT_OPERATORS_V10124:[];
+    const key=s=>String(s||'').trim().replace(/\s+/g,' ').toLowerCase();
+    const map=new Map(known.map(x=>[key(x.name),x]));
+    return staff.map(x=>{
+      const k=map.get(key(x.name));
+      return k?{...x,role:k.role||'STAFF_IT',active:'Ya'}:null;
+    }).filter(Boolean);
+  }
+
+  function mergeState(list){
+    const good=normalize(list);
+    const byId=new Map((state.users||[]).map(x=>[String(x.user_id),x]));
+    good.forEach(x=>byId.set(String(x.user_id),{...(byId.get(String(x.user_id))||{}),...x}));
+    state.users=[...byId.values()];
+    state.loadedAt.users=Date.now();
+    try{saveAdminFastCache()}catch(e){}
+  }
+
+  function render(list,message){
+    const operators=activeOperatorList(list);
+    const sel=$('#adminOperatorSelect');
+    if(sel){
+      sel.innerHTML=operators.length
+        ? '<option value="">Pilih nama staf IT…</option>'+operators.map(x=>`<option value="${attr(x.user_id)}" data-name="${attr(x.name)}" data-role="${attr(x.role||'STAFF_IT')}">${esc(x.name)}</option>`).join('')
+        : '<option value="">Memuatkan senarai…</option>';
+      sel.disabled=!operators.length;
+      sel.classList.toggle('operator-mobile-ready-v10205',!!operators.length);
+    }
+    $('#operatorExistingBox')?.classList.remove('hidden');
+    const boot=$('#operatorBootstrapBox');if(boot)boot.classList.toggle('hidden',!!operators.length);
+    const note=$('#adminOperatorLoadNote');
+    if(note){
+      note.classList.remove('operator-warn-v10124','operator-ok-v10124');
+      if(operators.length){note.textContent=`${operators.length} nama Staf IT sedia digunakan.`;note.classList.add('operator-ok-v10124')}
+      else{note.textContent=message||'Senarai Staf IT sedang dimuatkan. Sistem akan cuba semula secara automatik.';note.classList.add('operator-warn-v10124')}
+    }
+    renderUpdatedAt(!!operators.length);
+    try{renderItOperators()}catch(e){}
+    return operators;
+  }
+
+  async function fetchLive(force){
+    if(chromeMobile){
+      try{
+        const res=await iframeGet('admin.operators',{_t:Date.now(),refresh:force?'1':''},12000);
+        const live=activeOperatorList(res);
+        if(live.length)return live;
+      }catch(e){console.warn('Chrome mobile admin.operators iframe belum berjaya.',e)}
+      try{
+        const staff=await iframeGet('admin.staff_directory',{_t:Date.now()},12000);
+        const fallback=activeOperatorList(fallbackFromStaff(staff));
+        if(fallback.length)return fallback;
+      }catch(e){console.warn('Chrome mobile fallback Staf IT belum berjaya.',e)}
+    }
+
+    try{
+      const res=await jsonp('admin.operators',{_t:Date.now()},{timeoutMs:10000,retries:0});
+      const live=activeOperatorList(res);
+      if(live.length)return live;
+    }catch(e){console.warn('admin.operators fallback belum respons.',e)}
+
+    try{
+      if(typeof fallbackOperatorsFromStaffDirectoryV10124==='function'){
+        const fb=activeOperatorList(await fallbackOperatorsFromStaffDirectoryV10124());
+        if(fb.length)return fb;
+      }
+    }catch(e){console.warn('Fallback direktori Staf IT gagal.',e)}
+    return [];
+  }
+
+  /* Override terakhir: cache-first + iframe-first pada Chrome Android. */
+  window.loadOperatorOptions=loadOperatorOptions=async function(force=false){
+    if(inflight)return inflight;
+    const run=(async()=>{
+      const stateList=activeOperatorList(state.users||[]);
+      const cached=readCache();
+      const immediate=stateList.length?stateList:cached;
+      if(immediate.length){mergeState(immediate);render(immediate);if(!force)return immediate}
+      else render([],chromeMobile?'Menyambungkan direktori Staf IT melalui sambungan Chrome…':'Memuatkan senarai Staf IT…');
+
+      const live=await fetchLive(force);
+      if(live.length){mergeState(live);saveCache(live);return render(live)}
+      if(immediate.length)return render(immediate,'Menggunakan senarai tersimpan sementara.');
+      render([],'Direktori belum menjawab. Tekan Cuba Muat Semula atau tunggu beberapa saat.');
+      throw new Error('Senarai Staf IT belum dapat dimuatkan.');
+    })();
+    inflight=run;
+    try{return await run}finally{inflight=null}
+  };
+
+  document.addEventListener('DOMContentLoaded',()=>{
+    const sel=$('#adminOperatorSelect');
+    const cached=readCache();
+    const stateList=activeOperatorList(state.users||[]);
+    const immediate=stateList.length?stateList:cached;
+    if(immediate.length){mergeState(immediate);render(immediate)}
+    else if(sel){sel.disabled=true;render([],chromeMobile?'Menyambungkan direktori Staf IT melalui sambungan Chrome…':'Memuatkan senarai Staf IT…')}
+
+    const retry=$('#adminOperatorRetryBtn');
+    if(retry)retry.onclick=()=>loadOperatorOptions(true).catch(()=>{});
+    const login=$('#operatorLoginBtn');if(login)login.onclick=operatorLogin;
+
+    setTimeout(()=>loadOperatorOptions(true).catch(()=>{}),120);
+    if(chromeMobile){
+      setTimeout(()=>{if(!activeOperatorList(state.users||[]).length)loadOperatorOptions(true).catch(()=>{})},3500);
+      setTimeout(()=>{if(!activeOperatorList(state.users||[]).length)loadOperatorOptions(true).catch(()=>{})},8000);
+    }
+  },{once:true});
+
+  window.PKPJ_ADMIN_MOBILE_STAFF_V10205={version:VERSION,chromeMobile,cacheKey:CACHE_KEY,getUpdatedAt:()=>lastDirectoryUpdatedAt};
 })();
 </script>
 
