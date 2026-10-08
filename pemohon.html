@@ -6696,6 +6696,62 @@ document.addEventListener('DOMContentLoaded',()=>{
 })();
 </script>
 
+
+
+<!-- =========================================================
+     PKPJ V10.22.0 - SMART PROCESS ENGINE (PEMOHON)
+     Keep one circular loader; replace estimated percentage with stage + elapsed time.
+========================================================= -->
+<style id="pkpj-v1022-smart-process-applicant-style">
+.pretty-loader-pct-v1020{display:none!important}
+.pretty-loader .loader-core{font-size:11px!important}
+.pretty-loader .loader-core:after{display:none!important;content:none!important}
+.pretty-loader.smart-done-v1022 .orbit-ring,.pretty-loader.smart-fail-v1022 .orbit-ring{animation:none!important}
+.pretty-loader.smart-done-v1022 .loader-core{font-size:0!important;background:#19a66a!important}
+.pretty-loader.smart-fail-v1022 .loader-core{font-size:0!important;background:#d84b61!important}
+.pretty-loader.smart-done-v1022 .loader-core:before,.pretty-loader.smart-fail-v1022 .loader-core:before{font-size:28px;font-weight:950;color:#fff}
+.pretty-loader.smart-done-v1022 .loader-core:before{content:'✓'}
+.pretty-loader.smart-fail-v1022 .loader-core:before{content:'!'}
+.pretty-smart-elapsed-v1022{font-size:11px;font-weight:850;color:#416783;font-variant-numeric:tabular-nums;margin-top:-5px}
+.pretty-smart-wait-v1022{min-height:18px;margin-top:6px;font-size:9.5px;line-height:1.4;color:#7a8fa2}
+.pretty-loader.smart-slow-v1022 .pretty-smart-wait-v1022{color:#9a6814;font-weight:800}
+</style>
+<script id="pkpj-v1022-smart-process-applicant-script">
+(function(){
+  const VERSION='10.22.0';let started=0,timer=null,lastVisible=false;
+  function root(){return document.querySelector('#prettyLoader')}
+  function ensureExtras(){
+    const x=root();if(!x)return null;const card=x.querySelector('.pretty-loader-card');if(!card)return x;
+    let elapsed=card.querySelector('.pretty-smart-elapsed-v1022');
+    if(!elapsed){elapsed=document.createElement('div');elapsed.className='pretty-smart-elapsed-v1022';elapsed.textContent='Masa: 0.0 saat';const msg=card.querySelector('#prettyLoaderMessage');if(msg)msg.insertAdjacentElement('afterend',elapsed);else card.appendChild(elapsed)}
+    let wait=card.querySelector('.pretty-smart-wait-v1022');
+    if(!wait){wait=document.createElement('div');wait.className='pretty-smart-wait-v1022';elapsed.insertAdjacentElement('afterend',wait)}
+    return x;
+  }
+  function stateFromHiddenPct(){
+    const x=root();if(!x)return 'running';const s=String(x.querySelector('.pretty-loader-pct-v1020')?.textContent||'').toUpperCase();
+    if(s.includes('SELESAI'))return 'done';
+    const title=String(x.querySelector('#prettyLoaderTitle')?.textContent||'').toLowerCase();
+    if(/gagal|belum selesai|ralat/.test(title))return 'fail';return 'running';
+  }
+  function tick(){
+    const x=ensureExtras();if(!x||x.classList.contains('hidden'))return;const sec=Math.max(0,(Date.now()-started)/1000);
+    const elapsed=x.querySelector('.pretty-smart-elapsed-v1022'),wait=x.querySelector('.pretty-smart-wait-v1022');if(elapsed)elapsed.textContent='Masa: '+sec.toFixed(1)+' saat';
+    x.classList.toggle('smart-slow-v1022',sec>=5);
+    if(wait){if(sec>=12)wait.textContent='Server mengambil masa lebih lama daripada biasa. Sistem masih menunggu pengesahan.';else if(sec>=5)wait.textContent='Masih diproses — jangan hantar permohonan yang sama berulang kali.';else wait.textContent=''}
+  }
+  function sync(){
+    const x=ensureExtras();if(!x)return;const visible=!x.classList.contains('hidden');
+    if(visible&&!lastVisible){started=Date.now();clearInterval(timer);timer=setInterval(tick,100);tick()}
+    if(!visible&&lastVisible){clearInterval(timer);timer=null;x.classList.remove('smart-done-v1022','smart-fail-v1022','smart-slow-v1022')}
+    lastVisible=visible;if(!visible)return;const s=stateFromHiddenPct();x.classList.toggle('smart-done-v1022',s==='done');x.classList.toggle('smart-fail-v1022',s==='fail');
+  }
+  const observer=new MutationObserver(sync);
+  function boot(){const x=ensureExtras();if(!x)return setTimeout(boot,120);observer.observe(x,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['class']});sync()}
+  boot();window.PKPJ_APPLICANT_SMART_PROCESS_V1022={version:VERSION,mode:'STAGE_ELAPSED_NO_FAKE_PERCENT'};
+})();
+</script>
+
 </body>
 </html>
 
