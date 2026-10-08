@@ -6185,5 +6185,198 @@ document.addEventListener('DOMContentLoaded',()=>{
 })();
 </script>
 
+
+
+<!-- =========================================================
+     PKPJ V10.20.2 - MOBILE STAFF DIRECTORY FIX
+     - Khas paparan telefon; desktop tidak diubah.
+     - Betulkan fallback manual yang mengunci autocomplete walaupun API sudah pulang data.
+     - Jangan timpa cache nama staf yang baik dengan respons kosong sementara.
+     - Dropdown nama lebih mudah digunakan pada Chrome Android.
+========================================================= -->
+<style id="pkpj-v10202-mobile-staff-style">
+@media(max-width:600px){
+  #loginOverlay .neo-login-card{
+    overflow:visible!important;
+    padding:27px 17px 23px!important;
+  }
+  #loginOverlay .neo-name-group{
+    position:relative!important;
+    z-index:160!important;
+  }
+  #loginOverlay .neo-input-shell{
+    height:56px!important;
+  }
+  #loginOverlay .neo-suggestions,
+  #loginOverlay #staffSuggestions{
+    position:absolute!important;
+    top:72px!important;
+    left:0!important;
+    right:0!important;
+    width:100%!important;
+    max-height:min(42dvh,330px)!important;
+    overflow-y:auto!important;
+    -webkit-overflow-scrolling:touch!important;
+    margin:0!important;
+    padding:7px!important;
+    z-index:9999!important;
+    border-radius:16px!important;
+    background:#f3f8ff!important;
+    border:1px solid #cdddec!important;
+    box-shadow:0 18px 42px rgba(31,74,117,.22)!important;
+  }
+  #loginOverlay #staffSuggestions.hidden{display:none!important}
+  #loginOverlay #staffSuggestions .suggestion{
+    min-height:54px!important;
+    padding:10px 12px!important;
+    display:block!important;
+    width:100%!important;
+    text-align:left!important;
+    border:0!important;
+    border-bottom:1px solid #e5edf5!important;
+    background:transparent!important;
+  }
+  #loginOverlay #staffSuggestions .suggestion:last-child{border-bottom:0!important}
+  #loginOverlay #staffSuggestions .suggestion b{font-size:13px!important;line-height:1.25!important}
+  #loginOverlay #staffSuggestions .suggestion small{font-size:9px!important;line-height:1.35!important;margin-top:3px!important}
+  #loginOverlay .neo-status,
+  #loginOverlay #staffLoadStatus{
+    min-height:18px!important;
+    font-size:9px!important;
+    line-height:1.35!important;
+  }
+  #loginOverlay .neo-scene{
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+  }
+}
+</style>
+
+<script id="pkpj-v10202-mobile-staff-directory-script">
+/* V10.20.2 - MOBILE STAFF DIRECTORY RECOVERY */
+(function(){
+  const VERSION='10.20.2';
+  const MOBILE_RE=/Android|iPhone|iPad|iPod|Mobile|IEMobile|Opera Mini/i;
+  const isMobile=()=>MOBILE_RE.test(String(navigator.userAgent||'')) || !!(window.matchMedia&&matchMedia('(pointer:coarse)').matches&&innerWidth<=900);
+  if(!isMobile()) return; // khas telefon sahaja
+
+  state.manualNameExplicitV10202=false;
+
+  const baseEnableManual=window.enableManualNameMode;
+  if(typeof baseEnableManual==='function'){
+    window.enableManualNameMode=enableManualNameMode=function(){
+      state.manualNameExplicitV10202=true;
+      return baseEnableManual.apply(this,arguments);
+    };
+  }
+
+  function releaseAutoManualMode(){
+    if(state.manualNameExplicitV10202) return;
+    state.manualNameMode=false;
+    const note=$('#manualNameNote');if(note)note.classList.add('hidden');
+    const btn=$('#manualNameBtn');if(btn){btn.setAttribute('aria-pressed','false');btn.title='Isian nama manual';}
+    const input=$('#loginName');if(input)input.placeholder='Taip atau pilih nama staf...';
+  }
+
+  function keepBestStaffList(incoming){
+    const list=normalizeStaffList(incoming);
+    if(list.length) return list;
+    const current=normalizeStaffList(state.staffList||[]);
+    if(current.length) return current;
+    const cached=readStaffCache();
+    return normalizeStaffList(cached||[]);
+  }
+
+  // Override fungsi aktif supaya telefon baru keluar semula daripada fallback manual
+  // sebaik sahaja direktori berjaya dimuatkan.
+  window.loadStaffNames=loadStaffNames=async function(silent=false,force=false){
+    if(state.staffLoadingPromise)return state.staffLoadingPromise;
+    const btn=$('#staffRetryBtn');if(btn)btn.disabled=true;
+    if(!silent)setStaffLoadStatus(state.staffList.length?`${state.staffList.length} nama sedia; menyemak kemas kini...`:'Memuatkan nama staf...','loading');
+
+    const task=(async()=>{
+      try{
+        const raw=await jsonp('applicant.staff_list',{refresh:force?'1':'',_t:Date.now()},{timeoutMs:8500,retries:0});
+        const serverList=normalizeStaffList(raw);
+        const list=keepBestStaffList(serverList);
+
+        // Respons kosong sementara tidak boleh memadam roster yang masih sah.
+        if(serverList.length){
+          state.staffList=serverList;
+          state.staffRetryCount=0;
+          try{localSetV9(STAFF_CACHE_KEY,JSON.stringify({savedAt:Date.now(),data:serverList,authoritative:true}));}catch(e){}
+          releaseAutoManualMode();
+          setStaffLoadStatus(`${serverList.length} nama staf sedia. Sentuh ruangan nama untuk memilih.`,'ready');
+          const input=$('#loginName');
+          if(input&&document.activeElement===input)handleNameSearch();
+          return serverList;
+        }
+
+        if(list.length){
+          state.staffList=list;
+          releaseAutoManualMode();
+          setStaffLoadStatus(`${list.length} nama staf sedia daripada cache. Server sedang disegerakkan.`,'local');
+          if(document.activeElement===$('#loginName'))handleNameSearch();
+          return list;
+        }
+
+        // Hanya masuk manual fallback jika memang tiada nama dari semua sumber.
+        state.manualNameMode=true;
+        $('#manualNameNote')?.classList.remove('hidden');
+        setStaffLoadStatus('Direktori staf belum tersedia. Cuba sentuh semula ruangan nama atau gunakan isian manual sementara.','offline');
+        return [];
+      }catch(error){
+        const cached=keepBestStaffList([]);
+        if(cached.length){
+          state.staffList=cached;
+          releaseAutoManualMode();
+          setStaffLoadStatus(`${cached.length} nama staf sedia. Sambungan server sedang dicuba semula.`,'local');
+          if(document.activeElement===$('#loginName'))handleNameSearch();
+          return cached;
+        }
+
+        state.manualNameMode=true;
+        $('#manualNameNote')?.classList.remove('hidden');
+        setStaffLoadStatus(staffFetchErrorV9(error),'offline');
+        state.staffRetryCount=(state.staffRetryCount||0)+1;
+        if(state.staffRetryCount<=3&&!state.staffRetryTimer){
+          const delays=[3500,7000,12000];
+          const delay=delays[Math.min(state.staffRetryCount-1,delays.length-1)];
+          state.staffRetryTimer=setTimeout(()=>{state.staffRetryTimer=null;loadStaffNames(true,false);},delay);
+        }
+        return [];
+      }
+    })();
+
+    state.staffLoadingPromise=task;
+    try{return await task;}
+    finally{state.staffLoadingPromise=null;if(btn)btn.disabled=false;}
+  };
+
+  // Bila pengguna sentuh ruangan nama dan roster sudah ada, pastikan fallback automatik
+  // tidak lagi menghalang dropdown.
+  const nameInput=$('#loginName');
+  if(nameInput){
+    const unlock=()=>{
+      if(state.staffList&&state.staffList.length&&!state.manualNameExplicitV10202){
+        releaseAutoManualMode();
+        setTimeout(()=>handleNameSearch(),0);
+      }else if(!state.staffLoadingPromise&&(!state.staffList||!state.staffList.length)){
+        loadStaffNames(true,false);
+      }
+    };
+    nameInput.addEventListener('focus',unlock,{passive:true});
+    nameInput.addEventListener('click',unlock,{passive:true});
+    nameInput.addEventListener('touchend',unlock,{passive:true});
+  }
+
+  // Telefon baru: cuba roster segera dan ulang sekali selepas page stabil.
+  setTimeout(()=>{if(!state.staffList.length)loadStaffNames(true,false);},250);
+  setTimeout(()=>{if(!state.staffList.length&&!state.staffLoadingPromise)loadStaffNames(true,false);},4200);
+
+  window.PKPJ_MOBILE_STAFF_V10202={version:VERSION,releaseAutoManualMode};
+})();
+</script>
+
 </body>
 </html>
