@@ -7012,5 +7012,139 @@ window.PKPJ_COMPLETED_DELETE_VERSION='10.18';
 })();
 </script>
 
+
+
+<style id="pkpj-v1024-admin-instant-login-style">
+#adminLoginOverlay:not(.hidden) ~ #pkpjCircleProgressV1020,
+#adminLoginOverlay:not(.hidden) ~ #adminProcessV1019,
+#adminLoginOverlay:not(.hidden) ~ #pkpjFastProgressV1020{display:none!important}
+</style>
+<script id="pkpj-v1024-admin-instant-login-directory">
+(function(){
+  'use strict';
+  const VERSION='10.24.0';
+  const STABLE_CACHE='pkpj_admin_operator_directory_stable_v1';
+  const REV_KEY='pkpj_admin_operator_revision_v1';
+  const MAX_AGE=90*24*60*60*1000;
+  let inflight=null;
+
+  function lsGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
+  function lsSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+  function hideProgress(){
+    document.getElementById('pkpjCircleProgressV1020')?.classList.remove('show');
+    document.getElementById('adminProcessV1019')?.classList.remove('show');
+    document.getElementById('pkpjFastProgressV1020')?.classList.remove('show');
+  }
+  function normalize(input){
+    const raw=Array.isArray(input)?input:Array.isArray(input?.items)?input.items:Array.isArray(input?.data)?input.data:[];
+    const seen=new Set();
+    return raw.map(x=>({
+      user_id:String(x?.user_id||x?.id||'').trim(),name:String(x?.name||'').trim(),
+      role:String(x?.role||'STAFF_IT').trim(),active:x?.active===undefined||x?.active===null||x?.active===''?'Ya':x.active,
+      department:String(x?.department||''),unit:String(x?.unit||'')
+    })).filter(x=>{
+      const active=!['tidak','no','false','0','inactive','tidak aktif'].includes(String(x.active||'Ya').trim().toLowerCase());
+      if(!x.user_id||!x.name||!active||!['SUPER_ADMIN','STAFF_IT'].includes(x.role)||seen.has(x.user_id))return false;
+      seen.add(x.user_id);return true;
+    }).sort((a,b)=>a.name.localeCompare(b.name,'ms',{sensitivity:'base'}));
+  }
+  function cacheSave(list,rev){
+    const good=normalize(list);if(!good.length)return;
+    lsSet(STABLE_CACHE,JSON.stringify({savedAt:Date.now(),data:good}));
+    if(rev)lsSet(REV_KEY,String(rev));
+    // Keep old cache populated too so older handlers never see an empty directory.
+    try{localStorage.setItem('pkpj_admin_operator_directory_v10206',JSON.stringify({savedAt:Date.now(),version:VERSION,data:good}))}catch(e){}
+  }
+  function cacheRead(){
+    try{
+      const x=JSON.parse(lsGet(STABLE_CACHE)||'null');
+      if(x&&Array.isArray(x.data)&&x.data.length&&Date.now()-Number(x.savedAt||0)<=MAX_AGE)return normalize(x.data);
+    }catch(e){}
+    for(const key of ['pkpj_admin_operator_directory_v10206','pkpj_admin_operator_directory_v10205','pkpj_admin_operator_directory_v10124']){
+      try{
+        const x=JSON.parse(lsGet(key)||'null');
+        const list=normalize(Array.isArray(x)?x:x?.data);
+        if(list.length){cacheSave(list,lsGet(REV_KEY)||'');return list}
+      }catch(e){}
+    }
+    return [];
+  }
+  function mergeState(list){
+    const good=normalize(list),byId=new Map((state.users||[]).map(x=>[String(x.user_id),x]));
+    good.forEach(x=>byId.set(String(x.user_id),{...(byId.get(String(x.user_id))||{}),...x}));
+    state.users=[...byId.values()];state.loadedAt.users=Date.now();
+    try{saveAdminFastCache()}catch(e){}
+    return good;
+  }
+  function render(list,source){
+    const good=mergeState(list),sel=document.getElementById('adminOperatorSelect');
+    if(sel){
+      const current=String(sel.value||'');
+      sel.innerHTML=good.length?'<option value="">Pilih nama staf IT…</option>'+good.map(x=>`<option value="${attr(x.user_id)}" data-name="${attr(x.name)}" data-role="${attr(x.role)}">${esc(x.name)}</option>`).join(''):'<option value="">Senarai belum tersedia…</option>';
+      sel.disabled=!good.length;
+      if(current&&good.some(x=>x.user_id===current))sel.value=current;
+    }
+    document.getElementById('operatorExistingBox')?.classList.remove('hidden');
+    const boot=document.getElementById('operatorBootstrapBox');if(boot)boot.classList.toggle('hidden',!!good.length);
+    const note=document.getElementById('adminOperatorLoadNote');if(note){
+      note.textContent=good.length?`${good.length} nama Staf IT sedia digunakan.`:'Memuatkan senarai Staf IT untuk kali pertama…';
+      note.classList.remove('operator-warn-v10124','operator-ok-v10124');note.classList.add(good.length?'operator-ok-v10124':'operator-warn-v10124');
+    }
+    const stamp=document.getElementById('adminOperatorUpdatedAtV10205');if(stamp&&good.length){
+      let ts=0;try{ts=Number(JSON.parse(lsGet(STABLE_CACHE)||'{}').savedAt||0)}catch(e){}
+      stamp.textContent=ts?'Direktori tersimpan • sedia digunakan':'';
+      stamp.classList.remove('is-live');stamp.classList.add('is-cache');
+    }
+    hideProgress();
+    try{renderItOperators()}catch(e){}
+    return good;
+  }
+  function direct(action,params={},timeout=6500){
+    hideProgress();
+    const p={...(params||{}),_dirv:VERSION,_t:Date.now()};
+    if(typeof jsonpOnce==='function')return jsonpOnce(action,p,timeout);
+    return window.jsonp(action,p,{timeoutMs:timeout,retries:0,silentProgress:true});
+  }
+  async function fetchBundle(){
+    const raw=await direct('admin.operator_directory_fast',{},8500);
+    const list=normalize(raw),rev=String(raw?.revision||'');
+    if(list.length){cacheSave(list,rev);return {list,rev}}
+    return {list:[],rev};
+  }
+  async function refreshIfNeeded(immediate){
+    const localRev=String(lsGet(REV_KEY)||'');
+    if(!immediate.length){const full=await fetchBundle();return full.list.length?render(full.list,'live'):[]}
+    try{
+      const r=await direct('admin.operator_revision',{rev:localRev},5000);
+      const serverRev=String(r?.revision||'');
+      if(serverRev&&localRev&&serverRev===localRev)return immediate;
+      const full=await fetchBundle();
+      if(full.list.length)return render(full.list,'live');
+    }catch(e){console.warn('Semakan revision Staf IT tertangguh.',e?.message||e)}
+    return immediate;
+  }
+
+  window.loadOperatorOptions=loadOperatorOptions=async function(force=false){
+    hideProgress();
+    if(inflight)return inflight;
+    const stateList=normalize(state.users||[]),cached=cacheRead(),immediate=stateList.length?stateList:cached;
+    if(immediate.length)render(immediate,'cache');else render([],'');
+    const task=(async()=>{try{return await refreshIfNeeded(immediate)}catch(e){return immediate}})();
+    inflight=task;try{return await task}finally{if(inflight===task)inflight=null;hideProgress()}
+  };
+
+  function boot(){
+    hideProgress();
+    const cached=cacheRead();if(cached.length)render(cached,'cache');
+    const retry=document.getElementById('adminOperatorRetryBtn');if(retry)retry.onclick=()=>loadOperatorOptions(true);
+    const login=document.getElementById('operatorLoginBtn');if(login)login.onclick=operatorLogin;
+    const verify=()=>loadOperatorOptions(true).catch(()=>{});
+    if('requestIdleCallback' in window)requestIdleCallback(verify,{timeout:2200});else setTimeout(verify,900);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
+  window.PKPJ_ADMIN_INSTANT_LOGIN_DIRECTORY_V1024={version:VERSION,cache:STABLE_CACHE,mode:'STALE_WHILE_REVALIDATE'};
+})();
+</script>
+
 </body>
 </html>
