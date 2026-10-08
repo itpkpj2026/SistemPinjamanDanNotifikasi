@@ -7260,5 +7260,142 @@ document.addEventListener('DOMContentLoaded',()=>{
   };
 })();
 </script>
+
+
+<style id="pkpj-v1024-instant-login-style">
+/* V10.24 - directory cache is first paint; revision validation is silent. */
+#loginOverlay:not(.hidden) ~ #prettyLoader,
+#loginOverlay:not(.hidden) ~ #pkpjApplicantProgressV1120{display:none!important}
+#staffLoadStatus.pkpj-dir-ready-v1024{color:#28795e!important;background:#eef9f4!important;border-color:#c5ead7!important}
+</style>
+<script id="pkpj-v1024-instant-login-directory">
+(function(){
+  'use strict';
+  const VERSION='10.24.0';
+  const STABLE_CACHE='pkpj_applicant_staff_directory_stable_v1';
+  const REV_KEY='pkpj_applicant_staff_revision_v1';
+  const MAX_AGE=90*24*60*60*1000;
+  let inflight=null;
+
+  function lsGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
+  function lsSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+  function hideProgress(){
+    document.getElementById('prettyLoader')?.classList.add('hidden');
+    document.getElementById('pkpjApplicantProgressV1120')?.classList.remove('show');
+  }
+  function clean(input){return typeof normalizeStaffList==='function'?normalizeStaffList(input):[]}
+  function cacheRead(){
+    try{
+      const x=JSON.parse(lsGet(STABLE_CACHE)||'null');
+      if(x&&Array.isArray(x.data)&&x.data.length&&Date.now()-Number(x.savedAt||0)<=MAX_AGE)return clean(x.data);
+    }catch(e){}
+    // One-time migration from the directory caches that already exist on the device.
+    try{
+      const migrated=typeof readStaffCache==='function'?clean(readStaffCache()):[];
+      if(migrated.length){cacheSave(migrated,lsGet(REV_KEY)||'');return migrated}
+    }catch(e){}
+    return [];
+  }
+  function cacheSave(list,rev){
+    const good=clean(list);if(!good.length)return;
+    lsSet(STABLE_CACHE,JSON.stringify({savedAt:Date.now(),data:good}));
+    if(rev)lsSet(REV_KEY,String(rev));
+    try{saveStaffCache(good)}catch(e){}
+  }
+  function renderReady(list,source){
+    const good=clean(list);if(!good.length)return [];
+    state.staffList=good;state.staffRetryCount=0;
+    if(!state.manualNameExplicitV10202){
+      state.manualNameMode=false;
+      document.getElementById('manualNameNote')?.classList.add('hidden');
+      const b=document.getElementById('manualNameBtn');if(b){b.setAttribute('aria-pressed','false');b.title='Isian nama manual'}
+    }
+    const input=document.getElementById('loginName');if(input)input.placeholder='Taip atau pilih nama staf...';
+    try{
+      setStaffLoadStatus(`${good.length} nama staf sedia.`,'ready');
+      document.getElementById('staffLoadStatus')?.classList.add('pkpj-dir-ready-v1024');
+    }catch(e){}
+    hideProgress();
+    if(input&&document.activeElement===input&&!state.manualNameMode)setTimeout(()=>{try{handleNameSearch()}catch(e){}},0);
+    return good;
+  }
+  function direct(action,params={},timeout=6500){
+    hideProgress();
+    const p={...(params||{}),_dirv:VERSION,_t:Date.now()};
+    if(typeof jsonpOnce==='function')return jsonpOnce(action,p,timeout);
+    return window.jsonp(action,p,{timeoutMs:timeout,retries:0,silentProgress:true});
+  }
+  async function fetchBundle(){
+    const raw=await direct('applicant.staff_directory_fast',{},9000);
+    const list=clean(raw);
+    const rev=String(raw?.revision||'');
+    if(list.length){cacheSave(list,rev);return {list,rev}}
+    return {list:[],rev};
+  }
+  async function refreshIfNeeded(immediate){
+    const localRev=String(lsGet(REV_KEY)||'');
+    if(!immediate.length){
+      const full=await fetchBundle();
+      if(full.list.length)return renderReady(full.list,'live');
+      return [];
+    }
+    try{
+      const r=await direct('applicant.staff_revision',{rev:localRev},5000);
+      const serverRev=String(r?.revision||'');
+      if(serverRev&&localRev&&serverRev===localRev)return immediate;
+      // First V10.24 visit or actual directory change: one full fetch only.
+      const full=await fetchBundle();
+      if(full.list.length)return renderReady(full.list,'live');
+    }catch(e){
+      console.warn('Semakan revision direktori pemohon tertangguh.',e?.message||e);
+    }
+    return immediate;
+  }
+
+  window.loadStaffNames=loadStaffNames=async function(silent=false,force=false){
+    hideProgress();
+    if(inflight)return inflight;
+    const immediate=(state.staffList&&state.staffList.length)?clean(state.staffList):cacheRead();
+    if(immediate.length)renderReady(immediate,'cache');
+    else if(!silent){try{setStaffLoadStatus('Memuatkan senarai nama untuk kali pertama…','loading')}catch(e){}}
+    const task=(async()=>{
+      try{return await refreshIfNeeded(immediate)}
+      catch(e){
+        if(immediate.length)return immediate;
+        state.manualNameMode=true;
+        document.getElementById('manualNameNote')?.classList.remove('hidden');
+        try{setStaffLoadStatus('Direktori belum menjawab. Isian nama manual masih boleh digunakan.','offline')}catch(_){ }
+        return [];
+      }
+    })();
+    inflight=task;state.staffLoadingPromise=task;
+    try{return await task}finally{if(inflight===task)inflight=null;if(state.staffLoadingPromise===task)state.staffLoadingPromise=null;hideProgress()}
+  };
+
+  function boot(){
+    hideProgress();
+    const immediate=cacheRead();
+    if(immediate.length)renderReady(immediate,'cache');
+    const input=document.getElementById('loginName');
+    if(input){
+      const open=()=>{
+        hideProgress();
+        if(state.staffList?.length&&!state.manualNameMode){try{handleNameSearch()}catch(e){}}
+        else if(!state.staffLoadingPromise)loadStaffNames(true,false);
+      };
+      input.addEventListener('focus',open,{passive:true});
+      input.addEventListener('click',open,{passive:true});
+      input.addEventListener('touchend',open,{passive:true});
+    }
+    const retry=document.getElementById('staffRetryBtn');if(retry)retry.onclick=()=>loadStaffNames(false,true);
+    // Revision validation is deliberately delayed/idle so login first paint wins.
+    const verify=()=>loadStaffNames(true,true).catch(()=>{});
+    if('requestIdleCallback' in window)requestIdleCallback(verify,{timeout:2200});else setTimeout(verify,900);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
+  window.PKPJ_INSTANT_LOGIN_DIRECTORY_V1024={version:VERSION,cache:STABLE_CACHE,mode:'STALE_WHILE_REVALIDATE'};
+})();
+</script>
+
 </body>
 </html>
