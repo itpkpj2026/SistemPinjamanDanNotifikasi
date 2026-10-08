@@ -6971,5 +6971,167 @@ document.addEventListener('DOMContentLoaded',()=>{
   window.PKPJ_APPLICANT_STABILITY_V1023={version:VERSION,write:'POST_NO_CORS_PLUS_STATUS_POLL',read:'DIRECT_JSONP_SINGLEFLIGHT',hard_deadline:true};
 })();
 </script>
+
+
+<style id="pkpj-v10231-inventory-first-paint-style">
+/* V10.23.1 - status ringan ketika inventori first-paint sedang diambil. */
+.pkpj-inventory-firstpaint-v10231{
+  grid-column:1/-1!important;padding:28px 18px!important;text-align:center!important;
+  color:#6c8198!important;font-size:12px!important;border:1px dashed #d7e4ef!important;
+  border-radius:16px!important;background:rgba(248,252,255,.86)!important
+}
+.pkpj-inventory-firstpaint-v10231 b{display:block;color:#255a87;font-size:13px;margin-bottom:5px}
+</style>
+<script id="pkpj-v10231-inventory-first-paint-script">
+/* =========================================================
+   V10.23.1 - INVENTORY FIRST-PAINT (PEMOHON)
+   - Prefetch inventori semasa skrin login masih terbuka.
+   - Cache tempatan sangat pendek untuk first paint sahaja.
+   - Full bootstrap kekal sebagai authoritative reconcile.
+   - Tiada popup/progress global untuk prefetch ini.
+   ========================================================= */
+(function(){
+  'use strict';
+  const VERSION='10.23.1';
+  const CACHE_KEY='pkpj_applicant_inventory_firstpaint_v10231';
+  const CACHE_MAX_AGE=60000; // 60 saat sahaja untuk elak paparan stale lama.
+  let inflight=null;
+  let latest=null;
+  let latestAt=0;
+  let loading=false;
+
+  function now(){return Date.now()}
+  function safeJson(raw){try{return JSON.parse(raw)}catch(e){return null}}
+  function readCache(){
+    try{
+      const data=safeJson(localStorage.getItem(CACHE_KEY)||'');
+      if(!data||!Array.isArray(data.items)||!Number(data.savedAt))return null;
+      if(now()-Number(data.savedAt)>CACHE_MAX_AGE)return null;
+      return data;
+    }catch(e){return null}
+  }
+  function saveCache(items,revision){
+    try{localStorage.setItem(CACHE_KEY,JSON.stringify({savedAt:now(),revision:String(revision||''),items:items||[]}))}catch(e){}
+  }
+  function clearCache(){try{localStorage.removeItem(CACHE_KEY)}catch(e){}}
+
+  function repaint(){
+    try{
+      if(state.currentView==='home'){renderShell();renderHomeView()}
+      if(state.currentView==='apply')renderApplyCategories();
+      if(state.currentView==='assets'){renderAssetCategoryOptions();renderAvailableAssets()}
+    }catch(e){}
+  }
+
+  function applyItems(items,meta={}){
+    if(!Array.isArray(items))return [];
+    latest=items.slice();latestAt=now();
+    state.assets=latest.slice();
+    state.kpi=state.kpi||{};
+    state.kpi.available_assets=latest.length;
+    saveCache(latest,meta.revision||'');
+    repaint();
+    return latest;
+  }
+
+  function showLoadingHint(){
+    if(!loading||state.assets?.length)return;
+    try{
+      if(state.currentView==='apply'){
+        const g=document.querySelector('#loanCategoryGrid');
+        if(g&&!g.children.length)g.innerHTML='<div class="pkpj-inventory-firstpaint-v10231"><b>Memuat inventori tersedia...</b>Senarai aset sedang disediakan di latar belakang.</div>';
+      }
+      if(state.currentView==='assets'){
+        const g=document.querySelector('#availableAssetGrid');
+        if(g&&!g.children.length)g.innerHTML='<div class="pkpj-inventory-firstpaint-v10231"><b>Memuat inventori tersedia...</b>Senarai aset sedang disediakan di latar belakang.</div>';
+      }
+    }catch(e){}
+  }
+
+  async function refreshInventoryFast(force=false){
+    if(inflight)return inflight;
+    loading=true;showLoadingHint();
+    inflight=(async()=>{
+      try{
+        const res=await jsonp('applicant.inventory_fast',{fresh:force?'1':'',_ifp:VERSION},{timeoutMs:4500,retries:0,silentProgress:true});
+        const items=Array.isArray(res?.items)?res.items:[];
+        return applyItems(items,res||{});
+      }catch(err){
+        // Prefetch sengaja senyap. Full bootstrap masih akan cuba di belakang.
+        return Array.isArray(state.assets)?state.assets:[];
+      }finally{
+        loading=false;inflight=null;
+      }
+    })();
+    return inflight;
+  }
+
+  // Cache pendek boleh mengisi kad serta-merta sebelum API hidup/cold-start.
+  const cached=readCache();
+  if(cached?.items?.length){
+    latest=cached.items.slice();latestAt=Number(cached.savedAt)||now();
+    try{
+      state.assets=latest.slice();state.kpi=state.kpi||{};state.kpi.available_assets=latest.length;
+    }catch(e){}
+  }
+
+  // Full bootstrap tidak dibenarkan menggantikan snapshot first-paint yang lebih
+  // baru dengan cache bootstrap lama dalam beberapa saat pertama.
+  const applyBase=window.applyBootstrap;
+  if(typeof applyBase==='function'){
+    window.applyBootstrap=applyBootstrap=function(data){
+      const result=applyBase(data);
+      if(latest&&now()-latestAt<15000){
+        state.assets=latest.slice();state.kpi=state.kpi||{};state.kpi.available_assets=latest.length;repaint();
+        try{savePortalCache({profile:state.profile,kpi:state.kpi,available_assets:state.assets,loans:state.loans,public_settings:state.publicSettings})}catch(e){}
+      }
+      return result;
+    };
+  }
+
+  // Setiap refresh penuh dimulakan bersama refresh inventori ringan, bukan selepasnya.
+  const refreshBase=window.refreshPortal;
+  if(typeof refreshBase==='function'){
+    window.refreshPortal=refreshPortal=function(silent=false,forceFresh=false){
+      refreshInventoryFast(!!forceFresh).catch(()=>{});
+      return refreshBase(silent,forceFresh);
+    };
+  }
+
+  // Masa pengguna tekan Masuk, inventori sudah dipanggil serentak dengan login/bootstrap.
+  const loginBase=window.loginApplicant;
+  if(typeof loginBase==='function'){
+    window.loginApplicant=loginApplicant=function(silent=false){
+      refreshInventoryFast(false).catch(()=>{});
+      return loginBase(silent);
+    };
+  }
+
+  // Selepas tindakan yang mengubah reservation, buang cache first-paint dan refresh.
+  const postBase=window.postApi;
+  if(typeof postBase==='function'){
+    window.postApi=postApi=async function(action,data={},options={}){
+      const result=await postBase(action,data,options);
+      if(['applicant.loan.create','applicant.loan.cancel'].includes(String(action))){
+        clearCache();latest=null;latestAt=0;
+        setTimeout(()=>refreshInventoryFast(true).catch(()=>{}),80);
+      }
+      return result;
+    };
+  }
+
+  document.addEventListener('DOMContentLoaded',()=>{
+    if(latest?.length)requestAnimationFrame(repaint);
+    // Mulakan semasa skrin login; pengguna tidak perlu tunggu selepas masuk portal.
+    setTimeout(()=>refreshInventoryFast(false).catch(()=>{}),80);
+  },{once:true});
+
+  window.PKPJ_INVENTORY_FIRSTPAINT_V10231={
+    version:VERSION,refresh:refreshInventoryFast,clear:clearCache,
+    status:()=>({loading,items:Array.isArray(state?.assets)?state.assets.length:0,latestAt})
+  };
+})();
+</script>
+
 </body>
 </html>
