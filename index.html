@@ -6923,5 +6923,94 @@ window.PKPJ_COMPLETED_DELETE_VERSION='10.18';
   window.PKPJ_ADMIN_LIVE_INVENTORY_SYNC_V10232={version:VERSION,refresh:refreshInventorySilent,get revision(){return inventoryRevision}};
 })();
 </script>
+
+
+<style id="pkpj-v10233-approval-popup-reliability-style">
+/* V10.23.3 - reliability guard only; visual popup V10.19 dikekalkan. */
+#pendingLoanPopupV1019.show{display:flex!important;visibility:visible!important;opacity:1!important;z-index:2147482500!important}
+</style>
+<script id="pkpj-v10233-approval-popup-reliability-script">
+/* =========================================================
+   V10.23.3 - RELIABLE STAFF IT APPROVAL POPUP
+   - V10.23.2 backend regression tidak membawa pending_loans.
+   - Watch baru menerima pending_loans semula.
+   - Fallback tempatan: jika payload pending kosong selepas revision berubah,
+     scan state.loans selepas silent load supaya popup tidak hilang lagi.
+   - Tidak menambah interval API baharu; guna live-watch sedia ada.
+   ========================================================= */
+(function(){
+  'use strict';
+  const VERSION='10.23.3';
+  let firstRecoveryDone=false;
+  let recoveryBusy=false;
+
+  function isPendingV10233(row){
+    const s=String(row&&row.status||'');
+    return s==='PERMOHONAN_BARU'||s==='MENUNGGU_KELULUSAN';
+  }
+
+  function mergePendingV10233(list){
+    (list||[]).forEach(p=>{
+      if(!p||!p.loan_id)return;
+      const id=String(p.loan_id);
+      const idx=(state.loans||[]).findIndex(x=>String(x.loan_id)===id);
+      if(idx>=0)state.loans[idx]={...state.loans[idx],...p};
+      else state.loans=[p,...(state.loans||[])];
+    });
+  }
+
+  // Fungsi queue asal berada dalam closure V10.19. Expose melalui event bridge ringan
+  // dengan memanggil poll asal apabila backend sudah membawa pending_loans.
+  const basePoll=window.pollAdminLoanWatchV1011;
+  if(typeof basePoll!=='function')return;
+
+  async function recoverPendingFromLoansV10233(){
+    if(recoveryBusy||!state?.operator)return;
+    recoveryBusy=true;
+    try{
+      await loadLoans(true,{silent:true});
+      const pending=(state.loans||[]).filter(isPendingV10233);
+      // Paksa satu watch fresh tanpa rev supaya queue popup asal menerima context penuh.
+      if(pending.length){
+        state.adminLoanRevisionV1019='';
+        await basePoll(true);
+      }
+    }catch(e){
+      console.warn('Recovery popup kelulusan tertangguh:',e&&e.message||e);
+    }finally{recoveryBusy=false}
+  }
+
+  window.pollAdminLoanWatchV1011=async function(force=false){
+    const before=String(state?.adminLoanRevisionV1019||'');
+    const out=await basePoll(force);
+    const after=String(state?.adminLoanRevisionV1019||'');
+    // Jika first sync / revision berubah tetapi popup context masih belum sampai,
+    // lakukan satu recovery sahaja berdasarkan state.loans.
+    if(!firstRecoveryDone && state?.operator){
+      firstRecoveryDone=true;
+      setTimeout(recoverPendingFromLoansV10233,120);
+    }else if(before && after && before!==after){
+      setTimeout(()=>{
+        const hasPending=(state.loans||[]).some(isPendingV10233);
+        const popupOpen=document.querySelector('#pendingLoanPopupV1019.show');
+        if(hasPending&&!popupOpen)recoverPendingFromLoansV10233();
+      },220);
+    }
+    return out;
+  };
+
+  // Selepas staf IT berjaya login / tab kembali aktif, buat satu forced sync.
+  document.addEventListener('DOMContentLoaded',()=>{
+    setTimeout(()=>{if(state?.operator)window.pollAdminLoanWatchV1011?.(true)},700);
+  },{once:true});
+  window.addEventListener('focus',()=>setTimeout(()=>{if(state?.operator)window.pollAdminLoanWatchV1011?.(true)},180));
+  document.addEventListener('visibilitychange',()=>{
+    if(document.visibilityState==='visible'&&state?.operator)setTimeout(()=>window.pollAdminLoanWatchV1011?.(true),180);
+  });
+
+  window.PKPJ_APPROVAL_POPUP_V10233={version:VERSION,recovery:recoverPendingFromLoansV10233};
+})();
+</script>
+
 </body>
 </html>
