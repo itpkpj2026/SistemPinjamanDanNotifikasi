@@ -5542,15 +5542,31 @@ document.addEventListener('DOMContentLoaded',()=>{
 </style>
 <script id="pkpj-v11135-clear-name-auto-session-script">
 (function(){
-  const IDLE_MS_V11135=10*60*1000;
+  'use strict';
+  /* V10.24.2: Pemohon auto logout 5 minit tidak aktif.
+     1 minit sebelum tamat beri amaran. Jika transaksi pengguna masih berjalan,
+     logout ditangguhkan sehingga transaksi selesai. Direktori/cache inventori tidak dipadam. */
+  const IDLE_MS_V11135=5*60*1000;
+  const WARN_BEFORE_MS_V11135=60*1000;
+  const BUSY_RECHECK_MS_V11135=1000;
+  const MAX_BUSY_DEFER_MS_V11135=2*60*1000;
   let idleTimerV11135=null;
   let lastActivityV11135=Date.now();
   let reloadingV11135=false;
+  let warningShownV11135=false;
+  let deferredLogoutV11135=false;
+  let deferredNoticeV11135=false;
+  let deferredSinceV11135=0;
   const baseLogoutV11135=typeof window.logoutApplicant==='function'?window.logoutApplicant:null;
 
   function portalActiveV11135(){
     const overlay=document.querySelector('#loginOverlay');
     return !!(window.state&&state.profile&&overlay&&overlay.classList.contains('hidden'));
+  }
+
+  function userProcessBusyV11135(){
+    const x=document.querySelector('#pkpjStableApplicantV1023');
+    return !!(x&&x.classList.contains('show')&&!x.classList.contains('done')&&!x.classList.contains('fail'));
   }
 
   function updateClearButtonV11135(){
@@ -5600,11 +5616,25 @@ document.addEventListener('DOMContentLoaded',()=>{
 
   function performLogoutAndReloadV11135(reason){
     if(reloadingV11135)return;
+    if(reason==='idle'&&userProcessBusyV11135()){
+      if(!deferredSinceV11135)deferredSinceV11135=Date.now();
+      if(Date.now()-deferredSinceV11135<MAX_BUSY_DEFER_MS_V11135){
+        deferredLogoutV11135=true;
+        if(!deferredNoticeV11135){
+        deferredNoticeV11135=true;
+          try{toast('Sesi dilanjutkan sementara','Proses semasa sedang disahkan. Auto log keluar akan dibuat selepas proses selesai.','')}catch(e){}
+        }
+        clearTimeout(idleTimerV11135);
+        idleTimerV11135=setTimeout(()=>performLogoutAndReloadV11135('idle'),BUSY_RECHECK_MS_V11135);
+        return;
+      }
+    }
     reloadingV11135=true;
+    deferredLogoutV11135=false;deferredSinceV11135=0;
     clearTimeout(idleTimerV11135);idleTimerV11135=null;
     try{
       if(reason==='idle'&&typeof toast==='function'){
-        toast('Sesi tamat','Tiada aktiviti selama 10 minit. Portal sedang disediakan untuk pemohon seterusnya.','ok');
+        toast('Sesi tamat','Tiada aktiviti selama 5 minit. Portal sedang disediakan untuk pemohon seterusnya.','ok');
       }
     }catch(e){}
     try{
@@ -5613,25 +5643,33 @@ document.addEventListener('DOMContentLoaded',()=>{
         localRemoveV9('ict_applicant_user_id');localRemoveV9('ict_applicant_name');
       }
     }catch(e){}
-    setTimeout(function(){window.location.reload()},reason==='idle'?850:350);
+    setTimeout(function(){window.location.reload()},reason==='idle'?750:300);
   }
 
   function scheduleIdleV11135(){
     clearTimeout(idleTimerV11135);idleTimerV11135=null;
     if(!portalActiveV11135()||reloadingV11135)return;
     const elapsed=Date.now()-lastActivityV11135;
-    const remaining=Math.max(0,IDLE_MS_V11135-elapsed);
+    const remaining=IDLE_MS_V11135-elapsed;
     if(remaining<=0){performLogoutAndReloadV11135('idle');return;}
-    idleTimerV11135=setTimeout(function(){
-      if(!portalActiveV11135()||reloadingV11135)return;
-      if(Date.now()-lastActivityV11135>=IDLE_MS_V11135)performLogoutAndReloadV11135('idle');
-      else scheduleIdleV11135();
-    },remaining+80);
+    if(remaining<=WARN_BEFORE_MS_V11135){
+      if(!warningShownV11135){
+        warningShownV11135=true;
+        try{toast('Sesi hampir tamat','Tiada aktiviti. Sesi akan log keluar automatik dalam 1 minit jika tiada aktiviti.','')}catch(e){}
+      }
+      idleTimerV11135=setTimeout(()=>performLogoutAndReloadV11135('idle'),Math.max(250,remaining+50));
+      return;
+    }
+    idleTimerV11135=setTimeout(scheduleIdleV11135,Math.max(250,remaining-WARN_BEFORE_MS_V11135+50));
   }
 
   function markActivityV11135(){
     if(!portalActiveV11135()||reloadingV11135)return;
     lastActivityV11135=Date.now();
+    warningShownV11135=false;
+    deferredLogoutV11135=false;
+    deferredNoticeV11135=false;
+    deferredSinceV11135=0;
     scheduleIdleV11135();
   }
 
@@ -5646,7 +5684,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     if(overlay){
       new MutationObserver(function(){
         if(portalActiveV11135()){
-          lastActivityV11135=Date.now();scheduleIdleV11135();
+          lastActivityV11135=Date.now();warningShownV11135=false;deferredLogoutV11135=false;deferredNoticeV11135=false;deferredSinceV11135=0;scheduleIdleV11135();
         }else{
           clearTimeout(idleTimerV11135);idleTimerV11135=null;
           setTimeout(updateClearButtonV11135,30);
@@ -5654,7 +5692,7 @@ document.addEventListener('DOMContentLoaded',()=>{
       }).observe(overlay,{attributes:true,attributeFilter:['class']});
     }
 
-    ['pointerdown','touchstart','keydown','wheel','scroll'].forEach(function(type){
+    ['pointerdown','touchstart','keydown','wheel','scroll','input','change'].forEach(function(type){
       window.addEventListener(type,markActivityV11135,{passive:true});
     });
     document.addEventListener('visibilitychange',function(){
@@ -5663,6 +5701,11 @@ document.addEventListener('DOMContentLoaded',()=>{
     window.addEventListener('pageshow',scheduleIdleV11135);
     setTimeout(function(){updateClearButtonV11135();scheduleIdleV11135()},700);
   },{once:true});
+
+  window.PKPJ_APPLICANT_AUTO_LOGOUT_V10242={
+    version:'10.24.2',idle_minutes:5,warning_seconds:60,defer_while_user_process:true,
+    preserves_directory_cache:true,preserves_records:true
+  };
 })();
 </script>
 
@@ -7394,6 +7437,82 @@ document.addEventListener('DOMContentLoaded',()=>{
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
   window.PKPJ_INSTANT_LOGIN_DIRECTORY_V1024={version:VERSION,cache:STABLE_CACHE,mode:'STALE_WHILE_REVALIDATE'};
+})();
+</script>
+
+<!-- =========================================================
+     PKPJ V10.24.1 - NON-BLOCKING PROCESS POLISH (PEMOHON)
+     - Removes the repetitive "Masih diproses" note.
+     - Normal overlay soft-releases after 10s (20s for uploads/signatures).
+     - Write receipt checking and duplicate protection continue unchanged.
+========================================================= -->
+<style id="pkpj-v10241-app-loading-style">
+#pkpjStableApplicantV1023 .pkpj-stable-app-note-v1023{display:none!important}
+#pkpjStableApplicantV1023[data-soft-release="1"]{display:none!important}
+#pkpjApplicantBgStatusV10241{
+  position:fixed;right:18px;bottom:18px;z-index:130600;display:none;align-items:center;gap:10px;
+  max-width:min(420px,calc(100vw - 28px));padding:11px 14px;border-radius:15px;background:#fff;
+  border:1px solid #d7e5f1;box-shadow:0 14px 38px rgba(10,40,72,.18);color:#365b7b;
+  font-size:11px;font-weight:800;line-height:1.35
+}
+#pkpjApplicantBgStatusV10241.show{display:flex}
+#pkpjApplicantBgStatusV10241 .dot{width:16px;height:16px;border-radius:50%;border:2px solid #dbe8f3;border-top-color:#1678e8;animation:pkpjAppBgSpinV10241 .75s linear infinite;flex:0 0 auto}
+#pkpjApplicantBgStatusV10241.done .dot{animation:none;border:0;width:18px;height:18px;display:grid;place-items:center;color:#18a56b}
+#pkpjApplicantBgStatusV10241.done .dot:before{content:'✓';font-size:17px;font-weight:950}
+#pkpjApplicantBgStatusV10241.fail .dot{animation:none;border:0;width:18px;height:18px;display:grid;place-items:center;color:#d74d61}
+#pkpjApplicantBgStatusV10241.fail .dot:before{content:'!';font-size:17px;font-weight:950}
+#pkpjApplicantBgStatusV10241.pending .dot{animation:none;border:0;width:18px;height:18px;display:grid;place-items:center;color:#c58319}
+#pkpjApplicantBgStatusV10241.pending .dot:before{content:'…';font-size:18px;font-weight:950}
+@keyframes pkpjAppBgSpinV10241{to{transform:rotate(360deg)}}
+@media(max-width:720px){#pkpjApplicantBgStatusV10241{right:12px;bottom:12px;left:12px;max-width:none}}
+</style>
+<script id="pkpj-v10241-app-loading-script">
+(function(){
+  'use strict';
+  const VERSION='10.24.1';
+  function pill(){
+    let p=document.getElementById('pkpjApplicantBgStatusV10241');if(p)return p;
+    p=document.createElement('div');p.id='pkpjApplicantBgStatusV10241';p.innerHTML='<span class="dot"></span><span class="txt">Proses diteruskan di latar belakang.</span>';
+    document.body.appendChild(p);return p;
+  }
+  function showPill(text,state='running',autoHide=0){
+    const p=pill();p.className='show '+state;p.querySelector('.txt').textContent=text;
+    clearTimeout(p._hideTimer);if(autoHide)p._hideTimer=setTimeout(()=>{p.className=''},autoHide);
+  }
+  function hidePill(){const p=pill();clearTimeout(p._hideTimer);p.className=''}
+  let attached=false,visible=false,releaseTimer=null;
+  function attach(){
+    const x=document.getElementById('pkpjStableApplicantV1023');if(!x||attached)return false;attached=true;
+    const sync=()=>{
+      const isVisible=x.classList.contains('show');
+      const done=x.classList.contains('done'),fail=x.classList.contains('fail'),pending=x.classList.contains('pending');
+      if(isVisible&&!visible&&!done&&!fail&&!pending){
+        visible=true;x.removeAttribute('data-soft-release');hidePill();clearTimeout(releaseTimer);
+        const title=String(x.querySelector('.pkpj-stable-app-title-v1023')?.textContent||'').toLowerCase();
+        const wait=/memuat naik|dokumen|gambar|tandatangan/.test(title)?20000:10000;
+        releaseTimer=setTimeout(()=>{
+          if(x.classList.contains('show')&&!x.classList.contains('done')&&!x.classList.contains('fail')&&!x.classList.contains('pending')){
+            x.setAttribute('data-soft-release','1');
+            showPill('Permohonan masih disahkan di latar belakang. Anda boleh terus menggunakan portal.','running');
+          }
+        },wait);
+      }
+      if(isVisible&&x.getAttribute('data-soft-release')==='1'){
+        if(done)showPill('Proses selesai dan telah disahkan.','done',2200);
+        else if(fail)showPill('Proses tidak berjaya. Semak mesej portal.','fail',3500);
+        else if(pending)showPill('Pengesahan server diteruskan secara automatik.','pending',3500);
+      }
+      if(!isVisible&&visible){
+        visible=false;clearTimeout(releaseTimer);releaseTimer=null;x.removeAttribute('data-soft-release');
+      }
+    };
+    new MutationObserver(sync).observe(x,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['class']});sync();return true;
+  }
+  if(!attach()){
+    const obs=new MutationObserver(()=>{if(attach())obs.disconnect()});
+    obs.observe(document.documentElement,{childList:true,subtree:true});
+  }
+  window.PKPJ_APPLICANT_LOADING_POLISH_V10241={version:VERSION,mode:'NON_BLOCKING_AFTER_10S'};
 })();
 </script>
 
