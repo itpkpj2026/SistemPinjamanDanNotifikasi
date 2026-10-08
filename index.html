@@ -5441,7 +5441,7 @@ document.addEventListener('DOMContentLoaded',()=>{
       try{
         const res=await jsonp('loans',{scope:'active',pageSize:200,sort:'request_date',order:'desc',_t:Date.now()},{timeoutMs:6500,retries:0,silentProgress:silent});
         if(typeof loanEpochV92==='number'&&epoch!==loanEpochV92)return;
-        const rows=(res?.items||[]).filter(x=>!['DIPULANGKAN','DITOLAK','DIBATALKAN'].includes(String(x.status)));
+        const rows=(res?.items||[]).filter(x=>!['DIPULANGKAN','DITOLAK','DIBATALKAN'].includes(String(x.status))).map(x=>{if((!Array.isArray(x.items)||!x.items.length)&&Array.isArray(x.items_detail))x.items=x.items_detail;return x});
         state.loans=typeof overlayConfirmedV92==='function'?overlayConfirmedV92(rows):rows;
         state.loadedAt.loans=Date.now();try{saveAdminFastCache()}catch(e){};renderLoans();
         const note=document.querySelector('#loanListCountV92');if(note)note.textContent='Paparan '+state.loans.length+' pinjaman aktif.';
@@ -5691,7 +5691,15 @@ window.PKPJ_COMPLETED_DELETE_VERSION='10.18';
   }
 
   function catIcon(c){const s=String(c||'').toLowerCase();if(s.includes('laptop')||s.includes('desktop')||s.includes('monitor'))return '💻';if(s.includes('wifi')||s.includes('mifi')||s.includes('network'))return '📶';if(s.includes('extension')||s.includes('charger')||s.includes('adapter'))return '🔌';if(s.includes('printer'))return '🖨️';return '▣'}
-  function loanItems(loan){return Array.isArray(loan?.items)?loan.items:[]}
+  function loanItems(loan){
+    if(Array.isArray(loan?.items)&&loan.items.length)return loan.items;
+    if(Array.isArray(loan?.items_detail)&&loan.items_detail.length)return loan.items_detail;
+    const names=Array.isArray(loan?.item_names)?loan.item_names:[];
+    const cats=Array.isArray(loan?.item_categories)?loan.item_categories:[];
+    const max=Math.max(names.length,cats.length,Number(loan?.item_count||0));
+    if(!max)return [];
+    return Array.from({length:max},(_,i)=>({asset_name:names[i]||'',category:cats[i]||'Peralatan ICT'}));
+  }
   function typeSummary(loan){const m={};loanItems(loan).forEach(i=>{const k=String(i.category||'Peralatan ICT');m[k]=(m[k]||0)+1});return Object.entries(m).map(([k,n])=>`<span class="loan-type-chip-v1019">${esc(k)}${n>1?' · '+n:''}</span>`).join('')||'<span class="tiny muted">—</span>'}
   function itemList(loan){const items=loanItems(loan);if(!items.length)return `<span class="pill blue">${n(Number(loan?.item_count||0))} item</span>`;return `<div class="loan-items-stack-v1019">${items.map(i=>`<div class="loan-item-line-v1019"><b>${esc(i.asset_name||i.asset_tag||i.asset_id||'Aset')}</b><span>${esc([i.asset_tag,i.model].filter(Boolean).join(' · ')||i.asset_id||'')}</span></div>`).join('')}</div>`}
   function borrowerLabel(x){return x?.borrower_name||userName(x?.borrower_user_id)||x?.borrower_user_id||'—'}
@@ -5713,7 +5721,7 @@ window.PKPJ_COMPLETED_DELETE_VERSION='10.18';
   /* Proses kelulusan/tolak/pulang dengan peratus sebenar mengikut fasa transaksi. */
   window.loanAction=loanAction=async function(action,loanId,alreadyConfirmed=false){if(!requireConfig())return;const id=String(loanId),apiMap={approve:'loan.approve',reject:'loan.reject',checkout:'loan.checkout',return:'loan.return',cancel:'loan.cancel'};if(!apiMap[action]||loanPendingV92.has(id))return;if(approvalBusyV92())return loanMessageV92('Satu transaksi sedang dijalankan. Tunggu jawapan server dahulu.','warning');const labels={approve:'luluskan pinjaman ini',reject:'tolak permohonan ini',checkout:'check-out semua aset ini',return:'pulangkan semua aset ini',cancel:'batalkan permohonan ini'};if(!alreadyConfirmed&&!confirm('Pasti mahu '+labels[action]+'?'))return;const title={approve:'Kelulusan Pinjaman',reject:'Menolak Permohonan',checkout:'Mengeluarkan Aset',return:'Pemulangan Aset',cancel:'Membatalkan Permohonan'}[action]||'Memproses';setProcess(8,title,'Menyediakan transaksi…','Semakan awal');const p={action,requestId:makeWriteRequestId(),startedAt:Date.now(),phase:'sending'};loanEpochV92++;setLoanPendingV92(id,p);loanMessageV92(id+': arahan dihantar sekali. Sedang diproses...');try{setProcess(28,title,'Menghantar arahan ke server…','API sedang memproses');const result=await postApi(apiMap[action],{loan_id:id,actor_user_id:state.operator?.user_id||'',actor_name:state.operator?.name||''},{requestId:p.requestId});setProcess(78,title,'Jawapan server diterima. Mengesahkan status…','Pengesahan rekod');if(finishLoanV92(id,p,result)){setProcess(100,title,'Proses berjaya disahkan.','Selesai');hideProcess(520);return result}setProcess(90,title,'Menyemak status akhir pinjaman…','Semakan akhir');const row=await exactLoanStatusV92(id);if(!finishLoanV92(id,p,{...result,loan:row}))throw errorV92('Server belum mengesahkan status yang diminta.','uncertain','WRITE_UNCONFIRMED');setProcess(100,title,'Proses berjaya disahkan.','Selesai');hideProcess(520);return row}catch(e){const uncertain=isTransportV92(e)||e.kind==='uncertain'||e.code==='WRITE_UNCONFIRMED'||e.code==='WRITE_IN_PROGRESS';if(uncertain){setLoanPendingV92(id,{...p,phase:'unknown'});setProcess(86,title,'Server masih mengesahkan transaksi.','Jangan tekan berulang kali');loanMessageV92(id+': '+e.message+' | Rujukan '+p.requestId,'warning');hideProcess(1200)}else{setLoanPendingV92(id,null);loanMessageV92(id+': '+e.message+' | Rujukan '+p.requestId,'error');toast('Kelulusan / tindakan tidak berjaya',e.message,'err');ensureAdminProcess().classList.remove('show')}return null}};
 
-  async function pollInstant(force=false){const now=Date.now();if(document.visibilityState!=='visible'||!state.operator||approvalBusyV92()||watchBusy)return;if(!force&&now-lastWatch<1600)return;watchBusy=true;lastWatch=now;try{const w=await jsonp('admin.loan_watch',{rev:state.adminLoanRevisionV1019||'',_t:now},{timeoutMs:3500,retries:0,silentProgress:true});if(!w?.fingerprint)return;state.adminLoanRevisionV1019=w.fingerprint;if(!w.unchanged){const pending=Array.isArray(w.pending)?w.pending:[];pending.forEach(p=>{const idx=(state.loans||[]).findIndex(x=>String(x.loan_id)===String(p.loan_id));if(idx>=0)state.loans[idx]={...state.loans[idx],...p};else state.loans=[p,...(state.loans||[])]});renderLoans();queuePendingV1019(pending);state.loadedAt.dashboard=0;setTimeout(()=>loadLoans(true,{silent:true}).catch?.(()=>{}),80)}}catch(e){console.warn('Loan watch ringkas tertangguh:',e?.message||e)}finally{watchBusy=false}}
+  async function pollInstant(force=false){const now=Date.now();if(document.visibilityState!=='visible'||!state.operator||approvalBusyV92()||watchBusy)return;if(!force&&now-lastWatch<1600)return;watchBusy=true;lastWatch=now;try{const w=await jsonp('admin.loan_watch',{rev:state.adminLoanRevisionV1019||'',_t:now},{timeoutMs:3500,retries:0,silentProgress:true});if(!w?.fingerprint)return;state.adminLoanRevisionV1019=w.fingerprint;if(!w.unchanged){const pending=Array.isArray(w.pending)?w.pending:(Array.isArray(w.pending_loans)?w.pending_loans:[]);pending.forEach(p=>{const idx=(state.loans||[]).findIndex(x=>String(x.loan_id)===String(p.loan_id));if(idx>=0)state.loans[idx]={...state.loans[idx],...p};else state.loans=[p,...(state.loans||[])]});renderLoans();queuePendingV1019(pending);state.loadedAt.dashboard=0;setTimeout(()=>loadLoans(true,{silent:true}).catch?.(()=>{}),80)}}catch(e){console.warn('Loan watch ringkas tertangguh:',e?.message||e)}finally{watchBusy=false}}
   window.pollAdminLoanWatchV1011=pollInstant;
 
   /* Fast movement register: preview tanpa tandatangan dahulu, kemudian hydrate compact di latar. */
@@ -6510,3 +6518,24 @@ window.PKPJ_COMPLETED_DELETE_VERSION='10.18';
 
 </body>
 </html>
+
+<!-- =========================================================
+     ADMIN V10.21.0 - ITEM NAME / TYPE CONTEXT FIX
+     - ITEM uses backend items_detail when items is absent
+     - JENIS PERALATAN shows category for every loan item
+     ========================================================= -->
+<script id="pkpj-v10210-loan-item-context-fix">
+(function(){
+  try{
+    const oldLoad=window.loadLoans;
+    if(typeof oldLoad==='function'){
+      window.loadLoans=async function(force=false,options={}){
+        const out=await oldLoad(force,options);
+        (state.loans||[]).forEach(x=>{if((!Array.isArray(x.items)||!x.items.length)&&Array.isArray(x.items_detail))x.items=x.items_detail});
+        if(state.view==='loans')renderLoans();
+        return out;
+      };
+    }
+  }catch(e){console.warn('V10.21 item context patch tertangguh.',e)}
+})();
+</script>
