@@ -4,11 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#f5f9ff">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <link rel="preconnect" href="https://script.google.com">
 <link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
 <link rel="dns-prefetch" href="//script.google.com">
 <link rel="dns-prefetch" href="//script.googleusercontent.com">
-<title>Portal Pemohon | Sistem ICT V10.2 3D Responsive</title>
+<title>Portal Pemohon | Sistem ICT V10.20.3</title>
 <style>
 :root{
   --bg:#f4f8fc;--panel:#fff;--panel2:#f8fbff;--line:#dce7f1;
@@ -6375,6 +6378,185 @@ document.addEventListener('DOMContentLoaded',()=>{
   setTimeout(()=>{if(!state.staffList.length&&!state.staffLoadingPromise)loadStaffNames(true,false);},4200);
 
   window.PKPJ_MOBILE_STAFF_V10202={version:VERSION,releaseAutoManualMode};
+})();
+</script>
+
+
+<style id="pkpj-v10203-chrome-mobile-staff-style">
+/* V10.20.3 - Chrome Android staff dropdown hardening. Desktop/Brave unchanged. */
+@media(max-width:760px){
+  #loginOverlay .autocomplete-wrap{position:relative!important;z-index:80!important;overflow:visible!important}
+  #loginOverlay #staffSuggestions{
+    position:absolute!important;left:0!important;right:0!important;top:calc(100% + 7px)!important;
+    max-height:min(46vh,330px)!important;overflow-y:auto!important;overscroll-behavior:contain!important;
+    -webkit-overflow-scrolling:touch!important;z-index:9999!important;background:#fff!important;
+  }
+}
+</style>
+
+<script id="pkpj-v10203-chrome-mobile-staff-cache-fix">
+/* =========================================================
+   V10.20.3 - CHROME MOBILE STAFF DIRECTORY HARD FIX
+   - one-time URL cache buster on Chrome Android
+   - clears ONLY stale staff-directory cache on release change
+   - Chrome Android reads applicant.staff_list via iframe bridge first
+   - Brave/desktop keep existing transport
+   - no loan/bootstrap/user identity cache is deleted
+   ========================================================= */
+(function(){
+  const VERSION='10.20.3';
+  const RELEASE_KEY='pkpj_portal_release_v10203';
+  const REFRESH_ONCE_KEY='pkpj_staff_refresh_once_v10203';
+  const TYPE='PKPJ_IFRAME_BRIDGE_RESULT_V1014';
+  const ua=String(navigator.userAgent||'');
+  const mobile=/Android|iPhone|iPad|iPod|Mobile/i.test(ua) || !!(window.matchMedia&&matchMedia('(pointer:coarse)').matches&&innerWidth<=900);
+  const brave=!!navigator.brave;
+  const chrome=/Chrome\//i.test(ua) && !/EdgA|EdgiOS|OPR|SamsungBrowser/i.test(ua) && !brave;
+  const chromeMobile=mobile&&chrome;
+
+  function lsGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
+  function lsSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+  function lsDel(k){try{localStorage.removeItem(k)}catch(e){}}
+  function ssGet(k){try{return sessionStorage.getItem(k)}catch(e){return null}}
+  function ssSet(k,v){try{sessionStorage.setItem(k,v)}catch(e){}}
+
+  // Release migration: remove only directory/transport residues that can keep Chrome locked in fallback mode.
+  if(lsGet(RELEASE_KEY)!==VERSION){
+    [
+      'ict_applicant_staff_cache_v72',
+      'ict_applicant_staff_cache_v66',
+      'ict_staff_directory_shared_v1',
+      'pkpj_transport_mode_v1014',
+      'pkpj_transport_mode_v111310'
+    ].forEach(lsDel);
+    lsSet(RELEASE_KEY,VERSION);
+    try{if(window.state){state.staffList=[];state.selectedUserId='';state.manualNameMode=false;}}catch(e){}
+  }
+
+  // Chrome Android only: force one unique document URL per release so old GitHub Pages HTML cannot linger.
+  if(chromeMobile){
+    try{
+      const u=new URL(location.href);
+      if(u.searchParams.get('__pv')!==VERSION && !ssGet('pkpj_url_bust_'+VERSION)){
+        ssSet('pkpj_url_bust_'+VERSION,'1');
+        u.searchParams.set('__pv',VERSION);
+        location.replace(u.toString());
+        return;
+      }
+    }catch(e){}
+  }
+
+  function directStaffIframeV10203(force){
+    return new Promise((resolve,reject)=>{
+      const base=String(window.SYSTEM_CONFIG&&SYSTEM_CONFIG.API_URL||'').trim();
+      const token=String(window.SYSTEM_CONFIG&&SYSTEM_CONFIG.APPLICANT_TOKEN||'');
+      if(!base){const e=new Error('API URL belum ditetapkan.');e.code='CONFIG';reject(e);return;}
+      const id='STAFF10203_'+Date.now()+'_'+Math.random().toString(36).slice(2,8);
+      const frame=document.createElement('iframe');
+      let finished=false,timer=null;
+      const cleanup=()=>{window.removeEventListener('message',onMessage);if(timer)clearTimeout(timer);try{frame.remove()}catch(e){}};
+      const finish=(fn,v)=>{if(finished)return;finished=true;cleanup();fn(v)};
+      const onMessage=(event)=>{
+        const msg=event&&event.data;
+        if(!msg||msg.type!==TYPE||String(msg.id)!==id)return;
+        const payload=msg.payload||{};
+        if(payload.ok)finish(resolve,payload.data);
+        else{
+          const e=new Error(payload?.error?.message||'Direktori staf tidak dapat dimuat.');
+          e.code=payload?.error?.code||'API';finish(reject,e);
+        }
+      };
+      window.addEventListener('message',onMessage);
+      const q=new URLSearchParams();
+      q.set('action','applicant.staff_list');
+      q.set('token',token);
+      if(force)q.set('refresh','1');
+      q.set('_transport','iframe');
+      q.set('_bridge_id',id);
+      q.set('_parent_origin',(location.origin&&location.origin!=='null')?location.origin:'*');
+      q.set('_cb',VERSION+'_'+Date.now());
+      frame.name=id;frame.tabIndex=-1;frame.setAttribute('aria-hidden','true');
+      frame.style.cssText='position:fixed;width:1px;height:1px;left:-10000px;top:-10000px;border:0;opacity:0;pointer-events:none';
+      frame.src=base+(base.includes('?')?'&':'?')+q.toString();
+      (document.body||document.documentElement).appendChild(frame);
+      timer=setTimeout(()=>{const e=new Error('Direktori staf mengambil masa terlalu lama.');e.code='TIMEOUT';finish(reject,e)},12000);
+    });
+  }
+
+  function unlockDirectoryV10203(list,statusText){
+    const clean=typeof normalizeStaffList==='function'?normalizeStaffList(list):[];
+    if(!clean.length)return [];
+    state.staffList=clean;
+    state.manualNameMode=false;
+    state.manualNameExplicitV10202=false;
+    state.staffRetryCount=0;
+    try{localSetV9(STAFF_CACHE_KEY,JSON.stringify({savedAt:Date.now(),data:clean,authoritative:true,release:VERSION}));}catch(e){}
+    const note=document.querySelector('#manualNameNote');if(note)note.classList.add('hidden');
+    const btn=document.querySelector('#manualNameBtn');if(btn){btn.setAttribute('aria-pressed','false');btn.title='Isian nama manual';}
+    const input=document.querySelector('#loginName');if(input)input.placeholder='Taip atau pilih nama staf...';
+    try{setStaffLoadStatus(statusText||`${clean.length} nama staf sedia. Sentuh ruangan nama untuk memilih.`,'ready')}catch(e){}
+    if(input&&document.activeElement===input){setTimeout(()=>{try{handleNameSearch()}catch(e){}},0)}
+    return clean;
+  }
+
+  const previousLoad=typeof window.loadStaffNames==='function'?window.loadStaffNames:null;
+  if(chromeMobile&&previousLoad){
+    window.loadStaffNames=loadStaffNames=async function(silent=false,force=false){
+      if(state.staffLoadingPromise)return state.staffLoadingPromise;
+      const task=(async()=>{
+        try{
+          const firstForce=force || !ssGet(REFRESH_ONCE_KEY);
+          if(firstForce)ssSet(REFRESH_ONCE_KEY,'1');
+          if(!silent){try{setStaffLoadStatus('Memuatkan direktori staf...','loading')}catch(e){}}
+          const raw=await directStaffIframeV10203(firstForce);
+          const clean=unlockDirectoryV10203(raw);
+          if(clean.length)return clean;
+          throw Object.assign(new Error('Server memulangkan senarai kosong.'),{code:'EMPTY'});
+        }catch(primaryErr){
+          // Existing engine remains the fallback; do not remove it.
+          try{
+            const fallback=await previousLoad.call(this,true,force);
+            const clean=unlockDirectoryV10203(fallback);
+            if(clean.length)return clean;
+          }catch(e){}
+          const cached=typeof readStaffCache==='function'?readStaffCache():[];
+          const clean=unlockDirectoryV10203(cached,'Nama staf daripada cache dipaparkan. Server sedang dicuba semula.');
+          if(clean.length)return clean;
+          state.manualNameMode=true;
+          document.querySelector('#manualNameNote')?.classList.remove('hidden');
+          try{setStaffLoadStatus('Direktori staf belum dapat dimuat. Tekan ruangan nama untuk cuba semula.','offline')}catch(e){}
+          return [];
+        }
+      })();
+      state.staffLoadingPromise=task;
+      try{return await task}finally{if(state.staffLoadingPromise===task)state.staffLoadingPromise=null}
+    };
+  }
+
+  function bootV10203(){
+    if(!chromeMobile)return;
+    // Ensure any automatic fallback set by earlier init is released when data exists.
+    setTimeout(()=>{
+      if(Array.isArray(state.staffList)&&state.staffList.length){
+        unlockDirectoryV10203(state.staffList);
+      }else if(!state.staffLoadingPromise){
+        loadStaffNames(true,true);
+      }
+    },350);
+    const input=document.querySelector('#loginName');
+    if(input){
+      const retry=()=>{
+        if(state.staffList&&state.staffList.length){unlockDirectoryV10203(state.staffList);setTimeout(()=>handleNameSearch(),0)}
+        else if(!state.staffLoadingPromise)loadStaffNames(true,false);
+      };
+      input.addEventListener('focus',retry,{passive:true});
+      input.addEventListener('click',retry,{passive:true});
+      input.addEventListener('touchend',retry,{passive:true});
+    }
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bootV10203,{once:true});else bootV10203();
+
+  window.PKPJ_CHROME_MOBILE_STAFF_V10203={version:VERSION,chromeMobile,mode:'CACHE_BUST_IFRAME_FIRST'};
 })();
 </script>
 
