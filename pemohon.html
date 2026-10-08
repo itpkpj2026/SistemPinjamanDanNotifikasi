@@ -6560,5 +6560,104 @@ document.addEventListener('DOMContentLoaded',()=>{
 })();
 </script>
 
+
+
+<style id="pkpj-v10206-applicant-login-directory-stable-style">
+/* V10.20.6 - carian nama pemohon tidak menggunakan overlay progress. */
+#loginOverlay:not(.hidden) ~ #prettyLoader,
+#loginOverlay:not(.hidden) ~ #pkpjApplicantProgressV1120{display:none!important}
+</style>
+<script id="pkpj-v10206-applicant-login-directory-stable-script">
+/* V10.20.6
+   DIREKTORI PEMOHON STABLE:
+   - cache/local snapshot dahulu
+   - applicant.staff_list guna JSONP terus, bukan iframe fallback
+   - tiada loader bulat ketika hanya memuat nama
+   - retry senyap pada Chrome Android
+   - hantar permohonan/simpan kekal guna Fast Engine biasa. */
+(function(){
+  const VERSION='10.20.6';
+  const STAFF_ACTION='applicant.staff_list';
+  const chromeAndroid=/Android/i.test(navigator.userAgent||'') && /Chrome\//i.test(navigator.userAgent||'') && !/EdgA|OPR|SamsungBrowser/i.test(navigator.userAgent||'');
+  let inflight=null;
+
+  function loginVisible(){const x=document.getElementById('loginOverlay');return !!x&&!x.classList.contains('hidden')}
+  function hideLoginProgress(){if(!loginVisible())return;document.getElementById('prettyLoader')?.classList.add('hidden');document.getElementById('pkpjApplicantProgressV1120')?.classList.remove('show')}
+
+  const wrappedJsonp=window.jsonp;
+  window.jsonp=jsonp=async function(action,params={},options={}){
+    if(String(action)===STAFF_ACTION && typeof jsonpOnce==='function'){
+      hideLoginProgress();
+      const timeout=Math.max(12000,Number(options?.timeoutMs)||0,chromeAndroid?18000:14000);
+      return jsonpOnce(action,{...(params||{}),_dirv:VERSION,_t:Date.now()},timeout);
+    }
+    return wrappedJsonp(action,params,options);
+  };
+
+  function clean(input){return typeof normalizeStaffList==='function'?normalizeStaffList(input):[]}
+  function cache(){try{return typeof readStaffCache==='function'?clean(readStaffCache()):[]}catch(e){return []}}
+  function localSnapshot(){try{return typeof readAdminStaffSnapshot==='function'?clean(readAdminStaffSnapshot()):[]}catch(e){return []}}
+  function save(list){const good=clean(list);if(!good.length)return;try{saveStaffCache(good)}catch(e){try{localSetV9(STAFF_CACHE_KEY,JSON.stringify({savedAt:Date.now(),data:good,authoritative:true,release:VERSION}))}catch(_){}}}
+  function unlock(list,message,source){
+    const good=clean(list);if(!good.length)return [];
+    state.staffList=good;state.staffRetryCount=0;
+    if(!state.manualNameExplicitV10202){state.manualNameMode=false;document.getElementById('manualNameNote')?.classList.add('hidden');const b=document.getElementById('manualNameBtn');if(b){b.setAttribute('aria-pressed','false');b.title='Isian nama manual'}}
+    const input=document.getElementById('loginName');if(input)input.placeholder='Taip atau pilih nama staf...';
+    try{setStaffLoadStatus(message||`${good.length} nama staf sedia. Sentuh ruangan nama untuk memilih.`,source==='live'?'ready':'local')}catch(e){}
+    hideLoginProgress();
+    if(input&&document.activeElement===input&&!state.manualNameMode)setTimeout(()=>{try{handleNameSearch()}catch(e){}},0);
+    return good;
+  }
+  async function direct(force){
+    hideLoginProgress();
+    if(typeof jsonpOnce==='function')return jsonpOnce(STAFF_ACTION,{refresh:force?'1':'',_dirv:VERSION,_t:Date.now()},chromeAndroid?18000:14000);
+    return wrappedJsonp(STAFF_ACTION,{refresh:force?'1':'',_t:Date.now()},{timeoutMs:chromeAndroid?18000:14000,retries:0,silentProgress:true});
+  }
+  async function live(force){
+    let last=null;
+    for(let attempt=0;attempt<2;attempt++){
+      try{const list=clean(await direct(force));if(list.length)return list}catch(e){last=e}
+      if(attempt===0)await new Promise(r=>setTimeout(r,700));
+    }
+    if(last)console.warn('Direktori pemohon tertangguh.',last);
+    return [];
+  }
+
+  window.loadStaffNames=loadStaffNames=async function(silent=false,force=false){
+    hideLoginProgress();
+    if(inflight)return inflight;
+    const task=(async()=>{
+      const immediate=(state.staffList&&state.staffList.length)?clean(state.staffList):(localSnapshot().length?localSnapshot():cache());
+      if(immediate.length){unlock(immediate,`${immediate.length} nama staf sedia. Menyemak kemas kini…`,'cache');if(!force)return immediate}
+      else if(!silent){try{setStaffLoadStatus('Memuatkan direktori staf…','loading')}catch(e){}}
+      const server=await live(force);
+      if(server.length){save(server);return unlock(server,`${server.length} nama staf sedia. Sentuh ruangan nama untuk memilih.`,'live')}
+      if(immediate.length)return unlock(immediate,'Nama staf daripada cache dipaparkan. Server akan dicuba semula.','cache');
+      state.staffList=[];
+      if(!state.manualNameExplicitV10202){state.manualNameMode=true;document.getElementById('manualNameNote')?.classList.remove('hidden')}
+      try{setStaffLoadStatus('Direktori staf belum menjawab. Anda boleh cuba semula atau gunakan isian nama manual.','offline')}catch(e){}
+      hideLoginProgress();return [];
+    })();
+    inflight=task;state.staffLoadingPromise=task;
+    try{return await task}finally{if(inflight===task)inflight=null;if(state.staffLoadingPromise===task)state.staffLoadingPromise=null;hideLoginProgress()}
+  };
+
+  function boot(){
+    hideLoginProgress();
+    const immediate=localSnapshot().length?localSnapshot():cache();if(immediate.length)unlock(immediate,`${immediate.length} nama staf sedia. Menyemak kemas kini…`,'cache');
+    const retry=document.getElementById('staffRetryBtn');if(retry)retry.onclick=()=>loadStaffNames(false,true);
+    const input=document.getElementById('loginName');
+    if(input){
+      const open=()=>{hideLoginProgress();if(state.staffList?.length&&!state.manualNameMode){try{handleNameSearch()}catch(e){}}else if(!state.staffLoadingPromise)loadStaffNames(true,false)};
+      input.addEventListener('focus',open,{passive:true});input.addEventListener('click',open,{passive:true});input.addEventListener('touchend',open,{passive:true});
+    }
+    setTimeout(()=>loadStaffNames(true,true),220);
+    if(chromeAndroid){setTimeout(()=>{if(!state.staffList?.length)loadStaffNames(true,false)},5000);setTimeout(()=>{if(!state.staffList?.length)loadStaffNames(true,false)},12000)}
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
+  window.PKPJ_APPLICANT_LOGIN_DIRECTORY_V10206={version:VERSION,mode:'CACHE_JSONP_DIRECT_NO_IFRAME',chromeAndroid};
+})();
+</script>
+
 </body>
 </html>
