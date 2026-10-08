@@ -6827,5 +6827,101 @@ window.PKPJ_COMPLETED_DELETE_VERSION='10.18';
   window.PKPJ_STABILITY_V1023={version:VERSION,write:'POST_NO_CORS_PLUS_STATUS_POLL',read:'DIRECT_JSONP_SINGLEFLIGHT',hard_deadline:true};
 })();
 </script>
+
+
+<style id="pkpj-v10232-admin-inventory-sync-style">
+#statusUsagePctV10232{font-weight:850;color:#315b84;background:#eef5fb;padding:4px 7px;border-radius:7px}
+</style>
+<script id="pkpj-v10232-admin-inventory-sync-script">
+/* =========================================================
+   V10.23.2 - ADMIN LIVE INVENTORY REVISION SYNC
+   - Guna admin.loan_watch sedia ada; tiada interval tambahan.
+   - Perubahan ASSETS refresh Inventori + Dashboard secara senyap.
+   - Peratus penggunaan inventori dikira daripada KPI sebenar.
+   ========================================================= */
+(function(){
+  'use strict';
+  const VERSION='10.23.2';
+  const REV_KEY='pkpj_admin_inventory_revision_v10232';
+  let inventoryRevision='';
+  let refreshQueued=false;
+  try{inventoryRevision=String(localStorage.getItem(REV_KEY)||'')}catch(e){}
+
+  function saveRevision(v){
+    inventoryRevision=String(v||'');
+    if(!inventoryRevision)return;
+    try{localStorage.setItem(REV_KEY,inventoryRevision)}catch(e){}
+  }
+
+  function ensureUsageNode(){
+    let el=document.querySelector('#statusUsagePctV10232');
+    if(el)return el;
+    const host=document.querySelector('#statusBorrowedNote')?.parentElement;
+    if(!host)return null;
+    el=document.createElement('span');el.id='statusUsagePctV10232';el.textContent='0% digunakan';host.appendChild(el);return el;
+  }
+
+  function updateUsagePercent(data){
+    const k=data?.kpi||state?.dashboard?.kpi||{};
+    const available=Number(k.available_assets)||0;
+    const borrowed=Number(k.borrowed_assets)||0;
+    const reserved=Number(k.reserved_assets)||0;
+    const used=borrowed+reserved;
+    const total=available+used;
+    const pct=total?Math.round((used/total)*100):0;
+    const el=ensureUsageNode();if(el)el.textContent=pct+'% digunakan';
+  }
+
+  const renderDashboardBase=typeof renderDashboard==='function'?renderDashboard:null;
+  if(renderDashboardBase){
+    window.renderDashboard=renderDashboard=function(data){
+      const out=renderDashboardBase(data);updateUsagePercent(data);return out;
+    };
+  }
+
+  const baseJsonp=typeof jsonp==='function'?jsonp:null;
+  if(!baseJsonp)return;
+
+  async function refreshInventorySilent(){
+    if(refreshQueued)return;
+    refreshQueued=true;
+    try{
+      const jobs=[
+        baseJsonp('assets',{pageSize:200,sort:'asset_name',order:'asc',_v:VERSION},{timeoutMs:6500,retries:0,silentProgress:true}),
+        baseJsonp('dashboard',{_v:VERSION},{timeoutMs:6500,retries:0,silentProgress:true})
+      ];
+      const settled=await Promise.allSettled(jobs);
+      const a=settled[0];
+      if(a.status==='fulfilled'){
+        state.assets=a.value?.items||[];
+        state.loadedAt.assets=Date.now();
+        try{saveAdminFastCache()}catch(e){}
+        try{renderAssetCategoryCards();if(state.assetCategoryView)renderAssets()}catch(e){}
+      }
+      const d=settled[1];
+      if(d.status==='fulfilled'&&d.value){
+        state.dashboard=d.value;
+        state.loadedAt.dashboard=Date.now();
+        try{renderDashboard(d.value);renderReports(d.value)}catch(e){}
+      }
+    }catch(e){}finally{refreshQueued=false}
+  }
+
+  jsonp=async function(action,params={},options={}){
+    const res=await baseJsonp(action,params,options);
+    if(String(action)==='admin.loan_watch'){
+      const next=String(res?.inventory_revision||'');
+      if(next){
+        if(inventoryRevision&&next!==inventoryRevision){saveRevision(next);setTimeout(refreshInventorySilent,70)}
+        else if(!inventoryRevision)saveRevision(next);
+      }
+    }
+    return res;
+  };
+
+  document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{ensureUsageNode();try{updateUsagePercent(state?.dashboard)}catch(e){}},100)},{once:true});
+  window.PKPJ_ADMIN_LIVE_INVENTORY_SYNC_V10232={version:VERSION,refresh:refreshInventorySilent,get revision(){return inventoryRevision}};
+})();
+</script>
 </body>
 </html>
