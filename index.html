@@ -6332,5 +6332,181 @@ window.PKPJ_COMPLETED_DELETE_VERSION='10.18';
 })();
 </script>
 
+
+
+<style id="pkpj-v10206-admin-login-directory-stable-style">
+/* V10.20.6 - Direktori login Staf IT tidak menggunakan overlay progress. */
+#adminLoginOverlay:not(.hidden) ~ #pkpjCircleProgressV1020,
+#adminLoginOverlay:not(.hidden) ~ #adminProcessV1019,
+#adminLoginOverlay:not(.hidden) ~ #pkpjFastProgressV1020{display:none!important}
+#adminOperatorLoadNote{min-height:34px}
+</style>
+<script id="pkpj-v10206-admin-login-directory-stable-script">
+/* V10.20.6
+   LOGIN DIRECTORY STABLE:
+   - cache dahulu
+   - JSONP terus (tanpa iframe fallback)
+   - tiada progress bulat untuk admin.operators/admin.staff_directory
+   - retry senyap pada Chrome Android
+   - proses sistem lain kekal pada Fast Engine sedia ada. */
+(function(){
+  const VERSION='10.20.6';
+  const CACHE_KEY='pkpj_admin_operator_directory_v10206';
+  const VERSION_KEY='pkpj_admin_operator_release_v10206';
+  const DIRECTORY_ACTIONS=new Set(['admin.operators','admin.staff_directory']);
+  const chromeAndroid=/Android/i.test(navigator.userAgent||'') && /Chrome\//i.test(navigator.userAgent||'') && !/EdgA|OPR|SamsungBrowser/i.test(navigator.userAgent||'');
+  let inflight=null;
+
+  function loginVisible(){const x=document.getElementById('adminLoginOverlay');return !!x&&!x.classList.contains('hidden')}
+  function hideLoginProgress(){
+    if(!loginVisible())return;
+    document.getElementById('pkpjCircleProgressV1020')?.classList.remove('show');
+    document.getElementById('adminProcessV1019')?.classList.remove('show');
+    document.getElementById('pkpjFastProgressV1020')?.classList.remove('show');
+  }
+
+  /* Penting: bypass wrapper universal/iframe untuk direktori login sahaja. */
+  const wrappedJsonp=window.jsonp;
+  window.jsonp=jsonp=async function(action,params={},options={}){
+    if(DIRECTORY_ACTIONS.has(String(action)) && typeof jsonpOnce==='function'){
+      hideLoginProgress();
+      const timeout=Math.max(12000,Number(options?.timeoutMs)||0,chromeAndroid?18000:14000);
+      return jsonpOnce(action,{...(params||{}),_dirv:VERSION,_t:Date.now()},timeout);
+    }
+    return wrappedJsonp(action,params,options);
+  };
+
+  function normalize(input){
+    const raw=Array.isArray(input)?input:Array.isArray(input?.items)?input.items:Array.isArray(input?.data)?input.data:[];
+    const seen=new Set();
+    return raw.map(x=>({
+      user_id:String(x?.user_id||x?.id||'').trim(),
+      name:String(x?.name||'').trim(),
+      role:String(x?.role||'STAFF_IT').trim(),
+      active:x?.active===undefined||x?.active===null||x?.active===''?'Ya':x.active,
+      department:String(x?.department||''),unit:String(x?.unit||'')
+    })).filter(x=>{
+      if(!x.user_id||!x.name||seen.has(x.user_id))return false;
+      seen.add(x.user_id);return true;
+    });
+  }
+  function activeOperators(list){
+    return normalize(list).filter(x=>['SUPER_ADMIN','STAFF_IT'].includes(String(x.role||'')) && !['tidak','no','false','0','inactive','tidak aktif'].includes(String(x.active||'Ya').trim().toLowerCase()))
+      .sort((a,b)=>String(a.name).localeCompare(String(b.name),'ms',{sensitivity:'base'}));
+  }
+  function readCache(){
+    try{
+      const x=JSON.parse(localStorage.getItem(CACHE_KEY)||'null');
+      if(!x||!Array.isArray(x.data))return [];
+      return activeOperators(x.data);
+    }catch(e){return []}
+  }
+  function saveCache(list){
+    const good=activeOperators(list);if(!good.length)return;
+    try{localStorage.setItem(CACHE_KEY,JSON.stringify({savedAt:Date.now(),version:VERSION,data:good}))}catch(e){}
+  }
+  function cacheTime(){
+    try{const x=JSON.parse(localStorage.getItem(CACHE_KEY)||'null');return Number(x?.savedAt||0)}catch(e){return 0}
+  }
+  function timeLabel(ts){
+    if(!ts)return '';
+    try{return new Intl.DateTimeFormat('ms-MY',{hour:'numeric',minute:'2-digit',hour12:true}).format(new Date(ts)).replace(/PG/i,'pagi').replace(/PTG/i,'petang')}catch(e){return ''}
+  }
+  function mergeState(list){
+    const good=activeOperators(list),byId=new Map((state.users||[]).map(x=>[String(x.user_id),x]));
+    good.forEach(x=>byId.set(String(x.user_id),{...(byId.get(String(x.user_id))||{}),...x}));
+    state.users=[...byId.values()];state.loadedAt.users=Date.now();
+    try{saveAdminFastCache()}catch(e){}
+    return good;
+  }
+  function render(list,message,source){
+    const operators=activeOperators(list),sel=document.getElementById('adminOperatorSelect');
+    if(sel){
+      sel.innerHTML=operators.length
+        ? '<option value="">Pilih nama staf IT…</option>'+operators.map(x=>`<option value="${attr(x.user_id)}" data-name="${attr(x.name)}" data-role="${attr(x.role||'STAFF_IT')}">${esc(x.name)}</option>`).join('')
+        : '<option value="">Senarai belum tersedia…</option>';
+      sel.disabled=!operators.length;
+    }
+    document.getElementById('operatorExistingBox')?.classList.remove('hidden');
+    const boot=document.getElementById('operatorBootstrapBox');if(boot)boot.classList.toggle('hidden',!!operators.length);
+    const note=document.getElementById('adminOperatorLoadNote');
+    if(note){
+      note.classList.remove('operator-warn-v10124','operator-ok-v10124');
+      note.textContent=operators.length?`${operators.length} nama Staf IT sedia digunakan.`:(message||'Direktori sedang disambungkan.');
+      note.classList.add(operators.length?'operator-ok-v10124':'operator-warn-v10124');
+    }
+    const stamp=document.getElementById('adminOperatorUpdatedAtV10205');
+    if(stamp){
+      const ts=source==='live'?Date.now():cacheTime();
+      stamp.textContent=operators.length&&ts?'Direktori dikemas kini: '+timeLabel(ts):'';
+      stamp.classList.toggle('is-live',source==='live');stamp.classList.toggle('is-cache',source!=='live');
+    }
+    try{renderItOperators()}catch(e){}
+    hideLoginProgress();
+    return operators;
+  }
+  function fromKnownStaff(staff){
+    const raw=normalize(staff),known=(typeof KNOWN_IT_OPERATORS_V10124!=='undefined'&&Array.isArray(KNOWN_IT_OPERATORS_V10124))?KNOWN_IT_OPERATORS_V10124:[];
+    const key=v=>String(v||'').trim().replace(/\s+/g,' ').toLowerCase();
+    const map=new Map(known.map(x=>[key(x.name),x]));
+    return raw.map(x=>{const k=map.get(key(x.name));return k?{...x,role:k.role||'STAFF_IT',active:'Ya'}:null}).filter(Boolean);
+  }
+  async function direct(action,params,timeout){
+    hideLoginProgress();
+    if(typeof jsonpOnce!=='function')return wrappedJsonp(action,params,{timeoutMs:timeout,retries:0,silentProgress:true});
+    return jsonpOnce(action,{...(params||{}),_dirv:VERSION,_t:Date.now()},timeout);
+  }
+  async function fetchLive(force){
+    let err=null;
+    for(let attempt=0;attempt<2;attempt++){
+      try{
+        const res=await direct('admin.operators',{refresh:force?'1':''},chromeAndroid?18000:14000);
+        const live=activeOperators(res);if(live.length)return live;
+      }catch(e){err=e}
+      if(attempt===0)await new Promise(r=>setTimeout(r,700));
+    }
+    try{
+      const staff=await direct('admin.staff_directory',{},chromeAndroid?18000:14000);
+      const fb=activeOperators(fromKnownStaff(staff));if(fb.length)return fb;
+    }catch(e){err=e}
+    if(err)console.warn('Direktori Staf IT tertangguh.',err);
+    return [];
+  }
+
+  window.loadOperatorOptions=loadOperatorOptions=async function(force=false){
+    hideLoginProgress();
+    if(inflight)return inflight;
+    const run=(async()=>{
+      const stateList=activeOperators(state.users||[]),cached=readCache(),immediate=stateList.length?stateList:cached;
+      if(immediate.length){mergeState(immediate);render(immediate,'','cache');if(!force)return immediate}
+      else render([],'Memuatkan senarai Staf IT…','');
+      const live=await fetchLive(force);
+      if(live.length){mergeState(live);saveCache(live);return render(live,'','live')}
+      if(immediate.length)return render(immediate,'Server lambat. Menggunakan direktori tersimpan.','cache');
+      render([],'Direktori belum menjawab. Tekan Cuba Muat Semula.','');
+      return [];
+    })();
+    inflight=run;try{return await run}finally{inflight=null;hideLoginProgress()}
+  };
+
+  try{
+    const old=localStorage.getItem(VERSION_KEY);
+    if(old!==VERSION){localStorage.setItem(VERSION_KEY,VERSION);localStorage.removeItem('pkpj_admin_operator_directory_v10204');localStorage.removeItem('pkpj_admin_operator_directory_v10205')}
+  }catch(e){}
+
+  function boot(){
+    hideLoginProgress();
+    const cached=readCache(),stateList=activeOperators(state.users||[]),immediate=stateList.length?stateList:cached;
+    if(immediate.length){mergeState(immediate);render(immediate,'','cache')}else render([],'Memuatkan senarai Staf IT…','');
+    const retry=document.getElementById('adminOperatorRetryBtn');if(retry)retry.onclick=()=>loadOperatorOptions(true);
+    const login=document.getElementById('operatorLoginBtn');if(login)login.onclick=operatorLogin;
+    setTimeout(()=>loadOperatorOptions(true),180);
+    if(chromeAndroid){setTimeout(()=>{if(!activeOperators(state.users||[]).length)loadOperatorOptions(true)},5000);setTimeout(()=>{if(!activeOperators(state.users||[]).length)loadOperatorOptions(true)},12000)}
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
+  window.PKPJ_ADMIN_LOGIN_DIRECTORY_V10206={version:VERSION,mode:'CACHE_JSONP_DIRECT_NO_IFRAME',chromeAndroid};
+})();
+</script>
+
 </body>
 </html>
