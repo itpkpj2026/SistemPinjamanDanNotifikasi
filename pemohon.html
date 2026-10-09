@@ -7516,5 +7516,84 @@ document.addEventListener('DOMContentLoaded',()=>{
 })();
 </script>
 
+<style id="pkpj-v10243-printer-loan-style">
+.pkpj-printer-disabled-v10243{opacity:.58!important;filter:saturate(.55)}
+</style>
+<script id="pkpj-v10243-printer-loan-script">
+(function(){
+  const VERSION='10.24.3';
+  function enabled(){
+    const raw=String(state?.publicSettings?.loan_printer_enabled||'Ya').trim().toLowerCase();
+    return !['tidak','no','false','0','off','disabled','nyahaktif'].includes(raw);
+  }
+  function isPrinter(category){return portalIconKeyV118(category)==='printer'}
+  function allAvailable(){
+    return (state.assets||[]).filter(a=>{
+      const status=String(a?.status||'TERSEDIA').toUpperCase();
+      if(status!=='TERSEDIA'&&status!=='')return false;
+      return enabled()||!isPrinter(a?.category);
+    });
+  }
+
+  window.categoryAssetsV116=function(category){
+    const assets=allAvailable();
+    if(!category)return assets;
+    const key=portalIconKeyV118(category);
+    if(['laptop','wifi','extension','accessory','printer'].includes(key)){
+      return assets.filter(a=>portalIconKeyV118(a.category||'')===key);
+    }
+    return assets.filter(a=>String(a.category||'Lain-lain').trim()===String(category).trim());
+  };
+
+  window.renderApplyCategories=function(){
+    const grid=document.querySelector('#loanCategoryGrid');if(!grid)return;
+    const assets=allAvailable();
+    const search=String(document.querySelector('#applyAssetSearch')?.value||'').trim().toLowerCase();
+    const searched=search?assets.filter(a=>[a.asset_name,a.category,a.brand,a.model,a.asset_tag,a.location].join(' ').toLowerCase().includes(search)):assets;
+    const fixed=[['Laptop','laptop'],['WiFi/MiFi','wifi'],['Extension','extension']];
+    if(enabled())fixed.push(['Printer','printer']);
+    fixed.push(['Accessory','accessory']);
+    const used=new Set(fixed.map(x=>x[1]));
+    const dynamic=[...new Set(searched.map(a=>String(a.category||'Lain-lain').trim()||'Lain-lain'))]
+      .filter(c=>!used.has(portalIconKeyV118(c)))
+      .sort((a,b)=>a.localeCompare(b,'ms',{sensitivity:'base'}));
+    const items=[
+      {name:'',label:'Semua Inventori',count:searched.length},
+      ...fixed.map(([label,key])=>({name:label,label,count:searched.filter(a=>portalIconKeyV118(a.category)===key).length})),
+      ...dynamic.map(c=>({name:c,label:c,count:searched.filter(a=>String(a.category||'Lain-lain').trim()===c).length}))
+    ];
+    const totalEl=document.querySelector('#applyAvailableCount');if(totalEl)totalEl.textContent=searched.length;
+    const cube='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4.5 7.2v9.6L12 21l7.5-4.2V7.2L12 3Z"/><path d="m4.8 7.4 7.2 4.1 7.2-4.1M12 11.5V21"/></svg>';
+    grid.innerHTML=`<div class="equipment-category-launchers-v116">${items.map(t=>{const colors=paletteV116(t.name||'all'),enc=encodeURIComponent(t.name),art=premiumAssetArtV116(t.name||'all');return `<button type="button" class="pkpj-request-showcase-v1111 ${t.count===0?'zero':''}" style="--cat-a:${colors[0]};--cat-b:${colors[1]}" onclick="openCategoryPopupV116(decodeURIComponent('${enc}'))"><div class="pkpj-request-visual-v1111"><div class="pkpj-request-art-v1111">${art}</div></div><div class="pkpj-request-name-v1111">${esc(t.label)}</div><div class="pkpj-request-stock-v1111"><span class="cube">${cube}</span><span><small>Kuantiti Tersedia</small><strong>${t.count}</strong><em>unit</em></span><span class="arrow">›</span></div></button>`}).join('')}</div>`;
+  };
+
+  const baseJsonp=typeof jsonp==='function'?jsonp:null;
+  if(baseJsonp){
+    jsonp=async function(action,params={},options={}){
+      const res=await baseJsonp(action,params,options);
+      if(String(action)==='applicant.inventory_fast'&&res&&res.printer_loan_enabled!==undefined){
+        state.publicSettings=state.publicSettings||{};
+        state.publicSettings.loan_printer_enabled=String(res.printer_loan_enabled||'Ya');
+        if(state.currentView==='apply')try{renderApplyCategories()}catch(e){}
+      }
+      return res;
+    };
+  }
+
+  const baseOpen=typeof openLoanRequestModal==='function'?openLoanRequestModal:null;
+  if(baseOpen){
+    window.openLoanRequestModal=openLoanRequestModal=function(categoryKey,preselectAssetId=''){
+      if(String(categoryKey)==='printer'&&!enabled()){
+        return toast('Pinjaman Printer ditutup','Staff IT telah menyahaktifkan pinjaman Printer dalam Tetapan Sistem.','err');
+      }
+      return baseOpen.apply(this,arguments);
+    };
+  }
+
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{if(state.currentView==='apply')renderApplyCategories()},0),{once:true});
+  window.PKPJ_PRINTER_LOAN_V10243={version:VERSION,get enabled(){return enabled()}};
+})();
+</script>
+
 </body>
 </html>
