@@ -1585,6 +1585,10 @@ button:not(:disabled):active,.btn:not(:disabled):active,.asset-icon-btn:not(:dis
         <div class="card panel">
           <div id="categoryIconSettings"></div>
           <div class="form-group section-gap"><label>Tajuk Portal Pemohon</label><input class="field" id="portalTitleSetting" value="Selamat Datang ke Portal Permohonan Peminjaman Inventori ICT"></div>
+          <div class="printer-loan-setting-v10243" id="printerLoanSettingV10243">
+            <div><strong>Pinjaman Printer</strong><small>Paparkan kategori Printer di Portal Pemohon dan benarkan permohonan printer.</small></div>
+            <label class="printer-switch-v10243"><input type="checkbox" id="printerLoanEnabledV10243" checked><span></span><b id="printerLoanStateV10243">Aktif</b></label>
+          </div>
           <button class="btn btn-primary" type="button" id="saveCategorySettingsBtn">Simpan Tetapan Paparan</button>
         </div>
       </div>
@@ -3832,6 +3836,14 @@ function renderCategorySettings(){
       state.settings?.portal_title||
       'Selamat Datang ke Portal Permohonan Peminjaman Inventori ICT';
   }
+
+  const printerToggle=$('#printerLoanEnabledV10243');
+  if(printerToggle){
+    const raw=String(state.settings?.loan_printer_enabled||'Ya').trim().toLowerCase();
+    printerToggle.checked=!['tidak','no','false','0','off','disabled','nyahaktif'].includes(raw);
+    const label=$('#printerLoanStateV10243');
+    if(label)label.textContent=printerToggle.checked?'Aktif':'Tidak Aktif';
+  }
 }
 
 
@@ -3851,18 +3863,21 @@ async function saveCategorySettings(){
 
   const portalTitle=($('#portalTitleSetting')?.value||'').trim()||
     'Selamat Datang ke Portal Permohonan Peminjaman Inventori ICT';
+  const printerEnabled=$('#printerLoanEnabledV10243')?.checked!==false?'Ya':'Tidak';
 
   try{
     await postApi('settings.update',{
       values:{
         inventory_category_icons_json:JSON.stringify(map),
         portal_title:portalTitle,
-        manual_name_enabled:'Ya'
+        manual_name_enabled:'Ya',
+        loan_printer_enabled:printerEnabled
       }
     });
 
     state.settings.inventory_category_icons_json=JSON.stringify(map);
     state.settings.portal_title=portalTitle;
+    state.settings.loan_printer_enabled=printerEnabled;
 
     renderAssetCategoryCards();
     toast('Tetapan disimpan','Ikon dan paparan portal telah dikemaskini.','ok');
@@ -7365,6 +7380,28 @@ window.PKPJ_COMPLETED_DELETE_VERSION='10.18';
     version:VERSION,idle_minutes:10,warning_seconds:60,defer_while_user_process:true,
     preserves_directory_cache:true,preserves_records:true
   };
+})();
+</script>
+
+<style id="pkpj-v10243-printer-toggle-style">
+.printer-loan-setting-v10243{margin:15px 0 14px;padding:14px 15px;border:1px solid #dce8f2;border-radius:17px;background:linear-gradient(145deg,#f8fbff,#eef6fc);display:flex;align-items:center;justify-content:space-between;gap:14px}
+.printer-loan-setting-v10243 strong{display:block;font-size:13px;color:#173b5d}.printer-loan-setting-v10243 small{display:block;margin-top:4px;font-size:10.5px;color:#6c8296;line-height:1.45}
+.printer-switch-v10243{display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;white-space:nowrap}.printer-switch-v10243 input{position:absolute;opacity:0;pointer-events:none}.printer-switch-v10243 span{width:45px;height:25px;border-radius:999px;background:#cad8e5;position:relative;box-shadow:inset 2px 2px 6px rgba(54,85,114,.13);transition:.18s}.printer-switch-v10243 span:after{content:"";position:absolute;width:19px;height:19px;left:3px;top:3px;border-radius:50%;background:#fff;box-shadow:0 3px 7px rgba(34,66,96,.22);transition:.18s}.printer-switch-v10243 input:checked+span{background:#1bb76a}.printer-switch-v10243 input:checked+span:after{transform:translateX(20px)}.printer-switch-v10243 b{font-size:10px;color:#526d84;min-width:58px}
+@media(max-width:600px){.printer-loan-setting-v10243{align-items:flex-start;flex-direction:column}.printer-switch-v10243{align-self:flex-end}}
+</style>
+<script id="pkpj-v10243-printer-toggle-script">
+(function(){
+  function syncPrinterToggleV10243(){
+    const cb=document.querySelector('#printerLoanEnabledV10243');
+    const label=document.querySelector('#printerLoanStateV10243');
+    if(!cb||!label)return;
+    label.textContent=cb.checked?'Aktif':'Tidak Aktif';
+  }
+  document.addEventListener('DOMContentLoaded',function(){
+    const cb=document.querySelector('#printerLoanEnabledV10243');
+    if(cb){cb.addEventListener('change',syncPrinterToggleV10243);syncPrinterToggleV10243()}
+  },{once:true});
+  window.PKPJ_PRINTER_SETTING_V10243={version:'10.24.3',mode:'SETTINGS_TOGGLE'};
 })();
 </script>
 
