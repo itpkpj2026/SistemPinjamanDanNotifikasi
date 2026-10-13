@@ -1443,6 +1443,9 @@ button:not(:disabled):active,.btn:not(:disabled):active,.asset-icon-btn:not(:dis
   </div>
   <span class="pill blue" id="assetCategoryTotal">0 aset</span>
 </div>
+<div class="asset-add-entry-v10245">
+  <button type="button" class="btn btn-primary" id="assetCategoryAddBtn" onclick="document.getElementById('addAssetBtn').click()">＋ Tambah Aset</button>
+</div>
 <div class="category-strip asset-category-menu" id="assetCategoryCards">
   <div class="cat-card asset-cat-loading"><div class="emoji">…</div><b>Memuatkan kategori</b><small>Inventori ICT</small></div>
 </div>
@@ -7408,7 +7411,10 @@ window.PKPJ_COMPLETED_DELETE_VERSION='10.18';
 
 
 <style id="pkpj-v10244-mobile-add-asset-style">
-/* V10.24.4 - Butang Tambah Aset terapung khas paparan telefon/tablet kecil. */
+/* V10.24.5 - Akses Tambah Aset di atas kategori dan pembetulan lexical state. */
+.asset-add-entry-v10245{display:flex;justify-content:flex-end;margin:0 0 16px}
+#assetCategoryAddBtn{min-height:44px;font-size:13px}
+@media(max-width:760px){.asset-add-entry-v10245{justify-content:stretch}#assetCategoryAddBtn{width:100%;min-height:48px;font-size:14px}}
 #mobileAddAssetV10244{display:none}
 @media(max-width:760px){
   #mobileAddAssetV10244{
@@ -7444,7 +7450,7 @@ window.PKPJ_COMPLETED_DELETE_VERSION='10.18';
 </style>
 <script id="pkpj-v10244-mobile-add-asset-script">
 (function(){
-  const VERSION='10.24.4';
+  const VERSION='10.24.5';
   let btn=null;
 
   function ensureButton(){
@@ -7473,7 +7479,7 @@ window.PKPJ_COMPLETED_DELETE_VERSION='10.18';
   }
 
   function mobile(){return window.matchMedia('(max-width:760px)').matches}
-  function adminActive(){return !!(window.state&&state.operator)}
+  function adminActive(){return typeof state!=='undefined'&&!!state.operator}
   function assetsActive(){return !!document.querySelector('#view-assets.active')}
   function sidebarOpen(){return !!document.querySelector('#sidebar.open')}
 
