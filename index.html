@@ -7405,5 +7405,111 @@ window.PKPJ_COMPLETED_DELETE_VERSION='10.18';
 })();
 </script>
 
+
+
+<style id="pkpj-v10244-mobile-add-asset-style">
+/* V10.24.4 - Butang Tambah Aset terapung khas paparan telefon/tablet kecil. */
+#mobileAddAssetV10244{display:none}
+@media(max-width:760px){
+  #mobileAddAssetV10244{
+    position:fixed;
+    right:max(14px,env(safe-area-inset-right));
+    bottom:max(18px,calc(env(safe-area-inset-bottom) + 12px));
+    z-index:76;
+    min-height:50px;
+    padding:0 18px;
+    border:0;
+    border-radius:999px;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    background:linear-gradient(135deg,#126cff,#1697f8);
+    color:#fff;
+    font-size:13px;
+    font-weight:900;
+    letter-spacing:-.01em;
+    box-shadow:0 14px 32px rgba(18,108,255,.30),0 4px 10px rgba(25,64,112,.14);
+    -webkit-tap-highlight-color:transparent;
+    touch-action:manipulation;
+  }
+  #mobileAddAssetV10244.show{display:inline-flex}
+  #mobileAddAssetV10244 .plus{font-size:22px;line-height:1;font-weight:500;margin-top:-1px}
+  #mobileAddAssetV10244:active{transform:translateY(1px) scale(.985)}
+  #view-assets{padding-bottom:82px}
+}
+@media(max-width:380px){
+  #mobileAddAssetV10244{right:11px;bottom:max(14px,calc(env(safe-area-inset-bottom) + 9px));min-height:48px;padding:0 15px;font-size:12px}
+}
+</style>
+<script id="pkpj-v10244-mobile-add-asset-script">
+(function(){
+  const VERSION='10.24.4';
+  let btn=null;
+
+  function ensureButton(){
+    if(btn&&document.body.contains(btn))return btn;
+    btn=document.querySelector('#mobileAddAssetV10244');
+    if(btn)return btn;
+    btn=document.createElement('button');
+    btn.type='button';
+    btn.id='mobileAddAssetV10244';
+    btn.setAttribute('aria-label','Tambah Aset');
+    btn.title='Tambah Aset';
+    btn.innerHTML='<span class="plus" aria-hidden="true">＋</span><span>Tambah Aset</span>';
+    btn.addEventListener('click',function(event){
+      event.preventDefault();
+      event.stopPropagation();
+      try{
+        if(typeof openAssetModal==='function')openAssetModal();
+        else if(document.querySelector('#addAssetBtn'))document.querySelector('#addAssetBtn').click();
+        else if(typeof toast==='function')toast('Tambah Aset','Fungsi Tambah Aset belum sedia. Muat semula halaman dan cuba lagi.','err');
+      }catch(err){
+        try{if(typeof toast==='function')toast('Tambah Aset',err?.message||'Borang aset tidak dapat dibuka.','err')}catch(e){}
+      }
+    });
+    document.body.appendChild(btn);
+    return btn;
+  }
+
+  function mobile(){return window.matchMedia('(max-width:760px)').matches}
+  function adminActive(){return !!(window.state&&state.operator)}
+  function assetsActive(){return !!document.querySelector('#view-assets.active')}
+  function sidebarOpen(){return !!document.querySelector('#sidebar.open')}
+
+  function update(){
+    const b=ensureButton();
+    const shouldShow=mobile()&&adminActive()&&assetsActive()&&!sidebarOpen();
+    b.classList.toggle('show',shouldShow);
+    b.setAttribute('aria-hidden',shouldShow?'false':'true');
+    b.tabIndex=shouldShow?0:-1;
+  }
+
+  document.addEventListener('DOMContentLoaded',function(){
+    ensureButton();
+    const assets=document.querySelector('#view-assets');
+    const login=document.querySelector('#adminLoginOverlay');
+    const sidebar=document.querySelector('#sidebar');
+    if(assets)new MutationObserver(update).observe(assets,{attributes:true,attributeFilter:['class']});
+    if(login)new MutationObserver(update).observe(login,{attributes:true,attributeFilter:['class']});
+    if(sidebar)new MutationObserver(update).observe(sidebar,{attributes:true,attributeFilter:['class']});
+    window.addEventListener('resize',update,{passive:true});
+    window.addEventListener('orientationchange',function(){setTimeout(update,120)},{passive:true});
+    setTimeout(update,150);
+  },{once:true});
+
+  const baseShowView=window.showView;
+  if(typeof baseShowView==='function'){
+    window.showView=function(){
+      const result=baseShowView.apply(this,arguments);
+      setTimeout(update,0);
+      return result;
+    };
+  }
+
+  window.PKPJ_MOBILE_ADD_ASSET_V10244={version:VERSION,mobile_only:true,view:'assets',preserves_records:true};
+})();
+</script>
+
 </body>
 </html>
