@@ -7643,5 +7643,226 @@ document.addEventListener('DOMContentLoaded',()=>{
 })();
 </script>
 
+<!-- =========================================================
+     PKPJ V10.24.9 - PEMOHON INSTANT HOME / NON-BLOCKING SYNC
+     - Snapshot dashboard lama dipapar serta-merta, kemudian sync senyap.
+     - Tiada endpoint/polling baharu.
+     - Proses write lama dilepaskan dari overlay lebih awal; pengesahan kekal berjalan.
+     - Kemaskini email tidak lagi memerangkap pengguna jika Apps Script cold-start.
+========================================================= -->
+<style id="pkpj-v10249-applicant-instant-home-style">
+/* Home/Dashboard tidak perlu shimmer menutup maklumat yang sudah ada. */
+#view-home .loading::after,#view-home.loading::after{display:none!important}
+/* V10.24.9 guna satu status kecil sahaja selepas soft-release. */
+#pkpjApplicantBgStatusV10241{display:none!important}
+#pkpjApplicantFastBgV10249{
+  position:fixed;right:16px;bottom:16px;z-index:130650;display:none;align-items:center;gap:9px;
+  max-width:min(430px,calc(100vw - 28px));padding:10px 13px;border-radius:14px;background:#fff;
+  border:1px solid #d8e5ef;box-shadow:0 14px 36px rgba(10,40,72,.17);color:#365b78;
+  font-size:10.5px;font-weight:800;line-height:1.4
+}
+#pkpjApplicantFastBgV10249.show{display:flex}
+#pkpjApplicantFastBgV10249 .dot{width:15px;height:15px;border-radius:50%;border:2px solid #dbe7f1;border-top-color:#1678e8;animation:pkpjV10249Spin .75s linear infinite;flex:0 0 auto}
+#pkpjApplicantFastBgV10249.done .dot,#pkpjApplicantFastBgV10249.fail .dot,#pkpjApplicantFastBgV10249.pending .dot{animation:none;border:0;width:17px;height:17px;display:grid;place-items:center;font-size:16px;font-weight:950}
+#pkpjApplicantFastBgV10249.done .dot:before{content:'✓';color:#18a56b}
+#pkpjApplicantFastBgV10249.fail .dot:before{content:'!';color:#d64d61}
+#pkpjApplicantFastBgV10249.pending .dot:before{content:'…';color:#bd821d}
+@keyframes pkpjV10249Spin{to{transform:rotate(360deg)}}
+@media(max-width:720px){#pkpjApplicantFastBgV10249{left:10px;right:10px;bottom:10px;max-width:none}}
+</style>
+<script id="pkpj-v10249-applicant-instant-home-script">
+(function(){
+  'use strict';
+  const VERSION='10.24.9';
+  const SNAP_PREFIX='pkpj_applicant_home_snapshot_v10249_';
+  const SNAP_MAX_AGE=7*24*60*60*1000;
+  const NORMAL_SOFT_RELEASE=4500;
+  const LARGE_SOFT_RELEASE=7500;
+  let processTimer=null,processReleased=false,lastProcessRunning=false;
+
+  function now(){return Date.now()}
+  function safeGet(key){try{return localStorage.getItem(key)||''}catch(e){return ''}}
+  function safeSet(key,value){try{localStorage.setItem(key,value);return true}catch(e){return false}}
+  function hashName(value){const s=String(value||'').trim().toLowerCase();let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h)^s.charCodeAt(i);return (h>>>0).toString(36)}
+  function snapKey(userId,name){const id=String(userId||'').trim();return SNAP_PREFIX+(id||('name_'+hashName(name)))}
+  function currentWho(){
+    const p=window.state&&state.profile||{};
+    let id=String(p.user_id||'').trim(),name=String(p.name||'').trim();
+    try{if(!id&&typeof localGetV9==='function')id=String(localGetV9('ict_applicant_user_id')||'').trim()}catch(e){}
+    try{if(!name&&typeof localGetV9==='function')name=String(localGetV9('ict_applicant_name')||'').trim()}catch(e){}
+    return {user_id:id,name};
+  }
+  function stateSnapshot(){
+    if(!window.state)return null;
+    const p=state.profile||null;if(!p)return null;
+    return {
+      profile:{...p},
+      kpi:{...(state.kpi||{})},
+      available_assets:Array.isArray(state.assets)?state.assets:[],
+      loans:Array.isArray(state.loans)?state.loans:[],
+      public_settings:{...(state.publicSettings||{})}
+    };
+  }
+  function saveSnapshot(data){
+    try{
+      const d=data&&data.profile?data:stateSnapshot();if(!d?.profile)return;
+      const who={user_id:d.profile.user_id||'',name:d.profile.name||''};
+      const text=JSON.stringify({savedAt:now(),data:d});
+      /* Jangan paksa localStorage jika payload luar biasa besar. */
+      if(text.length>1900000)return;
+      safeSet(snapKey(who.user_id,who.name),text);
+    }catch(e){}
+  }
+  function readSnapshot(userId,name){
+    try{
+      const raw=safeGet(snapKey(userId,name));if(!raw)return null;
+      const item=JSON.parse(raw);if(!item?.savedAt||now()-Number(item.savedAt)>SNAP_MAX_AGE||!item?.data?.profile)return null;
+      return item.data;
+    }catch(e){return null}
+  }
+
+  /* Cache 10 minit asal kekal. Jika tamat, guna snapshot terakhir untuk FIRST PAINT sahaja. */
+  const baseRead=typeof window.readPortalCache==='function'?window.readPortalCache:null;
+  if(baseRead){
+    window.readPortalCache=readPortalCache=function(userId){
+      const hit=baseRead(userId);if(hit)return hit;
+      const who=currentWho();return readSnapshot(userId||who.user_id,who.name);
+    };
+  }
+  const baseSave=typeof window.savePortalCache==='function'?window.savePortalCache:null;
+  if(baseSave){
+    window.savePortalCache=savePortalCache=function(data){const r=baseSave(data);saveSnapshot(data);return r};
+  }
+  const baseApply=typeof window.applyBootstrap==='function'?window.applyBootstrap:null;
+  if(baseApply){
+    window.applyBootstrap=applyBootstrap=function(data){const r=baseApply.apply(this,arguments);saveSnapshot(stateSnapshot()||data);return r};
+  }
+
+  /* applicant.bootstrap ialah hydrate latar selepas shell/cache sudah dipapar. Jangan buka progress global untuk read ini. */
+  const baseJsonp=typeof window.jsonp==='function'?window.jsonp:null;
+  if(baseJsonp){
+    window.jsonp=jsonp=function(action,params={},options={}){
+      const a=String(action||'');
+      if(a==='applicant.bootstrap')options={...(options||{}),silentProgress:true};
+      return baseJsonp(action,params,options);
+    };
+  }
+
+  /* Refresh dashboard kekal single-flight daripada engine asal. Jika data sudah ada, kegagalan refresh tidak blok UI. */
+  const baseRefresh=typeof window.refreshPortal==='function'?window.refreshPortal:null;
+  if(baseRefresh){
+    window.refreshPortal=refreshPortal=function(silent=false,forceFresh=false){
+      const hasPaint=!!state?.profile&&(Object.keys(state.kpi||{}).length>0||(state.assets||[]).length>0||(state.loans||[]).length>0);
+      if(hasPaint&&state.currentView==='home'){
+        try{renderShell();renderHomeView()}catch(e){}
+      }
+      return baseRefresh(hasPaint?true:silent,forceFresh);
+    };
+  }
+
+  function bgPill(){
+    let p=document.getElementById('pkpjApplicantFastBgV10249');if(p)return p;
+    p=document.createElement('div');p.id='pkpjApplicantFastBgV10249';p.innerHTML='<span class="dot"></span><span class="txt">Proses diteruskan di latar belakang.</span>';document.body.appendChild(p);return p;
+  }
+  function showBg(text,stateName='running',hideMs=0){
+    const p=bgPill();p.className='show '+stateName;p.querySelector('.txt').textContent=text;clearTimeout(p._hide);if(hideMs)p._hide=setTimeout(()=>{p.className=''},hideMs);
+  }
+  function hideBg(){const p=bgPill();clearTimeout(p._hide);p.className=''}
+  function attachFastRelease(){
+    const x=document.getElementById('pkpjStableApplicantV1023');if(!x)return false;
+    const sync=()=>{
+      const visible=x.classList.contains('show');
+      const done=x.classList.contains('done'),fail=x.classList.contains('fail'),pending=x.classList.contains('pending');
+      const running=visible&&!done&&!fail&&!pending;
+      if(running&&!lastProcessRunning){
+        lastProcessRunning=true;processReleased=false;hideBg();clearTimeout(processTimer);
+        const title=String(x.querySelector('.pkpj-stable-app-title-v1023')?.textContent||'').toLowerCase();
+        const large=/memuat naik|upload|dokumen|gambar|tandatangan/.test(title);
+        processTimer=setTimeout(()=>{
+          if(x.classList.contains('show')&&!x.classList.contains('done')&&!x.classList.contains('fail')&&!x.classList.contains('pending')){
+            processReleased=true;x.setAttribute('data-soft-release','1');x.setAttribute('data-fast-release','1');
+            showBg(large?'Upload masih disahkan di latar belakang. Anda boleh terus menggunakan portal.':'Simpanan masih disahkan di latar belakang. Anda boleh terus menggunakan portal.','running');
+          }
+        },large?LARGE_SOFT_RELEASE:NORMAL_SOFT_RELEASE);
+      }
+      if(visible&&(done||fail||pending)){
+        clearTimeout(processTimer);processTimer=null;
+        if(processReleased){
+          if(done)showBg('Proses selesai dan telah disahkan.','done',2200);
+          else if(fail)showBg('Proses tidak berjaya. Semak mesej portal.','fail',3500);
+          else showBg('Server masih membuat pengesahan. Semakan automatik diteruskan.','pending',3200);
+        }
+      }
+      if(!visible){
+        clearTimeout(processTimer);processTimer=null;lastProcessRunning=false;processReleased=false;x.removeAttribute('data-fast-release');
+      }
+    };
+    new MutationObserver(sync).observe(x,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['class']});sync();return true;
+  }
+  if(!attachFastRelease()){
+    const obs=new MutationObserver(()=>{if(attachFastRelease())obs.disconnect()});obs.observe(document.documentElement,{childList:true,subtree:true});
+  }
+
+  /* Kemaskini Email: jika server >4.5s, lepaskan modal secara selamat dan biar receipt checker sedia ada mengesahkan di belakang. */
+  function isUncertainEmailError(e){const code=String(e?.code||'').toUpperCase(),msg=String(e?.message||'').toLowerCase();return /WRITE_PENDING|WRITE_PENDING_LOCAL|WRITE_IN_PROGRESS|TIMEOUT|NETWORK/.test(code)||/belum mengesahkan|masih.*proses|timeout|sambungan.*perlahan/.test(msg)}
+  function validEmailLocal(v){const e=String(v||'').trim().toLowerCase();return e.length<=160&&/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e)}
+  function renderEmailV10249(){try{window.PKPJ_APPLICANT_V10246?.renderEmail?.()}catch(e){}}
+  function provisionalEmail(email){
+    state.profile=state.profile||{};state.profile.email=email;renderEmailV10249();
+    try{savePortalCache({profile:state.profile,kpi:state.kpi,available_assets:state.assets,loans:state.loans,public_settings:state.publicSettings})}catch(e){}
+  }
+  function closeEmailBox(){document.getElementById('pkpjEmailBackdropV10246')?.classList.remove('show');document.body.style.overflow=''}
+  function installEmailFastSave(){
+    const btn=document.getElementById('pkpjEmailSaveV10246');if(!btn||btn.dataset.fastV10249==='1')return false;
+    const original=btn.onclick;btn.dataset.fastV10249='1';
+    btn.onclick=async function(event){
+      const title=String(document.getElementById('pkpjEmailTitleV10246')?.textContent||'');
+      /* First application uses V10.24.6 piggyback flow; do not alter it. */
+      if(/Diperlukan Untuk Permohonan Pertama/i.test(title))return original?.call(this,event);
+      const one=document.getElementById('pkpjEmailOneV10246'),two=document.getElementById('pkpjEmailTwoV10246'),err=document.getElementById('pkpjEmailErrorV10246');
+      const a=String(one?.value||'').trim().toLowerCase(),b=String(two?.value||'').trim().toLowerCase();
+      if(!validEmailLocal(a)){if(err)err.textContent='Format email tidak sah.';return}
+      if(a!==b){if(err)err.textContent='Email pengesahan tidak sama.';return}
+      let who=null;try{who=typeof identity==='function'?identity():currentWho()}catch(e){who=currentWho()}
+      if(!who?.name){if(err)err.textContent='Sesi pemohon belum tersedia.';return}
+      if(err)err.textContent='';const oldEmail=String(state?.profile?.email||'');btn.disabled=true;btn.textContent='Menyimpan...';
+      const task=Promise.resolve().then(()=>postApi('applicant.email.update',{identity_user_id:who.user_id||'',identity_name:who.name,email:a},{timeoutMs:12000,maxWait:18000}));
+      const fast=await Promise.race([
+        task.then(res=>({kind:'done',res})).catch(error=>({kind:'error',error})),
+        new Promise(resolve=>setTimeout(()=>resolve({kind:'wait'}),NORMAL_SOFT_RELEASE))
+      ]);
+      if(fast.kind==='done'){
+        state.profile={...(state.profile||{}),...(fast.res?.profile||{}),email:a};saveSnapshot(stateSnapshot());renderEmailV10249();closeEmailBox();toast('Email dikemaskini','Email notifikasi telah disimpan.','ok');btn.disabled=false;btn.textContent='Simpan';return;
+      }
+      if(fast.kind==='error'){
+        if(isUncertainEmailError(fast.error)){
+          provisionalEmail(a);closeEmailBox();showBg('Email sedang disahkan oleh server. Anda boleh terus menggunakan portal.','pending',3200);
+        }else{
+          if(err)err.textContent=typeof friendlyPortalError==='function'?friendlyPortalError(fast.error,'Email belum dapat disimpan. Cuba semula.'):(fast.error?.message||'Email belum dapat disimpan.');
+        }
+        btn.disabled=false;btn.textContent='Simpan';return;
+      }
+      /* Slow path: do not hold the user in modal. */
+      provisionalEmail(a);closeEmailBox();showBg('Email sedang disahkan oleh server. Anda boleh terus menggunakan portal.','running');btn.disabled=false;btn.textContent='Simpan';
+      task.then(res=>{
+        state.profile={...(state.profile||{}),...(res?.profile||{}),email:a};saveSnapshot(stateSnapshot());renderEmailV10249();showBg('Email notifikasi telah disahkan.','done',2200);
+      }).catch(e=>{
+        if(isUncertainEmailError(e)){showBg('Pengesahan email diteruskan secara automatik.','pending',3200);return}
+        if(state?.profile&&String(state.profile.email||'')===a)state.profile.email=oldEmail;renderEmailV10249();showBg('Email belum berjaya disimpan. Cuba semula kemudian.','fail',3800);
+      });
+    };
+    return true;
+  }
+
+  function boot(){
+    /* init/login asal akan memanggil readPortalCache yang kini ada snapshot fallback. */
+    setTimeout(()=>{installEmailFastSave();const who=currentWho();if(state?.profile&&!Object.keys(state.kpi||{}).length){const snap=readSnapshot(who.user_id,who.name);if(snap){try{applyBootstrap(snap)}catch(e){}}}},0);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
+
+  window.PKPJ_APPLICANT_INSTANT_HOME_V10249={version:VERSION,mode:'SNAPSHOT_FIRST_SILENT_REVALIDATE_NO_EXTRA_POLLING',save:()=>saveSnapshot(stateSnapshot()),read:()=>{const w=currentWho();return readSnapshot(w.user_id,w.name)}};
+})();
+</script>
+
 </body>
 </html>
