@@ -3330,7 +3330,7 @@ function imageField(id,label){
         <div>
           <div style="font-size:24px;margin-bottom:5px">📷</div>
           <strong>Ambil gambar atau pilih gambar / PDF</strong>
-          <span>Gambar asal atau PDF · tanpa compression · maksimum 15 MB</span>
+          <span>Gambar besar dioptimumkan automatik · PDF kekal asal · maksimum 15 MB</span>
         </div>
       </label>
       <div class="upload-preview" id="${id}_preview">
@@ -3394,7 +3394,7 @@ function bindImagePicker(id){
     }
 
     $('#'+id+'_preview_name').textContent=file.name;
-    $('#'+id+'_preview_size').textContent=formatBytes(file.size)+' · fail asal · tiada compression';
+    $('#'+id+'_preview_size').textContent=formatBytes(file.size)+' · fail dipilih · gambar besar akan dioptimumkan semasa upload';
     preview?.classList.add('show');
   });
 }
@@ -7740,6 +7740,57 @@ window.PKPJ_COMPLETED_DELETE_VERSION='10.18';
   },{once:true});
 
   window.PKPJ_INSTANT_DASHBOARD_V10248={version:VERSION,mode:'SNAPSHOT_FIRST_SILENT_REVALIDATE',refresh:()=>fetchFresh(true)};
+})();
+</script>
+
+
+
+<!-- =========================================================
+     PKPJ V10.25.0 - ADMIN UPLOAD + RUNTIME HARDENING
+     - Optimize large raster images client-side before Drive upload.
+     - PDFs/unsupported image formats remain unchanged.
+     - No new polling/API endpoint. Existing V10.23 stable transport remains authoritative.
+========================================================= -->
+<style id="pkpj-v10250-admin-hardening-style">
+#pkpjStableProcessV1023[data-soft-release="1"]{display:none!important}
+</style>
+<script id="pkpj-v10250-admin-hardening-script">
+(function(){
+  'use strict';
+  const VERSION='10.25.0';
+  const MAX_INPUT=15*1024*1024,COMPRESS_FROM=850*1024,MAX_DIM=1600,TARGET=1400*1024;
+  function dataUrl(file){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(String(r.result||''));r.onerror=()=>reject(new Error('Fail tidak dapat dibaca.'));r.readAsDataURL(file)})}
+  function blobUrl(blob){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(String(r.result||''));r.onerror=()=>reject(new Error('Gambar tidak dapat dibaca.'));r.readAsDataURL(blob)})}
+  async function optimize(file){
+    if(!file)return {};
+    if(file.size>MAX_INPUT)throw new Error('Fail melebihi 15 MB.');
+    const type=String(file.type||'').toLowerCase();
+    if(type==='application/pdf'||!/^image\/(jpeg|png|webp|avif)$/.test(type)||file.size<COMPRESS_FROM){return {dataUrl:await dataUrl(file),name:file.name,bytes:file.size,originalBytes:file.size,optimized:false}}
+    let src=null,revoke='';
+    try{
+      if('createImageBitmap'in window)src=await createImageBitmap(file);
+      else{revoke=URL.createObjectURL(file);src=await new Promise((res,rej)=>{const im=new Image();im.onload=()=>res(im);im.onerror=()=>rej(new Error('Gambar tidak dapat dibaca.'));im.src=revoke})}
+      const sw=src.width||src.naturalWidth,sh=src.height||src.naturalHeight;if(!sw||!sh)throw new Error('Saiz gambar tidak dapat dibaca.');
+      const scale=Math.min(1,MAX_DIM/sw,MAX_DIM/sh);let w=Math.max(1,Math.round(sw*scale)),h=Math.max(1,Math.round(sh*scale)),quality=.84,last=null;
+      for(let pass=0;pass<6;pass++){
+        const c=document.createElement('canvas');c.width=w;c.height=h;const ctx=c.getContext('2d',{alpha:false});ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);ctx.drawImage(src,0,0,w,h);
+        const blob=await new Promise(r=>c.toBlob(r,'image/webp',quality));if(!blob)throw new Error('Gambar tidak dapat dioptimumkan.');last=blob;
+        if(blob.size<=TARGET||pass===5)break;quality=Math.max(.56,quality-.07);if(pass>=2){w=Math.max(640,Math.round(w*.9));h=Math.max(480,Math.round(h*.9))}
+      }
+      if(!last||last.size>=file.size*.95)return {dataUrl:await dataUrl(file),name:file.name,bytes:file.size,originalBytes:file.size,optimized:false};
+      return {dataUrl:await blobUrl(last),name:(String(file.name||'gambar').replace(/\.[^.]+$/,'')||'gambar')+'.webp',bytes:last.size,originalBytes:file.size,optimized:true};
+    }catch(e){return {dataUrl:await dataUrl(file),name:file.name,bytes:file.size,originalBytes:file.size,optimized:false}}
+    finally{try{src?.close?.()}catch(e){}if(revoke)URL.revokeObjectURL(revoke)}
+  }
+  window.prepareImageFilePayload=prepareImageFilePayload=async function(file){const out=await optimize(file);if(!file)return {};return {image_data_url:out.dataUrl,image_original_name:out.name,_optimized_v10250:!!out.optimized,_original_bytes_v10250:out.originalBytes||0,_upload_bytes_v10250:out.bytes||0}};
+
+  // Shorter visual block only; transport/receipt verification continues normally.
+  function attachSoftRelease(){const x=document.getElementById('pkpjStableProcessV1023');if(!x||x.dataset.v10250Bound==='1')return false;x.dataset.v10250Bound='1';let timer=null;
+    const showBackground=()=>{let p=document.getElementById('pkpjBgStatusV10241');if(!p){p=document.createElement('div');p.id='pkpjBgStatusV10241';p.innerHTML='<span class="dot"></span><span class="txt"></span>';document.body.appendChild(p)}p.className='show running';const t=p.querySelector('.txt');if(t)t.textContent='Proses masih disahkan di latar belakang. Anda boleh terus menggunakan sistem.'};
+    const sync=()=>{clearTimeout(timer);const running=x.classList.contains('show')&&!x.classList.contains('done')&&!x.classList.contains('fail')&&!x.classList.contains('pending');if(!running){if(!x.classList.contains('show'))x.removeAttribute('data-soft-release');return}x.removeAttribute('data-soft-release');const title=String(x.querySelector('.pkpj-stable-title-v1023')?.textContent||'').toLowerCase();const ms=/upload|memuat naik|gambar|dokumen|laporan|tandatangan/.test(title)?8000:5000;timer=setTimeout(()=>{if(x.classList.contains('show')&&!x.classList.contains('done')&&!x.classList.contains('fail')&&!x.classList.contains('pending')){x.setAttribute('data-soft-release','1');showBackground()}},ms)};
+    new MutationObserver(sync).observe(x,{attributes:true,attributeFilter:['class'],subtree:false});sync();return true}
+  if(!attachSoftRelease()){const o=new MutationObserver(()=>{if(attachSoftRelease())o.disconnect()});o.observe(document.documentElement,{childList:true,subtree:true})}
+  window.PKPJ_ADMIN_HARDENING_V10250={version:VERSION,upload:'LARGE_RASTER_OPTIMIZED',pdf:'UNCHANGED',new_polling:false};
 })();
 </script>
 
