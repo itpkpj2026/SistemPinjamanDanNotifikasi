@@ -7590,5 +7590,158 @@ window.PKPJ_COMPLETED_DELETE_VERSION='10.18';
 </style>
 <script id="pkpj-v10247-clear-asset-identity-marker">window.PKPJ_ASSET_IDENTITY_UI_V10247={version:'10.24.7',mode:'UI_ONLY_NO_EXTRA_API_NO_POLLING'};</script>
 
+
+
+<!-- =========================================================
+     PKPJ V10.24.8 - INSTANT DASHBOARD / STALE-WHILE-REVALIDATE
+     - Papar snapshot terakhir serta-merta; semakan server dibuat senyap.
+     - Dashboard tidak lagi menggunakan shimmer/blocking loader.
+     - Coalesce panggilan dashboard bertindih selepas write/inventory sync.
+     - Tiada polling/endpoint baharu; guna endpoint dashboard sedia ada.
+========================================================= -->
+<style id="pkpj-v10248-instant-dashboard-style">
+#view-dashboard .card.loading::after{display:none!important}
+</style>
+<script id="pkpj-v10248-instant-dashboard-script">
+(function(){
+  'use strict';
+  const VERSION='10.24.8';
+  const SNAP_KEY='pkpj_admin_dashboard_snapshot_v10248';
+  const SNAP_MAX_AGE=7*24*60*60*1000;
+  const FRESH_MS=30000;
+  const FORCE_COALESCE_MS=1400;
+  let fetchPromise=null,lastFetchAt=0,lastForceAt=0;
+
+  function safeGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
+  function safeSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+  function readSnapshot(){
+    try{
+      const x=JSON.parse(safeGet(SNAP_KEY)||'null');
+      if(!x||!x.data||!x.data.kpi)return null;
+      if(Date.now()-Number(x.savedAt||0)>SNAP_MAX_AGE)return null;
+      return x;
+    }catch(e){return null}
+  }
+  function saveSnapshot(data){
+    if(!data||!data.kpi)return;
+    const pack={savedAt:Date.now(),data};
+    safeSet(SNAP_KEY,JSON.stringify(pack));
+    // Kekalkan cache lama untuk tab/code lama, tanpa memaksa reload.
+    safeSet('ict_dashboard_cache_v3',JSON.stringify(pack));
+  }
+  function clearDashboardShimmer(){
+    try{document.querySelectorAll('#view-dashboard .card.loading').forEach(x=>x.classList.remove('loading'))}catch(e){}
+  }
+  function applyDashboard(data,markLoaded=true){
+    if(!data||!data.kpi)return false;
+    state.dashboard=data;
+    if(markLoaded)state.loadedAt.dashboard=Date.now();
+    try{renderDashboard(data)}catch(e){}
+    try{renderReports(data)}catch(e){}
+    clearDashboardShimmer();
+    return true;
+  }
+  function localPreview(){
+    const assets=Array.isArray(state?.assets)?state.assets:[];
+    const loans=Array.isArray(state?.loans)?state.loans:[];
+    if(!assets.length&&!loans.length)return null;
+    const inv={};let available=0,borrowed=0,reserved=0;
+    assets.forEach(a=>{
+      const s=String(a?.status||'').trim().toUpperCase();
+      if(s==='TERSEDIA')available++;
+      if(s==='DIPINJAM')borrowed++;
+      if(s==='RESERVED')reserved++;
+      if(['LUPUS','TIDAK_AKTIF'].includes(s))return;
+      const category=String(a?.category||'Other').trim()||'Other';
+      const x=inv[category]||(inv[category]={category,total:0,available:0,borrowed:0,reserved:0,service:0,unavailable:0});
+      x.total++;
+      if(s==='TERSEDIA')x.available++;else x.unavailable++;
+      if(s==='DIPINJAM')x.borrowed++;
+      if(s==='RESERVED')x.reserved++;
+      if(s==='DALAM_SERVIS')x.service++;
+    });
+    const active=loans.filter(l=>['DIPINJAM','HAMPIR_DUE','LEWAT'].includes(String(l?.status||'').trim().toUpperCase())).length;
+    const overdue=loans.filter(l=>String(l?.status||'').trim().toUpperCase()==='LEWAT').length;
+    return {kpi:{active_loans:active,overdue_loans:overdue,available_assets:available,borrowed_assets:borrowed,reserved_assets:reserved,unavailable_assets:borrowed+reserved,active_subscriptions:0,renewal_soon:0},inventory_summary:Object.values(inv).sort((a,b)=>b.total-a.total),upcoming_renewals:[],renewal_trend:[],recent_notifications:[],generated_at:new Date().toISOString(),preview:true};
+  }
+
+  const oldCached=typeof window.renderCachedDashboard==='function'?window.renderCachedDashboard:null;
+  window.renderCachedDashboard=renderCachedDashboard=function(){
+    const snap=readSnapshot();
+    if(snap&&applyDashboard(snap.data,false)){
+      state.loadedAt.dashboard=Number(snap.savedAt||0);
+      return true;
+    }
+    try{if(oldCached&&oldCached())return true}catch(e){}
+    const preview=localPreview();
+    return preview?applyDashboard(preview,false):false;
+  };
+
+  window.setDashboardLoading=setDashboardLoading=function(){
+    clearDashboardShimmer();
+  };
+
+  async function fetchFresh(force){
+    if(fetchPromise)return fetchPromise;
+    const now=Date.now();
+    if(force&&now-lastForceAt<FORCE_COALESCE_MS)return state.dashboard||null;
+    if(!force&&now-lastFetchAt<FRESH_MS)return state.dashboard||null;
+    if(force)lastForceAt=now;
+    lastFetchAt=now;
+    fetchPromise=(async()=>{
+      try{
+        const data=await jsonp('dashboard',{_dash:VERSION},{timeoutMs:6500,retries:0,silentProgress:true});
+        if(data&&data.kpi){applyDashboard(data,true);saveSnapshot(data);return data}
+        return state.dashboard||null;
+      }catch(e){
+        console.warn('Dashboard live refresh tertangguh:',e?.message||e);
+        clearDashboardShimmer();
+        return state.dashboard||null;
+      }finally{fetchPromise=null}
+    })();
+    return fetchPromise;
+  }
+
+  window.loadDashboard=loadDashboard=function(force=false){
+    clearDashboardShimmer();
+    let visible=!!state?.dashboard;
+    if(visible){try{renderDashboard(state.dashboard);renderReports(state.dashboard)}catch(e){}}
+    if(!visible){
+      const snap=readSnapshot();
+      if(snap){visible=applyDashboard(snap.data,false);state.loadedAt.dashboard=Number(snap.savedAt||0)}
+    }
+    if(!visible){
+      const preview=localPreview();
+      if(preview)visible=applyDashboard(preview,false);
+    }
+    const age=Date.now()-Number(state?.loadedAt?.dashboard||0);
+    if(force||!visible||age>FRESH_MS)return fetchFresh(!!force);
+    // Data masih segar: jangan tahan UI. Semakan seterusnya akan dibuat oleh flow sedia ada.
+    return Promise.resolve(state.dashboard||null);
+  };
+
+  // Simpan setiap dashboard sah yang dirender oleh flow sedia ada tanpa menambah request.
+  const baseRender=typeof window.renderDashboard==='function'?window.renderDashboard:null;
+  if(baseRender){
+    window.renderDashboard=renderDashboard=function(data){
+      const out=baseRender(data);
+      if(data&&data.kpi&&!data.preview)saveSnapshot(data);
+      clearDashboardShimmer();
+      return out;
+    };
+  }
+
+  document.addEventListener('DOMContentLoaded',()=>{
+    clearDashboardShimmer();
+    if(!state?.dashboard){
+      const snap=readSnapshot();
+      if(snap){applyDashboard(snap.data,false);state.loadedAt.dashboard=Number(snap.savedAt||0)}
+    }
+  },{once:true});
+
+  window.PKPJ_INSTANT_DASHBOARD_V10248={version:VERSION,mode:'SNAPSHOT_FIRST_SILENT_REVALIDATE',refresh:()=>fetchFresh(true)};
+})();
+</script>
+
 </body>
 </html>
