@@ -2599,7 +2599,7 @@ button:not(:disabled):active,.btn:not(:disabled):active,.equipment-category-laun
             <div class="upload-box">
               <input id="loanModalImage" type="file" accept="image/*,application/pdf,.pdf,.heic,.heif,.avif">
               <div class="tiny muted" id="loanModalImageHint" style="margin-top:6px">
-                Pilihan. Gambar asal akan dihantar tanpa compression.
+                Pilihan. Gambar besar akan dioptimumkan automatik supaya penghantaran lebih pantas.
               </div>
             </div>
           </div>
@@ -3500,7 +3500,7 @@ function openLoanRequestModal(categoryKey,preselectAssetId=''){
   $('#loanModalPurpose').value='';
   $('#loanModalRemarks').value='';
   $('#loanModalImage').value='';
-  $('#loanModalImageHint').textContent='Pilihan. Gambar asal akan dihantar tanpa compression.';
+  $('#loanModalImageHint').textContent='Pilihan. Gambar besar akan dioptimumkan automatik supaya penghantaran lebih pantas.';
   $('#loanDeclaration').checked=false;
   resetApplicationSignatureV114();
 
@@ -4484,7 +4484,7 @@ async function handleImage(event){
   const file=input?.files?.[0];
   state.imagePayload=null;
   if(!file){
-    if(hint)hint.textContent='Pilihan. Gambar asal akan dihantar tanpa compression.';
+    if(hint)hint.textContent='Pilihan. Gambar besar akan dioptimumkan automatik supaya penghantaran lebih pantas.';
     if(submit)submit.disabled=false;
     return;
   }
@@ -7861,6 +7861,65 @@ document.addEventListener('DOMContentLoaded',()=>{
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 
   window.PKPJ_APPLICANT_INSTANT_HOME_V10249={version:VERSION,mode:'SNAPSHOT_FIRST_SILENT_REVALIDATE_NO_EXTRA_POLLING',save:()=>saveSnapshot(stateSnapshot()),read:()=>{const w=currentWho();return readSnapshot(w.user_id,w.name)}};
+})();
+</script>
+
+
+
+<!-- =========================================================
+     PKPJ V10.25.0 - PEMOHON UPLOAD + RUNTIME HARDENING
+     - Rebinds the attachment input to one optimized handler.
+     - Large JPEG/PNG/WEBP/AVIF images are resized/compressed before Base64.
+     - PDF/HEIC/HEIF/GIF remain unchanged for compatibility.
+     - No new polling/API call; V10.24.9 snapshot-first home remains unchanged.
+========================================================= -->
+<script id="pkpj-v10250-applicant-hardening-script">
+(function(){
+  'use strict';
+  const VERSION='10.25.0';
+  const MAX_INPUT=15*1024*1024,COMPRESS_FROM=850*1024,MAX_DIM=1600,TARGET=1400*1024;
+  const oldHandle=typeof handleImage==='function'?handleImage:null;let uploadSeq=0;
+  function bytesLabel(n){if(n<1024)return n+' B';if(n<1024*1024)return (n/1024).toFixed(1)+' KB';return (n/1024/1024).toFixed(2)+' MB'}
+  function dataUrl(file){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(String(r.result||''));r.onerror=()=>reject(new Error('Fail tidak dapat dibaca.'));r.readAsDataURL(file)})}
+  function blobUrl(blob){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(String(r.result||''));r.onerror=()=>reject(new Error('Gambar tidak dapat dibaca.'));r.readAsDataURL(blob)})}
+  async function optimize(file){
+    if(file.size>MAX_INPUT)throw new Error('Saiz maksimum lampiran ialah 15 MB.');
+    const type=String(file.type||'').toLowerCase(),ext=(String(file.name||'').split('.').pop()||'').toLowerCase();
+    const isPdf=type==='application/pdf'||ext==='pdf';
+    const compressible=/^image\/(jpeg|png|webp|avif)$/.test(type)&&file.size>=COMPRESS_FROM;
+    if(isPdf||!compressible)return {dataUrl:await dataUrl(file),name:file.name,bytes:file.size,originalBytes:file.size,optimized:false};
+    let src=null,revoke='';
+    try{
+      if('createImageBitmap'in window)src=await createImageBitmap(file);else{revoke=URL.createObjectURL(file);src=await new Promise((res,rej)=>{const im=new Image();im.onload=()=>res(im);im.onerror=()=>rej(new Error('Gambar tidak dapat dibaca.'));im.src=revoke})}
+      const sw=src.width||src.naturalWidth,sh=src.height||src.naturalHeight;if(!sw||!sh)throw new Error('Saiz gambar tidak dapat dibaca.');
+      const scale=Math.min(1,MAX_DIM/sw,MAX_DIM/sh);let w=Math.max(1,Math.round(sw*scale)),h=Math.max(1,Math.round(sh*scale)),quality=.84,last=null;
+      for(let pass=0;pass<6;pass++){
+        const c=document.createElement('canvas');c.width=w;c.height=h;const ctx=c.getContext('2d',{alpha:false});ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);ctx.drawImage(src,0,0,w,h);
+        const blob=await new Promise(r=>c.toBlob(r,'image/webp',quality));if(!blob)throw new Error('Gambar tidak dapat dioptimumkan.');last=blob;
+        if(blob.size<=TARGET||pass===5)break;quality=Math.max(.56,quality-.07);if(pass>=2){w=Math.max(640,Math.round(w*.9));h=Math.max(480,Math.round(h*.9))}
+      }
+      if(!last||last.size>=file.size*.95)return {dataUrl:await dataUrl(file),name:file.name,bytes:file.size,originalBytes:file.size,optimized:false};
+      return {dataUrl:await blobUrl(last),name:(String(file.name||'gambar').replace(/\.[^.]+$/,'')||'gambar')+'.webp',bytes:last.size,originalBytes:file.size,optimized:true};
+    }catch(e){return {dataUrl:await dataUrl(file),name:file.name,bytes:file.size,originalBytes:file.size,optimized:false}}
+    finally{try{src?.close?.()}catch(e){}if(revoke)URL.revokeObjectURL(revoke)}
+  }
+  const newHandle=async function(event){
+    const input=event?.target||document.getElementById('loanModalImage'),hint=document.getElementById('loanModalImageHint'),submit=document.getElementById('submitApplicationBtn'),file=input?.files?.[0],seq=++uploadSeq;
+    state.imagePayload=null;if(!file){if(hint)hint.textContent='Pilihan. Gambar besar akan dioptimumkan automatik supaya penghantaran lebih pantas.';if(submit)submit.disabled=false;return}
+    const ext=(String(file.name||'').split('.').pop()||'').toLowerCase(),type=String(file.type||'').toLowerCase();
+    const allowed=/^(jpg|jpeg|png|webp|gif|heic|heif|avif|pdf)$/.test(ext)||type==='application/pdf'||type.startsWith('image/');
+    if(!allowed){input.value='';if(hint)hint.textContent='Gunakan gambar atau PDF sahaja.';try{toast('Fail tidak sah','Gunakan gambar JPG, PNG, WEBP, GIF, HEIC, HEIF, AVIF atau PDF.','err')}catch(_e){}return}
+    if(submit)submit.disabled=true;
+    try{
+      if(hint)hint.textContent='Mengoptimumkan '+file.name+'…';
+      const out=await optimize(file);if(seq!==uploadSeq||input?.files?.[0]!==file)return;state.imagePayload={name:out.name,dataUrl:out.dataUrl,optimized:!!out.optimized,originalBytes:out.originalBytes,bytes:out.bytes};
+      if(hint)hint.textContent=out.optimized?(file.name+' · '+bytesLabel(out.originalBytes)+' → '+bytesLabel(out.bytes)+' · dioptimumkan'):(file.name+' · '+bytesLabel(out.bytes)+' · sedia dilampirkan');
+    }catch(e){if(seq!==uploadSeq)return;state.imagePayload=null;if(input)input.value='';if(hint)hint.textContent=e?.message||'Fail tidak dapat dibaca.';try{toast('Lampiran belum sedia',e?.message||'Sila pilih fail semula.','err')}catch(_e){}
+    }finally{if(seq===uploadSeq&&submit)submit.disabled=false}
+  };
+  window.handleImage=handleImage=newHandle;
+  const input=document.getElementById('loanModalImage');if(input){if(oldHandle)input.removeEventListener('change',oldHandle);input.addEventListener('change',newHandle)}
+  window.PKPJ_APPLICANT_HARDENING_V10250={version:VERSION,upload:'LARGE_RASTER_OPTIMIZED',pdf:'UNCHANGED',new_polling:false,snapshot_engine:'V10.24.9'};
 })();
 </script>
 
