@@ -1443,9 +1443,6 @@ button:not(:disabled):active,.btn:not(:disabled):active,.asset-icon-btn:not(:dis
   </div>
   <span class="pill blue" id="assetCategoryTotal">0 aset</span>
 </div>
-<div class="asset-add-entry-v10245">
-  <button type="button" class="btn btn-primary" id="assetCategoryAddBtn" onclick="document.getElementById('addAssetBtn').click()">＋ Tambah Aset</button>
-</div>
 <div class="category-strip asset-category-menu" id="assetCategoryCards">
   <div class="cat-card asset-cat-loading"><div class="emoji">…</div><b>Memuatkan kategori</b><small>Inventori ICT</small></div>
 </div>
@@ -7411,10 +7408,7 @@ window.PKPJ_COMPLETED_DELETE_VERSION='10.18';
 
 
 <style id="pkpj-v10244-mobile-add-asset-style">
-/* V10.24.5 - Akses Tambah Aset di atas kategori dan pembetulan lexical state. */
-.asset-add-entry-v10245{display:flex;justify-content:flex-end;margin:0 0 16px}
-#assetCategoryAddBtn{min-height:44px;font-size:13px}
-@media(max-width:760px){.asset-add-entry-v10245{justify-content:stretch}#assetCategoryAddBtn{width:100%;min-height:48px;font-size:14px}}
+/* V10.24.4 - Butang Tambah Aset terapung khas paparan telefon/tablet kecil. */
 #mobileAddAssetV10244{display:none}
 @media(max-width:760px){
   #mobileAddAssetV10244{
@@ -7450,7 +7444,7 @@ window.PKPJ_COMPLETED_DELETE_VERSION='10.18';
 </style>
 <script id="pkpj-v10244-mobile-add-asset-script">
 (function(){
-  const VERSION='10.24.5';
+  const VERSION='10.24.4';
   let btn=null;
 
   function ensureButton(){
@@ -7479,7 +7473,7 @@ window.PKPJ_COMPLETED_DELETE_VERSION='10.18';
   }
 
   function mobile(){return window.matchMedia('(max-width:760px)').matches}
-  function adminActive(){return typeof state!=='undefined'&&!!state.operator}
+  function adminActive(){return !!(window.state&&state.operator)}
   function assetsActive(){return !!document.querySelector('#view-assets.active')}
   function sidebarOpen(){return !!document.querySelector('#sidebar.open')}
 
@@ -7514,6 +7508,60 @@ window.PKPJ_COMPLETED_DELETE_VERSION='10.18';
   }
 
   window.PKPJ_MOBILE_ADD_ASSET_V10244={version:VERSION,mobile_only:true,view:'assets',preserves_records:true};
+})();
+</script>
+
+<style id="pkpj-v10245-partial-return-style">
+#pkpjReturnBackdropV10245,#pkpjExtendBackdropV10245{display:none;position:fixed;inset:0;z-index:130800;background:rgba(13,31,51,.58);backdrop-filter:blur(7px);align-items:center;justify-content:center;padding:18px}
+#pkpjReturnBackdropV10245.show,#pkpjExtendBackdropV10245.show{display:flex}
+.pkpj-return-card-v10245{width:min(760px,100%);max-height:92vh;overflow:auto;background:#fff;border:1px solid #dce7f1;border-radius:22px;box-shadow:0 28px 85px rgba(13,43,72,.25)}
+.pkpj-return-head-v10245{position:sticky;top:0;z-index:3;background:#fff;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:17px 18px;border-bottom:1px solid #e5edf4}
+.pkpj-return-head-v10245 h3{margin:0;color:#173a58;font-size:18px}.pkpj-return-head-v10245 p{margin:4px 0 0;color:#71879b;font-size:10px;line-height:1.45}
+.pkpj-return-close-v10245{width:34px;height:34px;border-radius:10px;border:1px solid #dce7ef;background:#fff;color:#55728b;font-size:20px}
+.pkpj-return-body-v10245{padding:17px 18px}.pkpj-return-meta-v10245{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:14px}
+.pkpj-return-meta-v10245>div{padding:10px 11px;border-radius:12px;background:#f6faff;border:1px solid #e2ebf3}.pkpj-return-meta-v10245 small{display:block;color:#7b90a3;font-size:8px;font-weight:850;text-transform:uppercase}.pkpj-return-meta-v10245 strong{display:block;margin-top:3px;color:#21445f;font-size:11px}
+.pkpj-return-tools-v10245{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:10px 0}.pkpj-return-tools-v10245 span{font-size:10px;color:#6b8195;font-weight:800}
+.pkpj-return-list-v10245{display:grid;gap:8px}.pkpj-return-item-v10245{display:grid;grid-template-columns:28px minmax(0,1fr) 116px;gap:10px;align-items:center;padding:11px;border:1px solid #dfe9f1;border-radius:14px;background:#fbfdff}
+.pkpj-return-item-v10245.returned{opacity:.66;background:#f1faf6;border-color:#cce8da}.pkpj-return-item-v10245 input[type=checkbox]{width:18px;height:18px}.pkpj-return-item-v10245 b{display:block;font-size:11px;color:#173d5a}.pkpj-return-item-v10245 em{display:block;font-style:normal;font-size:9px;color:#71879a;margin-top:2px}.pkpj-return-item-v10245 select{min-width:0;padding:7px 8px;border:1px solid #d6e3ed;border-radius:9px;background:#fff;color:#31516b;font-size:9px;font-weight:800}
+.pkpj-return-note-v10245{margin-top:12px}.pkpj-return-note-v10245 label{display:block;font-size:9px;font-weight:850;color:#5e758a;margin-bottom:5px}.pkpj-return-note-v10245 textarea,.pkpj-extend-form-v10245 input,.pkpj-extend-form-v10245 textarea{width:100%;border:1px solid #d6e3ed;border-radius:11px;padding:10px 11px;outline:none;background:#fff;color:#203c55;font-size:11px}.pkpj-return-note-v10245 textarea{min-height:70px;resize:vertical}
+.pkpj-return-foot-v10245{position:sticky;bottom:0;background:#fff;display:flex;align-items:center;justify-content:flex-end;gap:8px;padding:13px 18px;border-top:1px solid #e5edf4}.pkpj-return-foot-v10245 .status{margin-right:auto;font-size:9px;color:#73899c;font-weight:800}
+.pkpj-extend-form-v10245{display:grid;gap:12px}.pkpj-extend-form-v10245 label{display:block;font-size:9px;color:#60798e;font-weight:850;margin-bottom:5px}.pkpj-extend-hint-v10245{padding:10px 11px;border-radius:12px;background:#fff8e8;border:1px solid #f1dda9;color:#82611e;font-size:10px;line-height:1.5}
+.loan-partial-btn-v10245{background:#eef9f4!important;border-color:#bce3d1!important;color:#197a58!important}.loan-extend-btn-v10245{background:#fff8e8!important;border-color:#efdba9!important;color:#93640e!important}
+@media(max-width:680px){#pkpjReturnBackdropV10245,#pkpjExtendBackdropV10245{padding:8px;align-items:flex-end}.pkpj-return-card-v10245{max-height:94vh;border-radius:20px 20px 10px 10px}.pkpj-return-meta-v10245{grid-template-columns:1fr}.pkpj-return-item-v10245{grid-template-columns:26px minmax(0,1fr);}.pkpj-return-item-v10245 select{grid-column:2}.pkpj-return-foot-v10245{display:grid;grid-template-columns:1fr 1fr}.pkpj-return-foot-v10245 .status{grid-column:1/-1;margin:0}.pkpj-return-foot-v10245 .btn{width:100%}}
+</style>
+<script id="pkpj-v10245-partial-return-script">
+(function(){
+ 'use strict';
+ const VERSION='10.24.5';
+ let returnLoanId='',extendLoanId='';
+ const esc2=v=>typeof esc==='function'?esc(v):String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const attr2=v=>typeof attr==='function'?attr(v):esc2(v);
+ function loanById(id){return (state.loans||[]).find(x=>String(x.loan_id)===String(id))||null}
+ function itemsOf(loan){if(Array.isArray(loan?.items)&&loan.items.length)return loan.items;if(Array.isArray(loan?.items_detail))return loan.items_detail;return []}
+ function itemReturned(i){const s=String(i?.item_status||'').toUpperCase();return s==='DIPULANGKAN'||s==='DIBATALKAN'}
+ function borrower(loan){return String(loan?.borrower_name||userName?.(loan?.borrower_user_id)||loan?.borrower_user_id||'—')}
+ function fmtISO(d){const x=new Date(d);if(isNaN(x))return '';return [x.getFullYear(),String(x.getMonth()+1).padStart(2,'0'),String(x.getDate()).padStart(2,'0')].join('-')}
+ function plusDays(raw,n){let d=raw?new Date(raw):new Date();if(isNaN(d))d=new Date();d.setDate(d.getDate()+n);return fmtISO(d)}
+
+ function ensureReturnModal(){let el=document.getElementById('pkpjReturnBackdropV10245');if(el)return el;el=document.createElement('div');el.id='pkpjReturnBackdropV10245';el.innerHTML=`<div class="pkpj-return-card-v10245" role="dialog" aria-modal="true"><div class="pkpj-return-head-v10245"><div><h3>Pemulangan Item Pinjaman</h3><p>Pilih hanya peralatan yang benar-benar telah diserahkan kepada Unit IT.</p></div><button class="pkpj-return-close-v10245" type="button" onclick="closePartialReturnV10245()">×</button></div><div class="pkpj-return-body-v10245"><div class="pkpj-return-meta-v10245" id="pkpjReturnMetaV10245"></div><div class="pkpj-return-tools-v10245"><span id="pkpjReturnCountV10245">0 item dipilih</span><button class="btn btn-sm" type="button" onclick="toggleAllOutstandingV10245()">☑ Pilih Semua Baki</button></div><div class="pkpj-return-list-v10245" id="pkpjReturnListV10245"></div><div class="pkpj-return-note-v10245"><label>Catatan pemulangan (pilihan)</label><textarea id="pkpjReturnNoteV10245" placeholder="Contoh: Laptop dan extension telah diterima. WiFi masih digunakan pemohon."></textarea></div></div><div class="pkpj-return-foot-v10245"><span class="status" id="pkpjReturnStatusV10245"></span><button class="btn" type="button" onclick="closePartialReturnV10245()">Batal</button><button class="btn btn-green" id="pkpjReturnSubmitV10245" type="button" onclick="submitPartialReturnV10245()">Sahkan Item Dipulangkan</button></div></div>`;document.body.appendChild(el);el.addEventListener('click',e=>{if(e.target===el)window.closePartialReturnV10245()});el.addEventListener('change',e=>{if(e.target.matches('.pkpj-return-check-v10245'))updateReturnCount()});return el}
+ function ensureExtendModal(){let el=document.getElementById('pkpjExtendBackdropV10245');if(el)return el;el=document.createElement('div');el.id='pkpjExtendBackdropV10245';el.innerHTML=`<div class="pkpj-return-card-v10245" role="dialog" aria-modal="true"><div class="pkpj-return-head-v10245"><div><h3>Panjangkan Tempoh Pinjaman</h3><p>Tarikh baharu hanya terpakai kepada item yang masih belum dipulangkan.</p></div><button class="pkpj-return-close-v10245" type="button" onclick="closeExtendLoanV10245()">×</button></div><div class="pkpj-return-body-v10245"><div class="pkpj-return-meta-v10245" id="pkpjExtendMetaV10245"></div><div class="pkpj-extend-form-v10245"><div><label>Tarikh perlu pulang baharu</label><input type="date" id="pkpjExtendDateV10245"></div><div><label>Sebab lanjutan</label><textarea id="pkpjExtendReasonV10245" rows="3" placeholder="Contoh: WiFi masih diperlukan untuk program sehingga tarikh baharu."></textarea></div><div class="pkpj-extend-hint-v10245">Item yang sudah dipulangkan kekal selesai. Hanya baki item aktif akan mengikut tarikh baharu. Rekod lanjutan disimpan dalam Audit Trail.</div></div></div><div class="pkpj-return-foot-v10245"><span class="status" id="pkpjExtendStatusV10245"></span><button class="btn" type="button" onclick="closeExtendLoanV10245()">Batal</button><button class="btn btn-green" id="pkpjExtendSubmitV10245" type="button" onclick="submitExtendLoanV10245()">Simpan Tarikh Baharu</button></div></div>`;document.body.appendChild(el);el.addEventListener('click',e=>{if(e.target===el)window.closeExtendLoanV10245()});return el}
+ function updateReturnCount(){const checked=[...document.querySelectorAll('.pkpj-return-check-v10245:checked')].length;const el=document.getElementById('pkpjReturnCountV10245');if(el)el.textContent=checked+' item dipilih'}
+
+ window.openPartialReturnV10245=function(id){const loan=loanById(id);if(!loan)return toast('Pinjaman tidak ditemui','Segarkan senarai dan cuba semula.','err');returnLoanId=String(id);const items=itemsOf(loan),modal=ensureReturnModal(),active=items.filter(i=>!itemReturned(i));document.getElementById('pkpjReturnMetaV10245').innerHTML=`<div><small>ID Pinjaman</small><strong>${esc2(loan.loan_id)}</strong></div><div><small>Peminjam</small><strong>${esc2(borrower(loan))}</strong></div><div><small>Tarikh Perlu Pulang</small><strong>${esc2(typeof fmtDate==='function'?fmtDate(loan.due_date):loan.due_date||'—')}</strong></div>`;const list=document.getElementById('pkpjReturnListV10245');list.innerHTML=items.length?items.map((i,idx)=>{const done=itemReturned(i),iid=String(i.loan_item_id||''),name=i.asset_name||i.asset_tag||i.asset_id||('Item '+(idx+1)),meta=[i.category,i.asset_tag,i.model].filter(Boolean).join(' · ');return `<label class="pkpj-return-item-v10245 ${done?'returned':''}"><span>${done?'✓':`<input class="pkpj-return-check-v10245" type="checkbox" value="${attr2(iid)}" ${iid?'':'disabled'}>`}</span><span><b>${esc2(name)}</b><em>${esc2(meta||i.asset_id||'')}</em>${done?'<em style="color:#25815e;font-weight:850">Sudah dipulangkan</em>':''}</span>${done?'<span class="pill green">SELESAI</span>':`<select class="pkpj-return-condition-v10245" data-item="${attr2(iid)}"><option value="BAIK">BAIK</option><option value="ROSAK">ROSAK</option></select>`}</label>`}).join(''):'<div class="empty">Butiran item belum tersedia. Segarkan senarai pinjaman dahulu.</div>';document.getElementById('pkpjReturnNoteV10245').value='';document.getElementById('pkpjReturnStatusV10245').textContent=active.length?active.length+' item masih belum dipulangkan.':'Semua item telah selesai.';document.getElementById('pkpjReturnSubmitV10245').disabled=!active.length||!active.some(i=>i.loan_item_id);updateReturnCount();modal.classList.add('show');document.body.style.overflow='hidden'};
+ window.closePartialReturnV10245=function(){ensureReturnModal().classList.remove('show');document.body.style.overflow='';returnLoanId=''};
+ window.toggleAllOutstandingV10245=function(){const boxes=[...document.querySelectorAll('.pkpj-return-check-v10245:not(:disabled)')];const all=boxes.length&&boxes.every(x=>x.checked);boxes.forEach(x=>x.checked=!all);updateReturnCount()};
+ window.submitPartialReturnV10245=async function(){const id=returnLoanId,loan=loanById(id);if(!loan)return;const selected=[...document.querySelectorAll('.pkpj-return-check-v10245:checked')];if(!selected.length)return toast('Pilih item','Tandakan peralatan yang benar-benar telah diterima oleh Unit IT.','err');const note=String(document.getElementById('pkpjReturnNoteV10245')?.value||'').trim();const items=selected.map(cb=>{const iid=String(cb.value||''),sel=document.querySelector(`.pkpj-return-condition-v10245[data-item="${CSS.escape(iid)}"]`);return {loan_item_id:iid,condition_in:String(sel?.value||'BAIK'),remarks:note}});if(!confirm('Sahkan '+items.length+' item ini telah diterima oleh Unit IT? Item lain akan kekal aktif.'))return;const btn=document.getElementById('pkpjReturnSubmitV10245');btn.disabled=true;document.getElementById('pkpjReturnStatusV10245').textContent='Menyimpan pemulangan item dipilih…';try{const r=await postApi('loan.return',{loan_id:id,items,actor_user_id:state.operator?.user_id||'',actor_name:state.operator?.name||''},{maxWait:45000});window.closePartialReturnV10245();toast(r?.partial_return?'Pemulangan separa direkod':'Pemulangan selesai',r?.partial_return?`${items.length} item diterima. ${Number(r.remaining_items||0)} item masih aktif.`:'Semua baki item telah dipulangkan.','ok');state.loadedAt.loans=0;state.loadedAt.assets=0;await loadLoans(true);setTimeout(()=>loadAssets(true),80);setTimeout(()=>loadDashboard(true).catch?.(()=>{}),160)}catch(e){document.getElementById('pkpjReturnStatusV10245').textContent='Belum dapat disahkan. Jangan tekan berulang kali jika server masih memproses.';toast('Pemulangan belum disahkan',e?.message||'Cuba semula sebentar lagi.','err')}finally{btn.disabled=false}};
+
+ window.openExtendLoanV10245=function(id){const loan=loanById(id);if(!loan)return toast('Pinjaman tidak ditemui','Segarkan senarai dan cuba semula.','err');const active=itemsOf(loan).filter(i=>!itemReturned(i));if(itemsOf(loan).length&&!active.length)return toast('Tiada baki aktif','Semua item dalam pinjaman ini telah dipulangkan.','err');extendLoanId=String(id);const modal=ensureExtendModal();document.getElementById('pkpjExtendMetaV10245').innerHTML=`<div><small>ID Pinjaman</small><strong>${esc2(loan.loan_id)}</strong></div><div><small>Baki Item</small><strong>${active.length||'—'} item aktif</strong></div><div><small>Tarikh Semasa</small><strong>${esc2(typeof fmtDate==='function'?fmtDate(loan.due_date):loan.due_date||'—')}</strong></div>`;const inp=document.getElementById('pkpjExtendDateV10245'),tom=plusDays(new Date(),1),suggested=plusDays(loan.due_date||new Date(),7);inp.min=tom;inp.value=suggested<tom?plusDays(new Date(),7):suggested;document.getElementById('pkpjExtendReasonV10245').value='';document.getElementById('pkpjExtendStatusV10245').textContent='Tarikh baharu mesti selepas tarikh semasa.';modal.classList.add('show');document.body.style.overflow='hidden'};
+ window.closeExtendLoanV10245=function(){ensureExtendModal().classList.remove('show');document.body.style.overflow='';extendLoanId=''};
+ window.submitExtendLoanV10245=async function(){const id=extendLoanId,loan=loanById(id);if(!loan)return;const due=String(document.getElementById('pkpjExtendDateV10245')?.value||''),reason=String(document.getElementById('pkpjExtendReasonV10245')?.value||'').trim();if(!due)return toast('Tarikh diperlukan','Pilih tarikh perlu pulang baharu.','err');if(!reason)return toast('Sebab diperlukan','Masukkan sebab lanjutan untuk Audit Trail.','err');if(!confirm('Panjangkan tarikh '+id+' kepada '+due+'? Item yang telah dipulangkan tidak akan diaktifkan semula.'))return;const btn=document.getElementById('pkpjExtendSubmitV10245');btn.disabled=true;document.getElementById('pkpjExtendStatusV10245').textContent='Menyimpan tarikh baharu…';try{await postApi('loan.extend',{loan_id:id,due_date:due,reason,actor_user_id:state.operator?.user_id||'',actor_name:state.operator?.name||''},{maxWait:45000});window.closeExtendLoanV10245();toast('Tempoh dilanjutkan','Tarikh baharu telah direkod. Peringatan due lama yang belum dihantar dibatalkan.','ok');state.loadedAt.loans=0;await loadLoans(true);setTimeout(()=>loadDashboard(true).catch?.(()=>{}),120)}catch(e){document.getElementById('pkpjExtendStatusV10245').textContent='Tarikh baharu belum dapat disahkan.';toast('Lanjutan belum disimpan',e?.message||'Cuba semula.','err')}finally{btn.disabled=false}};
+
+ const baseButtons=typeof loanActionButtons==='function'?loanActionButtons:null;
+ if(baseButtons){
+  window.loanActionButtons=loanActionButtons=function(loan){const s=String(loan?.status||'').trim().toUpperCase(),id=String(loan?.loan_id||'');if(['DIPINJAM','HAMPIR_DUE','LEWAT'].includes(s)){try{if(typeof loanPendingV92!=='undefined'&&loanPendingV92.get(id))return baseButtons(loan)}catch(e){}const cancel=typeof isSuperAdmin==='function'&&isSuperAdmin()?`<button type="button" class="asset-icon-btn inactive" title="Batal dan hapus rekod" onclick="purgeLoanAdmin('${attr2(id)}')">&#10005;</button>`:'';return `<div class="action-row"><button type="button" class="btn btn-sm loan-partial-btn-v10245" onclick="openPartialReturnV10245('${attr2(id)}')">Urus Pulang</button><button type="button" class="btn btn-sm loan-extend-btn-v10245" onclick="openExtendLoanV10245('${attr2(id)}')">Panjang Tempoh</button><button type="button" class="btn btn-sm loan-register-btn" onclick="openMovementRegister('${attr2(id)}')">Daftar</button><button type="button" class="btn btn-sm loan-pdf-btn" onclick="openMovementRegisterPdf('${attr2(id)}')">PDF</button>${cancel}</div>`}return baseButtons(loan)};
+ }
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'){window.closePartialReturnV10245?.();window.closeExtendLoanV10245?.()} });
+ window.PKPJ_PARTIAL_RETURN_V10245={version:VERSION};
 })();
 </script>
 
