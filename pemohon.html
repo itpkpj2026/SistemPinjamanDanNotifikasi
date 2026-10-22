@@ -7964,5 +7964,61 @@ document.addEventListener('DOMContentLoaded',()=>{
 })();
 </script>
 
+
+
+<!-- =========================================================
+     PKPJ V10.25.2 - SILENT BACKGROUND STATUS (PEMOHON)
+     - Jangan papar banner/pill proses latar belakang.
+     - Proses, receipt checker, duplicate guard dan sync kekal berjalan.
+     - Jika proses latar benar-benar gagal, gunakan toast ralat sahaja.
+     - Zero API / zero polling / zero backend change.
+========================================================= -->
+<style id="pkpj-v10252-silent-background-style">
+#pkpjApplicantBgStatusV10241,
+#pkpjApplicantFastBgV10249{
+  display:none!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
+</style>
+<script id="pkpj-v10252-silent-background-script">
+(function(){
+  'use strict';
+  const VERSION='10.25.2';
+  let observer=null;
+
+  function watchFailure(){
+    const el=document.getElementById('pkpjApplicantFastBgV10249');
+    if(!el)return false;
+    if(observer)return true;
+    const inspect=()=>{
+      if(!el.classList.contains('show')||!el.classList.contains('fail'))return;
+      const msg=String(el.querySelector('.txt')?.textContent||'Proses belum berjaya disahkan.').trim();
+      if(el.dataset.v10252FailToast===msg)return;
+      el.dataset.v10252FailToast=msg;
+      try{if(typeof toast==='function')toast('Proses belum berjaya',msg,'err')}catch(e){}
+    };
+    observer=new MutationObserver(inspect);
+    observer.observe(el,{attributes:true,attributeFilter:['class'],subtree:true,childList:true,characterData:true});
+    inspect();
+    return true;
+  }
+
+  function boot(){
+    if(watchFailure())return;
+    const rootObs=new MutationObserver(()=>{if(watchFailure())rootObs.disconnect()});
+    rootObs.observe(document.documentElement,{childList:true,subtree:true});
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
+
+  window.PKPJ_APPLICANT_SILENT_BACKGROUND_V10252={
+    version:VERSION,
+    background_status_ui:false,
+    background_process_preserved:true,
+    extra_api:0,
+    extra_polling:0
+  };
+})();
+</script>
 </body>
 </html>
