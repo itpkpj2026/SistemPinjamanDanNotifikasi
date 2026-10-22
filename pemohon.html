@@ -8020,5 +8020,98 @@ document.addEventListener('DOMContentLoaded',()=>{
   };
 })();
 </script>
+
+<!-- =========================================================
+     PKPJ V10.25.3 - SUBMIT WAITING UI (PEMOHON)
+     - Paparan menunggu khusus semasa applicant.loan.create sahaja.
+     - Zero API, zero polling, zero backend change.
+     - Tidak hidupkan semula banner background status.
+========================================================= -->
+<style id="pkpj-v10253-submit-wait-style">
+#pkpjSubmitWaitV10253{display:none;position:fixed;inset:0;z-index:131500;place-items:center;padding:18px;background:rgba(8,27,48,.48);backdrop-filter:blur(7px)}
+#pkpjSubmitWaitV10253.show{display:grid}
+.pkpj-submit-wait-card-v10253{width:min(390px,92vw);padding:27px 24px 24px;border-radius:25px;background:#fff;border:1px solid #dce8f3;box-shadow:0 30px 90px rgba(9,39,70,.26);text-align:center}
+.pkpj-submit-spinner-v10253{width:70px;height:70px;margin:0 auto 17px;border-radius:50%;border:7px solid #e7eff7;border-top-color:#1479e8;animation:pkpjSubmitSpinV10253 .78s linear infinite;display:grid;place-items:center}
+.pkpj-submit-spinner-v10253 span{font-size:0;font-weight:950}
+.pkpj-submit-wait-title-v10253{font-size:19px;font-weight:950;color:#173b61;line-height:1.25}
+.pkpj-submit-wait-stage-v10253{margin-top:8px;font-size:12px;line-height:1.5;color:#71869a;min-height:36px}
+.pkpj-submit-wait-hint-v10253{margin-top:12px;padding:8px 11px;border-radius:11px;background:#f5f9fd;color:#567086;font-size:10px;line-height:1.4}
+#pkpjSubmitWaitV10253.done .pkpj-submit-spinner-v10253{animation:none;border-color:#d9eee5}
+#pkpjSubmitWaitV10253.done .pkpj-submit-spinner-v10253 span{font-size:31px;color:#18a56b}
+#pkpjSubmitWaitV10253.done .pkpj-submit-wait-hint-v10253{display:none}
+@keyframes pkpjSubmitSpinV10253{to{transform:rotate(360deg)}}
+@media(max-width:600px){.pkpj-submit-wait-card-v10253{padding:24px 19px 21px;border-radius:22px}.pkpj-submit-spinner-v10253{width:64px;height:64px}.pkpj-submit-wait-title-v10253{font-size:18px}}
+</style>
+<script id="pkpj-v10253-submit-wait-script">
+(function(){
+  'use strict';
+  const VERSION='10.25.3';
+  let seq=0,active=0,timers=[];
+
+  function ensure(){
+    let el=document.getElementById('pkpjSubmitWaitV10253');
+    if(el)return el;
+    el=document.createElement('div');
+    el.id='pkpjSubmitWaitV10253';
+    el.setAttribute('aria-hidden','true');
+    el.innerHTML='<div class="pkpj-submit-wait-card-v10253" role="status" aria-live="polite"><div class="pkpj-submit-spinner-v10253"><span>✓</span></div><div class="pkpj-submit-wait-title-v10253">Menghantar permohonan</div><div class="pkpj-submit-wait-stage-v10253">Menyediakan maklumat permohonan…</div><div class="pkpj-submit-wait-hint-v10253">Sila tunggu sebentar. Permohonan sedang diproses.</div></div>';
+    document.body.appendChild(el);
+    return el;
+  }
+  function clearTimers(){timers.forEach(clearTimeout);timers=[]}
+  function setStage(title,stage){
+    const el=ensure();
+    const t=el.querySelector('.pkpj-submit-wait-title-v10253');
+    const s=el.querySelector('.pkpj-submit-wait-stage-v10253');
+    if(t&&title)t.textContent=title;
+    if(s&&stage)s.textContent=stage;
+  }
+  function show(){
+    const token=++seq;active=token;clearTimers();
+    document.body.classList.add('pkpj-submit-active-v10253');
+    const el=ensure();
+    el.className='show';el.setAttribute('aria-hidden','false');
+    el.querySelector('.pkpj-submit-spinner-v10253 span').textContent='';
+    setStage('Menghantar permohonan','Menyediakan dan menghantar maklumat permohonan…');
+    timers.push(setTimeout(()=>{if(active===token)setStage('Menghantar permohonan','Menyimpan maklumat permohonan…')},1100));
+    timers.push(setTimeout(()=>{if(active===token)setStage('Mengesahkan permohonan','Menunggu pengesahan nombor permohonan…')},3100));
+    return token;
+  }
+  function success(token){
+    if(token!==active)return;clearTimers();
+    const el=ensure();el.className='show done';
+    el.querySelector('.pkpj-submit-spinner-v10253 span').textContent='✓';
+    setStage('Permohonan berjaya dihantar','Permohonan telah diterima oleh sistem.');
+    timers.push(setTimeout(()=>hide(token),420));
+  }
+  function hide(token){
+    if(token&&token!==active)return;clearTimers();
+    const el=ensure();el.classList.remove('show','done');el.setAttribute('aria-hidden','true');active=0;document.body.classList.remove('pkpj-submit-active-v10253');
+  }
+
+  const basePost=typeof window.postApi==='function'?window.postApi:null;
+  if(basePost){
+    window.postApi=postApi=async function(action,data={},options={}){
+      if(String(action)!=='applicant.loan.create')return basePost(action,data,options);
+      const token=show();
+      try{
+        const result=await basePost(action,data,options);
+        success(token);
+        return result;
+      }catch(err){
+        hide(token);
+        throw err;
+      }
+    };
+  }
+
+  // Loader stabil lama tidak perlu bertindih semasa submit loan; overlay ini menjadi visual utama.
+  const style=document.createElement('style');
+  style.id='pkpj-v10253-no-double-submit-loader-style';
+  style.textContent='body.pkpj-submit-active-v10253 #pkpjStableApplicantV1023{visibility:hidden!important;pointer-events:none!important}';
+  document.head.appendChild(style);
+  window.PKPJ_APPLICANT_SUBMIT_WAIT_V10253={version:VERSION,extra_api:0,extra_polling:0,action:'applicant.loan.create'};
+})();
+</script>
 </body>
 </html>
