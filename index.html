@@ -1406,7 +1406,7 @@ button:not(:disabled):active,.btn:not(:disabled):active,.asset-icon-btn:not(:dis
 <aside class="sidebar" id="sidebar"><div class="sidebar-media" aria-hidden="true"><img class="sidebar-bg-video" src="sidebar-celcom-poster.jpg" alt="" loading="eager" decoding="async"></div><div class="sidebar-overlay" aria-hidden="true"></div><div class="brand"><div class="brand-mark pkpj-brand-mark"><img src="pkpj-premium.png" alt="PKPJ"></div><div><strong>Sistem ICT</strong><span>Inventori & Pinjaman</span></div></div><nav class="nav">
 <button class="nav-btn active" data-view="dashboard"><span class="nav-ico">⌂</span>Dashboard</button>
 <button class="nav-btn" data-view="assets"><span class="nav-ico">▣</span>Inventori ICT</button>
-<button class="nav-btn" data-view="loans"><span class="nav-ico">✓</span>Kelulusan Pinjaman</button>
+<button class="nav-btn" data-view="loans"><span class="nav-ico">✓</span>Permohonan Kelulusan Pinjaman</button>
 <button class="nav-btn" data-view="reports"><span class="nav-ico">▥</span>Laporan</button>
 <button class="nav-btn" data-view="settings"><span class="nav-ico">⚙</span>Tetapan</button>
 </nav><div class="sidebar-bottom">
@@ -1488,7 +1488,7 @@ button:not(:disabled):active,.btn:not(:disabled):active,.asset-icon-btn:not(:dis
     </table>
   </div>
 </div></section>
-<section class="view" id="view-loans"><div class="mini-hero green"><div class="copy"><h2>Kelulusan Pinjaman</h2><p>Urus permohonan, kelulusan terus kepada status dipinjam dan pemulangan peralatan ICT.</p></div><div class="art"><svg viewBox="0 0 420 140"><g transform="translate(54,12)"><path d="M48 15v105M35 42h26M28 62h40M21 83h54" stroke="#fff" stroke-width="5" opacity=".75"/><circle cx="20" cy="34" r="12" fill="none" stroke="#fff" stroke-width="5" opacity=".7"/><rect x="112" y="36" width="105" height="66" rx="7" fill="#18253b"/><rect x="121" y="44" width="87" height="49" rx="3" fill="#6fbaff"/><path d="M95 103h138l17 13H78z" fill="#e3e8ef"/><rect x="255" y="54" width="80" height="54" rx="8" fill="#f5f6f8"/><circle cx="295" cy="81" r="21" fill="#123e73"/><circle cx="295" cy="81" r="12" fill="#26b1ff"/></g></svg></div></div><div class="info-banner"><span>🔄</span><div><b>Inventori & Pinjaman disambungkan.</b> Aset yang dipohon berstatus RESERVED. Apabila pegawai menekan Lulus, aset terus bertukar kepada DIPINJAM dan kembali TERSEDIA selepas dipulangkan.</div></div><div class="audit-link-v9"><span>Perlu cetakan untuk audit? Setiap aset akan disediakan sebagai satu daftar KEW.PA-6.</span><button class="btn btn-sm" data-go="reports">Buka Laporan Audit</button></div><div class="approval-health-v92"><div><strong>Kelulusan pinjaman</strong><span id="loanListCountV92">Status dikemas kini selepas server mengesahkan simpanan.</span></div><div><button class="btn btn-sm" type="button" id="refreshLoanListV92">Segarkan senarai</button><button class="btn btn-sm" type="button" id="checkApprovalApiV92">Semak Sambungan</button></div></div><div id="loanActionStatusV92" class="loan-message-v92" role="status" aria-live="polite"></div><div class="card panel"><div class="toolbar"><div class="search">⌕ <input id="loanSearch" placeholder="Cari ID pinjaman, peminjam, tujuan..."/></div><select class="field" id="loanStatusFilter" style="width:auto"><option value="">Semua status</option><option>MENUNGGU_KELULUSAN</option><option>DILULUSKAN</option><option>DIPINJAM</option><option>HAMPIR_DUE</option><option>LEWAT</option><option>DIPULANGKAN</option></select><button class="btn btn-green" id="addLoanBtn">＋ Pinjaman Baru</button></div><div class="table-wrap"><table><thead><tr><th>ID PINJAMAN</th><th>GAMBAR</th><th>PEMINJAM</th><th>ITEM</th><th>DUE</th><th>TUJUAN</th><th>STATUS</th><th>DILULUSKAN OLEH</th><th>TINDAKAN</th></tr></thead><tbody id="loansRows"></tbody></table></div></div></section>
+<section class="view" id="view-loans"><div class="mini-hero green"><div class="copy"><h2>Permohonan Kelulusan Pinjaman</h2><p>Urus permohonan, kelulusan terus kepada status dipinjam dan pemulangan peralatan ICT.</p></div><div class="art"><svg viewBox="0 0 420 140"><g transform="translate(54,12)"><path d="M48 15v105M35 42h26M28 62h40M21 83h54" stroke="#fff" stroke-width="5" opacity=".75"/><circle cx="20" cy="34" r="12" fill="none" stroke="#fff" stroke-width="5" opacity=".7"/><rect x="112" y="36" width="105" height="66" rx="7" fill="#18253b"/><rect x="121" y="44" width="87" height="49" rx="3" fill="#6fbaff"/><path d="M95 103h138l17 13H78z" fill="#e3e8ef"/><rect x="255" y="54" width="80" height="54" rx="8" fill="#f5f6f8"/><circle cx="295" cy="81" r="21" fill="#123e73"/><circle cx="295" cy="81" r="12" fill="#26b1ff"/></g></svg></div></div><div class="info-banner"><span>🔄</span><div><b>Inventori & Pinjaman disambungkan.</b> Aset yang dipohon berstatus RESERVED. Apabila pegawai menekan Lulus, aset terus bertukar kepada DIPINJAM dan kembali TERSEDIA selepas dipulangkan.</div></div><div class="audit-link-v9"><span>Perlu cetakan untuk audit? Setiap aset akan disediakan sebagai satu daftar KEW.PA-6.</span><button class="btn btn-sm" data-go="reports">Buka Laporan Audit</button></div><div class="approval-health-v92"><div><strong>Permohonan kelulusan pinjaman</strong><span id="loanListCountV92">Status dikemas kini selepas server mengesahkan simpanan.</span></div><div><button class="btn btn-sm" type="button" id="refreshLoanListV92">Segarkan senarai</button><button class="btn btn-sm" type="button" id="checkApprovalApiV92">Semak Sambungan</button></div></div><div id="loanActionStatusV92" class="loan-message-v92" role="status" aria-live="polite"></div><div class="card panel"><div class="toolbar"><div class="search">⌕ <input id="loanSearch" placeholder="Cari ID pinjaman, peminjam, tujuan..."/></div><select class="field" id="loanStatusFilter" style="width:auto"><option value="">Semua status</option><option>MENUNGGU_KELULUSAN</option><option>DILULUSKAN</option><option>DIPINJAM</option><option>HAMPIR_DUE</option><option>LEWAT</option><option>DIPULANGKAN</option></select><button class="btn btn-green" id="addLoanBtn">＋ Pinjaman Baru</button></div><div class="table-wrap"><table><thead><tr><th>ID PINJAMAN</th><th>GAMBAR</th><th>PEMINJAM</th><th>ITEM</th><th>DUE</th><th>TUJUAN</th><th>STATUS</th><th>DILULUSKAN OLEH</th><th>TINDAKAN</th></tr></thead><tbody id="loansRows"></tbody></table></div></div></section>
 <section class="view" id="view-reports"><div class="mini-hero orange"><div class="copy"><h2>Laporan</h2><p>Ringkasan prestasi inventori dan pinjaman dalam satu paparan.</p></div><div class="art"><svg viewBox="0 0 420 140"><g transform="translate(70,18)"><rect x="0" y="0" width="280" height="98" rx="15" fill="#fff" opacity=".94"/><path d="M32 73l42-27 38 12 48-36 44 18 43-23" fill="none" stroke="#6f8fff" stroke-width="6" stroke-linecap="round"/><path d="M35 86V55M87 86V40M139 86V66M191 86V34M243 86V20" stroke="#cbd8ea" stroke-width="11" stroke-linecap="round"/></g></svg></div></div><div class="card panel audit-tools-v9">
  <div class="panel-head"><div><div class="audit-eyebrow-v9">DAFTAR AUDIT / KEW.PA-6</div><div class="panel-title">Daftar pergerakan mengikut setiap aset.</div><div class="panel-sub">Satu aset = satu daftar KEW.PA-6. Permohonan pukal dipecahkan automatik mengikut aset dan disusun mengikut jenis.</div></div><button class="btn btn-primary" id="auditLoadV9">Muat sejarah pergerakan</button></div>
  <div class="audit-help-v9">Cetakan audit hanya memaparkan aset yang benar-benar telah dikeluarkan. Setiap aset mempunyai daftar sendiri dengan minimum 10 baris. No. Siri Pendaftaran dikosongkan untuk isian kemudian dan ruangan Catatan hanya memaparkan Tujuan Pinjaman.</div>
@@ -2036,7 +2036,7 @@ function showView(name){
   const meta={
     dashboard:['Dashboard','Ringkasan keseluruhan inventori dan pinjaman sistem.'],
     assets:['Inventori ICT','Urus laptop, WiFi, extension, projektor dan peralatan ICT.'],
-    loans:['Kelulusan Pinjaman','Permohonan, kelulusan, check-out, due date dan pemulangan aset.'],
+    loans:['Permohonan Kelulusan Pinjaman','Permohonan, kelulusan, check-out, due date dan pemulangan aset.'],
     notifications:['Notifikasi','Peringatan pinjaman yang perlu tindakan.'],
     reports:['Laporan','Ringkasan dan eksport data pengurusan ICT.'],
     settings:['Tetapan','Urus senarai nama staff untuk Portal Pemohon.']
@@ -4747,7 +4747,7 @@ function uiImageManagerCategoriesV1011(){const fixed=['__ALL__','Laptop','WiFi/M
 function uiImageLabelV1011(key){return key==='__ALL__'?'Semua Inventori':key}
 function uiImageCardV1011(kind,key,label,meta){const fid=String(meta?.image_file_id||'');const preview=fid?`<img src="${driveThumbV1011(fid,360)}" alt="${attr(label)}" loading="lazy">`:`<span class="ui-placeholder-v1011">◇</span>`;return `<div class="ui-image-card-v1011" data-ui-kind="${attr(kind)}" data-ui-key="${attr(key)}"><div class="ui-image-preview-v1011">${preview}</div><div class="ui-image-meta-v1011"><b>${esc(label)}</b><small>${fid?'Gambar custom aktif':'SVG premium asal'}</small><div class="ui-image-actions-v1011"><button class="btn btn-sm" type="button" onclick="pickUiImageV1011('${attr(kind)}','${attr(key)}')">${fid?'Tukar':'Upload'}</button>${fid?`<button class="btn btn-sm btn-danger" type="button" onclick="resetUiImageV1011('${attr(kind)}','${attr(key)}')">Reset</button>`:''}</div></div></div>`}
 function ensureUiImageManagerV1011(){const host=$('#categoryIconSettings');if(!host)return null;let wrap=$('#uiImageManagerV1011');if(!wrap){wrap=document.createElement('div');wrap.id='uiImageManagerV1011';wrap.className='ui-image-manager-v1011';host.insertAdjacentElement('afterend',wrap)}return wrap}
-function renderUiImageManagerV1011(){if(!isSuperAdmin())return;const wrap=ensureUiImageManagerV1011();if(!wrap)return;const cats=state.uiPublicV1011?.category_icons||parseUiJsonV1011(state.settings?.inventory_category_icons_json),heroes=state.uiPublicV1011?.hero_images||parseUiJsonV1011(state.settings?.ui_hero_images_json);const heroDefs=[['assets','Upper Bar · Inventori ICT'],['loans','Upper Bar · Kelulusan Pinjaman'],['reports','Upper Bar · Laporan'],['settings','Upper Bar · Tetapan']];wrap.innerHTML=`<div class="ui-manager-head"><div><strong>Gambar Ikon Custom</strong><span>Optional sahaja. Jika tiada gambar, SVG premium sedia ada kekal. Gambar dipadatkan sebelum upload supaya sistem kekal laju.</span></div><span><i class="live-sync-dot-v1011"></i>Lightweight</span></div><div class="ui-manager-sep-v1011">Ikon kategori</div><div class="ui-image-grid-v1011">${uiImageManagerCategoriesV1011().map(k=>uiImageCardV1011('category',k,uiImageLabelV1011(k),cats[k]||{})).join('')}</div><div class="ui-manager-sep-v1011">Gambar upper bar</div><div class="ui-image-grid-v1011">${heroDefs.map(([k,l])=>uiImageCardV1011('hero',k,l,heroes[k]||{})).join('')}</div>`}
+function renderUiImageManagerV1011(){if(!isSuperAdmin())return;const wrap=ensureUiImageManagerV1011();if(!wrap)return;const cats=state.uiPublicV1011?.category_icons||parseUiJsonV1011(state.settings?.inventory_category_icons_json),heroes=state.uiPublicV1011?.hero_images||parseUiJsonV1011(state.settings?.ui_hero_images_json);const heroDefs=[['assets','Upper Bar · Inventori ICT'],['loans','Upper Bar · Permohonan Kelulusan Pinjaman'],['reports','Upper Bar · Laporan'],['settings','Upper Bar · Tetapan']];wrap.innerHTML=`<div class="ui-manager-head"><div><strong>Gambar Ikon Custom</strong><span>Optional sahaja. Jika tiada gambar, SVG premium sedia ada kekal. Gambar dipadatkan sebelum upload supaya sistem kekal laju.</span></div><span><i class="live-sync-dot-v1011"></i>Lightweight</span></div><div class="ui-manager-sep-v1011">Ikon kategori</div><div class="ui-image-grid-v1011">${uiImageManagerCategoriesV1011().map(k=>uiImageCardV1011('category',k,uiImageLabelV1011(k),cats[k]||{})).join('')}</div><div class="ui-manager-sep-v1011">Gambar upper bar</div><div class="ui-image-grid-v1011">${heroDefs.map(([k,l])=>uiImageCardV1011('hero',k,l,heroes[k]||{})).join('')}</div>`}
 
 async function imageFileToDataUrlV1011(file,kind){if(!file||!String(file.type||'').startsWith('image/'))throw new Error('Pilih fail gambar sahaja.');const target=kind==='hero'?190*1024:85*1024,maxW=kind==='hero'?1100:512,maxH=kind==='hero'?420:512;let source=null,revoke='';if('createImageBitmap'in window){source=await createImageBitmap(file)}else{revoke=URL.createObjectURL(file);source=await new Promise((res,rej)=>{const im=new Image();im.onload=()=>res(im);im.onerror=()=>rej(new Error('Gambar tidak dapat dibaca.'));im.src=revoke})}const sw=source.width||source.naturalWidth,sh=source.height||source.naturalHeight,scale=Math.min(1,maxW/sw,maxH/sh);let w=Math.max(1,Math.round(sw*scale)),h=Math.max(1,Math.round(sh*scale));let quality=.86;try{for(let pass=0;pass<7;pass++){const c=document.createElement('canvas');c.width=w;c.height=h;const ctx=c.getContext('2d',{alpha:true});ctx.drawImage(source,0,0,w,h);const blob=await new Promise(r=>c.toBlob(r,'image/webp',quality));if(!blob)throw new Error('Gambar tidak dapat dipadatkan.');if(blob.size<=target||pass===6){const out=await new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>res(String(fr.result||''));fr.onerror=()=>rej(new Error('Gambar tidak dapat dibaca.'));fr.readAsDataURL(blob)});return {dataUrl:out,name:(file.name.replace(/\.[^.]+$/,'')||'ui-icon')+'.webp',bytes:blob.size}}quality=Math.max(.52,quality-.08);if(pass>=3){w=Math.max(80,Math.round(w*.88));h=Math.max(80,Math.round(h*.88))}}}finally{source.close?.();if(revoke)URL.revokeObjectURL(revoke)}throw new Error('Gambar tidak dapat dipadatkan.')}
 
@@ -7868,6 +7868,7 @@ window.PKPJ_COMPLETED_DELETE_VERSION='10.18';
   const VERSION='10.25.4';
   let monthlyRows=[],monthlyAllLoans=[],monthlyMonth='';
   let allLoanCache={at:0,rows:[]};
+  let monthlyDeleteSelectedV10258=new Set();
 
   function escM(v){return typeof esc==='function'?esc(v):String(v??'').replace(/[&<>\"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[c]))}
   function attrM(v){return typeof attr==='function'?attr(v):escM(v)}
@@ -7921,7 +7922,7 @@ window.PKPJ_COMPLETED_DELETE_VERSION='10.18';
   function ensureMonthlyUI(){
     const reports=document.getElementById('view-reports');if(!reports||document.getElementById('monthlyReportV10254'))return;
     const card=document.createElement('div');card.id='monthlyReportV10254';card.className='card panel monthly-report-v10254';
-    card.innerHTML=`<div class="monthly-head-v10254"><div class="monthly-title-v10254"><small>Laporan Bulanan</small><strong>Ringkasan Pinjaman & Pemulangan</strong><span>Dijana hanya apabila diminta supaya paparan harian sistem kekal ringan.</span></div><div class="monthly-controls-v10254"><input class="field" type="month" id="monthlyMonthV10254"><button class="btn btn-primary" type="button" id="monthlyGenerateV10254">Jana Laporan</button></div></div><div class="monthly-kpis-v10254" id="monthlyKpisV10254"></div><div class="monthly-status-v10254" id="monthlyStatusV10254">Pilih bulan dan tekan <b>Jana Laporan</b>.</div><div class="monthly-table-v10254" id="monthlyTableV10254"><div class="empty">Belum ada laporan bulanan dijana.</div></div><div class="monthly-actions-v10254"><button class="btn" type="button" id="monthlyCsvV10254" disabled>Eksport CSV</button><button class="btn btn-green" type="button" id="monthlyPrintV10254" disabled>Cetak / Simpan PDF</button></div>`;
+    card.innerHTML=`<div class="monthly-head-v10254"><div class="monthly-title-v10254"><small>Laporan Bulanan</small><strong>Ringkasan Pinjaman & Pemulangan</strong><span>Dijana hanya apabila diminta supaya paparan harian sistem kekal ringan.</span></div><div class="monthly-controls-v10254"><input class="field" type="month" id="monthlyMonthV10254"><button class="btn btn-primary" type="button" id="monthlyGenerateV10254">Jana Laporan</button></div></div><div class="monthly-kpis-v10254" id="monthlyKpisV10254"></div><div class="monthly-status-v10254" id="monthlyStatusV10254">Pilih bulan dan tekan <b>Jana Laporan</b>.</div><div class="monthly-table-v10254" id="monthlyTableV10254"><div class="empty">Belum ada laporan bulanan dijana.</div></div><div class="monthly-actions-v10254"><button class="btn btn-danger super-admin-only role-hidden" type="button" id="monthlyDeleteTestV10258" disabled>Padam Rekod Ujian Terpilih (0)</button><button class="btn" type="button" id="monthlyCsvV10254" disabled>Eksport CSV</button><button class="btn btn-green" type="button" id="monthlyPrintV10254" disabled>Cetak / Simpan PDF</button></div>`;
     const hero=reports.querySelector('.mini-hero');
     const audit=reports.querySelector('.audit-tools-v9');
     if(audit)audit.before(card);else if(hero)hero.after(card);else reports.prepend(card);
@@ -7929,6 +7930,7 @@ window.PKPJ_COMPLETED_DELETE_VERSION='10.18';
     document.getElementById('monthlyGenerateV10254')?.addEventListener('click',generateMonthly);
     document.getElementById('monthlyCsvV10254')?.addEventListener('click',exportMonthlyCsv);
     document.getElementById('monthlyPrintV10254')?.addEventListener('click',printMonthly);
+    document.getElementById('monthlyDeleteTestV10258')?.addEventListener('click',deleteMonthlyTestsV10258);
   }
 
   function setMonthlyStatus(text,cls=''){
@@ -7959,20 +7961,56 @@ window.PKPJ_COMPLETED_DELETE_VERSION='10.18';
     return {requests:requests.length,items:itemCount,borrowers:users.size,active,returned:returned.length,late:dueLate.length};
   }
 
+  function monthlyTerminalV10258(x){return ['DITOLAK','DIBATALKAN','DIPULANGKAN'].includes(statusText(x))}
+  function updateMonthlyDeleteBtnV10258(){
+    const btn=document.getElementById('monthlyDeleteTestV10258');if(!btn)return;
+    const superAdmin=typeof isSuperAdmin==='function'&&isSuperAdmin();
+    btn.classList.toggle('role-hidden',!superAdmin);
+    btn.disabled=!superAdmin||monthlyDeleteSelectedV10258.size===0;
+    btn.textContent='Padam Rekod Ujian Terpilih ('+monthlyDeleteSelectedV10258.size+')';
+    const all=document.getElementById('monthlySelectAllV10258');
+    if(all){const boxes=[...document.querySelectorAll('.monthly-delete-check-v10258:not(:disabled)')];all.checked=!!boxes.length&&boxes.every(x=>x.checked);all.indeterminate=boxes.some(x=>x.checked)&&!all.checked;}
+  }
+  function bindMonthlyDeleteChecksV10258(){
+    document.querySelectorAll('.monthly-delete-check-v10258').forEach(cb=>{cb.onchange=()=>{const id=String(cb.value||'');if(cb.checked)monthlyDeleteSelectedV10258.add(id);else monthlyDeleteSelectedV10258.delete(id);updateMonthlyDeleteBtnV10258()}});
+    const all=document.getElementById('monthlySelectAllV10258');if(all)all.onchange=()=>{document.querySelectorAll('.monthly-delete-check-v10258:not(:disabled)').forEach(cb=>{cb.checked=all.checked;const id=String(cb.value||'');if(cb.checked)monthlyDeleteSelectedV10258.add(id);else monthlyDeleteSelectedV10258.delete(id)});updateMonthlyDeleteBtnV10258()};
+    updateMonthlyDeleteBtnV10258();
+  }
+  async function deleteMonthlyTestsV10258(){
+    if(!(typeof isSuperAdmin==='function'&&isSuperAdmin()))return toast('Akses ditolak','Hanya Super Admin boleh memadam rekod ujian.','err');
+    const ids=[...monthlyDeleteSelectedV10258].filter(id=>monthlyRows.some(x=>String(x.loan_id)===id&&monthlyTerminalV10258(x)));
+    if(!ids.length)return toast('Tiada rekod dipilih','Tick rekod DITOLAK, DIBATALKAN atau DIPULANGKAN yang benar-benar merupakan data ujian.','err');
+    if(!confirm('PADAM '+ids.length+' rekod ujian terpilih? Tindakan ini memadam pinjaman, item dan notifikasi berkaitan. ID tidak akan direset dan tindakan direkod dalam Audit Trail.'))return;
+    const btn=document.getElementById('monthlyDeleteTestV10258');if(btn){btn.disabled=true;btn.textContent='Memadam…'}
+    try{
+      const res=await postApi('loan.test.purge_batch',{loan_ids:ids,actor_user_id:state.operator?.user_id||'',actor_name:state.operator?.name||''},{maxWait:60000});
+      const deleted=new Set((res?.deleted_ids||ids).map(String));
+      monthlyRows=monthlyRows.filter(x=>!deleted.has(String(x.loan_id||'')));
+      monthlyAllLoans=monthlyAllLoans.filter(x=>!deleted.has(String(x.loan_id||'')));
+      allLoanCache={at:0,rows:[]};monthlyDeleteSelectedV10258.clear();renderMonthly();
+      state.loadedAt.dashboard=0;state.loadedAt.loans=0;
+      toast('Rekod ujian dipadam',deleted.size+' rekod berjaya dibersihkan. Nombor ID tidak direset.','ok');
+      setTimeout(()=>loadDashboard(true).catch?.(()=>{}),120);
+    }catch(e){toast('Rekod belum dipadam',String(e?.message||'Cuba semula sebentar lagi.'),'err');updateMonthlyDeleteBtnV10258()}
+  }
+
   function renderMonthly(){
     const stats=monthlyStats(monthlyAllLoans,monthlyMonth,monthlyRows);
     const k=document.getElementById('monthlyKpisV10254');if(k)k.innerHTML=`<div class="monthly-kpi-v10254"><small>Permohonan Bulan Ini</small><strong>${stats.requests}</strong></div><div class="monthly-kpi-v10254"><small>Jumlah Item Dipohon</small><strong>${stats.items}</strong></div><div class="monthly-kpi-v10254"><small>Peminjam Unik</small><strong>${stats.borrowers}</strong></div><div class="monthly-kpi-v10254"><small>Aktif / Dipinjam</small><strong>${stats.active}</strong></div><div class="monthly-kpi-v10254"><small>Dipulangkan Bulan Ini</small><strong>${stats.returned}</strong></div><div class="monthly-kpi-v10254"><small>Lewat (Due Bulan Ini)</small><strong>${stats.late}</strong></div>`;
     const rows=monthlyRows.slice().sort((a,b)=>new Date(b.request_date||b.created_at||0)-new Date(a.request_date||a.created_at||0));
-    const box=document.getElementById('monthlyTableV10254');
-    if(box)box.innerHTML=rows.length?`<table><thead><tr><th>ID PINJAMAN</th><th>TARIKH MOHON</th><th>PEMINJAM</th><th>ITEM</th><th>DUE</th><th>TUJUAN</th><th>STATUS</th><th>DILULUSKAN OLEH</th></tr></thead><tbody>${rows.slice(0,250).map(x=>`<tr><td class="strong">${escM(x.loan_id||'—')}</td><td>${escM(dateLabel(x.request_date||x.created_at))}</td><td>${escM(borrowerName(x))}</td><td>${Number(x.item_count||0)}</td><td>${escM(dateLabel(x.due_date))}</td><td class="purpose">${escM(x.purpose||'—')}</td><td>${typeof statusPill==='function'?statusPill(x.status):escM(x.status||'—')}</td><td>${escM(officerName(x))}</td></tr>`).join('')}</tbody></table>${rows.length>250?`<div class="monthly-status-v10254">Paparan skrin dihadkan kepada 250 rekod. CSV dan cetakan menggunakan semua ${rows.length} rekod.</div>`:''}`:'<div class="empty">Tiada permohonan direkod bagi bulan ini.</div>';
+    const box=document.getElementById('monthlyTableV10254'),superAdmin=typeof isSuperAdmin==='function'&&isSuperAdmin();
+    const selectHead=superAdmin?'<th class="monthly-select-v10258"><input type="checkbox" id="monthlySelectAllV10258" title="Pilih semua rekod terminal yang dipaparkan"></th>':'';
+    if(box)box.innerHTML=rows.length?`<table><thead><tr>${selectHead}<th>ID PINJAMAN</th><th>TARIKH MOHON</th><th>PEMINJAM</th><th>ITEM</th><th>DUE</th><th>TUJUAN</th><th>STATUS</th><th>DILULUSKAN OLEH</th></tr></thead><tbody>${rows.slice(0,250).map(x=>{const id=String(x.loan_id||''),terminal=monthlyTerminalV10258(x),select=superAdmin?`<td class="monthly-select-v10258">${terminal?`<input class="monthly-delete-check-v10258" type="checkbox" value="${attrM(id)}" ${monthlyDeleteSelectedV10258.has(id)?'checked':''} title="Pilih sebagai rekod ujian untuk dipadam">`:'—'}</td>`:'';return `<tr>${select}<td class="strong">${escM(x.loan_id||'—')}</td><td>${escM(dateLabel(x.request_date||x.created_at))}</td><td>${escM(borrowerName(x))}</td><td>${Number(x.item_count||0)}</td><td>${escM(dateLabel(x.due_date))}</td><td class="purpose">${escM(x.purpose||'—')}</td><td>${typeof statusPill==='function'?statusPill(x.status):escM(x.status||'—')}</td><td>${escM(officerName(x))}</td></tr>`}).join('')}</tbody></table>${rows.length>250?`<div class="monthly-status-v10254">Paparan skrin dihadkan kepada 250 rekod. CSV dan cetakan menggunakan semua ${rows.length} rekod.</div>`:''}`:'<div class="empty">Tiada permohonan direkod bagi bulan ini.</div>';
     document.getElementById('monthlyCsvV10254').disabled=!rows.length;
     document.getElementById('monthlyPrintV10254').disabled=!rows.length;
+    bindMonthlyDeleteChecksV10258();
     setMonthlyStatus(`Laporan <b>${escM(monthLabel(monthlyMonth))}</b> sedia · ${rows.length} permohonan dijumpai.`,'ok');
   }
 
   async function generateMonthly(){
     ensureMonthlyUI();
     const month=String(document.getElementById('monthlyMonthV10254')?.value||'').trim();
+    monthlyDeleteSelectedV10258.clear();
     if(!/^\d{4}-\d{2}$/.test(month)){setMonthlyStatus('Pilih bulan laporan dahulu.','err');return}
     const btn=document.getElementById('monthlyGenerateV10254');if(btn){btn.disabled=true;btn.textContent='Menjana…'}
     document.getElementById('monthlyCsvV10254').disabled=true;document.getElementById('monthlyPrintV10254').disabled=true;
@@ -8043,6 +8081,97 @@ window.PKPJ_COMPLETED_DELETE_VERSION='10.18';
  if(baseButtons){window.loanActionButtons=loanActionButtons=function(x){let html=String(baseButtons.apply(this,arguments)||''),st=String(x?.status||'').toUpperCase();if(!['DIPINJAM','HAMPIR_DUE','LEWAT'].includes(st))return html;const extra=`<button type="button" class="btn btn-sm loan-reminder-btn-v10255" onclick="openStaffReminderV10255('${attr(x.loan_id)}')">🔔 Peringatan</button>`;if(/^<div class="action-row/.test(html)&&html.endsWith('</div>'))return html.slice(0,-6)+extra+'</div>';return `<div class="action-row">${html}${extra}</div>`}};
  document.addEventListener('keydown',e=>{if(e.key==='Escape')window.closeStaffReminderV10255?.()});
  window.PKPJ_ADMIN_REMINDER_V10255={version:VERSION,new_polling:false,new_sheet:false,action:'loan.reminder.send'};
+})();
+</script>
+
+
+
+
+<style id="pkpj-v10258-bulk-return-report-cleanup-style">
+.bulk-return-toolbar-v10258{display:flex;align-items:center;gap:7px;margin-left:auto}
+#bulkReturnBtnV10258{white-space:nowrap}.loan-select-v10258,.monthly-select-v10258{width:34px;text-align:center!important}.loan-select-v10258 input,.monthly-select-v10258 input{width:16px;height:16px;accent-color:#1aa66b;cursor:pointer}
+.monthly-delete-check-v10258{accent-color:#d94a5d!important}.monthly-actions-v10254 #monthlyDeleteTestV10258{margin-right:auto}
+@media(max-width:760px){.bulk-return-toolbar-v10258{width:100%;margin-left:0}.bulk-return-toolbar-v10258 .btn{width:100%}.loan-select-v10258,.monthly-select-v10258{position:sticky;left:0;background:#fff;z-index:2}}
+</style>
+
+<!-- =========================================================
+     PKPJ V10.25.6 - SILENT BACKGROUND STATUS (ADMIN)
+     - Hide background verification pill completely.
+     - Backend receipt/status verification continues unchanged.
+     - CSS-only: zero API, zero polling, zero timer.
+========================================================= -->
+<style id="pkpj-v10256-admin-silent-background-style">
+#pkpjBgStatusV10241,
+#pkpjBgStatusV10241.show,
+#pkpjBgStatusV10241.running,
+#pkpjBgStatusV10241.pending,
+#pkpjBgStatusV10241.done,
+#pkpjBgStatusV10241.fail{
+  display:none!important;
+  visibility:hidden!important;
+  opacity:0!important;
+  pointer-events:none!important;
+}
+</style>
+<script id="pkpj-v10256-admin-silent-background-marker">
+window.PKPJ_ADMIN_SILENT_BACKGROUND_V10256={version:'10.25.6',background_status_ui:false,background_process_preserved:true,extra_api:0,extra_polling:0,extra_timer:0};
+</script>
+
+<!-- =========================================================
+     PKPJ V10.25.8 - BULK RETURN + SUPER ADMIN TEST CLEANUP UI
+     - Checkbox on active loan list; one POST for selected loans.
+     - Monthly report test-delete is integrated in V10.25.4 block above.
+     - Zero new polling / zero new timer.
+========================================================= -->
+<script id="pkpj-v10258-bulk-return-script">
+(function(){
+ 'use strict';
+ const VERSION='10.25.8',selected=new Set();
+ const active=x=>['DIPINJAM','HAMPIR_DUE','LEWAT'].includes(String(x?.status||'').trim().toUpperCase());
+ function loanById(id){return (state.loans||[]).find(x=>String(x.loan_id||'')===String(id))||null}
+ function ensureToolbar(){
+   const toolbar=document.querySelector('#view-loans .toolbar');if(!toolbar)return;
+   let wrap=document.getElementById('bulkReturnToolbarV10258');if(wrap)return;
+   wrap=document.createElement('div');wrap.id='bulkReturnToolbarV10258';wrap.className='bulk-return-toolbar-v10258';wrap.innerHTML='<button class="btn btn-green" type="button" id="bulkReturnBtnV10258" disabled>☑ Sahkan Pemulangan Pukal (0)</button>';
+   const add=document.getElementById('addLoanBtn');if(add)add.before(wrap);else toolbar.appendChild(wrap);
+   document.getElementById('bulkReturnBtnV10258').onclick=submitBulkReturnV10258;
+ }
+ function ensureHeader(){
+   const tr=document.querySelector('#view-loans thead tr');if(!tr||tr.querySelector('[data-bulk-return-v10258]'))return;
+   const th=document.createElement('th');th.className='loan-select-v10258';th.dataset.bulkReturnV10258='1';th.innerHTML='<input type="checkbox" id="bulkReturnAllV10258" title="Pilih semua pinjaman aktif yang dipaparkan">';tr.prepend(th);
+   th.querySelector('input').onchange=e=>{document.querySelectorAll('.bulk-return-check-v10258:not(:disabled)').forEach(cb=>{cb.checked=e.target.checked;const id=String(cb.value||'');if(cb.checked)selected.add(id);else selected.delete(id)});sync()};
+ }
+ function extractId(row){const cell=[...row.children].find(td=>/LOAN-\d{4}-\d+/i.test(String(td.textContent||'')));const m=String(cell?.textContent||'').replace(/\s+/g,'').match(/LOAN-\d{4}-\d+/i);return m?m[0]:''}
+ function decorate(){
+   ensureToolbar();ensureHeader();
+   document.querySelectorAll('#loansRows tr').forEach(row=>{
+     if(row.querySelector('.loan-select-v10258'))return;
+     const id=extractId(row),loan=loanById(id),td=document.createElement('td');td.className='loan-select-v10258';
+     if(id&&active(loan)){td.innerHTML=`<input class="bulk-return-check-v10258" type="checkbox" value="${typeof attr==='function'?attr(id):id}" ${selected.has(id)?'checked':''} title="Pilih untuk pemulangan pukal">`;td.querySelector('input').onchange=e=>{if(e.target.checked)selected.add(id);else selected.delete(id);sync()};}
+     else td.innerHTML='—';
+     row.prepend(td);
+   });
+   [...selected].forEach(id=>{if(!active(loanById(id)))selected.delete(id)});sync();
+ }
+ function sync(){
+   const btn=document.getElementById('bulkReturnBtnV10258');if(btn){btn.disabled=selected.size===0;btn.textContent='☑ Sahkan Pemulangan Pukal ('+selected.size+')'}
+   const all=document.getElementById('bulkReturnAllV10258');if(all){const boxes=[...document.querySelectorAll('.bulk-return-check-v10258:not(:disabled)')];all.checked=!!boxes.length&&boxes.every(x=>x.checked);all.indeterminate=boxes.some(x=>x.checked)&&!all.checked;}
+ }
+ window.submitBulkReturnV10258=async function(){
+   const ids=[...selected].filter(id=>active(loanById(id)));if(!ids.length)return toast('Tiada pinjaman dipilih','Tick pinjaman aktif yang telah benar-benar dipulangkan.','err');
+   if(!confirm('Sahkan pemulangan pukal untuk '+ids.length+' pinjaman? Semua BAKI item bagi pinjaman terpilih akan direkod sebagai BAIK dan aset kembali TERSEDIA. Jika ada item ROSAK, gunakan Sahkan Pemulangan individu.'))return;
+   const btn=document.getElementById('bulkReturnBtnV10258');if(btn){btn.disabled=true;btn.textContent='Memproses '+ids.length+' pinjaman…'}
+   try{
+     const res=await postApi('loan.return.bulk',{loan_ids:ids,actor_user_id:state.operator?.user_id||'',actor_name:state.operator?.name||''},{maxWait:60000});
+     selected.clear();toast('Pemulangan pukal selesai',Number(res?.returned_loans||ids.length)+' pinjaman · '+Number(res?.returned_items||0)+' item telah dipulangkan.','ok');
+     state.loadedAt.loans=0;state.loadedAt.assets=0;state.loadedAt.dashboard=0;await loadLoans(true);setTimeout(()=>loadAssets(true),80);setTimeout(()=>loadDashboard(true).catch?.(()=>{}),140);
+   }catch(e){toast('Pemulangan pukal belum selesai',String(e?.message||'Cuba semula sebentar lagi.'),'err');sync()}
+ };
+ const baseRender=typeof window.renderLoans==='function'?window.renderLoans:null;
+ if(baseRender){window.renderLoans=renderLoans=function(){const out=baseRender.apply(this,arguments);queueMicrotask(decorate);return out}}
+ function boot(){ensureToolbar();ensureHeader();decorate();const tbody=document.getElementById('loansRows');if(tbody)new MutationObserver(()=>decorate()).observe(tbody,{childList:true});}
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
+ window.PKPJ_ADMIN_BULK_RETURN_V10258={version:VERSION,new_polling:false,new_timer:false,endpoint:'loan.return.bulk'};
 })();
 </script>
 
