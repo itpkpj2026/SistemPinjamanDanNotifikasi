@@ -8113,5 +8113,42 @@ document.addEventListener('DOMContentLoaded',()=>{
   window.PKPJ_APPLICANT_SUBMIT_WAIT_V10253={version:VERSION,extra_api:0,extra_polling:0,action:'applicant.loan.create'};
 })();
 </script>
+
+
+<!-- =========================================================
+     PKPJ V10.25.5 - STAFF REMINDER (PEMOHON)
+     - Displays Staff IT reminder from the existing loan watch.
+     - Existing Mohon Lanjutan button remains active for DIPINJAM/HAMPIR_DUE/LEWAT.
+     - No new API polling/sheet.
+========================================================= -->
+<style id="pkpj-v10255-applicant-reminder-style">
+#pkpjStaffReminderHomeV10255{display:grid;gap:9px;margin:0 0 14px}.pkpj-staff-reminder-v10255{display:grid;grid-template-columns:38px minmax(0,1fr) auto;gap:10px;align-items:center;padding:12px 13px;border:1px solid #f0d8a9;border-radius:14px;background:#fff9ed;box-shadow:0 5px 15px rgba(76,57,20,.05)}.pkpj-staff-reminder-v10255.extension{border-color:#cfe2f5;background:#f2f8ff}.pkpj-staff-reminder-v10255 .ico{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:#fff;color:#a36a08;font-size:18px}.pkpj-staff-reminder-v10255.extension .ico{color:#176ca8}.pkpj-staff-reminder-v10255 b{display:block;font-size:11px;color:#29465d}.pkpj-staff-reminder-v10255 p{margin:3px 0 0;font-size:9.5px;line-height:1.45;color:#667f92}.pkpj-staff-reminder-v10255 small{display:block;margin-top:4px;font-size:8.5px;color:#8294a3}.pkpj-staff-reminder-v10255 .btn{white-space:nowrap}
+.staff-reminder-inline-v10255{width:100%;padding:7px 8px;border-radius:9px;background:#fff8e8;border:1px solid #edd9ad;color:#77591c;font-size:8.8px;line-height:1.4;font-weight:750}.staff-reminder-inline-v10255.extension{background:#eef7ff;border-color:#cfe2f4;color:#3c6786}
+@media(max-width:620px){.pkpj-staff-reminder-v10255{grid-template-columns:36px minmax(0,1fr)}.pkpj-staff-reminder-v10255 .btn{grid-column:2;width:100%}}
+</style>
+<script id="pkpj-v10255-applicant-reminder-script">
+(function(){
+ 'use strict';
+ const VERSION='10.25.5';
+ function active(x){return ['DIPINJAM','HAMPIR_DUE','LEWAT'].includes(String(x?.status||'').toUpperCase())}
+ function reminder(x){const type=String(x?.staff_reminder_type||'').toUpperCase(),msg=String(x?.staff_reminder_message||'').trim(),at=x?.staff_reminder_at;if(!type||!msg||!at||!active(x))return null;return {type,msg,at}}
+ function shortMessage(x,r){if(r.type==='EXTENSION')return 'Jika peralatan masih diperlukan, sila hantar Permohonan Lanjutan Tempoh Pemulangan.';return 'Sila pulangkan peralatan kepada Unit IT. Jika masih diperlukan, sila mohon lanjutan tempoh.'}
+ function actionButton(x){const ext=String(x?.extension_request_status||'').toUpperCase();if(ext==='MENUNGGU')return '<span class="ext-status-v10251 wait">⏳ Lanjutan menunggu</span>';if(typeof window.openExtensionRequestV10251==='function')return `<button class="btn btn-sm ext-request-btn-v10251" type="button" onclick="openExtensionRequestV10251('${attr(x.loan_id)}')">↗ Mohon Lanjutan</button>`;return ''}
+ function renderHome(){const home=document.getElementById('view-home');if(!home)return;let box=document.getElementById('pkpjStaffReminderHomeV10255');if(!box){box=document.createElement('div');box.id='pkpjStaffReminderHomeV10255';const hero=home.querySelector('.hero');if(hero)hero.before(box);else home.prepend(box)}const rows=(state.loans||[]).map(x=>({x,r:reminder(x)})).filter(z=>z.r).sort((a,b)=>new Date(b.r.at)-new Date(a.r.at)).slice(0,3);box.innerHTML=rows.map(({x,r})=>`<div class="pkpj-staff-reminder-v10255 ${r.type==='EXTENSION'?'extension':''}"><div class="ico">${r.type==='EXTENSION'?'↗':'🔔'}</div><div><b>Peringatan Unit IT · ${esc(x.loan_id||'')}</b><p>${esc(r.msg)}</p><small>Tarikh perlu pulang: ${fmtDate(x.due_date)} · ${fmtDate(r.at)}</small></div>${actionButton(x)}</div>`).join('');box.style.display=rows.length?'grid':'none'}
+ function inlineReminder(x){const r=reminder(x);if(!r)return '';return `<div class="staff-reminder-inline-v10255 ${r.type==='EXTENSION'?'extension':''}">🔔 ${esc(shortMessage(x,r))}</div>`}
+ const baseActions=typeof window.applicantLoanActions==='function'?window.applicantLoanActions:null;
+ window.applicantLoanActions=applicantLoanActions=function(x){let html=baseActions?String(baseActions(x)||''):'';const note=inlineReminder(x);if(!note)return html;if(/^<div class="applicant-action-row">/.test(html)&&html.endsWith('</div>'))return html.slice(0,-6)+note+'</div>';if(!html||/tiny muted/.test(html))return `<div class="applicant-action-row">${note}</div>`;return `<div class="applicant-action-row">${html}${note}</div>`};
+ const basePatch=typeof window.patchApplicantLoanStatusesV119==='function'?window.patchApplicantLoanStatusesV119:null;
+ if(basePatch){window.patchApplicantLoanStatusesV119=patchApplicantLoanStatusesV119=function(w){const out=basePatch(w);const incoming=new Map((w?.items||[]).map(i=>[String(i.loan_id||''),i]));(state.loans||[]).forEach(row=>{const x=incoming.get(String(row.loan_id||''));if(!x)return;['staff_reminder_type','staff_reminder_message','staff_reminder_at','staff_reminder_by_user_id','staff_reminder_email_status','staff_reminder_email_sent_at'].forEach(k=>{if(Object.prototype.hasOwnProperty.call(x,k))row[k]=x[k]})});try{if(state.currentView==='myloans')renderMyLoans();renderHome();window.PKPJ_APPLICANT_INSTANT_HOME_V10249?.save?.()}catch(e){}return out}};
+ const baseHome=typeof window.renderHomeView==='function'?window.renderHomeView:null;
+ if(baseHome){window.renderHomeView=renderHomeView=function(){const r=baseHome.apply(this,arguments);try{renderHome()}catch(e){}return r}};
+ const baseApply=typeof window.applyBootstrap==='function'?window.applyBootstrap:null;
+ if(baseApply){window.applyBootstrap=applyBootstrap=function(){const r=baseApply.apply(this,arguments);setTimeout(()=>{try{renderHome()}catch(e){}},0);return r}};
+ function boot(){try{renderHome()}catch(e){}}
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
+ window.PKPJ_APPLICANT_REMINDER_V10255={version:VERSION,new_polling:false,new_sheet:false,extension_button_confirmed:true};
+})();
+</script>
+
 </body>
 </html>
