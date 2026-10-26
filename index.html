@@ -7834,5 +7834,180 @@ window.PKPJ_COMPLETED_DELETE_VERSION='10.18';
 })();
 </script>
 
+<!-- =========================================================
+     PKPJ V10.25.4 - CLEAN ADMIN ACTIONS + MONTHLY REPORT FAST
+     - Background process pill hidden for Staff IT; engine continues silently.
+     - Rename return/extension actions; hide Daftar action from loan rows.
+     - Monthly report is ON-DEMAND only; no new polling and no background API.
+========================================================= -->
+<style id="pkpj-v10254-clean-actions-monthly-style">
+#pkpjBgStatusV10241{display:none!important;visibility:hidden!important;pointer-events:none!important}
+.loan-register-btn{display:none!important}
+.monthly-report-v10254{margin-bottom:14px!important;border-color:#dce7f1!important;overflow:hidden}
+.monthly-head-v10254{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.monthly-title-v10254 small{display:block;color:#8799aa;font-size:9px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+.monthly-title-v10254 strong{display:block;color:#173d5a;font-size:16px}
+.monthly-title-v10254 span{display:block;color:#6e8396;font-size:10px;margin-top:4px;line-height:1.45}
+.monthly-controls-v10254{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.monthly-controls-v10254 input{min-width:155px}
+.monthly-kpis-v10254{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin-top:14px}
+.monthly-kpi-v10254{padding:11px 12px;border:1px solid #e1eaf2;border-radius:13px;background:#fbfdff;min-width:0}
+.monthly-kpi-v10254 small{display:block;color:#8295a6;font-size:7.8px;font-weight:900;letter-spacing:.04em;text-transform:uppercase}
+.monthly-kpi-v10254 strong{display:block;margin-top:4px;color:#173d5a;font-size:22px;line-height:1}
+.monthly-status-v10254{margin-top:12px;padding:10px 12px;border-radius:12px;background:#f7fbff;border:1px solid #e2eaf1;color:#647d91;font-size:10px;line-height:1.45}
+.monthly-status-v10254.ok{background:#eef9f4;border-color:#cce9db;color:#28765a}.monthly-status-v10254.err{background:#fff2f3;border-color:#f0cdd2;color:#a24452}
+.monthly-table-v10254{margin-top:12px;max-height:430px;overflow:auto;border:1px solid #e4ebf2;border-radius:13px}
+.monthly-table-v10254 table{min-width:980px}.monthly-table-v10254 th{position:sticky;top:0;z-index:1}.monthly-table-v10254 td{font-size:10.5px}.monthly-table-v10254 .purpose{max-width:260px;white-space:normal;line-height:1.4}
+.monthly-actions-v10254{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-top:12px}
+@media(max-width:1100px){.monthly-kpis-v10254{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:680px){.monthly-head-v10254{align-items:stretch}.monthly-controls-v10254{display:grid;grid-template-columns:1fr 1fr}.monthly-controls-v10254 input{grid-column:1/-1;width:100%}.monthly-controls-v10254 .btn{width:100%}.monthly-kpis-v10254{grid-template-columns:1fr 1fr}.monthly-actions-v10254{display:grid;grid-template-columns:1fr 1fr}.monthly-actions-v10254 .btn{width:100%}}
+</style>
+<script id="pkpj-v10254-clean-actions-monthly-script">
+(function(){
+  'use strict';
+  const VERSION='10.25.4';
+  let monthlyRows=[],monthlyAllLoans=[],monthlyMonth='';
+  let allLoanCache={at:0,rows:[]};
+
+  function escM(v){return typeof esc==='function'?esc(v):String(v??'').replace(/[&<>\"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[c]))}
+  function attrM(v){return typeof attr==='function'?attr(v):escM(v)}
+  function pad2(n){return String(n).padStart(2,'0')}
+  function monthKey(v){
+    if(!v)return '';
+    const raw=String(v);
+    if(/^\d{4}-\d{2}/.test(raw))return raw.slice(0,7);
+    const d=new Date(raw);if(isNaN(d))return '';
+    return d.getFullYear()+'-'+pad2(d.getMonth()+1);
+  }
+  function dateLabel(v){try{return typeof fmtDate==='function'?fmtDate(v):(v||'—')}catch(e){return String(v||'—')}}
+  function monthLabel(key){
+    const m=/^(\d{4})-(\d{2})$/.exec(String(key||''));if(!m)return key||'';
+    const d=new Date(Number(m[1]),Number(m[2])-1,1);
+    return new Intl.DateTimeFormat('ms-MY',{month:'long',year:'numeric'}).format(d);
+  }
+  function borrowerName(x){
+    if(x?.borrower_name)return String(x.borrower_name);
+    try{return typeof userName==='function'?userName(x?.borrower_user_id):String(x?.borrower_user_id||'—')}catch(e){return String(x?.borrower_user_id||'—')}
+  }
+  function officerName(x){
+    try{return x?.approved_by_user_id?(typeof userName==='function'?userName(x.approved_by_user_id):x.approved_by_user_id):'—'}catch(e){return x?.approved_by_user_id||'—'}
+  }
+  function statusText(x){return String(x?.status||'—').trim().toUpperCase()}
+  function csvCellM(v){return '"'+String(v??'').replace(/"/g,'""')+'"'}
+  function currentMonth(){const d=new Date();return d.getFullYear()+'-'+pad2(d.getMonth()+1)}
+
+  function hideBackgroundProcess(){
+    const p=document.getElementById('pkpjBgStatusV10241');
+    if(p){p.className='';p.style.display='none'}
+  }
+
+  // Preserve all existing business logic; presentation labels only.
+  const baseButtons=typeof window.loanActionButtons==='function'?window.loanActionButtons:null;
+  if(baseButtons){
+    window.loanActionButtons=loanActionButtons=function(loan){
+      let html=String(baseButtons.apply(this,arguments)||'');
+      html=html.replace(/>Urus Pulang</g,'>Sahkan Pemulangan<')
+               .replace(/>Panjang Tempoh</g,'>Lanjutan Tempoh Pemulangan<')
+               .replace(/<button\b[^>]*class="[^"]*loan-register-btn[^"]*"[^>]*>\s*Daftar\s*<\/button>/gi,'');
+      return html;
+    };
+  }
+
+  const baseReturn=typeof window.openPartialReturnV10245==='function'?window.openPartialReturnV10245:null;
+  if(baseReturn){window.openPartialReturnV10245=function(){const r=baseReturn.apply(this,arguments);setTimeout(()=>{const h=document.querySelector('#pkpjReturnBackdropV10245 .pkpj-return-head-v10245 h3');if(h)h.textContent='Sahkan Pemulangan Peralatan'},0);return r}};
+  const baseExtend=typeof window.openExtendLoanV10245==='function'?window.openExtendLoanV10245:null;
+  if(baseExtend){window.openExtendLoanV10245=function(){const r=baseExtend.apply(this,arguments);setTimeout(()=>{const h=document.querySelector('#pkpjExtendBackdropV10245 .pkpj-return-head-v10245 h3');if(h)h.textContent='Lanjutan Tempoh Pemulangan'},0);return r}};
+
+  function ensureMonthlyUI(){
+    const reports=document.getElementById('view-reports');if(!reports||document.getElementById('monthlyReportV10254'))return;
+    const card=document.createElement('div');card.id='monthlyReportV10254';card.className='card panel monthly-report-v10254';
+    card.innerHTML=`<div class="monthly-head-v10254"><div class="monthly-title-v10254"><small>Laporan Bulanan</small><strong>Ringkasan Pinjaman & Pemulangan</strong><span>Dijana hanya apabila diminta supaya paparan harian sistem kekal ringan.</span></div><div class="monthly-controls-v10254"><input class="field" type="month" id="monthlyMonthV10254"><button class="btn btn-primary" type="button" id="monthlyGenerateV10254">Jana Laporan</button></div></div><div class="monthly-kpis-v10254" id="monthlyKpisV10254"></div><div class="monthly-status-v10254" id="monthlyStatusV10254">Pilih bulan dan tekan <b>Jana Laporan</b>.</div><div class="monthly-table-v10254" id="monthlyTableV10254"><div class="empty">Belum ada laporan bulanan dijana.</div></div><div class="monthly-actions-v10254"><button class="btn" type="button" id="monthlyCsvV10254" disabled>Eksport CSV</button><button class="btn btn-green" type="button" id="monthlyPrintV10254" disabled>Cetak / Simpan PDF</button></div>`;
+    const hero=reports.querySelector('.mini-hero');
+    const audit=reports.querySelector('.audit-tools-v9');
+    if(audit)audit.before(card);else if(hero)hero.after(card);else reports.prepend(card);
+    const input=document.getElementById('monthlyMonthV10254');if(input)input.value=currentMonth();
+    document.getElementById('monthlyGenerateV10254')?.addEventListener('click',generateMonthly);
+    document.getElementById('monthlyCsvV10254')?.addEventListener('click',exportMonthlyCsv);
+    document.getElementById('monthlyPrintV10254')?.addEventListener('click',printMonthly);
+  }
+
+  function setMonthlyStatus(text,cls=''){
+    const el=document.getElementById('monthlyStatusV10254');if(!el)return;el.className='monthly-status-v10254'+(cls?' '+cls:'');el.innerHTML=text;
+  }
+
+  async function fetchAllLoans(){
+    if(allLoanCache.rows.length&&Date.now()-allLoanCache.at<60000)return allLoanCache.rows.slice();
+    const opts={timeoutMs:8000,retries:0,silentProgress:true};
+    const first=await jsonp('loans',{page:1,pageSize:500,sort:'request_date',order:'desc',_mr:VERSION,_t:Date.now()},opts);
+    let rows=Array.isArray(first?.items)?first.items.slice():[];
+    const totalPages=Math.max(1,Number(first?.totalPages||1));
+    for(let page=2;page<=totalPages;page++){
+      setMonthlyStatus(`Mengambil rekod laporan… halaman ${page} / ${totalPages}`);
+      const res=await jsonp('loans',{page,pageSize:500,sort:'request_date',order:'desc',_mr:VERSION,_t:Date.now()},opts);
+      if(Array.isArray(res?.items))rows.push(...res.items);
+    }
+    allLoanCache={at:Date.now(),rows:rows.slice()};
+    return rows;
+  }
+
+  function monthlyStats(all,month,requests){
+    const returned=all.filter(x=>monthKey(x.return_date)===month&&statusText(x)==='DIPULANGKAN');
+    const dueLate=all.filter(x=>monthKey(x.due_date)===month&&statusText(x)==='LEWAT');
+    const itemCount=requests.reduce((sum,x)=>sum+Number(x.item_count||0),0);
+    const users=new Set(requests.map(x=>String(x.borrower_user_id||x.borrower_name||'')).filter(Boolean));
+    const active=requests.filter(x=>['DILULUSKAN','DIPINJAM','HAMPIR_DUE','LEWAT'].includes(statusText(x))).length;
+    return {requests:requests.length,items:itemCount,borrowers:users.size,active,returned:returned.length,late:dueLate.length};
+  }
+
+  function renderMonthly(){
+    const stats=monthlyStats(monthlyAllLoans,monthlyMonth,monthlyRows);
+    const k=document.getElementById('monthlyKpisV10254');if(k)k.innerHTML=`<div class="monthly-kpi-v10254"><small>Permohonan Bulan Ini</small><strong>${stats.requests}</strong></div><div class="monthly-kpi-v10254"><small>Jumlah Item Dipohon</small><strong>${stats.items}</strong></div><div class="monthly-kpi-v10254"><small>Peminjam Unik</small><strong>${stats.borrowers}</strong></div><div class="monthly-kpi-v10254"><small>Aktif / Dipinjam</small><strong>${stats.active}</strong></div><div class="monthly-kpi-v10254"><small>Dipulangkan Bulan Ini</small><strong>${stats.returned}</strong></div><div class="monthly-kpi-v10254"><small>Lewat (Due Bulan Ini)</small><strong>${stats.late}</strong></div>`;
+    const rows=monthlyRows.slice().sort((a,b)=>new Date(b.request_date||b.created_at||0)-new Date(a.request_date||a.created_at||0));
+    const box=document.getElementById('monthlyTableV10254');
+    if(box)box.innerHTML=rows.length?`<table><thead><tr><th>ID PINJAMAN</th><th>TARIKH MOHON</th><th>PEMINJAM</th><th>ITEM</th><th>DUE</th><th>TUJUAN</th><th>STATUS</th><th>DILULUSKAN OLEH</th></tr></thead><tbody>${rows.slice(0,250).map(x=>`<tr><td class="strong">${escM(x.loan_id||'—')}</td><td>${escM(dateLabel(x.request_date||x.created_at))}</td><td>${escM(borrowerName(x))}</td><td>${Number(x.item_count||0)}</td><td>${escM(dateLabel(x.due_date))}</td><td class="purpose">${escM(x.purpose||'—')}</td><td>${typeof statusPill==='function'?statusPill(x.status):escM(x.status||'—')}</td><td>${escM(officerName(x))}</td></tr>`).join('')}</tbody></table>${rows.length>250?`<div class="monthly-status-v10254">Paparan skrin dihadkan kepada 250 rekod. CSV dan cetakan menggunakan semua ${rows.length} rekod.</div>`:''}`:'<div class="empty">Tiada permohonan direkod bagi bulan ini.</div>';
+    document.getElementById('monthlyCsvV10254').disabled=!rows.length;
+    document.getElementById('monthlyPrintV10254').disabled=!rows.length;
+    setMonthlyStatus(`Laporan <b>${escM(monthLabel(monthlyMonth))}</b> sedia · ${rows.length} permohonan dijumpai.`,'ok');
+  }
+
+  async function generateMonthly(){
+    ensureMonthlyUI();
+    const month=String(document.getElementById('monthlyMonthV10254')?.value||'').trim();
+    if(!/^\d{4}-\d{2}$/.test(month)){setMonthlyStatus('Pilih bulan laporan dahulu.','err');return}
+    const btn=document.getElementById('monthlyGenerateV10254');if(btn){btn.disabled=true;btn.textContent='Menjana…'}
+    document.getElementById('monthlyCsvV10254').disabled=true;document.getElementById('monthlyPrintV10254').disabled=true;
+    setMonthlyStatus('Mengambil rekod pinjaman lengkap…');
+    try{
+      const all=await fetchAllLoans();
+      monthlyAllLoans=all;
+      monthlyMonth=month;
+      monthlyRows=all.filter(x=>monthKey(x.request_date||x.created_at)===month);
+      renderMonthly();
+    }catch(e){setMonthlyStatus('Laporan belum dapat dijana. '+escM(e?.message||'Cuba semula.'),'err')}
+    finally{if(btn){btn.disabled=false;btn.textContent='Jana Laporan'}}
+  }
+
+  function exportMonthlyCsv(){
+    if(!monthlyRows.length)return;
+    const headers=['ID Pinjaman','Tarikh Mohon','Peminjam','Jumlah Item','Tarikh Perlu Pulang','Tujuan','Status','Diluluskan Oleh','Tarikh Pulang'];
+    const lines=[headers.map(csvCellM).join(',')];
+    monthlyRows.forEach(x=>lines.push([x.loan_id,dateLabel(x.request_date||x.created_at),borrowerName(x),Number(x.item_count||0),dateLabel(x.due_date),x.purpose||'',x.status||'',officerName(x),dateLabel(x.return_date)].map(csvCellM).join(',')));
+    const blob=new Blob(['\ufeff'+lines.join('\n')],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='laporan_pinjaman_'+monthlyMonth+'.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+  }
+
+  function printMonthly(){
+    if(!monthlyRows.length)return;
+    const stats=monthlyStats(monthlyAllLoans,monthlyMonth,monthlyRows),win=window.open('','_blank');if(!win)return toast?.('Popup disekat','Benarkan popup untuk cetakan laporan.','err');
+    const rows=monthlyRows.slice().sort((a,b)=>new Date(b.request_date||b.created_at||0)-new Date(a.request_date||a.created_at||0));
+    const html=`<!doctype html><html><head><meta charset="utf-8"><title>Laporan Bulanan ${escM(monthLabel(monthlyMonth))}</title><style>body{font-family:Arial,sans-serif;color:#17334c;padding:24px;font-size:11px}h1{font-size:20px;margin:0 0 4px}p{margin:0 0 16px;color:#657b8f}.k{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:15px 0}.k div{border:1px solid #dce5ed;border-radius:9px;padding:9px}.k small{display:block;color:#73889b;font-size:8px;text-transform:uppercase}.k b{font-size:18px}table{width:100%;border-collapse:collapse;margin-top:12px}th,td{border:1px solid #dfe6ed;padding:6px;vertical-align:top}th{background:#f1f5f8;text-align:left;font-size:8px}td{font-size:9px}@page{size:A4 landscape;margin:10mm}@media print{body{padding:0}}</style></head><body><h1>Laporan Bulanan Pinjaman Peralatan ICT</h1><p>${escM(monthLabel(monthlyMonth))} · Dijana ${escM(new Date().toLocaleString('ms-MY'))}</p><div class="k"><div><small>Permohonan</small><b>${stats.requests}</b></div><div><small>Item Dipohon</small><b>${stats.items}</b></div><div><small>Peminjam Unik</small><b>${stats.borrowers}</b></div><div><small>Aktif / Dipinjam</small><b>${stats.active}</b></div><div><small>Dipulangkan Bulan Ini</small><b>${stats.returned}</b></div><div><small>Lewat (Due Bulan Ini)</small><b>${stats.late}</b></div></div><table><thead><tr><th>ID</th><th>Tarikh Mohon</th><th>Peminjam</th><th>Item</th><th>Due</th><th>Tujuan</th><th>Status</th><th>Diluluskan Oleh</th></tr></thead><tbody>${rows.map(x=>`<tr><td>${escM(x.loan_id||'')}</td><td>${escM(dateLabel(x.request_date||x.created_at))}</td><td>${escM(borrowerName(x))}</td><td>${Number(x.item_count||0)}</td><td>${escM(dateLabel(x.due_date))}</td><td>${escM(x.purpose||'')}</td><td>${escM(x.status||'')}</td><td>${escM(officerName(x))}</td></tr>`).join('')}</tbody></table></body></html>`;
+    win.document.open();win.document.write(html);win.document.close();setTimeout(()=>{try{win.focus();win.print()}catch(e){}},250);
+  }
+
+  function init(){ensureMonthlyUI();hideBackgroundProcess();setTimeout(hideBackgroundProcess,250);setTimeout(hideBackgroundProcess,1500)}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+  window.PKPJ_ADMIN_V10254={version:VERSION,background_process_ui:'HIDDEN',loan_register_action:'HIDDEN',monthly_report:'ON_DEMAND_NO_NEW_POLLING'};
+})();
+</script>
+
 </body>
 </html>
